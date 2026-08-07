@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Thêm từ</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+</head>
+
+<body>
+
+<div
+        class="alert alert-success"
+        th:if="${session.thongBao}"
+        th:text="${session.thongBao}">
+</div>
+
+<div class="container mt-4">
+
+    <h2 class="text-center mb-4">
+        THÊM TỪ VỰNG
+    </h2>
+
+    <form th:action="@{/tra-hang-loat}"
+          method="post"
+          th:object="${themTuDTO}">
+
+        <label class="form-label">
+            Mỗi dòng một từ
+        </label>
+
+        <textarea
+                class="form-control"
+                rows="15"
+                th:field="*{noiDung}"
+                placeholder="hello&#10;apple&#10;computer"></textarea>
+
+        <div class="mt-4">
+
+            <button
+                    type="submit"
+                    class="btn btn-primary">
+
+                Tra hàng loạt
+
+            </button>
+
+            <a href="/"
+               class="btn btn-secondary">
+
+                Trang chủ
+
+            </a>
+
+        </div>
+
+    </form>
+
+    <form action="/luu-bo" method="post">
+
+    <div class="mt-5" th:if="${ketQua != null}">
+
+        <table class="table table-bordered">
+
+            <thead>
+            <tr>
+                <th>STT</th>
+                <th>English</th>
+                <th>Nghĩa</th>
+                <th>Phiên âm</th>
+                <th>VD</th>
+                <th>Đọc</th>
+            </tr>
+            </thead>
+
+            <tbody>
+
+            <tr th:each="tu, stt : ${ketQua}">
+
+                <td th:text="${stt.count}"></td>
+
+                <td>
+                    <input type="hidden"
+                           name="tiengAnh"
+                           th:value="${tu.tiengAnh}">
+                    <span th:text="${tu.tiengAnh}"></span>
+                </td>
+
+                <td>
+                    <input class="form-control"
+                           name="tiengViet"
+                           th:value="${tu.tiengViet}">
+                </td>
+
+                <td>
+                    <input class="form-control"
+                           name="phienAm"
+                           th:value="${tu.phienAm}">
+                </td>
+
+                <td>
+                    <input class="form-control"
+                           name="viDu"
+                           th:value="${tu.viDu}">
+                </td>
+
+                <td>
+                    <button type="button"
+                            th:attr="onclick=|docTu('${tu.tiengAnh}')|">
+
+                        🔊
+
+                    </button>
+                </td>
+            </tr>
+
+            </tbody>
+
+        </table>
+
+        <button
+                type="submit"
+                class="btn btn-success">
+
+            Lưu
+
+        </button>
+
+    </form>
+
+    </div>
+
+</div>
+
+<script>
+// thông báo 5s tắt
+    setTimeout(function(){
+
+    let tb =
+    document.getElementById("thongBao");
+
+
+    if(tb){
+
+        tb.style.display="none";
+
+    }
+
+},5000);
+
+    function docTu(tu){
+
+        let noiDung = new SpeechSynthesisUtterance(tu);
+
+        noiDung.lang = "en-US";
+
+        noiDung.rate = 0.8;
+
+        window.speechSynthesis.speak(noiDung);
+
+    }
+
+</script>
+</body>
+</html>

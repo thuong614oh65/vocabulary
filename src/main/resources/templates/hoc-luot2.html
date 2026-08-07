@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <title>Lượt 2</title>
+
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+    <style>
+
+
+        .tu-hover{
+
+            position:relative;
+
+            cursor:pointer;
+
+        }
+
+
+
+        .thong-tin-tu{
+
+
+            display:none;
+
+            position:absolute;
+
+            background:white;
+
+            border:1px solid #ccc;
+
+            padding:10px;
+
+            z-index:10;
+
+            width:250px;
+
+
+        }
+
+
+
+        .tu-hover:hover .thong-tin-tu{
+
+
+            display:block;
+
+
+        }
+
+        .dung{
+
+    color:green;
+
+    font-weight:bold;
+
+}
+
+.sai{
+
+    color:red;
+
+    font-weight:bold;
+
+}
+
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="container mt-5">
+
+
+    <h2 class="text-center">
+        HỌC TỪ VỰNG
+    </h2>
+
+
+    <h4 class="text-center mt-3">
+        Vietnamese → English
+    </h4>
+
+
+    <hr>
+
+
+    <table class="table table-bordered">
+
+
+        <tr>
+
+            <th>Nghĩa</th>
+
+            <th>Nhập từ tiếng Anh</th>
+
+        </tr>
+
+
+
+        <tr th:each="tu:${dsHoc}">
+
+
+            <td>
+
+<span th:text="${tu.tiengViet}">
+
+</span>
+
+            </td>
+
+
+
+            <td>
+
+
+                <input
+                        type="text"
+                        class="form-control cau-tra-loi"
+                        th:data-id="${tu.id}"
+                        th:data-dap-an="${tu.tiengAnh}">
+
+                <div class="ket-qua mt-1"></div>
+
+
+            </td>
+
+
+
+        </tr>
+
+
+    </table>
+
+    <div class="text-center mt-4">
+
+        <button
+                class="btn btn-primary"
+                onclick="tiepLuot()">
+
+            Tiếp
+
+        </button>
+
+        <button
+                class="btn btn-danger"
+                onclick="dungHoc()">
+
+            Dừng
+
+        </button>
+
+    </div>
+
+
+
+</div>
+
+
+
+<script>
+
+
+    document.querySelectorAll(".cau-tra-loi")
+    .forEach(input=>{
+
+
+    input.addEventListener(
+    "keydown",
+    function(e){
+
+
+    if(e.key==="Enter"){
+
+
+    chamDiem(this);
+
+
+    }
+
+
+
+    });
+
+
+    });
+
+
+
+    function chamDiem(input){
+
+
+    let dung =
+    input.dataset.dapAn.toLowerCase();
+
+
+
+    let nhap =
+    input.value.trim().toLowerCase();
+
+
+
+    if(nhap===dung){
+
+
+    input.style.background="lightgreen";
+
+    }else{
+
+
+    input.style.background="pink";
+
+fetch("/hoc/sai/" + input.dataset.id,{
+    method:"POST"
+});
+
+    }
+
+    let ketQua = "";
+
+let max = Math.max(
+    nhap.length,
+    dung.length
+);
+
+for(let i=0;i<max;i++){
+
+    let kyTuNhap = nhap[i] ?? "";
+
+    let kyTuDung = dung[i] ?? "";
+
+    if(kyTuNhap===kyTuDung){
+
+        ketQua +=
+        "<span class='dung'>"
+        +(kyTuNhap===""?"□":kyTuNhap)
+        +"</span>";
+
+    }
+    else{
+
+        ketQua +=
+        "<span class='sai'>"
+        +(kyTuNhap===""?"□":kyTuNhap)
+        +"</span>";
+
+    }
+
+}
+
+input.nextElementSibling.innerHTML = ketQua;
+
+    input.disabled=true;
+
+
+
+    }
+
+    function tiepLuot(){
+
+    window.location="/hoc/tiep";
+
+}
+
+function dungHoc(){
+
+    window.location="/";
+
+}
+
+    function dungHoc(){
+
+    window.location="/hoc/dung";
+
+}
+
+</script>
+
+
+
+</body>
+
+</html>

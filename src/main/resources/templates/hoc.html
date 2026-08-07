@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Học</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+</head>
+
+<body>
+
+<div class="container mt-5">
+
+    <h2 class="text-center mb-4">
+        HỌC TỪ VỰNG
+    </h2>
+
+    <form
+            th:action="@{/hoc}"
+            method="post"
+            th:object="${hocDTO}">
+
+        <!-- Ngẫu nhiên -->
+        <div class="form-check">
+            <input id="ngauNhien"
+                   class="form-check-input"
+                   type="radio"
+                   th:field="*{kieuHoc}"
+                   value="NGAU_NHIEN">
+
+            <label class="form-check-label">
+                Ngẫu nhiên
+            </label>
+        </div>
+
+        <!-- Từ sai -->
+        <div class="form-check">
+            <input id="tuSai"
+                   class="form-check-input"
+                   type="radio"
+                   th:field="*{kieuHoc}"
+                   value="TU_SAI">
+
+            <label class="form-check-label">
+                Từ sai
+            </label>
+        </div>
+
+        <!-- Theo bộ -->
+        <div class="form-check">
+            <input id="theoBo"
+                   class="form-check-input"
+                   type="radio"
+                   th:field="*{kieuHoc}"
+                   value="THEO_BO">
+
+            <label class="form-check-label">
+                Theo bộ
+            </label>
+        </div>
+
+        <select id="boHoc"
+                class="form-select mt-2"
+                th:field="*{boId}"
+                onchange="doiBo()">
+
+            <option value="">
+                Chọn bộ
+            </option>
+
+            <option
+                    th:each="bo : ${dsBo}"
+                    th:value="${bo.id}"
+                    th:text="${bo.tenBo}">
+            </option>
+
+        </select>
+
+        <!-- Chọn từng từ -->
+        <div class="form-check mt-3">
+
+            <input id="chonTu"
+                   class="form-check-input"
+                   type="radio"
+                   th:field="*{kieuHoc}"
+                   value="CHON_TUNG_TU">
+
+            <label class="form-check-label">
+                Chọn từng từ
+            </label>
+
+        </div>
+
+        <br>
+
+        <button type="submit"
+                class="btn btn-success">
+            Học
+        </button>
+
+    <hr>
+
+    <!-- ================= THEO BỘ ================= -->
+
+    <div id="bangTheoBo" style="display:none;">
+
+        <table class="table table-bordered table-hover">
+
+            <thead>
+
+            <tr>
+
+                <th>Bộ</th>
+                <th>English</th>
+                <th>Nghĩa</th>
+                <th>Phiên âm</th>
+                <th>Đọc</th>
+
+            </tr>
+
+            </thead>
+
+            <tbody>
+
+            <tr th:each="tu,st : ${dsTheoBo}">
+
+                <td
+                        th:if="${st.index==0
+                        or dsTheoBo.get(st.index-1).boTuVung.id!=tu.boTuVung.id}"
+
+                        th:rowspan="${tu.boTuVung.soLuongTu}"
+
+                        th:text="${tu.boTuVung.tenBo}">
+                </td>
+
+                <td th:text="${tu.tiengAnh}"></td>
+
+                <td th:text="${tu.tiengViet}"></td>
+
+                <td th:text="${tu.phienAm}"></td>
+
+                <td>
+
+                    <button
+                            type="button"
+                            th:attr="onclick=|docTu('${tu.tiengAnh}')|">
+
+                        🔊
+
+                    </button>
+
+                </td>
+
+            </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+    <!-- ================= CHỌN TỪNG TỪ ================= -->
+
+    <div id="bangTatCa" style="display:none;">
+
+        <table class="table table-bordered table-hover">
+
+            <thead>
+
+            <tr>
+
+                <th>Bộ</th>
+                <th>English</th>
+                <th>Nghĩa</th>
+                <th>Phiên âm</th>
+                <th>Đọc</th>
+                <th>Chọn</th>
+
+            </tr>
+
+            </thead>
+
+            <tbody>
+
+            <tr th:each="tu,st : ${dsTatCa}">
+
+                <td
+                        th:if="${st.index==0
+                        or dsTatCa.get(st.index-1).boTuVung.id!=tu.boTuVung.id}"
+
+                        th:rowspan="${tu.boTuVung.soLuongTu}"
+
+                        th:text="${tu.boTuVung.tenBo}">
+                </td>
+
+                <td th:text="${tu.tiengAnh}"></td>
+
+                <td th:text="${tu.tiengViet}"></td>
+
+                <td th:text="${tu.phienAm}"></td>
+
+                <td>
+
+                    <button
+                            type="button"
+                            th:attr="onclick=|docTu('${tu.tiengAnh}')|">
+
+                        🔊
+
+                    </button>
+
+                </td>
+
+                <td>
+
+                    <input
+                            type="checkbox"
+                            name="tuIds"
+                            th:value="${tu.id}">
+
+                </td>
+
+            </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+    </form>
+
+
+</div>
+
+<script>
+
+    const ngauNhien = document.getElementById("ngauNhien");
+    const tuSai = document.getElementById("tuSai");
+    const theoBo = document.getElementById("theoBo");
+    const chonTu = document.getElementById("chonTu");
+
+    const boHoc = document.getElementById("boHoc");
+
+    const bangTheoBo =
+        document.getElementById("bangTheoBo");
+
+    const bangTatCa =
+        document.getElementById("bangTatCa");
+
+    function capNhat(){
+
+        boHoc.disabled =
+            !theoBo.checked;
+
+        bangTheoBo.style.display =
+            theoBo.checked ? "block" : "none";
+
+        bangTatCa.style.display =
+            chonTu.checked ? "block" : "none";
+
+    }
+
+    ngauNhien.onchange = capNhat;
+    tuSai.onchange = capNhat;
+    theoBo.onchange = capNhat;
+    chonTu.onchange = capNhat;
+
+    capNhat();
+
+    function doiBo(){
+
+        if(boHoc.value!=""){
+
+            window.location =
+                "/hoc/bo/" + boHoc.value;
+
+        }
+
+    }
+
+    function docTu(tu){
+
+        let noiDung =
+            new SpeechSynthesisUtterance(tu);
+
+        noiDung.lang="en-US";
+
+        noiDung.rate=0.8;
+
+        speechSynthesis.speak(noiDung);
+
+    }
+
+</script>
+
+</body>
+</html>

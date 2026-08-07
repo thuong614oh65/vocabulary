@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Bắt đầu học</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+</head>
+
+
+<body>
+
+<div class="container mt-5">
+
+
+    <h2 class="text-center">
+        BẮT ĐẦU HỌC
+    </h2>
+
+
+    <div class="card mt-4">
+
+        <div class="card-body">
+
+
+            <h5>
+                Kiểu học:
+                <span th:text="${hocDTO.kieuHoc}"></span>
+            </h5>
+
+
+            <h5 th:if="${hocDTO.boId != null}">
+                Bộ:
+                <span th:text="${hocDTO.boId}"></span>
+            </h5>
+
+
+            <h4 class="mt-4">
+                Các từ sẽ học
+            </h4>
+
+
+            <table class="table table-bordered">
+
+
+                <thead>
+
+                <tr>
+
+                    <th>
+                        English
+                    </th>
+
+                    <th>
+                        Nghĩa
+                    </th>
+
+                    <th>
+                        Phiên âm
+                    </th>
+
+                    <th>
+                        Đọc
+                    </th>
+
+                </tr>
+
+                </thead>
+
+
+                <tbody>
+
+
+                <tr th:each="tu:${dsHoc}">
+
+
+                    <td th:text="${tu.tiengAnh}">
+                    </td>
+
+
+                    <td th:text="${tu.tiengViet}">
+                    </td>
+
+
+                    <td th:text="${tu.phienAm}">
+                    </td>
+
+
+                    <td>
+
+                        <button
+                                type="button"
+                                th:attr="onclick=|docTu('${tu.tiengAnh}')|">
+
+                            🔊
+
+                        </button>
+
+
+                    </td>
+
+
+                </tr>
+
+
+                </tbody>
+
+
+            </table>
+
+
+
+            <form th:action="@{/bat-dau-hoc}"
+                  method="post">
+
+                <input type="hidden"
+                       name="kieuHoc"
+                       th:value="${hocDTO.kieuHoc}">
+
+
+                <form action="/bat-dau-hoc"
+                      method="post">
+
+
+                    <button class="btn btn-success">
+
+                        Bắt đầu học
+
+                    </button>
+
+
+                </form>
+
+            </form>
+
+
+        </div>
+
+    </div>
+
+
+</div>
+
+
+<script>
+
+
+    function docTu(tu){
+
+    let noiDung =
+    new SpeechSynthesisUtterance(tu);
+
+
+    noiDung.lang="en-US";
+
+    noiDung.rate=0.8;
+
+
+    speechSynthesis.speak(noiDung);
+
+    }
+
+
+</script>
+
+
+</body>
+
+</html>
