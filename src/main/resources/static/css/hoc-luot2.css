@@ -1,0 +1,126 @@
+/* =========================================================
+   THÔNG TIN TỪ
+   ========================================================= */
+
+.tu-hover {
+
+    position: relative;
+
+    cursor: pointer;
+
+}
+
+
+.thong-tin-tu {
+
+    display: none;
+
+    position: absolute;
+
+    background: white;
+
+    border: 1px solid #ccc;
+
+    padding: 10px;
+
+    z-index: 10;
+
+    width: 250px;
+
+}
+
+
+.tu-hover:hover .thong-tin-tu {
+
+    display: block;
+
+}
+
+
+/* =========================================================
+   KẾT QUẢ
+   ========================================================= */
+
+.dung {
+
+    color: green;
+
+    font-weight: bold;
+
+}
+
+
+.sai {
+
+    color: red;
+
+    font-weight: bold;
+
+}
+
+
+/* =========================================================
+   CỘT NÚT CHẤM
+   MÁY TÍNH: ẨN HOÀN TOÀN
+   ========================================================= */
+
+.cot-cham {
+
+    display: none !important;
+
+}
+
+
+/* =========================================================
+   ĐIỆN THOẠI
+   ========================================================= */
+
+@media (max-width: 768px) {
+
+    .cot-cham {
+
+        display: table-cell !important;
+
+        width: 55px;
+
+        text-align: center;
+
+        vertical-align: middle;
+
+    }
+
+
+    .nut-cham {
+
+        width: 45px;
+
+        height: 40px;
+
+        font-size: 20px;
+
+        padding: 0;
+
+    }
+
+
+    .container {
+
+        margin-top: 20px !important;
+
+    }
+
+
+    h2 {
+
+        font-size: 24px;
+
+    }
+
+
+    h4 {
+
+        font-size: 18px;
+
+    }
+
+}

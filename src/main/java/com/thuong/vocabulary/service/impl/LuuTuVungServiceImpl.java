@@ -1,8 +1,8 @@
 package com.thuong.vocabulary.service.impl;
 
-
 import com.thuong.vocabulary.dto.TuVungDTO;
 import com.thuong.vocabulary.entity.BoTuVung;
+import com.thuong.vocabulary.entity.TaiKhoan;
 import com.thuong.vocabulary.entity.TuVung;
 import com.thuong.vocabulary.repository.BoTuVungRepository;
 import com.thuong.vocabulary.repository.TuVungRepository;
@@ -13,38 +13,47 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-
 @Service
-public class LuuTuVungServiceImpl
-        implements LuuTuVungService {
-
+public class LuuTuVungServiceImpl implements LuuTuVungService {
 
     private final BoTuVungRepository boRepo;
 
     private final TuVungRepository tuRepo;
 
-
     public LuuTuVungServiceImpl(
             BoTuVungRepository boRepo,
             TuVungRepository tuRepo
     ) {
-
         this.boRepo = boRepo;
         this.tuRepo = tuRepo;
-
     }
 
 
     @Override
-    public String luuBo(List<TuVungDTO> danhSach) {
+    public String luuBo(
+            List<TuVungDTO> danhSach,
+            TaiKhoan taiKhoan
+    ) {
 
+        // =====================================================
+        // KIỂM TRA TÀI KHOẢN
+        // =====================================================
 
-        if(danhSach == null || danhSach.isEmpty()){
-
-            return "Không có từ nào để lưu";
-
+        if (taiKhoan == null || taiKhoan.getId() == null) {
+            return "Chưa đăng nhập";
         }
 
+
+        // =====================================================
+        // KIỂM TRA DANH SÁCH
+        // =====================================================
+
+        if (danhSach == null || danhSach.isEmpty()) {
+            return "Không có từ nào để lưu";
+        }
+
+
+        Long taiKhoanId = taiKhoan.getId();
 
 
         List<String> daCo = new ArrayList<>();
@@ -54,99 +63,100 @@ public class LuuTuVungServiceImpl
         List<TuVungDTO> dsLuu = new ArrayList<>();
 
 
+        // =====================================================
+        // KIỂM TRA TỪ TRÙNG
+        // =====================================================
 
-        for(TuVungDTO dto : danhSach){
-
+        for (TuVungDTO dto : danhSach) {
 
             // Không có dữ liệu
-            if(dto == null ||
-                    dto.getTiengAnh() == null ||
-                    dto.getTiengAnh().isBlank()){
+            if (dto == null
+                    || dto.getTiengAnh() == null
+                    || dto.getTiengAnh().isBlank()) {
 
                 continue;
-
             }
 
 
-
-            String tu =
-                    dto.getTiengAnh()
-                            .trim()
-                            .toLowerCase();
+            String tu = dto.getTiengAnh()
+                    .trim()
+                    .toLowerCase();
 
 
+            // -------------------------------------------------
+            // Trùng trong danh sách đang nhập
+            // -------------------------------------------------
 
-            // trùng trong danh sách nhập
-            if(daCo.contains(tu)){
+            if (daCo.contains(tu)) {
 
                 trung.add(tu);
 
                 continue;
-
             }
 
 
+            // -------------------------------------------------
+            // Trùng trong database
+            // CHỈ kiểm tra trong tài khoản hiện tại
+            // -------------------------------------------------
 
-            // trùng database
-            if(tuRepo.existsByTiengAnhIgnoreCase(tu)){
-
+            if (tuRepo.existsByTiengAnhIgnoreCaseAndBoTuVungTaiKhoanId(
+                    tu,
+                    taiKhoanId
+            )) {
 
                 trung.add(tu);
 
                 continue;
-
             }
-
 
 
             daCo.add(tu);
 
             dsLuu.add(dto);
-
-
         }
 
 
+        // =====================================================
+        // KHÔNG CÒN TỪ NÀO ĐỂ LƯU
+        // =====================================================
 
-        // không còn từ nào để lưu
-
-        if(dsLuu.isEmpty()){
-
+        if (dsLuu.isEmpty()) {
 
             return "Không có từ mới để lưu. Từ trùng: "
                     + trung;
-
-
         }
 
 
-
-
-        // tạo bộ mới
+        // =====================================================
+        // TẠO BỘ TỪ MỚI
+        // =====================================================
 
         BoTuVung bo = new BoTuVung();
 
-
         bo.setTenBo(
-                "Bộ "
-                        +(boRepo.count()+1)
+                "Bộ " + (boRepo.count() + 1)
         );
-
 
         bo.setNgayTao(
                 LocalDateTime.now()
         );
 
 
+        // QUAN TRỌNG:
+        // Gắn bộ từ với tài khoản đang đăng nhập
+
+        bo.setTaiKhoan(taiKhoan);
+
+
         boRepo.save(bo);
 
 
+        // =====================================================
+        // LƯU CÁC TỪ
+        // =====================================================
 
-
-        // lưu từ
-
-        for(TuVungDTO dto : dsLuu){
-
+        for (TuVungDTO dto : dsLuu) {
 
             TuVung tu = new TuVung();
 
@@ -171,35 +181,33 @@ public class LuuTuVungServiceImpl
             );
 
 
+            // Gắn từ vào bộ
+
             tu.setBoTuVung(bo);
 
 
             tuRepo.save(tu);
-
-
         }
 
 
-
+        // =====================================================
+        // THÔNG BÁO
+        // =====================================================
 
         String ketQua =
                 "Đã lưu "
                         + dsLuu.size()
-                        +" từ";
+                        + " từ";
 
 
-        if(!trung.isEmpty()){
+        if (!trung.isEmpty()) {
 
             ketQua +=
                     ". Bỏ qua từ trùng: "
                             + trung;
-
         }
 
 
         return ketQua;
-
-
     }
-
 }

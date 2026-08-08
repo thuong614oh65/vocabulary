@@ -15,6 +15,10 @@ public class BoTuVung {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @ManyToOne
+    @JoinColumn(name = "tai_khoan_id")
+    private TaiKhoan taiKhoan;
+
 
     private String tenBo;
 
@@ -48,10 +52,20 @@ public class BoTuVung {
         this.ngayTao = ngayTao;
     }
 
-    public int getSoLuongTu(){
+    public int getSoLuongTu() {
+        if (tuVungs == null) {
+            return 0;
+        }
 
         return tuVungs.size();
+    }
 
+    public TaiKhoan getTaiKhoan() {
+        return taiKhoan;
+    }
+
+    public void setTaiKhoan(TaiKhoan taiKhoan) {
+        this.taiKhoan = taiKhoan;
     }
 
 }

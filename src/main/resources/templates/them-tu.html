@@ -7,6 +7,9 @@
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css"
           rel="stylesheet">
+
+    <link rel="stylesheet"
+          th:href="@{/css/tra-hang-loat.css}">
 </head>
 
 <body>
@@ -134,34 +137,6 @@
 
 </div>
 
-<script>
-// thông báo 5s tắt
-    setTimeout(function(){
-
-    let tb =
-    document.getElementById("thongBao");
-
-
-    if(tb){
-
-        tb.style.display="none";
-
-    }
-
-},5000);
-
-    function docTu(tu){
-
-        let noiDung = new SpeechSynthesisUtterance(tu);
-
-        noiDung.lang = "en-US";
-
-        noiDung.rate = 0.8;
-
-        window.speechSynthesis.speak(noiDung);
-
-    }
-
-</script>
+<script th:src="@{/js/tra-hang-loat.js}"></script>
 </body>
 </html>

@@ -1,58 +1,90 @@
 package com.thuong.vocabulary.controller;
 
 import com.thuong.vocabulary.dto.HocDTO;
-import com.thuong.vocabulary.entity.TuVung;
-import com.thuong.vocabulary.service.HocService;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
 import com.thuong.vocabulary.dto.ThemTuDTO;
-import org.springframework.ui.Model;
-import com.thuong.vocabulary.service.DanhSachTuService;
 import com.thuong.vocabulary.dto.TuVungDTO;
-import com.thuong.vocabulary.service.LuuTuVungService;
-import jakarta.servlet.http.HttpSession;
-
-import java.util.Collections;
-import java.util.List;
+import com.thuong.vocabulary.entity.TaiKhoan;
+import com.thuong.vocabulary.entity.TuVung;
+import com.thuong.vocabulary.service.DanhSachTuService;
+import com.thuong.vocabulary.service.HocService;
 import com.thuong.vocabulary.service.TuVungService;
+import jakarta.servlet.http.HttpSession;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 @Controller
 public class HomeController {
 
     private final DanhSachTuService danhSachTuService;
-
     private final TuVungService tuVungService;
-
-    private final LuuTuVungService luuTuVungService;
-
     private final HocService hocService;
 
     public HomeController(
             DanhSachTuService danhSachTuService,
             TuVungService tuVungService,
-            LuuTuVungService luuTuVungService,
             HocService hocService
     ) {
         this.danhSachTuService = danhSachTuService;
         this.tuVungService = tuVungService;
-        this.luuTuVungService = luuTuVungService;
         this.hocService = hocService;
     }
 
+
+    // =========================================================
+    // KIỂM TRA ĐĂNG NHẬP
+    // =========================================================
+
+    private boolean chuaDangNhap(HttpSession session) {
+        return session.getAttribute("taiKhoan") == null;
+    }
+
+
+    // =========================================================
+    // TRANG CHỦ
+    // =========================================================
+
     @GetMapping("/")
-    public String home() {
+    public String home(HttpSession session) {
+
+        if (chuaDangNhap(session)) {
+            return "redirect:/dangnhap";
+        }
+
         return "index";
     }
 
-    @GetMapping("/them-tu")
-    public String themTu(Model model) {
 
-        model.addAttribute("themTuDTO", new ThemTuDTO());
+    // =========================================================
+    // THÊM TỪ
+    // =========================================================
+
+    @GetMapping("/them-tu")
+    public String themTu(
+            HttpSession session,
+            Model model
+    ) {
+
+        if (chuaDangNhap(session)) {
+            return "redirect:/dangnhap";
+        }
+
+        model.addAttribute(
+                "themTuDTO",
+                new ThemTuDTO()
+        );
 
         return "them-tu";
     }
+
+
+    // =========================================================
+    // TRA TỪ HÀNG LOẠT
+    // =========================================================
 
     @PostMapping("/tra-hang-loat")
     public String traHangLoat(
@@ -61,15 +93,20 @@ public class HomeController {
             HttpSession session
     ) {
 
+        if (chuaDangNhap(session)) {
+            return "redirect:/dangnhap";
+        }
+
         List<String> danhSach =
                 danhSachTuService.tachDanhSach(
                         themTuDTO.getNoiDung()
                 );
 
+        List<TuVungDTO> ketQua =
+                new ArrayList<>();
 
-        List<TuVungDTO> ketQua = new ArrayList<>();
-
-        List<String> loi = new ArrayList<>();
+        List<String> loi =
+                new ArrayList<>();
 
 
         for (String tu : danhSach) {
@@ -79,24 +116,16 @@ public class HomeController {
                 TuVungDTO dto =
                         tuVungService.traTu(tu);
 
-
-                if(dto != null){
-
+                if (dto != null) {
                     ketQua.add(dto);
-
-                }else{
-
+                } else {
                     loi.add(tu);
-
                 }
 
-
-            } catch(Exception e){
+            } catch (Exception e) {
 
                 loi.add(tu);
-
             }
-
         }
 
 
@@ -105,20 +134,19 @@ public class HomeController {
                 themTuDTO
         );
 
-
         model.addAttribute(
                 "ketQua",
                 ketQua
         );
 
 
-        if(!loi.isEmpty()){
+        if (!loi.isEmpty()) {
 
             session.setAttribute(
                     "thongBao",
-                    "Không tìm thấy: " + String.join(", ", loi)
+                    "Không tìm thấy: "
+                            + String.join(", ", loi)
             );
-
         }
 
 
@@ -129,101 +157,104 @@ public class HomeController {
 
 
         return "them-tu";
-
     }
 
-    @PostMapping("/luu-bo")
-    public String luuBo(
 
-            @RequestParam List<String> tiengAnh,
-            @RequestParam List<String> tiengViet,
-            @RequestParam(required = false) List<String> phienAm,
-            @RequestParam(required = false) List<String> viDu,
-
-            HttpSession session
-    ) {
-
-        List<TuVungDTO> danhSach = new ArrayList<>();
-
-        for (int i = 0; i < tiengAnh.size(); i++) {
-
-            TuVungDTO dto = new TuVungDTO();
-
-            dto.setTiengAnh(tiengAnh.get(i));
-            dto.setTiengViet(tiengViet.get(i));
-
-            if (phienAm != null && i < phienAm.size()) {
-                dto.setPhienAm(phienAm.get(i));
-            }
-
-            if (viDu != null && i < viDu.size()) {
-                dto.setViDu(viDu.get(i));
-            }
-
-            danhSach.add(dto);
-        }
-
-        String thongBao =
-                luuTuVungService.luuBo(danhSach);
-
-        session.setAttribute(
-                "thongBao",
-                thongBao
-        );
-
-        session.removeAttribute("danhSachTu");
-
-        return "redirect:/them-tu";
-    }
+    // =========================================================
+    // BẮT ĐẦU HỌC
+    // =========================================================
 
     @PostMapping("/hoc")
     public String batDauHoc(
             @ModelAttribute HocDTO hocDTO,
             Model model,
             HttpSession session
-    ){
+    ) {
 
-        System.out.println(hocDTO.getKieuHoc());
-
-        if (hocDTO.getTuIds() != null) {
-            for (Long id : hocDTO.getTuIds()) {
-                System.out.println(id);
-            }
-        } else {
-            System.out.println("tuIds = null");
+        if (chuaDangNhap(session)) {
+            return "redirect:/dangnhap";
         }
 
-        List<TuVung> dsHoc = new ArrayList<>();
+
+        // LẤY TÀI KHOẢN ĐANG ĐĂNG NHẬP
+        TaiKhoan taiKhoan =
+                (TaiKhoan) session.getAttribute("taiKhoan");
+
+        Long taiKhoanId =
+                taiKhoan.getId();
+
+
+        System.out.println(
+                "Tài khoản đang học: "
+                        + taiKhoanId
+        );
+
+
+        List<TuVung> dsHoc =
+                new ArrayList<>();
+
 
         switch (hocDTO.getKieuHoc()) {
 
+
+            // -------------------------------------------------
+            // NGẪU NHIÊN
+            // -------------------------------------------------
+
             case "NGAU_NHIEN":
 
-                dsHoc = hocService.layNgauNhien();
+                dsHoc =
+                        hocService.layNgauNhien(
+                                taiKhoanId
+                        );
 
                 break;
+
+
+            // -------------------------------------------------
+            // THEO BỘ
+            // -------------------------------------------------
 
             case "THEO_BO":
 
-                dsHoc = hocService.layTheoBo(
-                        hocDTO.getBoId()
-                );
+                dsHoc =
+                        hocService.layTheoBo(
+                                hocDTO.getBoId(),
+                                taiKhoanId
+                        );
 
                 break;
+
+
+            // -------------------------------------------------
+            // CHỌN TỪNG TỪ
+            // -------------------------------------------------
 
             case "CHON_TUNG_TU":
 
-                dsHoc = hocService.layTheoIds(
-                        hocDTO.getTuIds()
-                );
+                dsHoc =
+                        hocService.layTheoIds(
+                                hocDTO.getTuIds(),
+                                taiKhoanId
+                        );
 
                 break;
+
+
+            // -------------------------------------------------
+            // TỪ SAI
+            // -------------------------------------------------
 
             case "TU_SAI":
-                dsHoc = hocService.layTuSai();
-                break;
 
+                dsHoc =
+                        hocService.layTuSai(
+                                taiKhoanId
+                        );
+
+                break;
         }
+
 
         model.addAttribute(
                 "hocDTO",
@@ -233,27 +264,43 @@ public class HomeController {
         model.addAttribute(
                 "dsHoc",
                 dsHoc
-
         );
+
 
         session.setAttribute(
                 "dsHoc",
                 dsHoc
         );
 
+
         return "hoc-bat-dau";
-
-
     }
+
+
+    // =========================================================
+    // BẮT ĐẦU VÒNG HỌC
+    // =========================================================
 
     @PostMapping("/bat-dau-hoc")
     public String batDauHoc(
             HttpSession session
-    ){
+    ) {
+
+        if (chuaDangNhap(session)) {
+            return "redirect:/dangnhap";
+        }
+
 
         List<TuVung> dsHoc =
                 (List<TuVung>)
-                        session.getAttribute("dsHoc");
+                        session.getAttribute(
+                                "dsHoc"
+                        );
+
+
+        if (dsHoc == null || dsHoc.isEmpty()) {
+            return "redirect:/";
+        }
 
 
         Collections.shuffle(dsHoc);
@@ -272,34 +319,52 @@ public class HomeController {
 
 
         return "hoc-chon";
-
     }
+
+
+    // =========================================================
+    // TIẾP TỤC LƯỢT HỌC
+    // =========================================================
 
     @GetMapping("/hoc/tiep")
     public String tiepLuot(
             HttpSession session,
             Model model
-    ){
+    ) {
+
+        if (chuaDangNhap(session)) {
+            return "redirect:/dangnhap";
+        }
 
 
         Integer luot =
                 (Integer)
-                        session.getAttribute("luotHoc");
+                        session.getAttribute(
+                                "luotHoc"
+                        );
 
+
+        if (luot == null) {
+            return "redirect:/";
+        }
 
 
         luot++;
 
 
-
         List<TuVung> dsHoc =
                 (List<TuVung>)
-                        session.getAttribute("tuDangHoc");
+                        session.getAttribute(
+                                "tuDangHoc"
+                        );
 
+
+        if (dsHoc == null || dsHoc.isEmpty()) {
+            return "redirect:/";
+        }
 
 
         Collections.shuffle(dsHoc);
-
 
 
         session.setAttribute(
@@ -308,12 +373,10 @@ public class HomeController {
         );
 
 
-
         session.setAttribute(
                 "tuDangHoc",
                 dsHoc
         );
-
 
 
         model.addAttribute(
@@ -322,29 +385,27 @@ public class HomeController {
         );
 
 
-
-        if(luot % 2 == 1){
-
-
+        if (luot % 2 == 1) {
             return "hoc-chon";
-
-
-        }
-        else{
-
-
+        } else {
             return "hoc-luot2";
-
-
         }
-
-
     }
+
+
+    // =========================================================
+    // DỪNG HỌC
+    // =========================================================
 
     @GetMapping("/hoc/dung")
     public String dungHoc(
             HttpSession session
-    ){
+    ) {
+
+        if (chuaDangNhap(session)) {
+            return "redirect:/dangnhap";
+        }
+
 
         session.removeAttribute("tuDangHoc");
 
@@ -352,24 +413,75 @@ public class HomeController {
 
         session.removeAttribute("luotHoc");
 
-        return "redirect:/";
 
+        return "redirect:/";
     }
+
+
+    // =========================================================
+    // TĂNG SỐ LẦN SAI
+    // =========================================================
 
     @ResponseBody
     @PostMapping("/hoc/sai/{id}")
     public void tangSoLanSai(
-            @PathVariable Long id
-    ){
+            @PathVariable Long id,
+            HttpSession session
+    ) {
 
-        hocService.tangSoLanSai(id);
+        if (chuaDangNhap(session)) {
+            return;
+        }
 
+
+        TaiKhoan taiKhoan =
+                (TaiKhoan)
+                        session.getAttribute(
+                                "taiKhoan"
+                        );
+
+
+        Long taiKhoanId =
+                taiKhoan.getId();
+
+
+        hocService.tangSoLanSai(
+                id,
+                taiKhoanId
+        );
     }
+
+
+    // =========================================================
+    // GIẢM SỐ LẦN SAI
+    // =========================================================
 
     @ResponseBody
     @PostMapping("/hoc/dung/{id}")
-    public void giamSoLanSai(@PathVariable Long id) {
-        hocService.giamSoLanSai(id);
-    }
+    public void giamSoLanSai(
+            @PathVariable Long id,
+            HttpSession session
+    ) {
 
+        if (chuaDangNhap(session)) {
+            return;
+        }
+
+
+        TaiKhoan taiKhoan =
+                (TaiKhoan)
+                        session.getAttribute(
+                                "taiKhoan"
+                        );
+
+
+        Long taiKhoanId =
+                taiKhoan.getId();
+
+
+        hocService.giamSoLanSai(
+                id,
+                taiKhoanId
+        );
+    }
 }

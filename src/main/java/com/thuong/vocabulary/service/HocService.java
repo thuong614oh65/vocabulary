@@ -6,17 +6,33 @@ import java.util.List;
 
 public interface HocService {
 
-    List<TuVung> layTatCa();
+    List<TuVung> layTatCa(Long taiKhoanId);
 
-    List<TuVung> layTheoBo(Long boId);
+    List<TuVung> layTheoBo(
+            Long boId,
+            Long taiKhoanId
+    );
 
-    List<TuVung> layNgauNhien();
+    List<TuVung> layNgauNhien(
+            Long taiKhoanId
+    );
 
-    List<TuVung> layTheoIds(Long[] ids);
+    List<TuVung> layTheoIds(
+            Long[] ids,
+            Long taiKhoanId
+    );
 
-    void tangSoLanSai(Long id);
+    void tangSoLanSai(
+            Long id,
+            Long taiKhoanId
+    );
 
-    List<TuVung> layTuSai();
+    List<TuVung> layTuSai(
+            Long taiKhoanId
+    );
 
-    void giamSoLanSai(Long id);
+    void giamSoLanSai(
+            Long id,
+            Long taiKhoanId
+    );
 }

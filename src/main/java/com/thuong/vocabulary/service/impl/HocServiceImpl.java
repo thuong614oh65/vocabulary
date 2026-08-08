@@ -15,67 +15,139 @@ public class HocServiceImpl implements HocService {
 
     private final TuVungRepository repository;
 
-    public HocServiceImpl(
-            TuVungRepository repository
-    ) {
+    public HocServiceImpl(TuVungRepository repository) {
         this.repository = repository;
     }
 
+    // =========================================================
+    // LẤY TẤT CẢ TỪ CỦA TÀI KHOẢN
+    // =========================================================
+
     @Override
-    public List<TuVung> layTatCa() {
+    public List<TuVung> layTatCa(Long taiKhoanId) {
 
-        return repository.findAllByOrderByBoTuVungIdDescIdAsc();
-
+        return repository
+                .findAllByBoTuVungTaiKhoanIdOrderByBoTuVungIdDescIdAsc(
+                        taiKhoanId
+                );
     }
 
+    // =========================================================
+    // LẤY TỪ THEO BỘ + TÀI KHOẢN
+    // =========================================================
+
     @Override
-    public List<TuVung> layTheoBo(Long boId){
+    public List<TuVung> layTheoBo(
+            Long boId,
+            Long taiKhoanId
+    ) {
 
-        return repository.findAllByBoTuVungId(boId);
-
+        return repository
+                .findAllByBoTuVungIdAndBoTuVungTaiKhoanId(
+                        boId,
+                        taiKhoanId
+                );
     }
 
-    @Override
-    public List<TuVung> layNgauNhien() {
+    // =========================================================
+    // LẤY TỪ NGẪU NHIÊN CỦA TÀI KHOẢN
+    // =========================================================
 
-        List<TuVung> ds = repository.findAll();
+    @Override
+    public List<TuVung> layNgauNhien(Long taiKhoanId) {
+
+        List<TuVung> ds =
+                repository.findAllByBoTuVungTaiKhoanId(
+                        taiKhoanId
+                );
 
         Collections.shuffle(ds);
 
         return ds;
-
     }
 
+    // =========================================================
+    // LẤY THEO ID + KIỂM TRA TÀI KHOẢN
+    // =========================================================
+
     @Override
-    public List<TuVung> layTheoIds(Long[] ids) {
+    public List<TuVung> layTheoIds(
+            Long[] ids,
+            Long taiKhoanId
+    ) {
 
-        if(ids == null){
-
+        if (ids == null || ids.length == 0) {
             return new ArrayList<>();
-
         }
 
-        return repository.findAllById(
-                Arrays.asList(ids)
+        List<TuVung> ketQua = new ArrayList<>();
+
+        for (Long id : ids) {
+
+            if (id == null) {
+                continue;
+            }
+
+            repository.findById(id)
+                    .filter(tu ->
+                            tu.getBoTuVung() != null
+                                    && tu.getBoTuVung().getTaiKhoan() != null
+                                    && tu.getBoTuVung()
+                                    .getTaiKhoan()
+                                    .getId()
+                                    .equals(taiKhoanId)
+                    )
+                    .ifPresent(ketQua::add);
+        }
+
+        return ketQua;
+    }
+
+    // =========================================================
+    // TĂNG SỐ LẦN SAI
+    // =========================================================
+
+    @Override
+    public void tangSoLanSai(
+            Long id,
+            Long taiKhoanId
+    ) {
+
+        repository.tangSoLanSai(
+                id,
+                taiKhoanId
         );
-
     }
+
+    // =========================================================
+    // LẤY TỪ SAI CỦA TÀI KHOẢN
+    // =========================================================
 
     @Override
-    public void tangSoLanSai(Long id){
+    public List<TuVung> layTuSai(
+            Long taiKhoanId
+    ) {
 
-        repository.tangSoLanSai(id);
-
+        return repository
+                .findBySoLanSaiGreaterThanAndBoTuVungTaiKhoanIdOrderBySoLanSaiDesc(
+                        0,
+                        taiKhoanId
+                );
     }
+
+    // =========================================================
+    // GIẢM SỐ LẦN SAI
+    // =========================================================
 
     @Override
-    public List<TuVung> layTuSai() {
-        return repository.findBySoLanSaiGreaterThanOrderBySoLanSaiDesc(0);
-    }
+    public void giamSoLanSai(
+            Long id,
+            Long taiKhoanId
+    ) {
 
-    @Override
-    public void giamSoLanSai(Long id) {
-        repository.giamSoLanSai(id);
+        repository.giamSoLanSai(
+                id,
+                taiKhoanId
+        );
     }
-
 }
