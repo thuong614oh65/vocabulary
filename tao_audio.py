@@ -82,7 +82,8 @@ async def tao_audio(text, output_file):
 
     communicate = edge_tts.Communicate(
         text=text,
-        voice=VOICE
+        voice=VOICE,
+        rate="+12%"
     )
 
 
@@ -129,7 +130,7 @@ async def tao_26_chu_cai():
         try:
 
             await tao_audio(
-                f"{letter}.",
+                letter,
                 output_file
             )
 

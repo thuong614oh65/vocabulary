@@ -132,7 +132,7 @@ function dungTatCaAmThanh() {
 
 
 // =========================================================
-// BẮT ĐẦU ĐỌC TỪ
+// BẮT ĐẦU ĐỌC TỪ BẰNG MP3
 // =========================================================
 
 function batDauDocTu(
@@ -154,37 +154,44 @@ function batDauDocTu(
 
 
     // -------------------------------------------------
-    // Dừng SpeechSynthesis cũ
+    // Tạo tên file MP3
     // -------------------------------------------------
 
-    window.speechSynthesis.cancel();
+    let tenFile =
+        tu
+            .toLowerCase()
+            .trim()
+            .replace(/[\\/:*?"<>|]/g, "")
+            .split(/\s+/)
+            .join("-");
 
 
-    let noiDung =
-        new SpeechSynthesisUtterance(tu);
+    let duongDan =
+        "/audio/tu-vung/"
+        + tenFile
+        + ".mp3";
 
 
-    noiDung.lang =
-        "en-US";
+    // -------------------------------------------------
+    // Dừng tất cả âm thanh cũ
+    // -------------------------------------------------
+
+    dungTatCaAmThanh();
 
 
-    noiDung.rate =
-        0.8;
+    // -------------------------------------------------
+    // Tạo MP3 mới
+    // -------------------------------------------------
 
-
-    noiDung.pitch =
-        1;
-
-
-    noiDung.volume =
-        1;
+    audioHienTai =
+        new Audio(duongDan);
 
 
     // -------------------------------------------------
     // Khi bắt đầu đọc
     // -------------------------------------------------
 
-    noiDung.onstart =
+    audioHienTai.onplay =
         function () {
 
             console.log(
@@ -199,9 +206,8 @@ function batDauDocTu(
     // Đọc xong cả từ
     // -------------------------------------------------
 
-    noiDung.onend =
+    audioHienTai.onended =
         function () {
-
 
             console.log(
                 "ĐỌC XONG:",
@@ -232,14 +238,15 @@ function batDauDocTu(
 
 
     // -------------------------------------------------
-    // Lỗi SpeechSynthesis
+    // Lỗi MP3
     // -------------------------------------------------
 
-    noiDung.onerror =
+    audioHienTai.onerror =
         function (e) {
 
             console.error(
-                "LỖI ĐỌC TỪ:",
+                "LỖI ĐỌC MP3:",
+                duongDan,
                 e
             );
 
@@ -247,12 +254,21 @@ function batDauDocTu(
 
 
     // -------------------------------------------------
-    // Phát giọng đọc
+    // Phát MP3
     // -------------------------------------------------
 
-    window.speechSynthesis.speak(
-        noiDung
-    );
+    audioHienTai
+        .play()
+        .catch(
+            function (error) {
+
+                console.error(
+                    "KHÔNG THỂ PHÁT MP3:",
+                    error
+                );
+
+            }
+        );
 
 }
 
@@ -260,8 +276,11 @@ function batDauDocTu(
 // =========================================================
 // HÀM docTu() CHO HTML GỌI
 // =========================================================
+//
 // Ví dụ HTML:
+//
 // onclick="docTu('apple')"
+//
 // =========================================================
 
 function docTu(tu) {
@@ -288,7 +307,7 @@ function docTu(tu) {
     dungTatCaAmThanh();
 
 
-    // Đọc từ
+    // Đọc từ bằng MP3
 
     batDauDocTu(
         tu,
@@ -298,12 +317,13 @@ function docTu(tu) {
 }
 
 
-// Đưa hàm ra phạm vi global
-// để onclick trong HTML sử dụng được.
+// =========================================================
+// ĐƯA HÀM RA GLOBAL
+// Để onclick trong HTML sử dụng được
+// =========================================================
 
 window.docTu =
     docTu;
-
 
 // =========================================================
 // ĐÁNH VẦN BẰNG FILE MP3
@@ -414,11 +434,6 @@ async function danhVan(
 
         }
 
-
-        // Nghỉ 300ms giữa các chữ
-
-        await cho(200);
-
     }
 
 
@@ -491,10 +506,11 @@ function phatChuCai(
             audio.volume =
                 1;
 
-
             audio.preload =
                 "auto";
 
+            audio.playbackRate =
+                1.3;
 
             // Lưu audio hiện tại
 
@@ -825,7 +841,7 @@ function chamDiem(input) {
 
 
         },
-        500
+        200
     );
 
 }

@@ -235,66 +235,8 @@
 
 </div>
 
-<script>
-
-    const ngauNhien = document.getElementById("ngauNhien");
-    const tuSai = document.getElementById("tuSai");
-    const theoBo = document.getElementById("theoBo");
-    const chonTu = document.getElementById("chonTu");
-
-    const boHoc = document.getElementById("boHoc");
-
-    const bangTheoBo =
-        document.getElementById("bangTheoBo");
-
-    const bangTatCa =
-        document.getElementById("bangTatCa");
-
-    function capNhat(){
-
-        boHoc.disabled =
-            !theoBo.checked;
-
-        bangTheoBo.style.display =
-            theoBo.checked ? "block" : "none";
-
-        bangTatCa.style.display =
-            chonTu.checked ? "block" : "none";
-
-    }
-
-    ngauNhien.onchange = capNhat;
-    tuSai.onchange = capNhat;
-    theoBo.onchange = capNhat;
-    chonTu.onchange = capNhat;
-
-    capNhat();
-
-    function doiBo(){
-
-        if(boHoc.value!=""){
-
-            window.location =
-                "/hoc/bo/" + boHoc.value;
-
-        }
-
-    }
-
-    function docTu(tu){
-
-        let noiDung =
-            new SpeechSynthesisUtterance(tu);
-
-        noiDung.lang="en-US";
-
-        noiDung.rate=0.8;
-
-        speechSynthesis.speak(noiDung);
-
-    }
-
+<script
+        th:src="@{/js/hoc.js}">
 </script>
-
 </body>
 </html>
