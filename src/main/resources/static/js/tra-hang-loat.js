@@ -2,23 +2,69 @@
     // ĐỌC TỪ VỰNG
     // =========================================================
 
+    // =========================================================
+    // ĐỌC TỪ VỰNG BẰNG FILE MP3
+    // =========================================================
+
+    let amThanhTuVung = null;
+
+
+    function taoTenFileAudio(tu) {
+
+        let tenFile =
+            tu
+                .toLowerCase()
+                .trim()
+                .replace(/[\\/:*?"<>|]/g, "");
+
+        tenFile =
+            tenFile
+                .split(/\s+/)
+                .join("-");
+
+        return tenFile;
+    }
+
+
     function docTu(tu) {
 
         if (!tu) {
             return;
         }
 
-        const speech = new SpeechSynthesisUtterance(tu);
 
-        speech.lang = "en-US";
+        // Dừng audio đang phát
+        if (amThanhTuVung) {
 
-        speech.rate = 0.9;
+            amThanhTuVung.pause();
 
-        speech.pitch = 1;
+            amThanhTuVung.currentTime = 0;
+        }
 
-        window.speechSynthesis.cancel();
 
-        window.speechSynthesis.speak(speech);
+        const tenFile =
+            taoTenFileAudio(tu);
+
+
+        const duongDan =
+            "/audio/tu-vung/"
+            + tenFile
+            + ".mp3";
+
+
+        amThanhTuVung =
+            new Audio(duongDan);
+
+
+        amThanhTuVung.play()
+            .catch(function (error) {
+
+                console.error(
+                    "Khong the phat audio:",
+                    error
+                );
+
+            });
     }
 
 

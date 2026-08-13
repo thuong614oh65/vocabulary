@@ -10,7 +10,7 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
+import com.thuong.vocabulary.service.AudioService;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,14 +23,18 @@ public class HocController {
 
     private final LuuTuVungService luuTuVungService;
 
+    private final AudioService audioService;
+
     public HocController(
             BoTuVungService boTuVungService,
             HocService hocService,
-            LuuTuVungService luuTuVungService
+            LuuTuVungService luuTuVungService,
+            AudioService audioService
     ) {
         this.boTuVungService = boTuVungService;
         this.hocService = hocService;
         this.luuTuVungService = luuTuVungService;
+        this.audioService = audioService;
     }
 
 
@@ -229,6 +233,48 @@ public class HocController {
                         danhSach,
                         taiKhoan
                 );
+
+
+// =====================================================
+// TẠO AUDIO CHO CÁC TỪ VỪA LƯU
+// =====================================================
+
+        List<String> loiAudio = new ArrayList<>();
+
+
+        for (TuVungDTO dto : danhSach) {
+
+            try {
+
+                audioService.taoAudio(
+                        dto.getTiengAnh()
+                );
+
+            } catch (Exception e) {
+
+                loiAudio.add(
+                        dto.getTiengAnh()
+                );
+
+                e.printStackTrace();
+            }
+        }
+
+
+// =====================================================
+// THÔNG BÁO
+// =====================================================
+
+        if (!loiAudio.isEmpty()) {
+
+            thongBao +=
+                    " | Không tạo được audio: "
+                            + String.join(
+                            ", ",
+                            loiAudio
+                    );
+        }
+
 
         session.setAttribute(
                 "thongBao",
