@@ -26,6 +26,11 @@
         THÊM TỪ VỰNG
     </h2>
 
+
+    <!-- =====================================================
+         FORM TRA HÀNG LOẠT
+         ===================================================== -->
+
     <form th:action="@{/tra-hang-loat}"
           method="post"
           th:object="${themTuDTO}">
@@ -61,74 +66,107 @@
 
     </form>
 
-    <form action="/luu-bo" method="post">
 
-    <div class="mt-5" th:if="${ketQua != null}">
+    <!-- =====================================================
+         FORM LƯU BỘ TỪ
+         ===================================================== -->
 
-        <table class="table table-bordered">
+    <form action="/luu-bo"
+          method="post">
 
-            <thead>
-            <tr>
-                <th>STT</th>
-                <th>English</th>
-                <th>Nghĩa</th>
-                <th>Phiên âm</th>
-                <th>VD</th>
-                <th>Đọc</th>
-            </tr>
-            </thead>
+        <div class="mt-5"
+             th:if="${ketQua != null}">
 
-            <tbody>
+            <table class="table table-bordered">
 
-            <tr th:each="tu, stt : ${ketQua}">
+                <thead>
+                <tr>
+                    <th>STT</th>
+                    <th>English</th>
+                    <th>Nghĩa</th>
+                    <th>Phiên âm</th>
+                    <th>VD</th>
+                </tr>
+                </thead>
 
-                <td th:text="${stt.count}"></td>
 
-                <td>
-                    <input type="hidden"
-                           name="tiengAnh"
-                           th:value="${tu.tiengAnh}">
-                    <span th:text="${tu.tiengAnh}"></span>
-                </td>
+                <tbody>
 
-                <td>
-                    <input class="form-control"
-                           name="tiengViet"
-                           th:value="${tu.tiengViet}">
-                </td>
+                <tr th:each="tu, stt : ${ketQua}">
 
-                <td>
-                    <input class="form-control"
-                           name="phienAm"
-                           th:value="${tu.phienAm}">
-                </td>
+                    <td th:text="${stt.count}">
+                    </td>
 
-                <td>
-                    <input class="form-control"
-                           name="viDu"
-                           th:value="${tu.viDu}">
-                </td>
 
-            </tr>
+                    <td>
 
-            </tbody>
+                        <input
+                                type="hidden"
+                                name="tiengAnh"
+                                th:value="${tu.tiengAnh}">
 
-        </table>
+                        <span
+                                th:text="${tu.tiengAnh}">
+                        </span>
 
-        <button
-                type="submit"
-                class="btn btn-success">
+                    </td>
 
-            Lưu
 
-        </button>
+                    <td>
+
+                        <input
+                                class="form-control"
+                                name="tiengViet"
+                                th:value="${tu.tiengViet}">
+
+                    </td>
+
+
+                    <td>
+
+                        <input
+                                class="form-control"
+                                name="phienAm"
+                                th:value="${tu.phienAm}">
+
+                    </td>
+
+
+                    <td>
+
+                        <input
+                                class="form-control"
+                                name="viDu"
+                                th:value="${tu.viDu}">
+
+                    </td>
+
+                </tr>
+
+                </tbody>
+
+            </table>
+
+
+            <button
+                    type="submit"
+                    class="btn btn-success">
+
+                Lưu
+
+            </button>
+
+        </div>
 
     </form>
 
-    </div>
 
 </div>
 
-<script th:src="@{/js/tra-hang-loat.js}"></script>
+
+<script th:src="@{/js/tra-hang-loat.js}">
+</script>
+
 </body>
+
 </html>
