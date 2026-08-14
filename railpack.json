@@ -2,20 +2,24 @@
   "$schema": "https://schema.railpack.com",
   "provider": "java",
 
-  "deploy": {
-    "aptPackages": [
-      "...",
-      "python3",
-      "python3-pip",
-      "python3-venv"
-    ]
+  "packages": {
+    "python": "3.11"
   },
 
   "steps": {
-    "python-audio": {
+    "install-edge-tts": {
       "commands": [
-        "python3 -m pip install --break-system-packages edge-tts"
+        "python -m pip install edge-tts"
+      ],
+      "deployOutputs": [
+        "/mise"
       ]
     }
+  },
+
+  "deploy": {
+    "aptPackages": [
+      "..."
+    ]
   }
 }
