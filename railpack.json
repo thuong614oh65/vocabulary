@@ -9,5 +9,13 @@
       "python3-pip",
       "python3-venv"
     ]
+  },
+
+  "steps": {
+    "python-audio": {
+      "commands": [
+        "python3 -m pip install --break-system-packages edge-tts"
+      ]
+    }
   }
 }
