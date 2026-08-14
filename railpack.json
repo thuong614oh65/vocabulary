@@ -1,25 +1,23 @@
+
 {
-  "$schema": "https://schema.railpack.com",
-  "provider": "java",
+"$schema": "https://schema.railpack.com",
+"provider": "java",
 
-  "packages": {
-    "python": "3.11"
-  },
+"packages": {
+"python": "3.11"
+},
 
-  "steps": {
-    "install-edge-tts": {
-      "commands": [
-        "python -m pip install edge-tts"
-      ],
-      "deployOutputs": [
-        "/mise"
-      ]
-    }
-  },
+"steps": {
+"install-edge-tts": {
+"commands": [
+"python -m pip install edge-tts"
+]
+}
+},
 
-  "deploy": {
-    "aptPackages": [
-      "..."
-    ]
-  }
+"deploy": {
+"aptPackages": [
+"..."
+]
+}
 }
