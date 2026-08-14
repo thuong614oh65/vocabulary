@@ -26,48 +26,6 @@
     }
 
 
-    function docTu(tu) {
-
-        if (!tu) {
-            return;
-        }
-
-
-        // Dừng audio đang phát
-        if (amThanhTuVung) {
-
-            amThanhTuVung.pause();
-
-            amThanhTuVung.currentTime = 0;
-        }
-
-
-        const tenFile =
-            taoTenFileAudio(tu);
-
-
-        const duongDan =
-            "/audio/tu-vung/"
-            + tenFile
-            + ".mp3";
-
-
-        amThanhTuVung =
-            new Audio(duongDan);
-
-
-        amThanhTuVung.play()
-            .catch(function (error) {
-
-                console.error(
-                    "Khong the phat audio:",
-                    error
-                );
-
-            });
-    }
-
-
     // =========================================================
     // TỰ ĐỘNG ẨN THÔNG BÁO
     // =========================================================

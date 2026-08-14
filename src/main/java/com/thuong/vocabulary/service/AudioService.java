@@ -1,9 +1,12 @@
 package com.thuong.vocabulary.service;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -14,40 +17,120 @@ import java.nio.file.Paths;
 public class AudioService {
 
     // =========================================================
-    // THƯ MỤC GỐC CỦA PROJECT
+    // THƯ MỤC LƯU AUDIO
     // =========================================================
 
-    private final Path projectDir =
-            Paths.get(
-                    System.getProperty("user.dir")
+    private final Path audioDir;
+
+    // =========================================================
+    // LỆNH PYTHON
+    // =========================================================
+
+    private final String pythonCommand;
+
+    // =========================================================
+    // FILE PYTHON ĐƯỢC COPY RA TỪ RESOURCES
+    // =========================================================
+
+    private final Path pythonFile;
+
+    // =========================================================
+    // CONSTRUCTOR
+    // =========================================================
+
+    public AudioService(
+            @Value("${audio.storage.path}")
+            String audioStoragePath,
+
+            @Value("${audio.python.command:python}")
+            String pythonCommand
+    ) {
+
+        this.audioDir =
+                Paths.get(audioStoragePath)
+                        .toAbsolutePath()
+                        .normalize();
+
+        this.pythonCommand =
+                pythonCommand;
+
+        try {
+
+            this.pythonFile =
+                    taoFilePython();
+
+        } catch (IOException e) {
+
+            throw new RuntimeException(
+                    "Không thể chuẩn bị tao_audio.py",
+                    e
             );
+        }
 
+        System.out.println(
+                "========================================"
+        );
+
+        System.out.println(
+                "Audio storage: "
+                        + audioDir
+        );
+
+        System.out.println(
+                "Python command: "
+                        + pythonCommand
+        );
+
+        System.out.println(
+                "Python file: "
+                        + pythonFile
+        );
+
+        System.out.println(
+                "========================================"
+        );
+    }
 
     // =========================================================
-    // FILE PYTHON
+    // COPY tao_audio.py TỪ RESOURCES RA FILE THẬT
     // =========================================================
 
-    private final Path pythonFile =
-            projectDir.resolve(
-                    "tao_audio.py"
+    private Path taoFilePython()
+            throws IOException {
+
+        ClassPathResource resource =
+                new ClassPathResource(
+                        "python/tao_audio.py"
+                );
+
+        if (!resource.exists()) {
+
+            throw new IOException(
+                    "Không tìm thấy python/tao_audio.py "
+                            + "trong classpath"
             );
+        }
 
+        Path tempFile =
+                Files.createTempFile(
+                        "tao_audio-",
+                        ".py"
+                );
 
-    // =========================================================
-    // THƯ MỤC AUDIO TỪ VỰNG
-    // =========================================================
+        try (
+                InputStream inputStream =
+                        resource.getInputStream()
+        ) {
 
-    private final Path audioDir =
-            projectDir.resolve(
-                    Paths.get(
-                            "src",
-                            "main",
-                            "resources",
-                            "static",
-                            "audio",
-                            "tu-vung"
-                    )
+            Files.copy(
+                    inputStream,
+                    tempFile,
+                    java.nio.file.StandardCopyOption.REPLACE_EXISTING
             );
+        }
+
+        return tempFile;
+    }
 
     // =========================================================
     // TẠO AUDIO CHO 1 TỪ
@@ -59,95 +142,101 @@ public class AudioService {
             return;
         }
 
-
         tu = tu.trim();
-
 
         try {
 
             // -------------------------------------------------
-            // Kiểm tra file Python
-            // -------------------------------------------------
-
-            if (!Files.exists(pythonFile)) {
-
-                throw new RuntimeException(
-                        "Không tìm thấy tao_audio.py tại: "
-                                + pythonFile.toAbsolutePath()
-                );
-            }
-
-
-            // -------------------------------------------------
-            // Tạo thư mục audio nếu chưa có
+            // TẠO THƯ MỤC AUDIO
             // -------------------------------------------------
 
             Files.createDirectories(
                     audioDir
             );
 
-
             // -------------------------------------------------
-            // Tạo tên file MP3
+            // TÊN FILE
             // -------------------------------------------------
 
             String tenFile =
                     taoTenFile(tu);
-
 
             Path audioFile =
                     audioDir.resolve(
                             tenFile + ".mp3"
                     );
 
-
             // -------------------------------------------------
-            // Nếu MP3 đã tồn tại
-            // thì không tạo lại
+            // CHỐNG FILE NẰM NGOÀI AUDIO DIRECTORY
             // -------------------------------------------------
 
-            if (Files.exists(audioFile)) {
+            if (!audioFile.startsWith(audioDir)) {
+
+                throw new RuntimeException(
+                        "Đường dẫn audio không hợp lệ: "
+                                + audioFile
+                );
+            }
+
+            // -------------------------------------------------
+            // NẾU FILE ĐÃ TỒN TẠI
+            // -------------------------------------------------
+
+            if (
+                    Files.exists(audioFile)
+                            &&
+                            Files.size(audioFile) > 0
+            ) {
 
                 System.out.println(
                         "Audio đã tồn tại: "
-                                + audioFile.toAbsolutePath()
+                                + audioFile
                 );
 
                 return;
             }
 
+            // -------------------------------------------------
+            // TẠO AUDIO
+            // -------------------------------------------------
+
+            System.out.println(
+                    "Đang tạo audio cho: "
+                            + tu
+            );
 
             // -------------------------------------------------
-            // Gọi Python
-            //
-            // python tao_audio.py apple
+            // GỌI PYTHON
             // -------------------------------------------------
 
             ProcessBuilder processBuilder =
                     new ProcessBuilder(
-                            "python",
-                            pythonFile.toAbsolutePath().toString(),
-                            tu
+                            pythonCommand,
+
+                            pythonFile.toAbsolutePath()
+                                    .toString(),
+
+                            tu,
+
+                            audioDir.toAbsolutePath()
+                                    .toString()
                     );
 
+            // Cho Python chạy từ thư mục hiện tại
+            processBuilder.directory(
+                    audioDir.toFile()
+            );
 
-            processBuilder
-                    .directory(
-                            projectDir.toFile()
-                    );
-
-
+            // Gộp stderr vào stdout
             processBuilder.redirectErrorStream(
                     true
             );
 
-
             Process process =
                     processBuilder.start();
 
-
             // -------------------------------------------------
-            // Đọc kết quả từ Python
+            // ĐỌC OUTPUT PYTHON
             // -------------------------------------------------
 
             try (
@@ -162,7 +251,10 @@ public class AudioService {
 
                 String line;
 
-                while ((line = reader.readLine()) != null) {
+                while (
+                        (line = reader.readLine())
+                                != null
+                ) {
 
                     System.out.println(
                             "[tao_audio.py] "
@@ -171,17 +263,15 @@ public class AudioService {
                 }
             }
 
-
             // -------------------------------------------------
-            // Chờ Python chạy xong
+            // CHỜ PYTHON
             // -------------------------------------------------
 
             int exitCode =
                     process.waitFor();
 
-
             // -------------------------------------------------
-            // Kiểm tra kết quả
+            // KIỂM TRA EXIT CODE
             // -------------------------------------------------
 
             if (exitCode != 0) {
@@ -194,30 +284,71 @@ public class AudioService {
                 );
             }
 
-
             // -------------------------------------------------
-            // Kiểm tra file MP3 có thật sự được tạo
+            // KIỂM TRA FILE
             // -------------------------------------------------
 
             if (!Files.exists(audioFile)) {
 
                 throw new RuntimeException(
-                        "Python chạy xong nhưng không tìm thấy file MP3: "
-                                + audioFile.toAbsolutePath()
+                        "Python chạy xong nhưng "
+                                + "không tìm thấy file MP3: "
+                                + audioFile
                 );
             }
 
+            // -------------------------------------------------
+            // KIỂM TRA 0 BYTE
+            // -------------------------------------------------
+
+            long fileSize =
+                    Files.size(audioFile);
+
+            if (fileSize == 0) {
+
+                throw new RuntimeException(
+                        "File MP3 được tạo nhưng "
+                                + "có kích thước 0 byte: "
+                                + audioFile
+                );
+            }
+
+            // -------------------------------------------------
+            // THÀNH CÔNG
+            // -------------------------------------------------
 
             System.out.println(
-                    "Tạo audio thành công: "
-                            + audioFile.toAbsolutePath()
+                    "========================================"
             );
 
+            System.out.println(
+                    "Tạo audio thành công!"
+            );
+
+            System.out.println(
+                    "Từ: "
+                            + tu
+            );
+
+            System.out.println(
+                    "File: "
+                            + audioFile
+            );
+
+            System.out.println(
+                    "Kích thước: "
+                            + fileSize
+                            + " bytes"
+            );
+
+            System.out.println(
+                    "========================================"
+            );
 
         } catch (IOException e) {
 
             throw new RuntimeException(
-                    "Không thể chạy tao_audio.py cho từ: "
+                    "Không thể tạo audio cho từ: "
                             + tu,
                     e
             );
@@ -227,13 +358,12 @@ public class AudioService {
             Thread.currentThread().interrupt();
 
             throw new RuntimeException(
-                    "Quá trình tạo audio bị gián đoạn cho từ: "
+                    "Quá trình tạo audio bị gián đoạn: "
                             + tu,
                     e
             );
         }
     }
-
 
     // =========================================================
     // TẠO TÊN FILE AN TOÀN
@@ -245,20 +375,17 @@ public class AudioService {
                 tu.toLowerCase()
                         .trim();
 
-
         tenFile =
                 tenFile.replaceAll(
                         "[\\\\/:*?\"<>|]",
                         ""
                 );
 
-
         tenFile =
                 tenFile.replaceAll(
                         "\\s+",
                         "-"
                 );
-
 
         return tenFile;
     }

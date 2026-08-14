@@ -10,10 +10,8 @@
 
     <title>Lượt 2</title>
 
-
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css"
           rel="stylesheet">
-
 
     <link rel="stylesheet"
           th:href="@{/css/hoc-luot2.css}">
@@ -25,30 +23,24 @@
 
 <div class="container mt-5">
 
-
     <h2 class="text-center">
         HỌC TỪ VỰNG
     </h2>
 
-
     <h4 class="text-center mt-3">
         Vietnamese → English
     </h4>
-
 
     <hr>
 
 
     <table class="table table-bordered">
 
-
         <tr>
 
             <th>Nghĩa</th>
 
             <th>Nhập từ tiếng Anh</th>
-
-            <!-- Chỉ hiện trên điện thoại -->
 
             <th class="cot-cham">
                 ✓
@@ -58,7 +50,6 @@
 
 
         <tr th:each="tu : ${dsHoc}">
-
 
             <td>
 
@@ -70,7 +61,6 @@
 
             <td>
 
-
                 <input
                         type="text"
                         class="form-control cau-tra-loi"
@@ -80,14 +70,10 @@
                         th:data-dap-an="${tu.tiengAnh}"
                 >
 
-
                 <div class="ket-qua mt-1"></div>
-
 
             </td>
 
-
-            <!-- Nút chấm chỉ hiện trên điện thoại -->
 
             <td class="cot-cham">
 
@@ -102,15 +88,12 @@
 
             </td>
 
-
         </tr>
-
 
     </table>
 
 
     <div class="text-center mt-4">
-
 
         <button
                 class="btn btn-primary"
@@ -129,9 +112,7 @@
 
         </button>
 
-
     </div>
-
 
 </div>
 

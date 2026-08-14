@@ -1,6 +1,7 @@
 {
   "$schema": "https://schema.railpack.com",
   "provider": "java",
+
   "deploy": {
     "aptPackages": [
       "...",
@@ -8,5 +9,14 @@
       "python3-pip",
       "python3.11-venv"
     ]
+  },
+
+  "steps": {
+    "python-audio": {
+      "commands": [
+        "python3 -m venv /app/venv",
+        "/app/venv/bin/pip install edge-tts"
+      ]
+    }
   }
 }

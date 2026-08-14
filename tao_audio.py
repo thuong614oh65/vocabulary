@@ -5,16 +5,14 @@ import sys
 
 
 # =========================================================
-# CAU HINH PROJECT
+# PROJECT DIR
 # =========================================================
 
-PROJECT_DIR = Path(
-    r"D:\Vocabulary\vocabulary"
-)
+PROJECT_DIR = Path(__file__).resolve().parent
 
 
 # =========================================================
-# THU MUC AUDIO CHU CAI
+# AUDIO CHỮ CÁI
 # =========================================================
 
 ALPHABET_DIR = (
@@ -29,56 +27,38 @@ ALPHABET_DIR = (
 
 
 # =========================================================
-# THU MUC AUDIO TU VUNG
-# =========================================================
-
-VOCABULARY_DIR = (
-    PROJECT_DIR
-    / "src"
-    / "main"
-    / "resources"
-    / "static"
-    / "audio"
-    / "tu-vung"
-)
-
-
-# =========================================================
-# GIONG TIENG ANH
+# GIỌNG TIẾNG ANH
 # =========================================================
 
 VOICE = "en-US-AriaNeural"
 
 
 # =========================================================
-# TAO AUDIO
+# TẠO AUDIO
 # =========================================================
 
 async def tao_audio(text, output_file):
 
     output_file = Path(output_file)
 
-    # Tao thu muc neu chua co
+    # Tạo thư mục nếu chưa có
     output_file.parent.mkdir(
         parents=True,
         exist_ok=True
     )
 
-
-    # Neu file da ton tai thi khong tao lai
+    # Nếu file đã tồn tại
     if output_file.exists():
 
         print(
-            f"Da ton tai: {output_file.name}"
+            f"Da ton tai: {output_file}"
         )
 
         return
 
-
     print(
-        f"Dang tao: {text} -> {output_file.name}"
+        f"Dang tao: {text} -> {output_file}"
     )
-
 
     communicate = edge_tts.Communicate(
         text=text,
@@ -86,11 +66,9 @@ async def tao_audio(text, output_file):
         rate="+12%"
     )
 
-
     await communicate.save(
         str(output_file)
     )
-
 
     print(
         f"Da tao: {output_file.name} "
@@ -99,7 +77,7 @@ async def tao_audio(text, output_file):
 
 
 # =========================================================
-# TAO 26 CHU CAI
+# TẠO 26 CHỮ CÁI
 # =========================================================
 
 async def tao_26_chu_cai():
@@ -109,15 +87,12 @@ async def tao_26_chu_cai():
         exist_ok=True
     )
 
-
     LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-
 
     print("====================================")
     print("      TAO AUDIO 26 CHU CAI")
     print("====================================")
     print()
-
 
     for letter in LETTERS:
 
@@ -125,7 +100,6 @@ async def tao_26_chu_cai():
             ALPHABET_DIR
             / f"{letter.lower()}.mp3"
         )
-
 
         try:
 
@@ -140,7 +114,6 @@ async def tao_26_chu_cai():
                 f"LOI khi tao {letter}: {e}"
             )
 
-
     print()
     print("====================================")
     print("HOAN TAT 26 CHU CAI")
@@ -148,9 +121,8 @@ async def tao_26_chu_cai():
     print()
 
 
-
 # =========================================================
-# TAO TEN FILE MP3 TU TEN TU VUNG
+# TẠO TÊN FILE AN TOÀN
 # =========================================================
 
 def tao_ten_file(tu):
@@ -160,7 +132,7 @@ def tao_ten_file(tu):
         .strip()
     )
 
-    # Bo cac ky tu khong phu hop voi ten file
+    # Bỏ ký tự không phù hợp
     ten_file = (
         ten_file
         .replace("\\", "")
@@ -174,7 +146,7 @@ def tao_ten_file(tu):
         .replace("|", "")
     )
 
-    # Khoang trang -> dau gach ngang
+    # Khoảng trắng -> -
     ten_file = "-".join(
         ten_file.split()
     )
@@ -183,13 +155,15 @@ def tao_ten_file(tu):
 
 
 # =========================================================
-# TAO AUDIO TU VUNG
+# TẠO AUDIO TỪ VỰNG
 # =========================================================
 
-async def tao_audio_tu_vung(tu):
+async def tao_audio_tu_vung(
+    tu,
+    output_dir
+):
 
     tu = tu.strip()
-
 
     if not tu:
 
@@ -197,14 +171,17 @@ async def tao_audio_tu_vung(tu):
 
         return
 
-
+    # Tạo tên file
     ten_file = tao_ten_file(tu)
 
+    # Thư mục Java truyền vào
+    output_dir = Path(output_dir)
+
+    # File MP3 cuối cùng
     output_file = (
-        VOCABULARY_DIR
+        output_dir
         / f"{ten_file}.mp3"
     )
-
 
     await tao_audio(
         tu,
@@ -218,10 +195,13 @@ async def tao_audio_tu_vung(tu):
 
 async def main():
 
-    # Khong co tham so:
+    # =====================================================
+    # KHÔNG CÓ THAM SỐ
+    #
     # python tao_audio.py
     #
-    # => tao 26 chu cai
+    # => tạo 26 chữ cái
+    # =====================================================
 
     if len(sys.argv) == 1:
 
@@ -230,18 +210,45 @@ async def main():
         return
 
 
-    # Co tham so:
-    # python tao_audio.py apple
+    # =====================================================
+    # TẠO AUDIO TỪ VỰNG
     #
-    # => tao apple.mp3
+    # python tao_audio.py apple "D:\...\audio-data\tu-vung"
+    # =====================================================
 
     tu = sys.argv[1]
 
-    await tao_audio_tu_vung(tu)
+
+    # Nếu có thư mục đích
+    if len(sys.argv) >= 3:
+
+        output_dir = sys.argv[2]
+
+    else:
+
+        # Fallback:
+        # nếu chạy Python trực tiếp
+        # thì lưu vào thư mục cũ
+
+        output_dir = (
+            PROJECT_DIR
+            / "src"
+            / "main"
+            / "resources"
+            / "static"
+            / "audio"
+            / "tu-vung"
+        )
+
+
+    await tao_audio_tu_vung(
+        tu,
+        output_dir
+    )
 
 
 # =========================================================
-# CHAY CHUONG TRINH
+# CHẠY
 # =========================================================
 
 if __name__ == "__main__":
