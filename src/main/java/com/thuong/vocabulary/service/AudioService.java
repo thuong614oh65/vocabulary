@@ -42,7 +42,7 @@ public class AudioService {
             @Value("${audio.storage.path}")
             String audioStoragePath,
 
-            @Value("${audio.python.command:python}")
+            @Value("${audio.python.command:python3}")
             String pythonCommand
     ) {
 
@@ -52,7 +52,7 @@ public class AudioService {
                         .normalize();
 
         this.pythonCommand =
-                pythonCommand;
+                xacDinhLenhPython(pythonCommand);
 
         try {
 
@@ -78,7 +78,7 @@ public class AudioService {
 
         System.out.println(
                 "Python command: "
-                        + pythonCommand
+                        + this.pythonCommand
         );
 
         System.out.println(
@@ -89,6 +89,39 @@ public class AudioService {
         System.out.println(
                 "========================================"
         );
+    }
+
+    private String xacDinhLenhPython(String cauHinh) {
+        java.util.List<String> ungVien = new java.util.ArrayList<>();
+        if (cauHinh != null && !cauHinh.trim().isEmpty()) {
+            ungVien.add(cauHinh.trim());
+        }
+        ungVien.add("/opt/venv/bin/python3");
+        ungVien.add("/opt/venv/bin/python");
+        ungVien.add("python3");
+        ungVien.add("python");
+        ungVien.add("py");
+
+        for (String cmd : ungVien) {
+            if (kiemTraLenhPython(cmd)) {
+                System.out.println("[AudioService] Tìm thấy lệnh Python hoạt động: " + cmd);
+                return cmd;
+            }
+        }
+
+        System.err.println("[AudioService] Không thể xác định lệnh Python, mặc định dùng: "
+                + (cauHinh != null && !cauHinh.isBlank() ? cauHinh : "python"));
+        return (cauHinh != null && !cauHinh.isBlank()) ? cauHinh : "python";
+    }
+
+    private boolean kiemTraLenhPython(String cmd) {
+        try {
+            Process process = new ProcessBuilder(cmd, "--version").start();
+            boolean xong = process.waitFor(3, java.util.concurrent.TimeUnit.SECONDS);
+            return xong && process.exitValue() == 0;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     // =========================================================
@@ -129,6 +162,8 @@ public class AudioService {
             );
         }
 
+        tempFile.toFile().deleteOnExit();
+
         return tempFile;
     }
 
@@ -136,7 +171,7 @@ public class AudioService {
     // TẠO AUDIO CHO 1 TỪ
     // =========================================================
 
-    public void taoAudio(String tu) {
+    public synchronized void taoAudio(String tu) {
 
         if (tu == null || tu.trim().isEmpty()) {
             return;

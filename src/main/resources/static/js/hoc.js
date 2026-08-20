@@ -97,9 +97,7 @@ function dungTatCaAmThanh() {
 function batDauDocTu(tu, maDoc) {
 
     if (!tu) {
-
         return;
-
     }
 
     console.log(
@@ -123,51 +121,59 @@ function batDauDocTu(tu, maDoc) {
     // Dừng audio cũ
     dungTatCaAmThanh();
 
+    let daFallback = false;
+    function fallbackSpeech() {
+        if (daFallback) return;
+        daFallback = true;
+        if (window.speechSynthesis) {
+            console.log("Dùng giọng đọc trình duyệt (SpeechSynthesis) cho từ:", tu);
+            let utterance = new SpeechSynthesisUtterance(tu);
+            utterance.lang = 'en-US';
+            utterance.rate = 0.9;
+            window.speechSynthesis.speak(utterance);
+        }
+    }
+
     // Tạo audio mới
     audioHienTai =
         new Audio(duongDan);
 
     audioHienTai.onplay =
         function () {
-
             console.log(
                 "BẮT ĐẦU ĐỌC:",
                 tu
             );
-
         };
 
     audioHienTai.onended =
         function () {
-
             console.log(
                 "ĐỌC XONG:",
                 tu
             );
-
         };
 
     audioHienTai.onerror =
         function (e) {
-
-            console.error(
+            console.warn(
                 "LỖI ĐỌC MP3:",
                 duongDan,
-                e
+                "- Chuyển sang giọng đọc trình duyệt."
             );
-
+            fallbackSpeech();
         };
 
     audioHienTai
         .play()
         .catch(
             function (error) {
-
-                console.error(
+                console.warn(
                     "KHÔNG THỂ PHÁT MP3:",
-                    error
+                    error,
+                    "- Chuyển sang giọng đọc trình duyệt."
                 );
-
+                fallbackSpeech();
             }
         );
 

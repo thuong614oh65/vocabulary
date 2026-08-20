@@ -28,15 +28,26 @@ function docTu(tu) {
 
     let duongDan = "/audio/tu-vung/" + tenFile + ".mp3";
 
-    audioHienTai = new Audio(duongDan);
-
-    audioHienTai.play().catch(function () {
-        // Fallback sang Web Speech API nếu chưa có file mp3
-        if ('speechSynthesis' in window) {
+    let daFallback = false;
+    function fallbackSpeech() {
+        if (daFallback) return;
+        daFallback = true;
+        if (window.speechSynthesis) {
             let utterance = new SpeechSynthesisUtterance(tu);
             utterance.lang = 'en-US';
+            utterance.rate = 0.9;
             window.speechSynthesis.speak(utterance);
         }
+    }
+
+    audioHienTai = new Audio(duongDan);
+
+    audioHienTai.onerror = function () {
+        fallbackSpeech();
+    };
+
+    audioHienTai.play().catch(function () {
+        fallbackSpeech();
     });
 }
 

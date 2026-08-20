@@ -141,17 +141,13 @@ function batDauDocTu(
 ) {
 
     if (!tu) {
-
         return;
-
     }
-
 
     console.log(
         "ĐỌC TỪ:",
         tu
     );
-
 
     // -------------------------------------------------
     // Tạo tên file MP3
@@ -165,12 +161,10 @@ function batDauDocTu(
             .split(/\s+/)
             .join("-");
 
-
     let duongDan =
         "/audio/tu-vung/"
         + tenFile
         + ".mp3";
-
 
     // -------------------------------------------------
     // Dừng tất cả âm thanh cũ
@@ -178,6 +172,32 @@ function batDauDocTu(
 
     dungTatCaAmThanh();
 
+    let daFallback = false;
+    function fallbackSpeech() {
+        if (daFallback) return;
+        daFallback = true;
+        if (window.speechSynthesis) {
+            console.log("Dùng giọng đọc trình duyệt (SpeechSynthesis) cho từ:", tu);
+            let utterance = new SpeechSynthesisUtterance(tu);
+            utterance.lang = 'en-US';
+            utterance.rate = 0.9;
+            utterance.onend = function () {
+                if (maDoc === soLanDoc) {
+                    danhVan(tu, maDoc);
+                }
+            };
+            utterance.onerror = function () {
+                if (maDoc === soLanDoc) {
+                    danhVan(tu, maDoc);
+                }
+            };
+            window.speechSynthesis.speak(utterance);
+        } else {
+            if (maDoc === soLanDoc) {
+                danhVan(tu, maDoc);
+            }
+        }
+    }
 
     // -------------------------------------------------
     // Tạo MP3 mới
@@ -186,21 +206,17 @@ function batDauDocTu(
     audioHienTai =
         new Audio(duongDan);
 
-
     // -------------------------------------------------
     // Khi bắt đầu đọc
     // -------------------------------------------------
 
     audioHienTai.onplay =
         function () {
-
             console.log(
                 "BẮT ĐẦU ĐỌC:",
                 tu
             );
-
         };
-
 
     // -------------------------------------------------
     // Đọc xong cả từ
@@ -208,50 +224,39 @@ function batDauDocTu(
 
     audioHienTai.onended =
         function () {
-
             console.log(
                 "ĐỌC XONG:",
                 tu
             );
 
-
             // Nếu người dùng đã chuyển sang
             // từ khác thì bỏ lượt này
-
             if (
                 maDoc !== soLanDoc
             ) {
-
                 return;
-
             }
 
-
             // Đọc xong từ mới bắt đầu đánh vần
-
             danhVan(
                 tu,
                 maDoc
             );
-
         };
 
-
     // -------------------------------------------------
-    // Lỗi MP3
+    // Lỗi MP3 -> Chuyển sang giọng đọc trình duyệt
     // -------------------------------------------------
 
     audioHienTai.onerror =
         function (e) {
-
-            console.error(
+            console.warn(
                 "LỖI ĐỌC MP3:",
                 duongDan,
-                e
+                "- Chuyển sang SpeechSynthesis."
             );
-
+            fallbackSpeech();
         };
-
 
     // -------------------------------------------------
     // Phát MP3
@@ -261,12 +266,12 @@ function batDauDocTu(
         .play()
         .catch(
             function (error) {
-
-                console.error(
+                console.warn(
                     "KHÔNG THỂ PHÁT MP3:",
-                    error
+                    error,
+                    "- Chuyển sang SpeechSynthesis."
                 );
-
+                fallbackSpeech();
             }
         );
 
