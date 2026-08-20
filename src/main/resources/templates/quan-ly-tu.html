@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lí từ</title>
+
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- CSS riêng -->
+    <link rel="stylesheet" th:href="@{/css/quan-ly-tu.css}">
+</head>
+<body>
+
+<div class="quan-ly-container">
+
+    <!-- Thông báo thành công / lỗi -->
+    <div class="alert alert-success alert-dismissible fade show" role="alert" th:if="${thongBaoThanhCong}">
+        <span th:text="${thongBaoThanhCong}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+    <div class="alert alert-danger alert-dismissible fade show" role="alert" th:if="${thongBaoLoi}">
+        <span th:text="${thongBaoLoi}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+    <div class="main-card">
+
+        <!-- ==============================
+             HEADER TRANG
+             ============================== -->
+        <div class="page-header">
+            <div class="page-title">
+                <div class="icon">📋</div>
+                <div>
+                    <h2>QUẢN LÍ TỪ</h2>
+                    <p>Xem, tìm kiếm, chỉnh sửa và quản lý tất cả các từ vựng đã lưu</p>
+                </div>
+            </div>
+
+            <div class="header-actions">
+                <a href="/" class="btn btn-outline-secondary">
+                    🏠 Trang chủ
+                </a>
+                <a href="/them-tu" class="btn btn-primary">
+                    ➕ Thêm từ mới
+                </a>
+                <a href="/hoc" class="btn btn-success">
+                    📖 Học từ
+                </a>
+            </div>
+        </div>
+
+        <!-- ==============================
+             THANH TÌM KIẾM & BỘ LỌC
+             ============================== -->
+        <div class="filter-bar">
+            <div class="filter-inputs">
+                <div class="search-box">
+                    <span class="search-icon">🔍</span>
+                    <input type="text"
+                           id="inputTimKiem"
+                           class="form-control"
+                           placeholder="Tìm kiếm theo từ tiếng Anh, tiếng Việt, bộ từ..."
+                           onkeyup="timKiemTu()">
+                </div>
+
+                <select id="selectBoLoc" class="form-select filter-select" onchange="doiBoLoc()">
+                    <option value="" th:selected="${boIdHienTai == null}">Tất cả bộ từ</option>
+                    <option th:each="bo : ${dsBo}"
+                            th:value="${bo.id}"
+                            th:text="${bo.tenBo + ' (' + bo.soLuongTu + ' từ)'}"
+                            th:selected="${boIdHienTai != null && boIdHienTai == bo.id}">
+                    </option>
+                </select>
+            </div>
+
+            <div class="stats-badge">
+                <span>Tổng số từ: <strong th:text="${tongSoTu}">0</strong></span>
+            </div>
+        </div>
+
+        <input type="hidden" id="boIdLocHienTai" th:value="${boIdHienTai != null ? boIdHienTai : ''}">
+
+        <!-- ==============================
+             BẢNG DANH SÁCH TỪ VỰNG
+             ============================== -->
+        <div class="table-responsive" th:if="${dsTu != null && !dsTu.isEmpty()}">
+            <table class="table table-bordered align-middle table-hover" id="bangTuVung">
+                <thead>
+                <tr>
+                    <th style="width: 50px;" class="text-center">STT</th>
+                    <th style="width: 120px;" class="text-center">Bộ từ</th>
+                    <th style="width: 200px;">Tiếng Anh</th>
+                    <th style="width: 200px;">Nghĩa Tiếng Việt</th>
+                    <th style="width: 150px;">Phiên âm</th>
+                    <th>Ví dụ câu</th>
+                    <th style="width: 100px;" class="text-center">Lần sai</th>
+                    <th style="width: 140px;" class="text-center">Hành động</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="tu, stt : ${dsTu}"
+                    class="hang-tu"
+                    th:data-tieng-anh="${tu.tiengAnh != null ? tu.tiengAnh.toLowerCase() : ''}"
+                    th:data-tieng-viet="${tu.tiengViet != null ? tu.tiengViet.toLowerCase() : ''}"
+                    th:data-ten-bo="${tu.boTuVung != null ? tu.boTuVung.tenBo.toLowerCase() : ''}"
+                    th:data-ten-bo-text="${tu.boTuVung != null ? tu.boTuVung.tenBo : 'Chưa phân bộ'}">
+                    
+                    <td class="text-center text-muted" th:text="${stt.count}">1</td>
+                    
+                    <td class="text-center fw-bold align-middle bg-light td-bo-goc"
+                        th:if="${stt.index == 0 or (dsTu.get(stt.index - 1).boTuVung == null and tu.boTuVung != null) or (dsTu.get(stt.index - 1).boTuVung != null and tu.boTuVung == null) or (dsTu.get(stt.index - 1).boTuVung != null and tu.boTuVung != null and dsTu.get(stt.index - 1).boTuVung.id != tu.boTuVung.id)}"
+                        th:rowspan="${tu.boTuVung != null ? tu.boTuVung.soLuongTu : 1}"
+                        th:text="${tu.boTuVung != null ? tu.boTuVung.tenBo : 'Chưa phân bộ'}">
+                    </td>
+                    
+                    <td>
+                        <div class="d-flex align-items-center gap-2">
+                            <div>
+                                <div class="word-english" th:text="${tu.tiengAnh}">Hello</div>
+                            </div>
+                            <button type="button"
+                                    class="btn-doc"
+                                    title="Nghe phát âm"
+                                    th:attr="onclick=|docTu('${tu.tiengAnh}')|">
+                                🔊
+                            </button>
+                        </div>
+                    </td>
+                    
+                    <td>
+                        <span class="word-meaning" th:text="${tu.tiengViet}">Xin chào</span>
+                    </td>
+                    
+                    <td>
+                        <span class="word-phonetic" th:text="${tu.phienAm != null && !tu.phienAm.isEmpty() ? tu.phienAm : '-'}">/həˈloʊ/</span>
+                    </td>
+                    
+                    <td>
+                        <div class="word-example" th:text="${tu.viDu != null && !tu.viDu.isEmpty() ? tu.viDu : '-'}">Hello world!</div>
+                    </td>
+                    
+                    <td class="text-center">
+                        <span th:class="${(tu.soLanSai != null && tu.soLanSai > 0) ? 'badge-sai badge-sai-nhieu' : 'badge-sai badge-sai-0'}"
+                              th:text="${tu.soLanSai != null ? tu.soLanSai : 0}">
+                            0
+                        </span>
+                    </td>
+                    
+                    <td class="text-center">
+                        <div class="action-buttons justify-content-center">
+                            <button type="button"
+                                    class="btn btn-sm btn-outline-primary btn-action"
+                                    title="Chỉnh sửa từ"
+                                    th:attr="onclick=|moModalSua(${tu.id}, '${tu.tiengAnh != null ? #strings.escapeJavaScript(tu.tiengAnh) : ''}', '${tu.tiengViet != null ? #strings.escapeJavaScript(tu.tiengViet) : ''}', '${tu.phienAm != null ? #strings.escapeJavaScript(tu.phienAm) : ''}', '${tu.viDu != null ? #strings.escapeJavaScript(tu.viDu) : ''}', ${tu.boTuVung != null ? tu.boTuVung.id : 'null'})|">
+                                ✏️ Sửa
+                            </button>
+                            <button type="button"
+                                    class="btn btn-sm btn-outline-danger btn-action"
+                                    title="Xóa từ"
+                                    th:attr="onclick=|xacNhanXoa(${tu.id}, '${tu.tiengAnh != null ? #strings.escapeJavaScript(tu.tiengAnh) : ''}')|">
+                                🗑️ Xóa
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Thông báo không tìm thấy kết quả khi lọc -->
+        <div id="khongCoKetQua" class="empty-state" style="display: none;">
+            <div class="empty-icon">🔍</div>
+            <h4>Không tìm thấy từ phù hợp</h4>
+            <p>Hãy thử tìm kiếm với từ khóa khác</p>
+        </div>
+
+        <!-- Trạng thái chưa có từ nào -->
+        <div class="empty-state" th:if="${dsTu == null || dsTu.isEmpty()}">
+            <div class="empty-icon">📭</div>
+            <h4>Chưa có từ vựng nào</h4>
+            <p>Bạn chưa thêm từ vựng nào vào tài khoản này hoặc bộ từ đang chọn chưa có từ.</p>
+            <a href="/them-tu" class="btn btn-primary">
+                ➕ Thêm từ vựng ngay
+            </a>
+        </div>
+
+    </div>
+
+</div>
+
+<!-- =========================================================
+     MODAL CHỈNH SỬA TỪ VỰNG
+     ========================================================= -->
+<div class="modal fade" id="modalSuaTu" tabindex="-1" aria-labelledby="modalSuaTuLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form th:action="@{/quan-ly-tu/cap-nhat}" method="post">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalSuaTuLabel">✏️ Chỉnh sửa thông tin từ</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- ID ẩn -->
+                    <input type="hidden" id="modalTuId" name="id">
+                    <input type="hidden" name="boIdLoc" th:value="${boIdHienTai != null ? boIdHienTai : ''}">
+
+                    <div class="mb-3">
+                        <label for="modalTiengAnh" class="form-label">Từ Tiếng Anh <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="modalTiengAnh" name="tiengAnh" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="modalTiengViet" class="form-label">Nghĩa Tiếng Việt <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="modalTiengViet" name="tiengViet" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="modalPhienAm" class="form-label">Phiên âm</label>
+                        <input type="text" class="form-control" id="modalPhienAm" name="phienAm" placeholder="Ví dụ: /həˈloʊ/">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="modalViDu" class="form-label">Ví dụ câu</label>
+                        <textarea class="form-control" id="modalViDu" name="viDu" rows="3" placeholder="Ví dụ câu sử dụng từ này"></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="modalBoId" class="form-label">Thuộc Bộ từ</label>
+                        <select class="form-select" id="modalBoId" name="boId">
+                            <option th:each="bo : ${dsBo}"
+                                    th:value="${bo.id}"
+                                    th:text="${bo.tenBo}">
+                            </option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="submit" class="btn btn-primary">💾 Lưu thay đổi</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- =========================================================
+     FORM XÓA TỪ (ẨN)
+     ========================================================= -->
+<form id="formXoaTu" method="post" style="display: none;"></form>
+
+<!-- Bootstrap Bundle JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- JS riêng -->
+<script th:src="@{/js/quan-ly-tu.js}"></script>
+
+</body>
+</html>
