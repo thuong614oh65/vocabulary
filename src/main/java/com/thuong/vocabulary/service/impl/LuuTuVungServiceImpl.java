@@ -129,13 +129,18 @@ public class LuuTuVungServiceImpl implements LuuTuVungService {
 
 
         // =====================================================
-        // TẠO BỘ TỪ MỚI
+        // TẠO BỘ TỪ MỚI THEO TÀI KHOẢN
         // =====================================================
+
+        long soThuTu = boRepo.countByTaiKhoanId(taiKhoanId) + 1;
+        while (boRepo.existsByTenBoAndTaiKhoanId("Bộ " + soThuTu, taiKhoanId)) {
+            soThuTu++;
+        }
 
         BoTuVung bo = new BoTuVung();
 
         bo.setTenBo(
-                "Bộ " + (boRepo.count() + 1)
+                "Bộ " + soThuTu
         );
 
         bo.setNgayTao(

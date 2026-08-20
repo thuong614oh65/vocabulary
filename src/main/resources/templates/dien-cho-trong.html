@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Điền chỗ trống</title>
+
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- CSS riêng -->
+    <link rel="stylesheet" th:href="@{/css/dien-cho-trong.css}">
+</head>
+<body>
+
+<div class="dien-cho-trong-container">
+
+    <div class="main-wrapper">
+
+        <!-- =====================================================
+             TIÊU ĐỀ
+             ===================================================== -->
+        <div class="header-section text-center">
+            <div class="header-icon">✏️</div>
+            <h1>ĐIỀN VÀO CHỖ TRỐNG</h1>
+            <p class="subtitle">Luyện trí nhớ và cách dùng từ trong câu chuyện bằng AI</p>
+        </div>
+
+        <!-- =====================================================
+             KHUNG CHỌN NGUỒN TỪ & TẠO BÀI TẬP
+             ===================================================== -->
+        <div class="card-box mb-4">
+            <form th:action="@{/dien-cho-trong/tao}" method="post" id="formTaoBaiTap">
+                <div class="row align-items-center g-3">
+                    <div class="col-md-6 col-12">
+                        <label for="boId" class="form-label fw-bold text-secondary">
+                            📚 Chọn bộ từ vựng để luyện tập:
+                        </label>
+                        <select name="boId" id="boId" class="form-select select-bo">
+                            <option value="" th:selected="${boIdChon == null}">-- Toàn bộ từ vựng của tôi (<span th:text="${tongSoTu}">0</span> từ) --</option>
+                            <option th:each="bo : ${dsBo}"
+                                    th:value="${bo.id}"
+                                    th:selected="${boIdChon != null && boIdChon == bo.id}"
+                                    th:text="${bo.tenBo}">
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-6 col-12 d-flex gap-2 align-self-end">
+                        <button type="submit" class="btn btn-primary btn-tao-bai w-100" id="btnTaoBai">
+                            ✨ Tạo bài tập mới
+                        </button>
+                        <a href="/" class="btn btn-outline-secondary btn-quay-ve">
+                            🏠 Trang chủ
+                        </a>
+                    </div>
+                </div>
+            </form>
+
+            <!-- Loading Spinner khi bấm tạo bài -->
+            <div id="loadingBox" class="loading-state mt-3" style="display: none;">
+                <div class="spinner-border text-primary spinner-border-sm" role="status"></div>
+                <span class="ms-2 fw-semibold text-primary">🤖 AI đang sáng tạo một đoạn văn chứa từ vựng của bạn, vui lòng đợi vài giây...</span>
+            </div>
+        </div>
+
+        <!-- =====================================================
+             THÔNG BÁO LỖI (NẾU CÓ)
+             ===================================================== -->
+        <div class="alert alert-danger shadow-sm rounded-3" th:if="${loi}" th:text="${loi}"></div>
+
+        <!-- =====================================================
+             KHU VỰC BÀI TẬP ĐIỀN TỪ
+             ===================================================== -->
+        <div class="card-box exercise-box" id="exerciseBox" th:if="${doanVanRaw != null}">
+
+            <!-- Hidden data từ AI -->
+            <div id="dataDoanVanRaw" style="display: none;" th:text="${doanVanRaw}"></div>
+
+            <!-- Header bài tập -->
+            <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+                <h4 class="exercise-title mb-0">
+                    📖 Đọc đoạn văn và điền từ thích hợp vào ô trống:
+                </h4>
+                <div class="badge-count bg-light text-dark px-3 py-2 rounded-pill border">
+                    Tổng số ô cần điền: <span id="soLuongOTrong" class="fw-bold text-primary">0</span>
+                </div>
+            </div>
+
+            <!-- Khung từ gợi ý (Word Bank) -->
+            <div class="word-bank-container mb-4" id="wordBankBox">
+                <div class="word-bank-title">
+                    💡 <strong>Gợi ý nghĩa tiếng Việt của các từ trong bài:</strong>
+                </div>
+                <div class="word-bank-list" id="wordBankList">
+                    <!-- Sẽ render động bằng JS -->
+                </div>
+            </div>
+
+            <!-- Đoạn văn có các ô trống -->
+            <div class="paragraph-content" id="paragraphContent">
+                <!-- Nội dung đoạn văn kèm các ô input sẽ được render bằng JS -->
+            </div>
+
+            <!-- Nút hành động -->
+            <div class="action-buttons mt-4 d-flex gap-3 flex-wrap align-items-center">
+                <button type="button" class="btn btn-success btn-cham-diem px-4 py-2 fw-bold" id="btnChamDiem">
+                    ✅ Chấm điểm bài làm
+                </button>
+
+                <button type="button" class="btn btn-outline-secondary px-4 py-2" id="btnLamLai" style="display: none;">
+                    🔄 Làm lại bài này
+                </button>
+
+                <button type="button" class="btn btn-outline-primary px-3 py-2" id="btnNgheTatCa" title="Đọc toàn bộ đoạn văn">
+                    🔊 Nghe bài đọc
+                </button>
+            </div>
+
+            <!-- Khung kết quả chấm điểm -->
+            <div class="result-box mt-4" id="resultBox" style="display: none;">
+                <div class="result-header">
+                    <span class="result-icon" id="resultIcon">🎉</span>
+                    <h3 class="result-score mb-1" id="resultScore">Bạn đạt 0/0 điểm</h3>
+                    <p class="result-comment mb-0" id="resultComment">Rất tốt!</p>
+                </div>
+            </div>
+
+            <!-- Khung bản dịch tiếng Việt (Hiện khi chấm điểm) -->
+            <div class="translation-card mt-4" id="translationBox" style="display: none;">
+                <div class="translation-header">
+                    <span class="translation-icon">📖</span>
+                    <h5 class="mb-0 fw-bold">Bản dịch tiếng Việt của đoạn văn:</h5>
+                </div>
+                <div class="translation-body" id="translationBody">
+                    <!-- Nội dung dịch sẽ được render bằng JS -->
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- Bootstrap 5 Bundle JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- JS riêng cho tính năng điền chỗ trống -->
+<script th:src="@{/js/dien-cho-trong.js}"></script>
+
+</body>
+</html>

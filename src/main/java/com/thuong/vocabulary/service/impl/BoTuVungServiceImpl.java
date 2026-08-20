@@ -22,10 +22,10 @@ public class BoTuVungServiceImpl implements BoTuVungService {
         return boTuVungRepository.findAll();
     }
 
-    // Lấy tất cả bộ từ của một tài khoản
+    // Lấy tất cả bộ từ của một tài khoản (sắp xếp bộ mới nhất/lớn nhất lên đầu)
     @Override
     public List<BoTuVung> layDanhSachBo(Long taiKhoanId) {
-        return boTuVungRepository.findByTaiKhoanId(taiKhoanId);
+        return boTuVungRepository.findByTaiKhoanIdOrderByIdDesc(taiKhoanId);
     }
 
     // Tạo bộ từ cho tài khoản

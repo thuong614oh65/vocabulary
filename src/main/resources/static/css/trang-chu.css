@@ -304,6 +304,40 @@ body {
 }
 
 /* =========================================================
+   NÚT ĐIỀN CHỖ TRỐNG
+   ========================================================= */
+
+.nut-dien-tu {
+    background: linear-gradient(135deg, #0284c7, #0369a1);
+    color: white;
+
+    box-shadow:
+        0 6px 15px rgba(2, 132, 199, 0.25);
+}
+
+.nut-dien-tu:hover {
+    color: white;
+    background: linear-gradient(135deg, #0369a1, #075985);
+}
+
+/* =========================================================
+   NÚT NGHE ĐIỀN CÂU
+   ========================================================= */
+
+.nut-nghe-dien {
+    background: linear-gradient(135deg, #7c3aed, #6d28d9);
+    color: white;
+
+    box-shadow:
+        0 6px 15px rgba(124, 58, 237, 0.25);
+}
+
+.nut-nghe-dien:hover {
+    color: white;
+    background: linear-gradient(135deg, #6d28d9, #5b21b6);
+}
+
+/* =========================================================
    ĐIỆN THOẠI
    ========================================================= */
 

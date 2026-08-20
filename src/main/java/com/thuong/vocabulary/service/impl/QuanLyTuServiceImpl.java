@@ -50,7 +50,7 @@ public class QuanLyTuServiceImpl implements QuanLyTuService {
         if (taiKhoanId == null) {
             return List.of();
         }
-        return boTuVungRepository.findByTaiKhoanId(taiKhoanId);
+        return boTuVungRepository.findByTaiKhoanIdOrderByIdDesc(taiKhoanId);
     }
 
     @Override

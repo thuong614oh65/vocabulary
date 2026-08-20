@@ -13,4 +13,10 @@ public interface BoTuVungRepository
 
     List<BoTuVung> findByTaiKhoanId(Long taiKhoanId);
 
+    List<BoTuVung> findByTaiKhoanIdOrderByIdDesc(Long taiKhoanId);
+
+    long countByTaiKhoanId(Long taiKhoanId);
+
+    boolean existsByTenBoAndTaiKhoanId(String tenBo, Long taiKhoanId);
+
 }
