@@ -3,8 +3,8 @@ package com.thuong.vocabulary.service.impl;
 import com.thuong.vocabulary.dto.TuVungDTO;
 import com.thuong.vocabulary.dto.dictionary.Definition;
 import com.thuong.vocabulary.dto.dictionary.DictionaryResponse;
-import com.thuong.vocabulary.dto.dictionary.Phonetic;
 import com.thuong.vocabulary.service.DictionaryService;
+import com.thuong.vocabulary.service.PhienAmService;
 import com.thuong.vocabulary.service.TuVungService;
 import org.springframework.stereotype.Service;
 import com.thuong.vocabulary.service.TranslateService;
@@ -13,15 +13,17 @@ import com.thuong.vocabulary.service.TranslateService;
 public class TuVungServiceImpl implements TuVungService {
 
     private final DictionaryService dictionaryService;
-
     private final TranslateService translateService;
+    private final PhienAmService phienAmService;
 
     public TuVungServiceImpl(
             DictionaryService dictionaryService,
-            TranslateService translateService
+            TranslateService translateService,
+            PhienAmService phienAmService
     ) {
         this.dictionaryService = dictionaryService;
         this.translateService = translateService;
+        this.phienAmService = phienAmService;
     }
 
     @Override
@@ -31,9 +33,9 @@ public class TuVungServiceImpl implements TuVungService {
 
         dto.setTiengAnh(tu);
 
+        // 1. Dịch nghĩa tiếng Việt
         String nghia =
                 translateService.dich(tu);
-
 
         dto.setTiengViet(
                 chuanHoaNghia(
@@ -42,34 +44,20 @@ public class TuVungServiceImpl implements TuVungService {
                 )
         );
 
+        // 2. Tra cứu phiên âm qua Module PhienAmService chuyên biệt
+        String phienAm =
+                phienAmService.layPhienAm(tu);
+
+        dto.setPhienAm(phienAm);
+
+        // 3. Tra cứu ví dụ từ từ điển (nếu có)
         DictionaryResponse response =
                 dictionaryService.traTu(tu);
 
         if(response != null){
 
             if(response.getWord() != null){
-
                 dto.setTiengAnh(response.getWord());
-
-            }
-
-            if(response.getPhonetics() != null){
-
-                for(Phonetic phonetic : response.getPhonetics()){
-
-                    if(phonetic.getText()!=null &&
-                            !phonetic.getText().isBlank()){
-
-                        dto.setPhienAm(
-                                phonetic.getText()
-                        );
-
-                        break;
-
-                    }
-
-                }
-
             }
 
             if(response.getMeanings()!=null &&

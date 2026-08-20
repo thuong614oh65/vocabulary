@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Luyện nói tiếng Anh (Speaking Practice)</title>
+
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- CSS riêng -->
+    <link rel="stylesheet" th:href="@{/css/luyen-noi.css}">
+</head>
+<body>
+
+<div class="luyen-noi-container">
+
+    <div class="main-wrapper">
+
+        <!-- =====================================================
+             TIÊU ĐỀ
+             ===================================================== -->
+        <div class="header-section text-center">
+            <div class="header-icon">🎙️</div>
+            <h1>LUYỆN NÓI TIẾNG ANH</h1>
+            <p class="subtitle">Luyện phát âm chuẩn quốc tế · Chấm điểm 5 tiêu chí IELTS/CEFR bằng AI</p>
+        </div>
+
+        <!-- =====================================================
+             KHUNG CHỌN NGUỒN TỪ & BẮT ĐẦU
+             ===================================================== -->
+        <div class="card-box mb-4" id="setupCard" th:if="${dsLuyen == null}">
+            <form th:action="@{/luyen-noi/bat-dau}" method="post" id="formBatDauLuyenNoi">
+                <div class="row align-items-center g-3">
+                    <div class="col-md-4 col-12">
+                        <label for="kieuHoc" class="form-label fw-bold text-secondary">
+                            🎯 Chế độ luyện:
+                        </label>
+                        <select name="kieuHoc" id="kieuHoc" class="form-select select-custom">
+                            <option value="NGAU_NHIEN" th:selected="${kieuHocChon == null || kieuHocChon == 'NGAU_NHIEN'}">🎲 Ngẫu nhiên toàn bộ</option>
+                            <option value="THEO_BO" th:selected="${kieuHocChon == 'THEO_BO'}">📚 Theo bộ từ vựng</option>
+                            <option value="TU_SAI" th:selected="${kieuHocChon == 'TU_SAI'}">⚠️ Luyện từ hay sai</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-4 col-12" id="boxChonBo" style="display: none;">
+                        <label for="boId" class="form-label fw-bold text-secondary">
+                            📁 Chọn bộ từ:
+                        </label>
+                        <select name="boId" id="boId" class="form-select select-custom">
+                            <option th:each="bo : ${dsBo}"
+                                    th:value="${bo.id}"
+                                    th:selected="${boIdChon != null && boIdChon == bo.id}"
+                                    th:text="${bo.tenBo}">
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-2 col-6" id="boxSoTu">
+                        <label for="soTu" class="form-label fw-bold text-secondary">
+                            🔢 Số từ:
+                        </label>
+                        <select name="soTu" id="soTu" class="form-select select-custom">
+                            <option value="5">5 từ</option>
+                            <option value="10" selected>10 từ</option>
+                            <option value="15">15 từ</option>
+                            <option value="20">20 từ</option>
+                            <option value="50">Tất cả</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-2 col-6 d-flex gap-2 align-self-end">
+                        <button type="submit" class="btn btn-primary btn-bat-dau w-100" id="btnBatDau">
+                            🚀 Bắt đầu
+                        </button>
+                    </div>
+                </div>
+
+                <div class="mt-3 text-center">
+                    <a href="/" class="btn btn-outline-secondary btn-sm px-3">
+                        🏠 Quay về Trang chủ
+                    </a>
+                </div>
+            </form>
+        </div>
+
+        <!-- =====================================================
+             THÔNG BÁO LỖI (NẾU CÓ)
+             ===================================================== -->
+        <div class="alert alert-danger shadow-sm rounded-3 text-center" th:if="${loi}" th:text="${loi}"></div>
+
+        <!-- =====================================================
+             PHÒNG LUYỆN NÓI (SPEAKING ROOM)
+             ===================================================== -->
+        <div class="card-box practice-room" id="practiceRoom" th:if="${dsLuyen != null}">
+
+            <!-- Thanh tiến trình & Điểm trung bình -->
+            <div class="practice-header d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2 pb-2 border-bottom">
+                <div class="d-flex align-items-center gap-2">
+                    <span class="badge bg-primary fs-6 px-3 py-2" id="badgeProgress">Từ 1 / 10</span>
+                </div>
+                <div class="d-flex align-items-center gap-2">
+                    <span class="badge bg-light text-dark border fs-6 px-3 py-2" id="badgeAverageScore">
+                        Điểm TB: <b class="text-success" id="avgScoreText">--%</b>
+                    </span>
+                    <a href="/luyen-noi" class="btn btn-outline-secondary btn-sm">
+                        ⏹️ Dừng luyện
+                    </a>
+                </div>
+            </div>
+
+            <!-- Card từ vựng chính -->
+            <div class="word-card text-center my-3 p-4 rounded-4 shadow-sm">
+                <div class="word-english" id="displayTiengAnh">Loading...</div>
+                <div class="word-ipa my-2" id="displayPhienAm">/.../</div>
+                <div class="word-vietnamese text-muted fs-5 mt-1" id="displayTiengViet">Đang tải...</div>
+
+                <!-- Cụm nút nghe mẫu -->
+                <div class="audio-controls mt-4 d-flex justify-content-center gap-2 flex-wrap">
+                    <button type="button" class="btn btn-outline-primary btn-sample-audio px-3 py-2" id="btnNgheChuan">
+                        🔊 Nghe chuẩn (1.0x)
+                    </button>
+                    <button type="button" class="btn btn-outline-info btn-sample-audio px-3 py-2" id="btnNgheCham">
+                        🐢 Nghe chậm (0.75x)
+                    </button>
+                </div>
+            </div>
+
+            <!-- Khu vực Ghi âm Microphone -->
+            <div class="recording-section text-center my-4">
+                <div class="mic-button-wrapper mb-3">
+                    <button type="button" class="btn-mic" id="btnMic" title="Bấm để ghi âm">
+                        <span class="mic-icon">🎙️</span>
+                    </button>
+                </div>
+
+                <div class="mic-status fw-bold" id="micStatus">
+                    Bấm vào Mic để bắt đầu nói
+                </div>
+                <div class="mic-timer text-muted small mt-1" id="micTimer" style="display: none;">
+                    Đang ghi âm: <span id="recordSeconds">0</span>s (Tối đa 5s)
+                </div>
+
+                <!-- Sóng âm Visualizer Animation -->
+                <div class="sound-wave my-3" id="soundWave" style="display: none;">
+                    <span></span><span></span><span></span><span></span><span></span>
+                </div>
+
+                <!-- Loading AI Grading Spinner -->
+                <div class="ai-loading mt-3" id="aiLoading" style="display: none;">
+                    <div class="spinner-grow text-primary spinner-grow-sm" role="status"></div>
+                    <span class="ms-2 fw-semibold text-primary">🤖 AI đang phân tích phát âm và chấm điểm chuẩn IELTS...</span>
+                </div>
+            </div>
+
+            <!-- =====================================================
+                 KHUNG KẾT QUẢ CHẤM ĐIỂM NÂNG CAO
+                 ===================================================== -->
+            <div class="result-box mt-4 p-4 rounded-4 shadow-sm" id="resultBox" style="display: none;">
+
+                <!-- Header: Tổng điểm + Badge -->
+                <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom flex-wrap gap-2">
+                    <h5 class="mb-0 fw-bold text-dark">
+                        📊 Đánh giá phát âm chuẩn quốc tế
+                    </h5>
+                    <div class="score-badge px-3 py-1 rounded-pill fw-bold fs-5" id="scoreBadge">
+                        100%
+                    </div>
+                </div>
+
+                <!-- Hàng 1: Từ AI nghe + IPA So sánh -->
+                <div class="row g-3 mb-3">
+                    <div class="col-md-6 col-12">
+                        <div class="result-item p-3 rounded-3 bg-light border h-100">
+                            <span class="text-secondary small d-block mb-1">🎧 AI nghe được:</span>
+                            <span class="fw-bold fs-5 text-dark" id="resRecognizedText">--</span>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-12">
+                        <div class="result-item p-3 rounded-3 bg-light border h-100">
+                            <span class="text-secondary small d-block mb-1">🔤 So sánh IPA:</span>
+                            <div id="resIpaComparison" class="ipa-comparison-box mt-1">
+                                <!-- Rendered by JS -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Hàng 2: Breakdown 5 tiêu chí -->
+                <div class="score-breakdown-box p-3 rounded-3 mb-3" id="scoreBreakdownBox">
+                    <div class="fw-bold text-dark mb-2">📈 Điểm chi tiết 5 tiêu chí:</div>
+                    <div class="breakdown-grid" id="breakdownGrid">
+                        <!-- Rendered by JS -->
+                    </div>
+                </div>
+
+                <!-- Hàng 3: Phoneme detail cards -->
+                <div class="result-item p-3 rounded-3 bg-light border mb-3" id="phonemeDetailBox">
+                    <span class="text-secondary small d-block mb-2">🔬 Phân tích từng âm vị:</span>
+                    <div id="resPhonemeBreakdown" class="phoneme-row mt-1 d-flex gap-1 flex-wrap">
+                        <!-- Rendered by JS -->
+                    </div>
+                </div>
+
+                <!-- Nhận xét -->
+                <div class="result-feedback p-3 rounded-3 mb-3" id="feedbackBox">
+                    <div class="fw-bold mb-1" id="feedbackTitle">💬 Nhận xét:</div>
+                    <p class="mb-0" id="resFeedbackText">--</p>
+                </div>
+
+                <!-- Hướng dẫn khẩu hình -->
+                <div class="result-suggestion p-3 rounded-3 mb-3 bg-white border border-warning" id="suggestionBox" style="display: none;">
+                    <div class="fw-bold text-warning-emphasis mb-1">💡 Hướng dẫn khẩu hình:</div>
+                    <p class="mb-0 text-dark small" id="resSuggestionText">--</p>
+                </div>
+
+                <!-- Lời động viên -->
+                <div class="result-encouragement p-2 rounded-3 mb-3 text-center" id="encouragementBox" style="display: none;">
+                    <span class="text-success fw-semibold" id="resEncouragementText"></span>
+                </div>
+
+                <!-- Cụm nút điều hướng -->
+                <div class="action-buttons d-flex justify-content-center gap-2 mt-4 flex-wrap">
+                    <button type="button" class="btn btn-outline-warning px-4 py-2 fw-semibold" id="btnNoiLai">
+                        🔄 Nói lại từ này
+                    </button>
+                    <button type="button" class="btn btn-outline-primary px-4 py-2 fw-semibold" id="btnNgheLaiMau">
+                        🔊 Nghe lại mẫu
+                    </button>
+                    <button type="button" class="btn btn-success px-4 py-2 fw-semibold" id="btnTuTiepTheo">
+                        ➡️ Từ tiếp theo
+                    </button>
+                </div>
+            </div>
+
+            <!-- Màn hình Tổng kết khi hoàn thành -->
+            <div class="completion-box text-center p-5 rounded-4 shadow-sm" id="completionBox" style="display: none;">
+                <div class="trophy-icon mb-3" style="font-size: 60px;">🏆</div>
+                <h3 class="fw-bold text-success mb-2">Chúc mừng bạn đã hoàn thành bài luyện nói!</h3>
+                <p class="text-muted mb-4">Bạn đã luyện tập chăm chỉ và cải thiện phản xạ ngữ âm.</p>
+
+                <div class="final-score-box p-4 rounded-4 bg-light d-inline-block border mb-4">
+                    <div class="text-secondary small">ĐIỂM TRUNG BÌNH CỦA BẠN</div>
+                    <div class="final-score fw-bold text-primary display-4 my-2" id="finalScoreVal">90%</div>
+                    <div class="text-muted" id="finalWordsCount">Đã luyện 10 từ</div>
+                </div>
+
+                <div>
+                    <a href="/luyen-noi" class="btn btn-primary px-4 py-2 me-2">
+                        🔁 Luyện bài khác
+                    </a>
+                    <a href="/" class="btn btn-outline-secondary px-4 py-2">
+                        🏠 Về Trang chủ
+                    </a>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- Bootstrap 5 Bundle -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Dữ liệu từ Thymeleaf nạp trực tiếp vào JS -->
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    window.danhSachTuLuyenNoi = /*[[${dsLuyen}]]*/ [];
+    /*]]>*/
+</script>
+
+<!-- JS riêng chống cache -->
+<script th:src="@{/js/luyen-noi.js(v=10)}"></script>
+</body>
+</html>
