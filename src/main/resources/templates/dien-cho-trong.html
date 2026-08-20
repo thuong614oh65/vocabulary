@@ -114,6 +114,10 @@
                 <button type="button" class="btn btn-outline-primary px-3 py-2" id="btnNgheTatCa" title="Đọc toàn bộ đoạn văn">
                     🔊 Nghe bài đọc
                 </button>
+
+                <button type="button" class="btn btn-outline-danger px-3 py-2" id="btnDungNghe" style="display: none;" title="Dừng đọc đoạn văn">
+                    ⏹️ Dừng đọc
+                </button>
             </div>
 
             <!-- Khung kết quả chấm điểm -->
@@ -146,7 +150,7 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
 
 <!-- JS riêng cho tính năng điền chỗ trống -->
-<script th:src="@{/js/dien-cho-trong.js}"></script>
+<script th:src="@{/js/dien-cho-trong.js(v=3)}"></script>
 
 </body>
 </html>

@@ -1,12 +1,14 @@
 let audioHienTai = null;
+let soLanDoc = 0;
 
 // =========================================================
-// PHÁT ÂM TỪ VỰNG
+// DỪNG TẤT CẢ ÂM THANH
 // =========================================================
 function dungTatCaAmThanh() {
     if (window.speechSynthesis) {
         window.speechSynthesis.cancel();
     }
+
     if (audioHienTai) {
         audioHienTai.pause();
         audioHienTai.currentTime = 0;
@@ -14,25 +16,41 @@ function dungTatCaAmThanh() {
     }
 }
 
-function docTu(tu) {
-    if (!tu) return;
+// =========================================================
+// BẮT ĐẦU ĐỌC TỪ BẰNG MP3 (GIỐNG PHẦN HỌC)
+// =========================================================
+function batDauDocTu(tu, maDoc) {
+    if (!tu) {
+        return;
+    }
 
+    console.log(
+        "ĐỌC TỪ:",
+        tu
+    );
+
+    let tenFile =
+        tu
+            .toLowerCase()
+            .trim()
+            .replace(/[\\/:*?"<>|]/g, "")
+            .split(/\s+/)
+            .join("-");
+
+    let duongDan =
+        "/audio/tu-vung/"
+        + tenFile
+        + ".mp3";
+
+    // Dừng audio cũ
     dungTatCaAmThanh();
-
-    let tenFile = tu
-        .toLowerCase()
-        .trim()
-        .replace(/[\\/:*?"<>|]/g, "")
-        .split(/\s+/)
-        .join("-");
-
-    let duongDan = "/audio/tu-vung/" + tenFile + ".mp3";
 
     let daFallback = false;
     function fallbackSpeech() {
         if (daFallback) return;
         daFallback = true;
         if (window.speechSynthesis) {
+            console.log("Dùng giọng đọc trình duyệt (SpeechSynthesis) cho từ:", tu);
             let utterance = new SpeechSynthesisUtterance(tu);
             utterance.lang = 'en-US';
             utterance.rate = 0.9;
@@ -40,15 +58,56 @@ function docTu(tu) {
         }
     }
 
+    // Tạo audio mới
     audioHienTai = new Audio(duongDan);
 
-    audioHienTai.onerror = function () {
+    audioHienTai.onplay = function () {
+        console.log(
+            "BẮT ĐẦU ĐỌC:",
+            tu
+        );
+    };
+
+    audioHienTai.onended = function () {
+        console.log(
+            "ĐỌC XONG:",
+            tu
+        );
+    };
+
+    audioHienTai.onerror = function (e) {
+        console.warn(
+            "LỖI ĐỌC MP3:",
+            duongDan,
+            "- Chuyển sang giọng đọc trình duyệt."
+        );
         fallbackSpeech();
     };
 
-    audioHienTai.play().catch(function () {
-        fallbackSpeech();
-    });
+    audioHienTai
+        .play()
+        .catch(function (error) {
+            console.warn(
+                "KHÔNG THỂ PHÁT MP3:",
+                error,
+                "- Chuyển sang giọng đọc trình duyệt."
+            );
+            fallbackSpeech();
+        });
+}
+
+// =========================================================
+// HÀM docTu() CHO HTML GỌI
+// =========================================================
+function docTu(tu) {
+    if (!tu) {
+        return;
+    }
+
+    soLanDoc++;
+    let maDoc = soLanDoc;
+
+    batDauDocTu(tu, maDoc);
 }
 
 // =========================================================

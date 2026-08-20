@@ -24,6 +24,119 @@ document.addEventListener("DOMContentLoaded", function () {
         return;
     }
 
+    // =================================================
+    // XỬ LÝ PHÁT ÂM VÀ DỪNG ĐOẠN VĂN (EDGE NEURAL TTS MP3 STREAM)
+    // =================================================
+    const btnNgheDoanVan = document.getElementById("btnNgheDoanVan");
+    const btnDungNgheDoanVan = document.getElementById("btnDungNgheDoanVan");
+    let audioDoanVanDich = null;
+
+    function dungDocDoanVanDich() {
+        if (window.speechSynthesis) {
+            window.speechSynthesis.cancel();
+        }
+        if (audioDoanVanDich) {
+            audioDoanVanDich.pause();
+            audioDoanVanDich.currentTime = 0;
+            if (audioDoanVanDich.src && audioDoanVanDich.src.startsWith("blob:")) {
+                URL.revokeObjectURL(audioDoanVanDich.src);
+            }
+            audioDoanVanDich = null;
+        }
+        if (btnDungNgheDoanVan) {
+            btnDungNgheDoanVan.style.display = "none";
+        }
+        console.log("ĐÃ DỪNG ĐỌC ĐOẠN VĂN DỊCH.");
+    }
+
+    if (btnDungNgheDoanVan) {
+        btnDungNgheDoanVan.addEventListener("click", function () {
+            dungDocDoanVanDich();
+        });
+    }
+
+    if (btnNgheDoanVan) {
+        btnNgheDoanVan.addEventListener("click", function () {
+            if (!doanVan) return;
+
+            dungDocDoanVanDich();
+
+            console.log("ĐỌC ĐOẠN VĂN DỊCH:", doanVan);
+
+            if (btnDungNgheDoanVan) {
+                btnDungNgheDoanVan.style.display = "inline-block";
+            }
+
+            let daFallback = false;
+            function fallbackSpeech() {
+                if (daFallback) return;
+                daFallback = true;
+                if (window.speechSynthesis) {
+                    console.log("Dùng giọng đọc trình duyệt (SpeechSynthesis) cho đoạn văn dịch.");
+                    let utterance = new SpeechSynthesisUtterance(doanVan);
+                    utterance.lang = "en-US";
+                    utterance.rate = 0.85;
+                    utterance.onend = function () {
+                        if (btnDungNgheDoanVan) btnDungNgheDoanVan.style.display = "none";
+                    };
+                    utterance.onerror = function () {
+                        if (btnDungNgheDoanVan) btnDungNgheDoanVan.style.display = "none";
+                    };
+                    window.speechSynthesis.speak(utterance);
+                }
+            }
+
+            fetch("/audio/tts", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    text: doanVan,
+                    rate: "-5%"
+                })
+            })
+            .then(function (response) {
+                if (!response.ok) {
+                    throw new Error("Lỗi HTTP " + response.status);
+                }
+                return response.blob();
+            })
+            .then(function (blob) {
+                const audioUrl = URL.createObjectURL(blob);
+                audioDoanVanDich = new Audio(audioUrl);
+
+                audioDoanVanDich.onplay = function () {
+                    console.log("BẮT ĐẦU ĐỌC ĐOẠN VĂN DỊCH (MP3 Edge Neural TTS)...");
+                    if (btnDungNgheDoanVan) btnDungNgheDoanVan.style.display = "inline-block";
+                };
+
+                audioDoanVanDich.onended = function () {
+                    console.log("ĐỌC XONG ĐOẠN VĂN DỊCH.");
+                    URL.revokeObjectURL(audioUrl); // Giải phóng bộ nhớ RAM
+                    audioDoanVanDich = null;
+                    if (btnDungNgheDoanVan) btnDungNgheDoanVan.style.display = "none";
+                };
+
+                audioDoanVanDich.onerror = function (err) {
+                    console.warn("LỖI PHÁT MP3 ĐOẠN VĂN DỊCH:", err, "- Chuyển sang giọng đọc trình duyệt.");
+                    URL.revokeObjectURL(audioUrl);
+                    fallbackSpeech();
+                };
+
+                audioDoanVanDich.play().catch(function (playErr) {
+                    console.warn("KHÔNG THỂ PHÁT MP3 ĐOẠN VĂN DỊCH:", playErr, "- Chuyển sang giọng đọc trình duyệt.");
+                    URL.revokeObjectURL(audioUrl);
+                    fallbackSpeech();
+                });
+            })
+            .catch(function (err) {
+                console.warn("LỖI GỌI API /audio/tts:", err.message, "- Chuyển sang giọng đọc trình duyệt.");
+                fallbackSpeech();
+            });
+        });
+    }
+
 
    // =================================================
    // TẠO MAP TỪ VỰNG CSDL

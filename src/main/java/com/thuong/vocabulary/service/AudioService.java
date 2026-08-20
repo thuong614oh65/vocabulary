@@ -401,6 +401,46 @@ public class AudioService {
     }
 
     // =========================================================
+    // TẠO AUDIO DẠNG STREAM (KHÔNG LƯU VÀO ĐĨA)
+    // =========================================================
+    public byte[] taoAudioStream(String text, String rate) {
+        if (text == null || text.trim().isEmpty()) {
+            return new byte[0];
+        }
+
+        String rateParam = (rate != null && !rate.trim().isEmpty()) ? rate.trim() : "+0%";
+
+        try {
+            ProcessBuilder processBuilder = new ProcessBuilder(
+                    pythonCommand,
+                    pythonFile.toAbsolutePath().toString(),
+                    "--stream",
+                    text.trim(),
+                    rateParam
+            );
+
+            Process process = processBuilder.start();
+
+            byte[] audioBytes;
+            try (InputStream is = process.getInputStream()) {
+                audioBytes = is.readAllBytes();
+            }
+
+            int exitCode = process.waitFor();
+            if (exitCode != 0 || audioBytes.length == 0) {
+                System.err.println("[AudioService] Lỗi khi stream audio cho văn bản (" + text.length() + " ký tự): exitCode=" + exitCode + ", bytes=" + audioBytes.length);
+                return new byte[0];
+            }
+
+            return audioBytes;
+
+        } catch (Exception e) {
+            System.err.println("[AudioService] Ngoại lệ khi tạo stream audio: " + e.getMessage());
+            return new byte[0];
+        }
+    }
+
+    // =========================================================
     // TẠO TÊN FILE AN TOÀN
     // =========================================================
 

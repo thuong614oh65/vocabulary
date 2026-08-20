@@ -190,6 +190,28 @@ async def tao_audio_tu_vung(
 
 
 # =========================================================
+# STREAM AUDIO TRỰC TIẾP (KHÔNG LƯU VÀO ĐĨA)
+# =========================================================
+
+async def stream_audio(text, rate_str="+0%"):
+    text = text.strip()
+    if not text:
+        return
+
+    communicate = edge_tts.Communicate(
+        text=text,
+        voice=VOICE,
+        rate=rate_str
+    )
+
+    async for chunk in communicate.stream():
+        if chunk["type"] == "audio":
+            sys.stdout.buffer.write(chunk["data"])
+
+    sys.stdout.buffer.flush()
+
+
+# =========================================================
 # MAIN
 # =========================================================
 
@@ -211,7 +233,20 @@ async def main():
 
 
     # =====================================================
-    # TẠO AUDIO TỪ VỰNG
+    # CHẾ ĐỘ STREAM AUDIO (KHÔNG LƯU VÀO ĐĨA)
+    #
+    # python tao_audio.py --stream "This is a sentence." "+0%"
+    # =====================================================
+
+    if sys.argv[1] == "--stream":
+        text = sys.argv[2] if len(sys.argv) >= 3 else ""
+        rate = sys.argv[3] if len(sys.argv) >= 4 else "+0%"
+        await stream_audio(text, rate)
+        return
+
+
+    # =====================================================
+    # TẠO AUDIO TỪ VỰNG (LƯU VÀO FILE)
     #
     # python tao_audio.py apple "D:\...\audio-data\tu-vung"
     # =====================================================

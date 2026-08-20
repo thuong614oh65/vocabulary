@@ -93,11 +93,12 @@
                 <tr>
                     <th style="width: 50px;" class="text-center">STT</th>
                     <th style="width: 120px;" class="text-center">Bộ từ</th>
-                    <th style="width: 200px;">Tiếng Anh</th>
-                    <th style="width: 200px;">Nghĩa Tiếng Việt</th>
-                    <th style="width: 150px;">Phiên âm</th>
+                    <th style="width: 180px;">Tiếng Anh</th>
+                    <th style="width: 180px;">Nghĩa Tiếng Việt</th>
+                    <th style="width: 130px;">Phiên âm</th>
+                    <th style="width: 80px;" class="text-center">Đọc</th>
                     <th>Ví dụ câu</th>
-                    <th style="width: 100px;" class="text-center">Lần sai</th>
+                    <th style="width: 90px;" class="text-center">Lần sai</th>
                     <th style="width: 140px;" class="text-center">Hành động</th>
                 </tr>
                 </thead>
@@ -118,17 +119,7 @@
                     </td>
                     
                     <td>
-                        <div class="d-flex align-items-center gap-2">
-                            <div>
-                                <div class="word-english" th:text="${tu.tiengAnh}">Hello</div>
-                            </div>
-                            <button type="button"
-                                    class="btn-doc"
-                                    title="Nghe phát âm"
-                                    th:attr="onclick=|docTu('${tu.tiengAnh}')|">
-                                🔊
-                            </button>
-                        </div>
+                        <div class="word-english" th:text="${tu.tiengAnh}">Hello</div>
                     </td>
                     
                     <td>
@@ -137,6 +128,15 @@
                     
                     <td>
                         <span class="word-phonetic" th:text="${tu.phienAm != null && !tu.phienAm.isEmpty() ? tu.phienAm : '-'}">/həˈloʊ/</span>
+                    </td>
+                    
+                    <td class="text-center">
+                        <button type="button"
+                                class="btn-doc"
+                                title="Nghe phát âm"
+                                th:attr="onclick=|docTu('${tu.tiengAnh}')|">
+                            🔊
+                        </button>
                     </td>
                     
                     <td>
@@ -256,7 +256,7 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
 
 <!-- JS riêng -->
-<script th:src="@{/js/quan-ly-tu.js}"></script>
+<script th:src="@{/js/quan-ly-tu.js(v=2)}"></script>
 
 </body>
 </html>

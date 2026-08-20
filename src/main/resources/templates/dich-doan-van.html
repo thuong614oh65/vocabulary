@@ -95,9 +95,20 @@
         <div class="doan-van"
              th:if="${doanVan != null}">
 
-            <h3>
-                📖 Đoạn văn cần dịch
-            </h3>
+            <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+                <h3 class="mb-0 text-success fw-bold">
+                    📖 Đoạn văn cần dịch
+                </h3>
+
+                <div class="d-flex gap-2">
+                    <button type="button" class="btn btn-outline-primary btn-sm px-3 py-1" id="btnNgheDoanVan" title="Nghe toàn bộ đoạn văn">
+                        🔊 Nghe đoạn văn
+                    </button>
+                    <button type="button" class="btn btn-outline-danger btn-sm px-3 py-1" id="btnDungNgheDoanVan" style="display: none;" title="Dừng đọc đoạn văn">
+                        ⏹️ Dừng đọc
+                    </button>
+                </div>
+            </div>
 
             <div id="noiDungDoanVan"
                  class="noi-dung-doan-van"
@@ -305,7 +316,7 @@
 
 </script>
 
-<script th:src="@{/js/dich-doan-van.js}"></script>
+<script th:src="@{/js/dich-doan-van.js(v=2)}"></script>
 </body>
 
 </html>

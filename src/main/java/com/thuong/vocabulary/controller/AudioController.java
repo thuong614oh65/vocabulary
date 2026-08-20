@@ -144,6 +144,64 @@ public class AudioController {
 
 
     // =====================================================
+    // PHÁT AUDIO TẠM THỜI QUA STREAM (KHÔNG LƯU VÀO ĐĨA)
+    // =====================================================
+    @PostMapping(value = "/tts", produces = "audio/mpeg")
+    public ResponseEntity<byte[]> phatAudioTamThoiPost(
+            @RequestBody(required = false) java.util.Map<String, String> body,
+            @RequestParam(required = false) String text,
+            @RequestParam(required = false, defaultValue = "+0%") String rate
+    ) {
+        String textToSpeak = text;
+        String speechRate = rate;
+
+        if (body != null) {
+            if (body.containsKey("text") && body.get("text") != null) {
+                textToSpeak = body.get("text");
+            }
+            if (body.containsKey("rate") && body.get("rate") != null) {
+                speechRate = body.get("rate");
+            }
+        }
+
+        if (textToSpeak == null || textToSpeak.trim().isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        byte[] mp3Data = audioService.taoAudioStream(textToSpeak.trim(), speechRate);
+        if (mp3Data == null || mp3Data.length == 0) {
+            return ResponseEntity.internalServerError().build();
+        }
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"speech.mp3\"")
+                .header(HttpHeaders.CACHE_CONTROL, "no-cache, no-store, must-revalidate")
+                .contentType(MediaType.parseMediaType("audio/mpeg"))
+                .body(mp3Data);
+    }
+
+    @GetMapping(value = "/tts", produces = "audio/mpeg")
+    public ResponseEntity<byte[]> phatAudioTamThoiGet(
+            @RequestParam("text") String text,
+            @RequestParam(required = false, defaultValue = "+0%") String rate
+    ) {
+        if (text == null || text.trim().isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        byte[] mp3Data = audioService.taoAudioStream(text.trim(), rate);
+        if (mp3Data == null || mp3Data.length == 0) {
+            return ResponseEntity.internalServerError().build();
+        }
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"speech.mp3\"")
+                .header(HttpHeaders.CACHE_CONTROL, "no-cache, no-store, must-revalidate")
+                .contentType(MediaType.parseMediaType("audio/mpeg"))
+                .body(mp3Data);
+    }
+
+    // =====================================================
     // TEST TẠO AUDIO
     // =====================================================
 

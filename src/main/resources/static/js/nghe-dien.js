@@ -268,19 +268,92 @@ document.addEventListener("DOMContentLoaded", function () {
 
 });
 
+let audioDangPhat = null;
+
 // =========================================================
-// PHÁT ÂM CÂU BẰNG WEB SPEECH API
+// PHÁT ÂM CÂU (EDGE NEURAL TTS MP3 STREAM - KHÔNG LƯU ĐĨA)
 // =========================================================
 function phatAmCau(cau, tocDo) {
     if (!cau) return;
 
+    // Dừng tất cả âm thanh đang phát
     if (window.speechSynthesis) {
         window.speechSynthesis.cancel();
-        let utterance = new SpeechSynthesisUtterance(cau);
-        utterance.lang = "en-US";
-        utterance.rate = tocDo || 1.0;
-        window.speechSynthesis.speak(utterance);
     }
+    if (audioDangPhat) {
+        audioDangPhat.pause();
+        audioDangPhat.currentTime = 0;
+        audioDangPhat = null;
+    }
+
+    const speed = tocDo || 1.0;
+    console.log("ĐỌC CÂU:", cau, "(Tốc độ:", speed + "x)");
+
+    // Tốc độ: chuẩn (1.0x) -> +0%, chậm (0.75x) -> -25%
+    let rateStr = "+0%";
+    if (speed < 0.9) {
+        rateStr = "-25%";
+    }
+
+    let daFallback = false;
+    function fallbackSpeech() {
+        if (daFallback) return;
+        daFallback = true;
+        if (window.speechSynthesis) {
+            console.log("Dùng giọng đọc trình duyệt (SpeechSynthesis) cho câu:", cau);
+            let utterance = new SpeechSynthesisUtterance(cau);
+            utterance.lang = "en-US";
+            utterance.rate = speed;
+            window.speechSynthesis.speak(utterance);
+        }
+    }
+
+    fetch("/audio/tts", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            text: cau,
+            rate: rateStr
+        })
+    })
+    .then(function (response) {
+        if (!response.ok) {
+            throw new Error("Lỗi HTTP " + response.status);
+        }
+        return response.blob();
+    })
+    .then(function (blob) {
+        const audioUrl = URL.createObjectURL(blob);
+        audioDangPhat = new Audio(audioUrl);
+
+        audioDangPhat.onplay = function () {
+            console.log("BẮT ĐẦU ĐỌC CÂU (MP3 Edge Neural TTS):", cau);
+        };
+
+        audioDangPhat.onended = function () {
+            console.log("ĐỌC XONG CÂU:", cau);
+            URL.revokeObjectURL(audioUrl); // Giải phóng bộ nhớ RAM ngay khi đọc xong
+            audioDangPhat = null;
+        };
+
+        audioDangPhat.onerror = function (err) {
+            console.warn("LỖI PHÁT MP3 CÂU:", err, "- Chuyển sang giọng đọc trình duyệt.");
+            URL.revokeObjectURL(audioUrl);
+            fallbackSpeech();
+        };
+
+        audioDangPhat.play().catch(function (playErr) {
+            console.warn("KHÔNG THỂ PHÁT MP3:", playErr, "- Chuyển sang giọng đọc trình duyệt.");
+            URL.revokeObjectURL(audioUrl);
+            fallbackSpeech();
+        });
+    })
+    .catch(function (err) {
+        console.warn("LỖI GỌI API /audio/tts:", err.message, "- Chuyển sang giọng đọc trình duyệt.");
+        fallbackSpeech();
+    });
 }
 
 // Ẩn / hiện gợi ý nghĩa tiếng Việt
