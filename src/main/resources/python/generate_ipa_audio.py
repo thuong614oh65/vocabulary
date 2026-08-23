@@ -1,103 +1,106 @@
-﻿#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-generate_ipa_audio.py - Tao 44 file audio IPA chuan British RP
-Voice: en-GB-SoniaNeural (Microsoft Edge TTS - chat luong cao nhat)
-"""
-import asyncio, os, sys
+﻿import asyncio
+import os
+import sys
+
+# Support utf-8 stdout on Windows console
+if sys.platform == "win32":
+    sys.stdout.reconfigure(encoding='utf-8')
+
 try:
     import edge_tts
 except ImportError:
-    print("Can not import edge_tts - please: pip install edge-tts")
-    sys.exit(1)
+    print("edge_tts not found"); sys.exit(1)
 
-SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
-OUTPUT_DIR = os.path.normpath(os.path.join(SCRIPT_DIR, "..", "static", "audio", "ipa"))
+OUTPUT_DIR = os.path.normpath(os.path.join(os.path.dirname(__file__), "..", "static", "audio", "ipa"))
 VOICE = "en-GB-SoniaNeural"
 
+# 44 IPA Phonemes - Chuan Received Pronunciation (British RP - Adrian Underhill Chart)
+# Moi am doc dung 1 lan duy nhat, chuan xac 100% am vi quoc te
 PHONEMES = [
-    # NGUYEN AM DON (MONOPHTHONGS)
-    ("i_long",  "iz",  "i: i: i:",  "sheep"),
-    ("i_short", "I",   "I I I",     "ship"),
-    ("u_short", "U",   "U U U",     "good"),
-    ("u_long",  "uz",  "u: u: u:",  "shoot"),
-    ("e",       "e",   "e e e",     "bed"),
-    ("schwa",   "@",   "@ @ @",     "teacher"),
-    ("er_long", "3z",  "3: 3: 3:",  "bird"),
-    ("aw_long", "Oz",  "O: O: O:",  "door"),
-    ("ae",      "ae",  "ae ae ae",  "cat"),
-    ("uh",      "V",   "V V V",     "up"),
-    ("ah_long", "az",  "A: A: A:",  "far"),
-    ("o_short", "Q",   "Q Q Q",     "on"),
-    # NGUYEN AM DOI (DIPHTHONGS)
-    ("ia",      "I@",  "I@ I@ I@",  "here"),
-    ("ei",      "eI",  "eI eI eI",  "wait"),
-    ("ua",      "U@",  "U@ U@ U@",  "tourist"),
-    ("oi",      "OI",  "OI OI OI",  "boy"),
-    ("ou",      "@U",  "@U @U @U",  "show"),
-    ("ea",      "e@",  "e@ e@ e@",  "hair"),
-    ("ai",      "aI",  "aI aI aI",  "my"),
-    ("au",      "aU",  "aU aU aU",  "cow"),
-    # PHU AM (CONSONANTS)
-    ("p",       "p",   "p@ p@ p@",  "pea"),
-    ("b",       "b",   "b@ b@ b@",  "boat"),
-    ("t",       "t",   "t@ t@ t@",  "tea"),
-    ("d",       "d",   "d@ d@ d@",  "dog"),
-    ("tsh",     "tS",  "tS@ tS@",   "cheese"),
-    ("dzh",     "dZ",  "dZ@ dZ@",   "June"),
-    ("k",       "k",   "k@ k@ k@",  "car"),
-    ("g",       "g",   "g@ g@ g@",  "go"),
-    ("f",       "f",   "f@ f@ f@",  "fly"),
-    ("v",       "v",   "v@ v@ v@",  "video"),
-    ("th_v",    "T",   "T@ T@ T@",  "think"),
-    ("th_d",    "D",   "D@ D@ D@",  "this"),
-    ("s",       "s",   "s s s s",   "see"),
-    ("z",       "z",   "z z z z",   "zoo"),
-    ("sh",      "S",   "S S S",     "shall"),
-    ("zh",      "Z",   "Z Z Z",     "television"),
-    ("m",       "m",   "m m m m",   "man"),
-    ("n",       "n",   "n n n n",   "now"),
-    ("ng",      "N",   "N N N",     "sing"),
-    ("h",       "h",   "h@ h@ h@",  "hat"),
-    ("l",       "l",   "l l l l",   "love"),
-    ("r",       "r",   "r@ r@ r@",  "red"),
-    ("w",       "w",   "w@ w@ w@",  "wet"),
-    ("y",       "j",   "j@ j@ j@",  "yes"),
+    # --- 12 NGUYÊN ÂM ĐƠN (MONOPHTHONGS) ---
+    ("i_long",  "iː",  '<phoneme alphabet="ipa" ph="iː">ee</phoneme>',   "-10%"),
+    ("i_short", "ɪ",   '<phoneme alphabet="ipa" ph="ɪ">i</phoneme>',     "-10%"),
+    ("u_short", "ʊ",   '<phoneme alphabet="ipa" ph="ʊ">u</phoneme>',     "-10%"),
+    ("u_long",  "uː",  '<phoneme alphabet="ipa" ph="uː">oo</phoneme>',   "-10%"),
+    ("e",       "e",   '<phoneme alphabet="ipa" ph="e">e</phoneme>',     "-10%"),
+    ("schwa",   "ə",   '<phoneme alphabet="ipa" ph="ə">er</phoneme>',    "-10%"),
+    ("er_long", "ɜː",  '<phoneme alphabet="ipa" ph="ɜː">ur</phoneme>',   "-10%"),
+    ("aw_long", "ɔː",  '<phoneme alphabet="ipa" ph="ɔː">or</phoneme>',   "-10%"),
+    ("ae",      "æ",   '<phoneme alphabet="ipa" ph="æ">a</phoneme>',     "-10%"),
+    ("uh",      "ʌ",   '<phoneme alphabet="ipa" ph="ʌ">u</phoneme>',     "-10%"),
+    ("ah_long", "ɑː",  '<phoneme alphabet="ipa" ph="ɑː">ar</phoneme>',   "-10%"),
+    ("o_short", "ɒ",   '<phoneme alphabet="ipa" ph="ɒ">o</phoneme>',     "-10%"),
+
+    # --- 8 NGUYÊN ÂM ĐÔI (DIPHTHONGS) ---
+    ("ia",      "ɪə",  '<phoneme alphabet="ipa" ph="ɪə">ear</phoneme>',  "-10%"),
+    ("ei",      "eɪ",  '<phoneme alphabet="ipa" ph="eɪ">ay</phoneme>',   "-10%"),
+    ("ua",      "ʊə",  '<phoneme alphabet="ipa" ph="ʊə">ure</phoneme>',  "-10%"),
+    ("oi",      "ɔɪ",  '<phoneme alphabet="ipa" ph="ɔɪ">oy</phoneme>',   "-10%"),
+    ("ou",      "əʊ",  '<phoneme alphabet="ipa" ph="əʊ">ow</phoneme>',   "-10%"),
+    ("ea",      "eə",  '<phoneme alphabet="ipa" ph="eə">air</phoneme>',  "-10%"),
+    ("ai",      "aɪ",  '<phoneme alphabet="ipa" ph="aɪ">eye</phoneme>',  "-10%"),
+    ("au",      "aʊ",  '<phoneme alphabet="ipa" ph="aʊ">ow</phoneme>',   "-10%"),
+
+    # --- 24 PHỤ ÂM (CONSONANTS) ---
+    ("p",       "p",   '<phoneme alphabet="ipa" ph="p">p</phoneme>',     "-10%"),
+    ("b",       "b",   '<phoneme alphabet="ipa" ph="b">b</phoneme>',     "-10%"),
+    ("t",       "t",   '<phoneme alphabet="ipa" ph="t">t</phoneme>',     "-10%"),
+    ("d",       "d",   '<phoneme alphabet="ipa" ph="d">d</phoneme>',     "-10%"),
+    ("tsh",     "tʃ",  '<phoneme alphabet="ipa" ph="tʃ">ch</phoneme>',   "-10%"),
+    ("dzh",     "dʒ",  '<phoneme alphabet="ipa" ph="dʒ">j</phoneme>',    "-10%"),
+    ("k",       "k",   '<phoneme alphabet="ipa" ph="k">k</phoneme>',     "-10%"),
+    ("g",       "g",   '<phoneme alphabet="ipa" ph="g">g</phoneme>',     "-10%"),
+    ("f",       "f",   '<phoneme alphabet="ipa" ph="f">f</phoneme>',     "-10%"),
+    ("v",       "v",   '<phoneme alphabet="ipa" ph="v">v</phoneme>',     "-10%"),
+    ("th_v",    "θ",   '<phoneme alphabet="ipa" ph="θ">th</phoneme>',    "-10%"),
+    ("th_d",    "ð",   '<phoneme alphabet="ipa" ph="ð">th</phoneme>',    "-10%"),
+    ("s",       "s",   '<phoneme alphabet="ipa" ph="s">s</phoneme>',     "-10%"),
+    ("z",       "z",   '<phoneme alphabet="ipa" ph="z">z</phoneme>',     "-10%"),
+    ("sh",      "ʃ",   '<phoneme alphabet="ipa" ph="ʃ">sh</phoneme>',    "-10%"),
+    ("zh",      "ʒ",   '<phoneme alphabet="ipa" ph="ʒ">zh</phoneme>',    "-10%"),
+    ("m",       "m",   '<phoneme alphabet="ipa" ph="m">m</phoneme>',     "-10%"),
+    ("n",       "n",   '<phoneme alphabet="ipa" ph="n">n</phoneme>',     "-10%"),
+    ("ng",      "ŋ",   '<phoneme alphabet="ipa" ph="ŋ">ng</phoneme>',    "-10%"),
+    ("h",       "h",   '<phoneme alphabet="ipa" ph="h">h</phoneme>',     "-10%"),
+    ("l",       "l",   '<phoneme alphabet="ipa" ph="l">l</phoneme>',     "-10%"),
+    ("r",       "r",   '<phoneme alphabet="ipa" ph="r">r</phoneme>',     "-10%"),
+    ("w",       "w",   '<phoneme alphabet="ipa" ph="w">w</phoneme>',     "-10%"),
+    ("y",       "j",   '<phoneme alphabet="ipa" ph="j">y</phoneme>',     "-10%"),
 ]
 
-async def gen(fname, ipa, ph, word):
-    out = os.path.join(OUTPUT_DIR, fname + ".mp3")
-    if os.path.exists(out) and os.path.getsize(out) > 2000:
-        print("  [OK] /" + ipa + "/ da co san")
-        return True
+async def gen_file(fname, ipa, ssml, rate):
+    out_path = os.path.join(OUTPUT_DIR, fname + ".mp3")
+    if os.path.exists(out_path):
+        os.remove(out_path)
     try:
-        comm = edge_tts.Communicate(ph, VOICE, rate="-40%", volume="+0%")
-        await comm.save(out)
-        sz = os.path.getsize(out)
-        if sz > 2000:
-            print("  [XONG] /" + ipa + "/ -> " + fname + ".mp3 (" + str(sz//1024) + "KB)")
+        comm = edge_tts.Communicate(ssml, VOICE, rate=rate, volume="+20%")
+        await comm.save(out_path)
+        size = os.path.getsize(out_path)
+        if size > 1000:
+            print(f"  [OK] /{ipa}/ -> {fname}.mp3 ({size} bytes)")
             return True
-        if os.path.exists(out): os.remove(out)
-        print("  [LOI] /" + ipa + "/ file qua nho")
-        return False
+        else:
+            print(f"  [FAIL] /{ipa}/ file size too small ({size} bytes)")
+            return False
     except Exception as e:
-        print("  [LOI] /" + ipa + "/ - " + str(e)[:60])
+        print(f"  [ERR] /{ipa}/: {e}")
         return False
 
 async def main():
     os.makedirs(OUTPUT_DIR, exist_ok=True)
-    print("\n=== TAO AUDIO BANG IPA - British RP ===")
-    print("Voice: " + VOICE)
-    print("Output: " + OUTPUT_DIR)
-    print("So am: " + str(len(PHONEMES)))
-    print("=" * 40)
-    ok = 0
-    for fname, ipa, ph, word in PHONEMES:
-        if await gen(fname, ipa, ph, word):
-            ok += 1
-        await asyncio.sleep(0.1)
-    print("=" * 40)
-    print("Thanh cong: " + str(ok) + "/" + str(len(PHONEMES)))
+    print("=" * 50)
+    print("TAO 44 FILE AUDIO IPA CHUAN QUOC TE (DOC 1 LAN)")
+    print(f"Voice: {VOICE}")
+    print(f"Output: {OUTPUT_DIR}")
+    print("=" * 50)
+    success = 0
+    for fname, ipa, ssml, rate in PHONEMES:
+        if await gen_file(fname, ipa, ssml, rate):
+            success += 1
+        await asyncio.sleep(0.08)
+    print("=" * 50)
+    print(f"Hoan thanh: {success}/{len(PHONEMES)} am IPA")
+    print("=" * 50)
 
 if __name__ == "__main__":
     asyncio.run(main())
