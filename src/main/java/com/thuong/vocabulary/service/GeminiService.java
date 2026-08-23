@@ -4,35 +4,155 @@ import com.google.genai.Client;
 import com.google.genai.types.Content;
 import com.google.genai.types.GenerateContentResponse;
 import com.google.genai.types.Part;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
 public class GeminiService {
 
-    private final Client client;
+    // Danh sách các Client tương ứng với từng API Key trong Pool
+    private final List<Client> clients = new ArrayList<>();
+    private final List<String> maskedKeys = new ArrayList<>();
+    private final AtomicInteger keyIndex = new AtomicInteger(0);
 
-    public GeminiService() {
+    // Các model được hỗ trợ trên hệ thống theo thứ tự ưu tiên
+    private static final String MODEL_FLASH_LITE = "gemini-3.5-flash-lite";
+    private static final String MODEL_FLASH = "gemini-3.6-flash";
 
-        String apiKey = System.getenv("GEMINI_API_KEY");
+    public GeminiService(@Value("${gemini.api-keys:${gemini.api-key:}}") String configApiKeys) {
+        Set<String> uniqueKeys = new LinkedHashSet<>();
 
-        if (apiKey != null && !apiKey.isBlank()) {
-            this.client = Client.builder()
-                    .apiKey(apiKey)
-                    .build();
+        // 1. Đọc từ biến môi trường GEMINI_API_KEY & GEMINI_API_KEYS
+        collectKeys(uniqueKeys, System.getenv("GEMINI_API_KEY"));
+        collectKeys(uniqueKeys, System.getenv("GEMINI_API_KEYS"));
+
+        // 2. Đọc từ application.properties
+        collectKeys(uniqueKeys, configApiKeys);
+
+        for (String rawKey : uniqueKeys) {
+            String trimmedKey = rawKey.trim();
+            if (!trimmedKey.isEmpty()) {
+                try {
+                    Client client = Client.builder()
+                            .apiKey(trimmedKey)
+                            .build();
+                    clients.add(client);
+                    maskedKeys.add(maskKey(trimmedKey));
+                } catch (Exception e) {
+                    System.err.println("[GeminiService] Lỗi khi khởi tạo Gemini Client với key: "
+                            + maskKey(trimmedKey) + " - " + e.getMessage());
+                }
+            }
+        }
+
+        if (clients.isEmpty()) {
+            System.err.println("[GeminiService] ⚠️ CẢNH BÁO: Chưa cấu hình GEMINI_API_KEY. Vui lòng thiết lập ít nhất 1 API key.");
         } else {
-            System.err.println("[GeminiService] CANH BAO: GEMINI_API_KEY chua duoc thiet lap.");
-            this.client = null;
+            System.out.println("=====================================================");
+            System.out.printf("[GeminiService] ✅ ĐÃ KHỞI TẠO THÀNH CÔNG %d GEMINI API KEY(S) TRONG POOL:%n", clients.size());
+            for (int i = 0; i < maskedKeys.size(); i++) {
+                System.out.printf("  👉 Key #%d: %s%n", i + 1, maskedKeys.get(i));
+            }
+            System.out.printf("  🤖 Model chính: %s | Model dự phòng: %s%n", MODEL_FLASH_LITE, MODEL_FLASH);
+            System.out.println("=====================================================");
         }
     }
 
-    // =====================================================
-    // TAO DOAN VAN
-    // =====================================================
+    private void collectKeys(Set<String> destination, String rawKeys) {
+        if (rawKeys == null || rawKeys.isBlank()) {
+            return;
+        }
+        String[] tokens = rawKeys.split("[,;\\n\\r]+");
+        for (String token : tokens) {
+            String k = token.trim();
+            if (!k.isEmpty()) {
+                destination.add(k);
+            }
+        }
+    }
 
+    private String maskKey(String key) {
+        if (key == null || key.length() <= 8) {
+            return "****";
+        }
+        return key.substring(0, 4) + "..." + key.substring(key.length() - 4);
+    }
+
+    // =========================================================
+    // HÀM GỌI GEMINI AN TOÀN VỚI TỰ ĐỘNG XOAY VÒNG KEY & FALLBACK MODEL
+    // =========================================================
+    private String goiGeminiAnToan(String prompt, String[] danhSachModel) throws Exception {
+        if (clients.isEmpty()) {
+            throw new IllegalStateException("GEMINI_API_KEY chưa được thiết lập trên server.");
+        }
+
+        int tongSoClient = clients.size();
+        Exception loiCuoiCung = null;
+
+        // Thử lần lượt từng model
+        for (String modelName : danhSachModel) {
+            // Với mỗi model, thử qua toàn bộ các API Key trong pool
+            for (int attempt = 0; attempt < tongSoClient; attempt++) {
+                int index = keyIndex.getAndUpdate(i -> (i + 1) % tongSoClient);
+                Client currentClient = clients.get(index);
+                String currentMasked = maskedKeys.get(index);
+
+                try {
+                    GenerateContentResponse response = currentClient.models.generateContent(
+                            modelName,
+                            prompt,
+                            null
+                    );
+
+                    if (response != null && response.text() != null && !response.text().isBlank()) {
+                        return response.text();
+                    }
+                } catch (Exception e) {
+                    loiCuoiCung = e;
+                    String msg = e.getMessage() != null ? e.getMessage() : e.toString();
+                    System.err.printf("[GeminiService] Key #%d (%s) với model '%s' gặp lỗi: %s%n",
+                            index + 1, currentMasked, modelName, msg);
+
+                    if (tongSoClient > 1) {
+                        System.out.printf("[GeminiService] 🔄 Đang tự động chuyển sang Key tiếp theo trong pool...%n");
+                    }
+
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException ignored) {}
+                }
+            }
+        }
+
+        // Nếu tất cả các key và model đều tạm thời quá tải, chờ 1 giây và thử lại lần cuối với model chính
+        if (tongSoClient > 0) {
+            try {
+                System.out.println("[GeminiService] ⏳ Đang chờ 1 giây để thử lại lần cuối...");
+                Thread.sleep(1000);
+                int retryIndex = keyIndex.getAndUpdate(i -> (i + 1) % tongSoClient);
+                GenerateContentResponse response = clients.get(retryIndex).models.generateContent(
+                        danhSachModel[0],
+                        prompt,
+                        null
+                );
+                if (response != null && response.text() != null && !response.text().isBlank()) {
+                    return response.text();
+                }
+            } catch (Exception retryEx) {
+                loiCuoiCung = retryEx;
+            }
+        }
+
+        throw loiCuoiCung != null ? loiCuoiCung : new RuntimeException("Tất cả Gemini API Key và Model đều không phản hồi.");
+    }
+
+    // =====================================================
+    // 1. TẠO ĐOẠN VĂN LUYỆN DỊCH
+    // =====================================================
     public String taoDoanVan(String danhSachTu) {
-
         String prompt = """
                 Ban la giao vien tieng Anh ban xu.
                 Hay viet mot doan van tieng Anh ngan gon, tu nhien, troi chay va co y nghia mach lac (khoang 80 den 140 tu) de nguoi hoc luyen dich.
@@ -47,23 +167,17 @@ public class GeminiService {
                 Danh sach tu vung cua nguoi hoc:
                 """ + danhSachTu;
 
-
-        GenerateContentResponse response =
-                client.models.generateContent(
-                        "gemini-3.5-flash-lite",
-                        prompt,
-                        null
-                );
-
-        return response.text();
+        try {
+            return goiGeminiAnToan(prompt, new String[]{MODEL_FLASH_LITE, MODEL_FLASH});
+        } catch (Exception e) {
+            throw new RuntimeException("Lỗi tạo đoạn văn: " + e.getMessage(), e);
+        }
     }
 
     // =====================================================
-    // KIEM TRA BAN DICH
+    // 2. KIỂM TRA BẢN DỊCH
     // =====================================================
-
     public String kiemTraBanDich(String doanVan, String banDich) {
-
         String prompt = """
             Ban la giao vien tieng Anh dang cham bai dich cho mot nguoi Viet Nam hoc tieng Anh.
 
@@ -106,22 +220,17 @@ public class GeminiService {
             Khong giai thich them ngoai cac muc tren.
             """.formatted(doanVan, banDich);
 
-        GenerateContentResponse response =
-                client.models.generateContent(
-                        "gemini-3.6-flash",
-                        prompt,
-                        null
-                );
-
-        return response.text();
+        try {
+            return goiGeminiAnToan(prompt, new String[]{MODEL_FLASH, MODEL_FLASH_LITE});
+        } catch (Exception e) {
+            throw new RuntimeException("Lỗi kiểm tra bản dịch: " + e.getMessage(), e);
+        }
     }
 
     // =====================================================
-    // TAO DOAN VAN DIEN VAO CHO TRONG (CLOZE TEST)
+    // 3. TẠO ĐOẠN VĂN ĐIỀN VÀO CHỖ TRỐNG (CLOZE TEST)
     // =====================================================
-
     public String taoDoanVanDienTu(String danhSachTu) {
-
         String prompt = """
                 Ban la giao vien tieng Anh ban xu.
                 Hay viet mot doan van tieng Anh tu nhien, co cot truyen hoac ngu canh doi song thuc te ro rang (khoang 80 - 140 tu) de tao bai tap "Dien tu vao cho trong".
@@ -143,22 +252,17 @@ public class GeminiService {
                 Danh sach tu vung cua nguoi hoc:
                 """ + danhSachTu;
 
-        GenerateContentResponse response =
-                client.models.generateContent(
-                        "gemini-3.5-flash-lite",
-                        prompt,
-                        null
-                );
-
-        return response.text();
+        try {
+            return goiGeminiAnToan(prompt, new String[]{MODEL_FLASH_LITE, MODEL_FLASH});
+        } catch (Exception e) {
+            throw new RuntimeException("Lỗi tạo bài tập điền từ: " + e.getMessage(), e);
+        }
     }
 
     // =====================================================
-    // TAO CAC CAU LUYEN NGHE DIEN (DICTATION)
+    // 4. TẠO CÁC CÂU LUYỆN NGHE ĐIỀN (DICTATION)
     // =====================================================
-
     public String taoCauNgheDien(String danhSachTu, int soCau) {
-
         String prompt = """
                 Ban la giao vien tieng Anh ban xu.
                 Hay tao chinh xac %d cau tieng Anh ngan gon, tu nhien, thiet thuc (moi cau tu 5 den 12 tu) de nguoi hoc luyen nghe va chep chinh ta (Dictation).
@@ -178,22 +282,19 @@ public class GeminiService {
                 %s
                 """.formatted(soCau, soCau, soCau, danhSachTu);
 
-        GenerateContentResponse response =
-                client.models.generateContent(
-                        "gemini-3.5-flash-lite",
-                        prompt,
-                        null
-                );
-
-        return response.text();
+        try {
+            return goiGeminiAnToan(prompt, new String[]{MODEL_FLASH_LITE, MODEL_FLASH});
+        } catch (Exception e) {
+            throw new RuntimeException("Lỗi tạo câu nghe điền: " + e.getMessage(), e);
+        }
     }
 
     // =====================================================
-    // CHAM DIEM PHAT AM QUA AUDIO FILE BANG GEMINI MULTIMODAL
-    // Chuan IELTS / CEFR / Forvo - 5 tieu chi quoc te
+    // 5. CHẤM ĐIỂM PHÁT ÂM QUA AUDIO FILE BẰNG GEMINI MULTIMODAL
+    // Chuan IELTS / CEFR / Forvo - 5 tiêu chí quốc tế
     // =====================================================
     public String chamDiemPhatAmAudio(byte[] audioBytes, String contentType, String tuGoc, String phienAm) {
-        if (client == null) {
+        if (clients.isEmpty()) {
             return "{\"score\":0,\"status\":\"error\",\"recognizedText\":\"\",\"ipaRecognized\":\"\",\"ipaTarget\":"
                 + "\"\",\"breakdown\":{\"phonemeAccuracy\":0,\"stress\":0,\"vowelQuality\":0,\"consonantClarity\":0,\"fluency\":0},"
                 + "\"phonemeDetails\":[],\"correctParts\":[],\"incorrectParts\":[],"
@@ -276,26 +377,54 @@ public class GeminiService {
                     .parts(List.of(audioPart, promptPart))
                     .build();
 
-            GenerateContentResponse response = client.models.generateContent(
-                    "gemini-3.6-flash",
-                    content,
-                    null
-            );
+            int tongSoClient = clients.size();
+            String[] models = new String[]{MODEL_FLASH, MODEL_FLASH_LITE};
+            Exception lastAudioEx = null;
 
-            String result = response.text();
-            if (result != null) {
-                result = result.trim();
-                if (result.startsWith("```json")) {
-                    result = result.substring(7);
-                } else if (result.startsWith("```")) {
-                    result = result.substring(3);
+            for (String modelName : models) {
+                for (int attempt = 0; attempt < tongSoClient; attempt++) {
+                    int index = keyIndex.getAndUpdate(i -> (i + 1) % tongSoClient);
+                    Client currentClient = clients.get(index);
+                    String currentMasked = maskedKeys.get(index);
+
+                    try {
+                        GenerateContentResponse response = currentClient.models.generateContent(
+                                modelName,
+                                content,
+                                null
+                        );
+
+                        String result = response.text();
+                        if (result != null) {
+                            result = result.trim();
+                            if (result.startsWith("```json")) {
+                                result = result.substring(7);
+                            } else if (result.startsWith("```")) {
+                                result = result.substring(3);
+                            }
+                            if (result.endsWith("```")) {
+                                result = result.substring(0, result.length() - 3);
+                            }
+                            return result.trim();
+                        }
+                    } catch (Exception e) {
+                        lastAudioEx = e;
+                        System.err.printf("[GeminiService] Audio - Key #%d (%s) model '%s' gặp sự cố: %s%n",
+                                index + 1, currentMasked, modelName, e.getMessage());
+
+                        if (tongSoClient > 1) {
+                            System.out.println("[GeminiService] 🔄 Đang tự động chuyển sang Key tiếp theo cho Audio...");
+                        }
+
+                        try {
+                            Thread.sleep(150);
+                        } catch (InterruptedException ignored) {}
+                    }
                 }
-                if (result.endsWith("```")) {
-                    result = result.substring(0, result.length() - 3);
-                }
-                result = result.trim();
             }
-            return result;
+
+            throw lastAudioEx != null ? lastAudioEx : new RuntimeException("Tất cả key đều không chấm được âm thanh.");
+
         } catch (Exception e) {
             e.printStackTrace();
             String errMsg = e.getMessage() != null ? e.getMessage().replace("\"", "'") : "Unknown error";
