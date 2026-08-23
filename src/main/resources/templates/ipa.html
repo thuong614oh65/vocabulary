@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Bảng IPA – Phát âm chuẩn ZIM Academy</title>
+    <title>Bảng IPA – Phát âm chuẩn American IPA Chart</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" th:href="@{/css/ipa.css(v=5)}">
+    <link rel="stylesheet" th:href="@{/css/ipa.css(v=6)}">
 </head>
 <body>
 
@@ -13,8 +13,8 @@
      HEADER
      ============================== -->
 <div class="ipa-page-header">
-    <h1>📢 Bảng Phiên Âm Tiếng Anh IPA</h1>
-    <p>44 âm chuẩn ZIM Academy · Nhấn ô để nghe âm thanh video · Bấm icon 🎬 để xem video khẩu hình</p>
+    <h1>📢 Bảng Phiên Âm Tiếng Anh IPA (American Accent)</h1>
+    <p>44 âm chuẩn American IPA Chart · Nhấn ô để nghe âm phát 1 lần · Bấm icon 🎬 để xem video khẩu hình</p>
     <a href="/" class="btn-back-home">← Trang chủ</a>
 </div>
 
@@ -349,7 +349,7 @@
             </div>
             <div class="modal-footer ipa-modal-footer">
                 <button type="button" class="btn btn-outline-primary" id="btnModalPlayAudio">
-                    🔄 Phát lại video này
+                    🔊 Nghe âm chuẩn American IPA
                 </button>
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
             </div>
@@ -357,19 +357,15 @@
     </div>
 </div>
 
-<!-- Container phát âm thanh video ẩn khi bấm vào ô -->
-<div id="hiddenVideoAudioContainer" style="position: absolute; width: 1px; height: 1px; overflow: hidden; opacity: 0.001; pointer-events: none; top: -100px; left: -100px;"></div>
-
 <!-- Toast notification -->
 <div class="play-toast" id="playToast"></div>
 
-<!-- Bootstrap 5 JS & Vimeo Player SDK -->
+<!-- Bootstrap 5 JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://player.vimeo.com/api/player.js"></script>
 
 <script>
 // ============================================================
-//  Dữ liệu 44 Âm IPA chuẩn ZIM Academy & Quốc tế
+//  Dữ liệu 44 Âm IPA chuẩn American IPA Chart & Quốc tế
 // ============================================================
 const IPA_DATA = {
   "i_long": {
@@ -902,71 +898,82 @@ const IPA_DATA = {
   }
 };
 
+const BASE = '/audio/ipa/';
+const VERSION = '6.0';
+const audioCache = {};
 let currentCell = null;
 let toastTimer = null;
 let currentModalKey = null;
-let activeVimeoPlayer = null;
-let currentPlayingKey = null;
+
+const ALL_PHONEMES = Object.keys(IPA_DATA);
+
+// Tạo Audio Object chuẩn American IPA Chart
+function createAudio(key) {
+    const a = new Audio(BASE + key + '.mp3?v=' + VERSION);
+    a.preload = 'auto';
+    return a;
+}
+
+// Pre-load tất cả 44 file audio
+ALL_PHONEMES.forEach(key => {
+    const a = createAudio(key);
+    a.load();
+    audioCache[key] = a;
+});
 
 function showToast(ipa, words) {
     const toast = document.getElementById('playToast');
-    toast.textContent = '🔊 Đang phát âm thanh video: /' + ipa + '/  (' + words + ')';
+    toast.textContent = '🔊 /' + ipa + '/  (Ví dụ: ' + words + ')';
     toast.classList.add('show');
     clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => toast.classList.remove('show'), 3500);
+    toastTimer = setTimeout(() => toast.classList.remove('show'), 2500);
 }
 
-// Dừng toàn bộ âm thanh video đang phát
+// Dừng toàn bộ âm thanh đang phát ngay lập tức
 function stopAllAudio() {
-    const container = document.getElementById('hiddenVideoAudioContainer');
-    if (container) {
-        container.innerHTML = '';
-    }
-    activeVimeoPlayer = null;
-    currentPlayingKey = null;
-
+    ALL_PHONEMES.forEach(k => {
+        if (audioCache[k]) {
+            audioCache[k].pause();
+            audioCache[k].currentTime = 0;
+        }
+    });
     if (currentCell) {
         currentCell.classList.remove('playing');
-        currentCell = null;
     }
 }
 
-// Phát âm thanh video khi bấm vào ô ở ngoài
+// Phát âm thanh khi bấm vào ô ở ngoài (Bản chuẩn American IPA Chart)
 function playPhoneme(cell) {
     const key = cell.dataset.audio;
     const item = IPA_DATA[key];
     if (!item) return;
 
-    // Nếu bấm lại đúng ô đang phát -> dừng
-    if (currentPlayingKey === key) {
-        stopAllAudio();
-        return;
+    // Reset visual
+    if (currentCell && currentCell !== cell) {
+        currentCell.classList.remove('playing');
     }
-
-    // Dừng âm trước đó ngay lập tức
-    stopAllAudio();
-
     currentCell = cell;
-    currentPlayingKey = key;
     cell.classList.add('playing');
 
-    // Chèn iframe phát âm thanh video chính xác của ZIM
-    const container = document.getElementById('hiddenVideoAudioContainer');
-    const iframeId = 'vimeo_hidden_' + Date.now();
-    container.innerHTML = `<iframe id="${iframeId}" src="${item.vimeo}&autoplay=1&muted=0" allow="autoplay" style="width:200px;height:150px;"></iframe>`;
+    // Bấm đọc từ khác -> dừng ngay từ trước đó
+    stopAllAudio();
 
-    const iframeEl = document.getElementById(iframeId);
-    if (typeof Vimeo !== 'undefined' && iframeEl) {
-        try {
-            activeVimeoPlayer = new Vimeo.Player(iframeEl);
-            activeVimeoPlayer.on('ended', () => {
-                if (currentCell) currentCell.classList.remove('playing');
-                currentPlayingKey = null;
-            });
-        } catch (e) {
-            console.log('Vimeo SDK hook:', e);
-        }
+    if (!audioCache[key]) {
+        audioCache[key] = createAudio(key);
     }
+
+    const audio = audioCache[key];
+    audio.currentTime = 0;
+
+    audio.onended = () => cell.classList.remove('playing');
+    audio.onerror = () => {
+        cell.classList.remove('playing');
+        console.warn('Audio not found:', key);
+    };
+
+    audio.play().catch(() => {
+        cell.classList.remove('playing');
+    });
 
     showToast(item.symbol, item.words);
 }
@@ -999,11 +1006,13 @@ function openVideoGuide(event, key) {
     modal.show();
 }
 
-// Nút phát lại video trong modal
+// Nút nghe lại âm trong modal
 document.getElementById('btnModalPlayAudio').addEventListener('click', function () {
     if (currentModalKey && IPA_DATA[currentModalKey]) {
-        const iframe = document.getElementById('modalVideoIframe');
-        iframe.src = IPA_DATA[currentModalKey].vimeo + '&autoplay=1';
+        stopAllAudio();
+        const a = audioCache[currentModalKey] || createAudio(currentModalKey);
+        a.currentTime = 0;
+        a.play().catch(e => console.warn(e));
     }
 });
 
