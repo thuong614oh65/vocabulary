@@ -194,30 +194,33 @@ public class GeminiService {
             Hay danh gia theo cac yeu cau sau:
             1. Kiem tra xem ban dich co truyen dat dung y nghia cua doan van tieng Anh hay khong.
             2. Khong yeu cau ban dich phai giong tung chu voi ban dich mau.
-            3. Neu nguoi hoc dung cach dien dat tieng Viet khac nhung van dung nghia thi coi la dung.
-            4. Phan biet ro: Dung / Gan dung / Sai hoac thieu y
-            5. Neu co loi, hay chi ra nhung y bi sai, thieu hoac dich chua chinh xac.
-            6. Dua ra ban dich tieng Viet tu nhien, chinh xac de nguoi hoc tham khao.
-            7. Dua ra goi y sua ngan gon, de hieu cho nguoi hoc.
+            3. Neu nguoi hoc dung cach dien dat tieng Viet khac nhung van dung nghia thi coi la Dung.
+            4. Phan biet ro: Dung / Gan dung / Sai hoac thieu y.
+            5. Neu co loi, hay chi ra ro loi sai tu vung, ngu phap hoac y thieu. Neu dich dung hoan toan, ghi ro "Khong co loi nao".
+            6. Dua ra ban dich tieng Viet chuan xac, tu nhien nhat de nguoi hoc tham khao.
+            7. Dua ra loi khuyen/goi y ngan gon giup nguoi hoc cai thien cach dich.
 
-            Hay tra ket qua theo dung dinh dang:
+            BAT BUOC tra ve ket qua theo dung dinh dang cac the ben duoi (giu nguyen ten the, khong them markdown nhu ** vao ten the):
 
-            DANH GIA:
-            [Dung / Gan dung / Sai hoac thieu y]
+            [DANH_GIA]
+            (Ghi 1 trong 3 muc: Dung / Gan dung / Sai hoac thieu y)
+            [/DANH_GIA]
 
-            NHAN XET:
-            [Nhan xet ngan gon]
+            [NHAN_XET]
+            (Nhan xet ngan gon, dong vien nguoi hoc ve ban dich)
+            [/NHAN_XET]
 
-            LOI HOAC Y THIEU:
-            [Cac loi hoac y bi thieu]
+            [LOI_HOAC_THIEU]
+            (Chi ra loi sai hoac y thieu. Neu ban dich tot khong co loi, ghi "Khong co loi nao")
+            [/LOI_HOAC_THIEU]
 
-            BAN DICH GOI Y:
-            [Ban dich tieng Viet chinh xac va tu nhien]
+            [BAN_DICH_GOI_Y]
+            (Ban dich tieng Viet day du, chuan xac va tu nhien nhat)
+            [/BAN_DICH_GOI_Y]
 
-            GOI Y CAI THIEN:
-            [Goi y ngan gon]
-
-            Khong giai thich them ngoai cac muc tren.
+            [GOI_Y_CAI_THIEN]
+            (Goi y cach dien dat, tu vung hay hon neu co)
+            [/GOI_Y_CAI_THIEN]
             """.formatted(doanVan, banDich);
 
         try {
@@ -312,20 +315,23 @@ public class GeminiService {
                 1. MUC TIEU HOC TAP: Moi cau phai long ghep kheo leo it nhat 1 tu vung trong danh sach cua nguoi hoc ben duoi.
                 2. CHUAN NGU PHAP VA DUNG NGU CANH: Cau van phai hoan toan tu nhien, chuan xac 100%% ngu phap tieng Anh. Tuyet doi khong ghep tu vo nghia.
                 3. LINH HOAT THEM TU: Neu danh sach tu vung it, hay bo sung cac tu ngu quen thuoc, tu nhien.
-                4. Tao dung %d cau (danh so tu 1 den %d).
-                5. NGHIA TIENG VIET CHUAN XAC: Bat buoc phai co nghia tieng Viet ro rang, chuan xac de lam goi y cho nguoi hoc.
-                6. Tra ve dung dinh dang tung dong (khong them bat ky loi chao hay giai thich nao khac):
-                   [CAU:so_thu_tu:cau_tieng_anh:nghia_tieng_viet]
-                   Vi du:
-                   [CAU:1:She drinks fresh water.:Cô ấy uống nước sạch.]
-                   [CAU:2:The cat sleeps peacefully.:Con mèo ngủ một cách yên bình.]
+                4. SO LUONG: Tao dung chinh xac %d cau (danh so tu 1 den %d). Khong tao thieu, khong tao thua.
+                5. NGHIA TIENG VIET CHUAN XAC: Bat buoc phai co nghia tieng Viet ro rang, chuan xac 100%% bang tieng Viet lam goi y cho nguoi hoc.
+                6. DINH DANG BAT BUOC: Tra ve DUY NHAT mot mang JSON hop le (khong co bat ky chu nao ngoai JSON).
+                   Moi phan tu gom 3 truong: "num" (so thu tu 1..%d), "english" (cau tieng Anh hoan chinh), "meaning" (dich nghia tieng Viet tu nhien).
+                   
+                   Vi du mau JSON:
+                   [
+                     {"num": 1, "english": "She drinks fresh water every morning.", "meaning": "Cô ấy uống nước sạch mỗi buổi sáng."},
+                     {"num": 2, "english": "The cat sleeps peacefully on the chair.", "meaning": "Con mèo ngủ một cách yên bình trên ghế."}
+                   ]
 
                 Danh sach tu vung cua nguoi hoc:
                 %s
-                """.formatted(soCau, capDo, quyTacCapDo, soCau, soCau, danhSachTu);
+                """.formatted(soCau, capDo, quyTacCapDo, soCau, soCau, soCau, danhSachTu);
 
         try {
-            return goiGeminiAnToan(prompt, new String[]{MODEL_FLASH_LITE, MODEL_FLASH});
+            return goiGeminiAnToan(prompt, new String[]{MODEL_FLASH, MODEL_FLASH_LITE});
         } catch (Exception e) {
             throw new RuntimeException("Lỗi tạo câu nghe điền: " + e.getMessage(), e);
         }

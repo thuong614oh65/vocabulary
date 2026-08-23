@@ -35,44 +35,87 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     // =========================================================
-    // PARSE VÀ RENDER DANH SÁCH CÂU
-    // Hỗ trợ format: [CAU:1:English sentence:Nghĩa tiếng Việt]
+    // PARSE VÀ RENDER DANH SÁCH CÂU (JSON + REGEX FALLBACK)
     // =========================================================
     function parseVaRenderDanhSachCau(text) {
-        // Khớp cả [CAU:...], [CÂU:...], [cau:...], [câu:...]
-        const regex = /\[(?:CAU|CÂU|cau|câu):(\d+):([^:]+):?([^\]]*)\]/gi;
         let dsCau = [];
-        let match;
-        let index = 0;
 
-        while ((match = regex.exec(text)) !== null) {
-            index++;
-            dsCau.push({
-                num: match[1] || index,
-                english: match[2].trim(),
-                meaning: match[3] ? match[3].trim() : ""
-            });
+        // 1. Thử parse JSON trước (Định dạng AI chuẩn nhất)
+        try {
+            let jsonText = text.trim();
+            // Bỏ code block markdown ```json ... ``` nếu có
+            if (jsonText.startsWith("```")) {
+                jsonText = jsonText.replace(/^```[a-zA-Z]*\n?/, "").replace(/```$/, "").trim();
+            }
+            const startBracket = jsonText.indexOf("[");
+            const endBracket = jsonText.lastIndexOf("]");
+            if (startBracket !== -1 && endBracket !== -1 && endBracket > startBracket) {
+                const subJson = jsonText.substring(startBracket, endBracket + 1);
+                const parsed = JSON.parse(subJson);
+                if (Array.isArray(parsed) && parsed.length > 0) {
+                    parsed.forEach(function (item, idx) {
+                        let eng = (item.english || item.cau_tieng_anh || item.cau || "").trim();
+                        let vi = (item.meaning || item.nghia_tieng_viet || item.nghia || "").trim();
+                        if (eng) {
+                            dsCau.push({
+                                num: item.num || (idx + 1),
+                                english: eng,
+                                meaning: vi
+                            });
+                        }
+                    });
+                }
+            }
+        } catch (e) {
+            console.warn("JSON parse thất bại, chuyển sang regex fallback:", e);
         }
 
-        // Fallback nếu format dạng dòng thường:
+        // 2. Nếu JSON không ra kết quả, dùng Regex linh hoạt cho [CAU:1:English:Vietnamese] hoặc [CAU:1:English] [Vietnamese]
+        if (dsCau.length === 0) {
+            const regex = /\[(?:CAU|CÂU|cau|câu)[\s:]*(\d*)[\s:|]*([^\]:]+)(?::|\]\s*\[)?([^\]]*)\]?/gi;
+            let match;
+            let count = 0;
+
+            while ((match = regex.exec(text)) !== null) {
+                let numStr = match[1];
+                let eng = (match[2] || "").trim();
+                let vi = (match[3] || "").trim();
+
+                // Lọc bỏ ký tự thừa
+                eng = eng.replace(/^\[+|\]+$/g, "").trim();
+                vi = vi.replace(/^\[+|\]+$/g, "").trim();
+
+                if (eng.length > 2) {
+                    count++;
+                    dsCau.push({
+                        num: numStr ? parseInt(numStr, 10) : count,
+                        english: eng,
+                        meaning: vi
+                    });
+                }
+            }
+        }
+
+        // 3. Fallback bóc tách từng dòng nếu 2 cách trên chưa có kết quả
         if (dsCau.length === 0) {
             const lines = text.split("\n");
+            let count = 0;
             lines.forEach(function (line) {
-                const trimmed = line.trim();
-                if (!trimmed) return;
+                let trimmed = line.trim();
+                if (!trimmed || trimmed.startsWith("```") || trimmed.startsWith("[")) return;
 
-                // Thử tách theo dấu : hoặc -
-                const colonIdx = trimmed.indexOf(":");
-                if (colonIdx > 0 && !trimmed.startsWith("http")) {
-                    const left = trimmed.substring(0, colonIdx)
-                        .replace(/^\d+[\.\-\)]\s*/, "")
-                        .replace(/^\[(?:CAU|CÂU|cau|câu):?\d*\]?\s*/i, "")
-                        .trim();
-                    const right = trimmed.substring(colonIdx + 1).replace(/\]$/, "").trim();
+                // Xóa số thứ tự đầu dòng ví dụ "1. "
+                trimmed = trimmed.replace(/^\d+[\.\-\)]\s*/, "").trim();
+
+                // Tách tiếng Anh và tiếng Việt theo dấu : hoặc -
+                let parts = trimmed.split(/[:\-\—]/);
+                if (parts.length >= 2) {
+                    let left = parts[0].trim();
+                    let right = parts.slice(1).join(" - ").trim();
                     if (left.length > 2) {
-                        index++;
+                        count++;
                         dsCau.push({
-                            num: index,
+                            num: count,
                             english: left,
                             meaning: right
                         });
@@ -80,18 +123,18 @@ document.addEventListener("DOMContentLoaded", function () {
                     }
                 }
 
-                const cleanLine = trimmed.replace(/^\d+[\.\-\)]\s*/, "").trim();
-                if (cleanLine.length > 3) {
-                    index++;
+                if (trimmed.length > 3) {
+                    count++;
                     dsCau.push({
-                        num: index,
-                        english: cleanLine,
+                        num: count,
+                        english: trimmed,
                         meaning: ""
                     });
                 }
             });
         }
 
+        // Cập nhật số lượng câu hiển thị trên giao diện
         if (tongSoCauText) {
             tongSoCauText.textContent = dsCau.length;
         }
@@ -99,6 +142,7 @@ document.addEventListener("DOMContentLoaded", function () {
         if (!dictationList) return;
         dictationList.innerHTML = "";
 
+        // Render từng câu hỏi
         dsCau.forEach(function (cau) {
             const card = document.createElement("div");
             card.className = "sentence-card";
@@ -107,6 +151,10 @@ document.addEventListener("DOMContentLoaded", function () {
             card.dataset.answer = cau.english;
             card.dataset.meaning = cau.meaning || "";
 
+            const safeMeaning = cau.meaning 
+                ? cau.meaning.replace(/</g, "&lt;").replace(/>/g, "&gt;") 
+                : "(Đang nghe và viết lại câu theo ngữ cảnh)";
+
             card.innerHTML = `
                 <div class="sentence-header">
                     <div class="sentence-number">
@@ -114,13 +162,13 @@ document.addEventListener("DOMContentLoaded", function () {
                     </div>
 
                     <div class="audio-controls">
-                        <button type="button" class="btn btn-audio btn-audio-normal" onclick="phatAmCau('${cau.english.replace(/'/g, "\\'")}', 1.0)" title="Nghe với tốc độ chuẩn">
+                        <button type="button" class="btn btn-audio btn-audio-normal" title="Nghe với tốc độ chuẩn (1.0x)">
                             🔊 Nghe chuẩn (1.0x)
                         </button>
-                        <button type="button" class="btn btn-audio btn-audio-slow" onclick="phatAmCau('${cau.english.replace(/'/g, "\\'")}', 0.75)" title="Nghe với tốc độ chậm">
+                        <button type="button" class="btn btn-audio btn-audio-slow" title="Nghe với tốc độ chậm (0.75x)">
                             🐢 Nghe chậm (0.75x)
                         </button>
-                        <button type="button" class="btn btn-hint-toggle" id="btn-hint-${cau.num}" onclick="toggleGoiY(${cau.num})" title="Xem nghĩa tiếng Việt của câu này">
+                        <button type="button" class="btn btn-hint-toggle" id="btn-hint-${cau.num}" title="Xem nghĩa tiếng Việt của câu này">
                             💡 Gợi ý nghĩa
                         </button>
                     </div>
@@ -130,7 +178,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 <div class="hint-box" id="hint-box-${cau.num}" style="display: none;">
                     <div class="hint-inner">
                         <span class="hint-badge">💡 Gợi ý nghĩa câu:</span>
-                        <span class="hint-text">${cau.meaning ? cau.meaning : '(Đang nghe và viết lại câu theo nghĩa ngữ cảnh)'}</span>
+                        <span class="hint-text">${safeMeaning}</span>
                     </div>
                 </div>
 
@@ -148,6 +196,27 @@ document.addEventListener("DOMContentLoaded", function () {
                 </div>
             `;
 
+            // Gán sự kiện click an toàn qua JavaScript (KHÔNG DÙNG ONCLICK TRONG HTML)
+            const btnNormal = card.querySelector(".btn-audio-normal");
+            const btnSlow = card.querySelector(".btn-audio-slow");
+            const btnHint = card.querySelector(".btn-hint-toggle");
+
+            if (btnNormal) {
+                btnNormal.addEventListener("click", function () {
+                    phatAmCau(cau.english, 1.0);
+                });
+            }
+            if (btnSlow) {
+                btnSlow.addEventListener("click", function () {
+                    phatAmCau(cau.english, 0.75);
+                });
+            }
+            if (btnHint) {
+                btnHint.addEventListener("click", function () {
+                    toggleGoiY(cau.num);
+                });
+            }
+
             dictationList.appendChild(card);
         });
 
@@ -159,9 +228,8 @@ document.addEventListener("DOMContentLoaded", function () {
                     e.preventDefault();
                     if (inputs[i + 1]) {
                         inputs[i + 1].focus();
-                        // Tự động phát âm câu tiếp theo khi nhảy tới
                         const nextCard = inputs[i + 1].closest(".sentence-card");
-                        if (nextCard) {
+                        if (nextCard && nextCard.dataset.answer) {
                             phatAmCau(nextCard.dataset.answer, 1.0);
                         }
                     } else if (btnChamDiem) {
@@ -174,7 +242,7 @@ document.addEventListener("DOMContentLoaded", function () {
         // Focus vào câu 1 và tự phát âm câu 1
         if (inputs.length > 0) {
             inputs[0].focus();
-            if (dsCau.length > 0) {
+            if (dsCau.length > 0 && dsCau[0].english) {
                 setTimeout(function () {
                     phatAmCau(dsCau[0].english, 1.0);
                 }, 400);
@@ -319,8 +387,9 @@ let audioDangPhat = null;
 
 // =========================================================
 // PHÁT ÂM CÂU (EDGE NEURAL TTS MP3 STREAM - KHÔNG LƯU ĐĨA)
-// =========================================================
 function phatAmCau(cau, tocDo) {
+    if (!cau || typeof cau !== "string") return;
+    cau = cau.trim().replace(/^\[+|\]+$/g, "").trim();
     if (!cau) return;
 
     // Dừng tất cả âm thanh đang phát

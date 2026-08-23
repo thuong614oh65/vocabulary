@@ -353,8 +353,8 @@ public class DichDoanVanController {
         );
 
         // =================================================
-// TÁCH KẾT QUẢ GEMINI
-// =================================================
+        // TÁCH KẾT QUẢ GEMINI
+        // =================================================
 
         String danhGia = "";
         String nhanXet = "";
@@ -362,103 +362,138 @@ public class DichDoanVanController {
         String banDichGoiY = "";
         String goiYCaiThien = "";
 
-        String[] cacDong = ketQua.split("\\R");
+        // 1. Thử bóc tách qua thẻ [TAG]...[/TAG]
+        danhGia = trichNoiDungThe(ketQua, "DANH_GIA");
+        nhanXet = trichNoiDungThe(ketQua, "NHAN_XET");
+        loiHoacThieu = trichNoiDungThe(ketQua, "LOI_HOAC_THIEU");
+        if (loiHoacThieu.isEmpty()) {
+            loiHoacThieu = trichNoiDungThe(ketQua, "LOI_THIEU");
+        }
+        banDichGoiY = trichNoiDungThe(ketQua, "BAN_DICH_GOI_Y");
+        if (banDichGoiY.isEmpty()) {
+            banDichGoiY = trichNoiDungThe(ketQua, "BAN_DICH_MAU");
+        }
+        goiYCaiThien = trichNoiDungThe(ketQua, "GOI_Y_CAI_THIEN");
 
-        String phanHienTai = "";
+        // 2. Fallback nếu Gemini trả theo dạng tiêu đề hoặc markdown thông thường
+        if (danhGia.isEmpty() || nhanXet.isEmpty()) {
+            String[] cacDong = ketQua.split("\\R");
+            String phanHienTai = "";
 
-        StringBuilder noiDung = new StringBuilder();
+            for (String dong : cacDong) {
+                String dongTrim = dong.trim();
+                if (dongTrim.isEmpty()) {
+                    continue;
+                }
 
-        for (String dong : cacDong) {
+                // Xóa markdown header, số thứ tự, gạch đầu dòng, dấu sao
+                String dongClean = dongTrim.replaceAll("^\\s*#{1,6}\\s*", "")
+                                           .replaceAll("^\\s*\\d+[\\.\\)]\\s*", "")
+                                           .replaceAll("[\\*_\\[\\]]", "")
+                                           .trim();
+                String dongLower = dongClean.toLowerCase();
 
-            String dongTrim = dong.trim();
-
-            if (dongTrim.isEmpty()) {
-                continue;
-            }
-
-            if (dongTrim.startsWith("ĐÁNH GIÁ:")) {
-
-                danhGia =
-                        dongTrim.substring("ĐÁNH GIÁ:".length()).trim();
-
-                phanHienTai = "danhGia";
-
-            } else if (dongTrim.startsWith("NHẬN XÉT:")) {
-
-                nhanXet =
-                        dongTrim.substring("NHẬN XÉT:".length()).trim();
-
-                phanHienTai = "nhanXet";
-
-            } else if (dongTrim.startsWith("LỖI HOẶC Ý THIẾU:")) {
-
-                loiHoacThieu =
-                        dongTrim.substring("LỖI HOẶC Ý THIẾU:".length()).trim();
-
-                phanHienTai = "loiHoacThieu";
-
-            } else if (dongTrim.startsWith("BẢN DỊCH GỢI Ý:")) {
-
-                banDichGoiY =
-                        dongTrim.substring("BẢN DỊCH GỢI Ý:".length()).trim();
-
-                phanHienTai = "banDichGoiY";
-
-            } else if (dongTrim.startsWith("GỢI Ý CẢI THIỆN:")) {
-
-                goiYCaiThien =
-                        dongTrim.substring("GỢI Ý CẢI THIỆN:".length()).trim();
-
-                phanHienTai = "goiYCaiThien";
-
-            } else {
-
-                if (phanHienTai.equals("nhanXet")) {
-
-                    nhanXet += " " + dongTrim;
-
-                } else if (phanHienTai.equals("loiHoacThieu")) {
-
-                    loiHoacThieu += " " + dongTrim;
-
-                } else if (phanHienTai.equals("banDichGoiY")) {
-
-                    banDichGoiY += " " + dongTrim;
-
-                } else if (phanHienTai.equals("goiYCaiThien")) {
-
-                    goiYCaiThien += " " + dongTrim;
+                if (dongLower.startsWith("đánh giá:") || dongLower.startsWith("danh gia:")) {
+                    int colonIdx = dongClean.indexOf(":");
+                    danhGia = dongClean.substring(colonIdx + 1).trim();
+                    phanHienTai = "danhGia";
+                } else if (dongLower.startsWith("nhận xét:") || dongLower.startsWith("nhan xet:")) {
+                    int colonIdx = dongClean.indexOf(":");
+                    nhanXet = dongClean.substring(colonIdx + 1).trim();
+                    phanHienTai = "nhanXet";
+                } else if (dongLower.startsWith("lỗi hoặc ý thiếu:") || dongLower.startsWith("loi hoac y thieu:")
+                        || dongLower.startsWith("lỗi hoặc thiếu:") || dongLower.startsWith("loi hoac thieu:")
+                        || dongLower.startsWith("lỗi:") || dongLower.startsWith("loi:")) {
+                    int colonIdx = dongClean.indexOf(":");
+                    loiHoacThieu = dongClean.substring(colonIdx + 1).trim();
+                    phanHienTai = "loiHoacThieu";
+                } else if (dongLower.startsWith("bản dịch gợi ý:") || dongLower.startsWith("ban dich goi y:")
+                        || dongLower.startsWith("bản dịch mẫu:") || dongLower.startsWith("ban dich mau:")) {
+                    int colonIdx = dongClean.indexOf(":");
+                    banDichGoiY = dongClean.substring(colonIdx + 1).trim();
+                    phanHienTai = "banDichGoiY";
+                } else if (dongLower.startsWith("gợi ý cải thiện:") || dongLower.startsWith("goi y cai thien:")
+                        || dongLower.startsWith("gợi ý:") || dongLower.startsWith("goi y:")) {
+                    int colonIdx = dongClean.indexOf(":");
+                    goiYCaiThien = dongClean.substring(colonIdx + 1).trim();
+                    phanHienTai = "goiYCaiThien";
+                } else {
+                    if ("nhanXet".equals(phanHienTai)) {
+                        nhanXet = (nhanXet.isEmpty() ? "" : nhanXet + "\n") + dongTrim;
+                    } else if ("loiHoacThieu".equals(phanHienTai)) {
+                        loiHoacThieu = (loiHoacThieu.isEmpty() ? "" : loiHoacThieu + "\n") + dongTrim;
+                    } else if ("banDichGoiY".equals(phanHienTai)) {
+                        banDichGoiY = (banDichGoiY.isEmpty() ? "" : banDichGoiY + "\n") + dongTrim;
+                    } else if ("goiYCaiThien".equals(phanHienTai)) {
+                        goiYCaiThien = (goiYCaiThien.isEmpty() ? "" : goiYCaiThien + "\n") + dongTrim;
+                    }
                 }
             }
         }
 
-        model.addAttribute(
-                "danhGia",
-                danhGia
-        );
+        // 3. Làm sạch ký tự thừa
+        danhGia = lamSachVanBan(danhGia);
+        nhanXet = lamSachVanBan(nhanXet);
+        loiHoacThieu = lamSachVanBan(loiHoacThieu);
+        banDichGoiY = lamSachVanBan(banDichGoiY);
+        goiYCaiThien = lamSachVanBan(goiYCaiThien);
 
-        model.addAttribute(
-                "nhanXet",
-                nhanXet
-        );
+        // 4. Xác định loại đánh giá (class CSS & hiển thị)
+        String danhGiaLoai = "dung";
+        String danhGiaLower = danhGia.toLowerCase();
+        if (danhGiaLower.contains("gần đúng") || danhGiaLower.contains("gan dung") || danhGiaLower.contains("tương đối")) {
+            danhGiaLoai = "gan-dung";
+            if (danhGia.isEmpty()) danhGia = "Gần đúng";
+        } else if (danhGiaLower.contains("sai") || danhGiaLower.contains("thiếu") || danhGiaLower.contains("thieu") || danhGiaLower.contains("chưa")) {
+            danhGiaLoai = "sai";
+            if (danhGia.isEmpty()) danhGia = "Sai hoặc thiếu ý";
+        } else {
+            danhGiaLoai = "dung";
+            if (danhGia.isEmpty()) danhGia = "Đúng";
+        }
 
-        model.addAttribute(
-                "loiHoacThieu",
-                loiHoacThieu
-        );
+        // 5. Fallback nếu còn mục nào trống để không bị rỗng giao diện
+        if (nhanXet.isEmpty() && !ketQua.isBlank()) {
+            nhanXet = ketQua;
+        }
+        if (loiHoacThieu.isEmpty() || loiHoacThieu.equalsIgnoreCase("khong co loi nao") || loiHoacThieu.equalsIgnoreCase("không có lỗi nào") || loiHoacThieu.equalsIgnoreCase("none")) {
+            if (danhGiaLoai.equals("dung")) {
+                loiHoacThieu = "🎉 Tuyệt vời! Bản dịch rất chuẩn xác, không có lỗi sai hoặc thiếu ý nào.";
+            } else {
+                loiHoacThieu = "Không có lỗi sai nghiêm trọng.";
+            }
+        }
 
-        model.addAttribute(
-                "banDichGoiY",
-                banDichGoiY
-        );
-
-        model.addAttribute(
-                "goiYCaiThien",
-                goiYCaiThien
-        );
-
+        model.addAttribute("danhGia", danhGia);
+        model.addAttribute("danhGiaLoai", danhGiaLoai);
+        model.addAttribute("nhanXet", nhanXet);
+        model.addAttribute("loiHoacThieu", loiHoacThieu);
+        model.addAttribute("banDichGoiY", banDichGoiY);
+        model.addAttribute("goiYCaiThien", goiYCaiThien);
 
         return "dich-doan-van";
+    }
+
+    private String trichNoiDungThe(String vanBan, String tenThe) {
+        if (vanBan == null || vanBan.isBlank()) {
+            return "";
+        }
+        java.util.regex.Pattern pattern = java.util.regex.Pattern.compile(
+                "\\[" + tenThe + "\\]([\\s\\S]*?)\\[/" + tenThe + "\\]",
+                java.util.regex.Pattern.CASE_INSENSITIVE
+        );
+        java.util.regex.Matcher matcher = pattern.matcher(vanBan);
+        if (matcher.find()) {
+            return matcher.group(1).trim();
+        }
+        return "";
+    }
+
+    private String lamSachVanBan(String str) {
+        if (str == null) return "";
+        return str.replaceAll("^[\\[\\(\"']+", "")
+                  .replaceAll("[\\]\\)\"']+$", "")
+                  .trim();
     }
 
     // =====================================================

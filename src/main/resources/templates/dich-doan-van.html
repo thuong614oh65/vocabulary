@@ -195,8 +195,8 @@
         </div>
 
         <!-- =====================================================
-       KẾT QUẢ GEMINI ĐÁNH GIÁ
-       ===================================================== -->
+             KẾT QUẢ GEMINI ĐÁNH GIÁ
+             ===================================================== -->
 
         <div class="ket-qua-gemini"
              th:if="${ketQua != null}">
@@ -210,13 +210,14 @@
                  ĐÁNH GIÁ
                  ================================================= -->
 
-            <div class="phan-ket-qua danh-gia">
+            <div class="phan-ket-qua phan-danh-gia">
 
                 <h4>
-                    📊 Đánh giá
+                    📊 Đánh giá tổng quan
                 </h4>
 
                 <div class="gia-tri-danh-gia"
+                     th:classappend="${danhGiaLoai}"
                      th:text="${danhGia}">
                 </div>
 
@@ -227,7 +228,8 @@
                  NHẬN XÉT
                  ================================================= -->
 
-            <div class="phan-ket-qua">
+            <div class="phan-ket-qua"
+                 th:if="${nhanXet != null and !nhanXet.isBlank()}">
 
                 <h4>
                     💬 Nhận xét
@@ -244,7 +246,8 @@
                  LỖI HOẶC Ý THIẾU
                  ================================================= -->
 
-            <div class="phan-ket-qua">
+            <div class="phan-ket-qua"
+                 th:if="${loiHoacThieu != null and !loiHoacThieu.isBlank()}">
 
                 <h4>
                     ❌ Lỗi hoặc ý thiếu
@@ -261,13 +264,14 @@
                  BẢN DỊCH GỢI Ý
                  ================================================= -->
 
-            <div class="phan-ket-qua">
+            <div class="phan-ket-qua phan-ban-dich-mau"
+                 th:if="${banDichGoiY != null and !banDichGoiY.isBlank()}">
 
                 <h4>
                     📖 Bản dịch gợi ý
                 </h4>
 
-                <div class="noi-dung-ket-qua"
+                <div class="noi-dung-ket-qua noi-dung-ban-dich-mau"
                      th:text="${banDichGoiY}">
                 </div>
 
@@ -278,7 +282,8 @@
                  GỢI Ý CẢI THIỆN
                  ================================================= -->
 
-            <div class="phan-ket-qua">
+            <div class="phan-ket-qua"
+                 th:if="${goiYCaiThien != null and !goiYCaiThien.isBlank()}">
 
                 <h4>
                     💡 Gợi ý cải thiện
