@@ -40,6 +40,12 @@ WORKDIR /app
 
 COPY . .
 
+# Tạo user 1000 cho Hugging Face Spaces và phân quyền
+RUN useradd -m -u 1000 user && \
+    mkdir -p /app/audio-data && \
+    chown -R user:user /app /opt/venv && \
+    chmod -R 777 /app /opt/venv
+
 # =========================================================
 # MAVEN
 # =========================================================
@@ -49,7 +55,11 @@ RUN chmod +x mvnw
 RUN ./mvnw -DskipTests clean package
 
 # =========================================================
-# CHẠY SPRING BOOT
+# CHẠY SPRING BOOT (PORT 7860 CHO HUGGING FACE SPACES)
 # =========================================================
 
-CMD ["sh", "-c", "java -Dserver.port=${PORT:-8080} -jar target/*.jar"]
+USER user
+ENV PORT=7860
+EXPOSE 7860
+
+CMD ["sh", "-c", "java -Dserver.port=${PORT:-7860} -jar target/*.jar"]
