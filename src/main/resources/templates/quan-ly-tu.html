@@ -80,15 +80,16 @@
                         </option>
                     </select>
 
-                    <button type="button"
-                            class="btn btn-outline-danger btn-sm text-nowrap d-flex align-items-center gap-1"
-                            th:if="${boIdHienTai != null && boIdHienTai > 0}"
-                            th:each="bo : ${dsBo}"
-                            th:if="${bo.id == boIdHienTai}"
-                            th:attr="onclick=|xacNhanXoaBo(${bo.id}, '${#strings.escapeJavaScript(bo.tenBo)}', ${bo.soLuongTu})|"
-                            title="Xóa bộ từ này">
-                        🗑️ Xóa bộ này
-                    </button>
+                    <th:block th:if="${boIdHienTai != null && boIdHienTai > 0}">
+                        <th:block th:each="bo : ${dsBo}" th:if="${bo.id == boIdHienTai}">
+                            <button type="button"
+                                    class="btn btn-outline-danger btn-sm text-nowrap d-flex align-items-center gap-1"
+                                    th:attr="onclick=|xacNhanXoaBo(${bo.id}, '${#strings.escapeJavaScript(bo.tenBo)}', ${bo.soLuongTu})|"
+                                    title="Xóa bộ từ này">
+                                🗑️ Xóa bộ này
+                            </button>
+                        </th:block>
+                    </th:block>
                 </div>
             </div>
 
@@ -127,9 +128,7 @@
                     
                     <td class="text-center text-muted" th:text="${stt.count}">1</td>
                     
-                    <td class="text-center fw-bold align-middle bg-light td-bo-goc"
-                        th:if="${stt.index == 0 or (dsTu.get(stt.index - 1).boTuVung == null and tu.boTuVung != null) or (dsTu.get(stt.index - 1).boTuVung != null and tu.boTuVung == null) or (dsTu.get(stt.index - 1).boTuVung != null and tu.boTuVung != null and dsTu.get(stt.index - 1).boTuVung.id != tu.boTuVung.id)}"
-                        th:rowspan="${tu.boTuVung != null ? tu.boTuVung.soLuongTu : 1}"
+                    <td class="text-center fw-bold align-middle bg-light"
                         th:text="${tu.boTuVung != null ? tu.boTuVung.tenBo : 'Chưa phân bộ'}">
                     </td>
                     
@@ -310,7 +309,7 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
 
 <!-- JS riêng -->
-<script th:src="@{/js/quan-ly-tu.js(v=3)}"></script>
+<script th:src="@{/js/quan-ly-tu.js(v=4)}"></script>
 
 </body>
 </html>
