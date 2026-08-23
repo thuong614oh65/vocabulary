@@ -45,6 +45,12 @@
 
         <div class="tieu-de">
 
+            <!-- Tên người đăng nhập hiển thị trên icon sách -->
+            <div class="user-greeting-badge" th:if="${session.taiKhoan != null}">
+                <span class="user-badge-icon">👤</span>
+                <span class="user-badge-text">Xin chào, <strong th:text="${session.taiKhoan.hoTen != null && !session.taiKhoan.hoTen.isBlank() ? session.taiKhoan.hoTen : session.taiKhoan.tenDangNhap}">Học viên</strong></span>
+            </div>
+
             <div class="icon">
                 📚
             </div>
