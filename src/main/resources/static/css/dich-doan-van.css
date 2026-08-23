@@ -1,323 +1,741 @@
 /* =========================================================
-   GIAO DIỆN TRANG DỊCH ĐOẠN VĂN (MODERN & COLORFUL)
+   RESET
    ========================================================= */
 
 * {
     box-sizing: border-box;
 }
 
+
+/* =========================================================
+   BODY
+   ========================================================= */
+
 body {
     margin: 0;
-    font-family: 'Segoe UI', Arial, Helvetica, sans-serif;
-    background: linear-gradient(135deg, #f0f4f8, #fafcff);
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+    background:
+        linear-gradient(
+            135deg,
+            #f3edff,
+            #faf8ff
+        );
+
     min-height: 100vh;
-    color: #2b2d42;
 }
 
-.dich-container {
-    padding: 30px 15px;
+
+/* =========================================================
+   KHUNG CHÍNH
+   ========================================================= */
+
+.dich-doan-van {
+
+    min-height: 100vh;
+
     display: flex;
+
     justify-content: center;
-    align-items: flex-start;
-    min-height: 100vh;
+
+    align-items: center;
+
+    padding: 25px;
 }
 
-.main-wrapper {
+
+.khung {
+
     width: 100%;
-    max-width: 900px;
-}
 
-/* =========================================================
-   HEADER TRANG
-   ========================================================= */
-.header-section {
-    margin-bottom: 25px;
-}
+    max-width: 650px;
 
-.header-icon {
-    font-size: 48px;
-    margin-bottom: 8px;
-}
-
-.header-section h1 {
-    font-size: 30px;
-    font-weight: 700;
-    color: #1d3557;
-    margin: 0;
-    letter-spacing: -0.5px;
-}
-
-.header-section .subtitle {
-    color: #64748b;
-    font-size: 15px;
-    margin-top: 6px;
-}
-
-/* =========================================================
-   CARD BOX CHUNG
-   ========================================================= */
-.card-box {
     background: white;
-    padding: 28px 32px;
-    border-radius: 20px;
-    border: 1px solid #e2e8f0;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-    transition: box-shadow 0.2s ease;
+
+    padding: 45px;
+
+    border-radius: 25px;
+
+    text-align: center;
+
+    box-shadow:
+        0 15px 40px rgba(0, 0, 0, 0.10);
 }
 
-.card-box:hover {
-    box-shadow: 0 14px 35px rgba(0, 0, 0, 0.08);
-}
-
-.badge-tag {
-    background: linear-gradient(135deg, #e0e7ff, #c7d2fe);
-    color: #3730a3;
-    font-weight: 600;
-    font-size: 13px;
-    padding: 6px 14px;
-    border-radius: 20px;
-    border: 1px solid #a5b4fc;
-}
-
-/* NÚT BẤM */
-.btn-tao-bai {
-    background: linear-gradient(135deg, #6366f1, #4f46e5);
-    border: none;
-    font-weight: 600;
-    padding: 9px 20px;
-    border-radius: 12px;
-    color: white;
-    box-shadow: 0 4px 14px rgba(99, 102, 241, 0.35);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.btn-tao-bai:hover {
-    background: linear-gradient(135deg, #4f46e5, #4338ca);
-    transform: translateY(-2px);
-    box-shadow: 0 6px 18px rgba(99, 102, 241, 0.45);
-    color: white;
-}
-
-.btn-quay-ve {
-    border-radius: 12px;
-    font-weight: 600;
-    padding: 9px 18px;
-}
-
-.btn-cham-bai {
-    background: linear-gradient(135deg, #10b981, #059669);
-    border: none;
-    border-radius: 12px;
-    font-size: 16px;
-    box-shadow: 0 4px 14px rgba(16, 185, 129, 0.35);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.btn-cham-bai:hover {
-    background: linear-gradient(135deg, #059669, #047857);
-    transform: translateY(-2px);
-    box-shadow: 0 6px 18px rgba(16, 185, 129, 0.45);
-}
 
 /* =========================================================
-   READER CARD (ĐOẠN VĂN TIẾNG ANH)
+   TIÊU ĐỀ
    ========================================================= */
-.reader-card {
-    border-left: 6px solid #6366f1;
+
+.tieu-de {
+
+    margin-bottom: 35px;
 }
 
-.section-icon {
+
+.tieu-de .icon {
+
+    font-size: 55px;
+
+    margin-bottom: 12px;
+}
+
+
+.tieu-de h1 {
+
+    margin: 0;
+
+    color: #6f42c1;
+
+    font-size: 32px;
+
+    font-weight: 700;
+}
+
+
+.tieu-de p {
+
+    margin-top: 12px;
+
+    color: #777;
+
+    font-size: 16px;
+
+    line-height: 1.6;
+}
+
+
+/* =========================================================
+   THÔNG TIN
+   ========================================================= */
+
+.thong-tin {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 12px;
+
+    margin-bottom: 30px;
+}
+
+
+.thong-tin-item {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    padding: 14px 16px;
+
+    background: #faf8ff;
+
+    border: 1px solid #e6dcfa;
+
+    border-radius: 12px;
+
+    color: #495057;
+
+    text-align: left;
+
+    font-size: 15px;
+
+    font-weight: 500;
+}
+
+
+.icon-nho {
+
     font-size: 22px;
 }
+
+
+/* =========================================================
+   NÚT TẠO ĐOẠN VĂN
+   ========================================================= */
+
+.hanh-dong {
+
+    margin-bottom: 30px;
+}
+
+
+.btn-bat-dau {
+
+    width: 100%;
+
+    min-height: 55px;
+
+    border: none;
+
+    border-radius: 12px;
+
+    background: #6f42c1;
+
+    color: white;
+
+    font-size: 18px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+        transform 0.2s ease,
+        background 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+
+.btn-bat-dau:hover {
+
+    background: #59359a;
+
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 7px 18px rgba(111, 66, 193, 0.25);
+}
+
+
+.btn-bat-dau:active {
+
+    transform: translateY(0);
+
+    box-shadow: none;
+}
+
+
+/* =========================================================
+   THÔNG BÁO LỖI
+   ========================================================= */
+
+.loi {
+
+    margin-bottom: 20px;
+
+    padding: 12px 15px;
+
+    background: #fff3cd;
+
+    border: 1px solid #ffecb5;
+
+    border-radius: 10px;
+
+    color: #664d03;
+
+    text-align: left;
+}
+
+
+/* =========================================================
+   ĐOẠN VĂN
+   ========================================================= */
+
+.doan-van {
+
+    margin-top: 30px;
+
+    padding: 25px;
+
+    background: #ffffff;
+
+    border-radius: 15px;
+
+    border: 2px solid #e9ecef;
+
+    text-align: left;
+}
+
+
+.doan-van h3 {
+
+    margin-top: 0;
+
+    margin-bottom: 15px;
+
+    color: #198754;
+
+    font-size: 24px;
+
+    text-align: center;
+}
+
 
 .noi-dung-doan-van {
-    background: #f8fafc;
-    border: 1px solid #e2e8f0;
-    border-radius: 14px;
-    padding: 22px 25px;
+
+    padding: 20px;
+
+    background: white;
+
+    border-radius: 12px;
+
+    border-left: 5px solid #6f42c1;
+
+    color: #212529;
+
     font-size: 17px;
-    line-height: 2.0;
-    color: #1e293b;
-    font-weight: 450;
-    letter-spacing: 0.2px;
+
+    line-height: 1.9;
+
+    white-space: pre-wrap;
+
+    box-shadow:
+        0 4px 12px rgba(0, 0, 0, 0.06);
 }
 
+
 /* =========================================================
-   EDITOR CARD (NHẬP BẢN DỊCH)
+   PHẦN NHẬP BẢN DỊCH
    ========================================================= */
-.editor-card {
-    border-left: 6px solid #0ea5e9;
+
+.phan-dich {
+
+    margin-top: 30px;
+
+    padding: 25px;
+
+    background: #faf8ff;
+
+    border: 2px solid #e6dcfa;
+
+    border-radius: 15px;
+
+    text-align: left;
 }
+
+
+.phan-dich h3 {
+
+    margin-top: 0;
+
+    margin-bottom: 10px;
+
+    color: #6f42c1;
+
+    font-size: 22px;
+
+    font-weight: 700;
+}
+
+
+.phan-dich .mo-ta {
+
+    margin-top: 0;
+
+    margin-bottom: 18px;
+
+    color: #6c757d;
+
+    font-size: 14px;
+
+    line-height: 1.6;
+}
+
+
+/* =========================================================
+   Ô NHẬP BẢN DỊCH
+   ========================================================= */
 
 .o-nhap-ban-dich {
-    border: 2px solid #e2e8f0;
-    border-radius: 14px;
-    padding: 16px 20px;
-    font-size: 16px;
-    line-height: 1.8;
-    color: #1e293b;
+
+    width: 100%;
+
+    min-height: 220px;
+
+    padding: 18px;
+
     resize: vertical;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+
+    border: 2px solid #ddd3f2;
+
+    border-radius: 12px;
+
+    background: white;
+
+    color: #212529;
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+    font-size: 16px;
+
+    line-height: 1.7;
+
+    outline: none;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
 }
+
 
 .o-nhap-ban-dich:focus {
-    border-color: #6366f1;
-    box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15);
+
+    border-color: #6f42c1;
+
+    box-shadow:
+        0 0 0 4px rgba(111, 66, 193, 0.10);
 }
+
+
+.o-nhap-ban-dich::placeholder {
+
+    color: #adb5bd;
+
+    font-size: 15px;
+}
+
 
 /* =========================================================
-   RESULT CARD (KẾT QUẢ AI ĐÁNH GIÁ MÀU SẮC ĐẸP)
+   NÚT KIỂM TRA
    ========================================================= */
-.result-card {
-    border-left: 6px solid #10b981;
+
+.btn-kiem-tra {
+
+    width: 100%;
+
+    min-height: 52px;
+
+    margin-top: 18px;
+
+    padding: 12px 20px;
+
+    border: none;
+
+    border-radius: 12px;
+
+    background: #6f42c1;
+
+    color: white;
+
+    font-size: 17px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+
+.btn-kiem-tra:hover {
+
+    background: #59359a;
+
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 7px 18px rgba(111, 66, 193, 0.25);
+}
+
+
+.btn-kiem-tra:active {
+
+    transform: translateY(0);
+
+    box-shadow: none;
+}
+
+
+/* =========================================================
+   BẢN DỊCH CỦA NGƯỜI DÙNG
+   ========================================================= */
+
+.ket-qua-ban-dich {
+
+    margin-top: 30px;
+
+    padding: 25px;
+
     background: #ffffff;
+
+    border: 2px solid #e9ecef;
+
+    border-radius: 15px;
+
+    text-align: left;
 }
 
-/* KHỐI ĐÁNH GIÁ TỔNG QUAN */
-.verdict-box {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    padding: 18px 24px;
-    border-radius: 16px;
+
+.ket-qua-ban-dich h3 {
+
+    margin-top: 0;
+
+    margin-bottom: 15px;
+
+    color: #495057;
+
+    font-size: 20px;
+
+    font-weight: 700;
+}
+
+
+.noi-dung-ban-dich {
+
+    padding: 18px;
+
+    background: #f8f9fa;
+
+    border-radius: 12px;
+
+    color: #212529;
+
     font-size: 16px;
-}
 
-.verdict-icon {
-    font-size: 32px;
-}
-
-.verdict-label {
-    font-size: 12px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    margin-bottom: 2px;
-}
-
-.verdict-value {
-    font-size: 22px;
-    font-weight: 800;
-}
-
-/* Màu đánh giá: Đúng */
-.verdict-dung {
-    background: linear-gradient(135deg, #ecfdf5, #d1fae5);
-    border: 2px solid #6ee7b7;
-    color: #065f46;
-}
-
-.verdict-dung .verdict-label {
-    color: #047857;
-}
-
-/* Màu đánh giá: Gần đúng */
-.verdict-gandung {
-    background: linear-gradient(135deg, #fffbeb, #fef3c7);
-    border: 2px solid #fcd34d;
-    color: #92400e;
-}
-
-.verdict-gandung .verdict-label {
-    color: #b45309;
-}
-
-/* Màu đánh giá: Sai / Chưa đạt */
-.verdict-sai {
-    background: linear-gradient(135deg, #fff1f2, #ffe4e6);
-    border: 2px solid #fda4af;
-    color: #9f1239;
-}
-
-.verdict-sai .verdict-label {
-    color: #be123c;
-}
-
-/* CÁC MỤC KẾT QUẢ CON (NHẬN XÉT, LỖI, BẢN DỊCH MẪU, GỢI Ý) */
-.result-section {
-    padding: 18px 22px;
-    border-radius: 14px;
-    border: 1px solid #e2e8f0;
-    transition: transform 0.2s ease;
-}
-
-.result-section:hover {
-    transform: translateX(4px);
-}
-
-.section-title {
-    font-size: 15px;
-    font-weight: 700;
-    margin-bottom: 8px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.section-content {
-    font-size: 15px;
     line-height: 1.8;
-    color: #334155;
+
+    white-space: pre-line;
+
+    border-left: 5px solid #6f42c1;
+}
+
+
+/* =========================================================
+   KẾT QUẢ GEMINI
+   ========================================================= */
+
+.ket-qua-gemini {
+
+    margin-top: 30px;
+
+    padding: 25px;
+
+    border-radius: 15px;
+
+    background: #f8f9fa;
+
+    border: 1px solid #dee2e6;
+}
+
+
+.ket-qua-gemini h3 {
+
+    margin-bottom: 25px;
+
+    text-align: center;
+}
+
+
+/* =========================================================
+   TỪNG PHẦN KẾT QUẢ
+   ========================================================= */
+
+.phan-ket-qua {
+
+    margin-bottom: 20px;
+
+    padding: 18px;
+
+    border-radius: 12px;
+
+    background: white;
+
+    border: 1px solid #e2e2e2;
+}
+
+
+.phan-ket-qua h4 {
+
+    margin-bottom: 12px;
+}
+
+
+.gia-tri-danh-gia {
+
+    font-size: 20px;
+
+    font-weight: bold;
+
+    padding: 12px 16px;
+
+    border-radius: 10px;
+
+    background: #f1f3f5;
+
+    text-align: center;
+}
+
+
+.noi-dung-ket-qua {
+
+    line-height: 1.7;
+
     white-space: pre-line;
 }
 
-/* 1. Nhận xét: Xanh dương nhạt */
-.nhan-xet-box {
-    background: linear-gradient(135deg, #f0f7ff, #e0f2fe);
-    border-color: #bae6fd;
-    border-left: 5px solid #0284c7;
-}
-
-/* 2. Lỗi / Ý thiếu: Đỏ hồng nhạt */
-.loi-box {
-    background: linear-gradient(135deg, #fff5f5, #fee2e2);
-    border-color: #fecaca;
-    border-left: 5px solid #ef4444;
-}
-
-/* 3. Bản dịch mẫu: Xanh lá tươi */
-.ban-dich-mau-box {
-    background: linear-gradient(135deg, #f0fdf4, #dcfce7);
-    border-color: #bbf7d0;
-    border-left: 5px solid #10b981;
-}
-
-.ban-dich-mau-box .section-content {
-    color: #14532d;
-    font-size: 16px;
-}
-
-/* 4. Gợi ý cải thiện: Vàng cam ấm */
-.goi-y-box {
-    background: linear-gradient(135deg, #fefce8, #fef9c3);
-    border-color: #fef08a;
-    border-left: 5px solid #eab308;
-}
 
 /* =========================================================
-   RESPONSIVE MOBILE
+   QUAY LẠI
    ========================================================= */
+
+.quay-lai {
+
+    margin-top: 22px;
+}
+
+
+.quay-lai a {
+
+    color: #6f42c1;
+
+    text-decoration: none;
+
+    font-size: 14px;
+
+    font-weight: 600;
+}
+
+
+.quay-lai a:hover {
+
+    text-decoration: underline;
+
+    color: #59359a;
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
 @media (max-width: 768px) {
-    .dich-container {
-        padding: 15px 10px;
+
+    .dich-doan-van {
+
+        padding: 15px;
     }
 
-    .card-box {
-        padding: 20px 18px;
-        border-radius: 16px;
+
+    .khung {
+
+        padding: 30px 20px;
+
+        border-radius: 18px;
     }
 
-    .header-section h1 {
-        font-size: 24px;
+
+    .tieu-de .icon {
+
+        font-size: 45px;
     }
+
+
+    .tieu-de h1 {
+
+        font-size: 25px;
+    }
+
+
+    .tieu-de p {
+
+        font-size: 14px;
+    }
+
+
+    .thong-tin-item {
+
+        padding: 13px;
+
+        font-size: 14px;
+    }
+
+
+    .btn-bat-dau {
+
+        min-height: 52px;
+
+        font-size: 16px;
+    }
+
+
+    .doan-van {
+
+        padding: 18px;
+
+        margin-top: 25px;
+    }
+
+
+    .doan-van h3 {
+
+        font-size: 19px;
+    }
+
 
     .noi-dung-doan-van {
-        font-size: 15px;
-        padding: 16px;
-        line-height: 1.8;
+
+        padding: 15px;
+
+        font-size: 16px;
+
+        line-height: 1.7;
     }
 
-    .verdict-value {
-        font-size: 18px;
+
+    .phan-dich {
+
+        margin-top: 25px;
+
+        padding: 18px;
     }
-}
+
+
+    .phan-dich h3 {
+
+        font-size: 19px;
+    }
+
+
+    .o-nhap-ban-dich {
+
+        min-height: 180px;
+
+        padding: 15px;
+
+        font-size: 15px;
+    }
+
+
+    .btn-kiem-tra {
+
+        min-height: 50px;
+
+        font-size: 16px;
+    }
+
+
+    .ket-qua-ban-dich {
+
+        padding: 18px;
+    }
+
+
+    .noi-dung-ban-dich {
+
+        padding: 15px;
+
+        font-size: 15px;
+
+        line-height: 1.7;
+    }
+
+
+    .ket-qua-gemini {
+
+        padding: 18px;
+    }
+}

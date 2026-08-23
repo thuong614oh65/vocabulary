@@ -1,81 +1,111 @@
 <!DOCTYPE html>
-<html lang="vi" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dịch đoạn văn tiếng Anh</title>
+<html lang="vi"
+      xmlns:th="http://www.thymeleaf.org">
 
-    <!-- Bootstrap 5 -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
-    
-    <!-- CSS riêng -->
-    <link rel="stylesheet" th:href="@{/css/dich-doan-van.css}">
-    <link rel="stylesheet" th:href="@{/css/dich-doan-van-tu-vung.css}">
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Dịch đoạn văn</title>
+
+    <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css"
+            rel="stylesheet">
+
+    <link
+            rel="stylesheet"
+            th:href="@{/css/dich-doan-van.css}">
+
+    <link
+            rel="stylesheet"
+            th:href="@{/css/dich-doan-van-tu-vung.css}">
+
 </head>
+
+
 <body>
 
-<div class="dich-container">
-    <div class="main-wrapper">
+
+<div class="dich-doan-van">
+
+
+    <div class="khung">
+
 
         <!-- =====================================================
-             HEADER TRANG
+             TIÊU ĐỀ
              ===================================================== -->
-        <div class="header-section text-center">
-            <div class="header-icon">📝</div>
-            <h1>LUYỆN DỊCH ĐOẠN VĂN</h1>
-            <p class="subtitle">Rèn luyện khả năng đọc hiểu và dịch câu tiếng Anh tự nhiên cùng AI</p>
-        </div>
 
-        <!-- =====================================================
-             KHUNG ĐIỀU KHIỂN / TẠO ĐOẠN VĂN
-             ===================================================== -->
-        <div class="card-box mb-4">
-            <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
-                <div class="d-flex align-items-center gap-2">
-                    <span class="badge-tag">📚 Từ vựng của bạn</span>
-                    <span class="text-muted small">AI sẽ tự động lồng ghép các từ vựng bạn đã lưu để tạo bài dịch</span>
-                </div>
-                <div class="d-flex gap-2">
-                    <form method="post" action="/dich-doan-van" class="d-inline" id="formTaoDoanVan">
-                        <button type="submit" class="btn btn-primary btn-tao-bai" id="btnTaoBai">
-                            ✨ Tạo đoạn văn mới
-                        </button>
-                    </form>
-                    <a href="/" class="btn btn-outline-secondary btn-quay-ve">
-                        🏠 Trang chủ
-                    </a>
-                </div>
+        <div class="tieu-de">
+
+            <div class="icon">
+                📝
             </div>
 
-            <!-- Loading Spinner khi tạo đoạn văn -->
-            <div id="loadingBox" class="loading-state mt-3" style="display: none;">
-                <div class="spinner-border text-primary spinner-border-sm" role="status"></div>
-                <span class="ms-2 fw-semibold text-primary">🤖 AI đang soạn đoạn văn tiếng Anh từ danh sách từ của bạn, vui lòng đợi giây lát...</span>
-            </div>
+            <h1>
+                DỊCH ĐOẠN VĂN
+            </h1>
+
+            <p>
+                Luyện dịch tiếng Anh bằng những từ vựng bạn đang học
+            </p>
+
         </div>
 
-        <!-- =====================================================
-             THÔNG BÁO LỖI (NẾU CÓ)
-             ===================================================== -->
-        <div class="alert alert-danger shadow-sm rounded-3" th:if="${loi}" th:text="${loi}"></div>
 
         <!-- =====================================================
-             KHU VỰC ĐOẠN VĂN TIẾNG ANH CẦN DỊCH
+             NÚT TẠO ĐOẠN VĂN
              ===================================================== -->
-        <div class="card-box reader-card mb-4" th:if="${doanVan != null}">
-            <div class="card-header-custom d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3 pb-2 border-bottom">
-                <div class="d-flex align-items-center gap-2">
-                    <span class="section-icon">📖</span>
-                    <h4 class="mb-0 fw-bold text-dark">Đoạn văn tiếng Anh</h4>
-                    <span class="badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill px-2 py-1 small">Bấm vào từ để tra nghĩa</span>
-                </div>
+
+        <div class="hanh-dong">
+
+            <form method="post"
+                  action="/dich-doan-van">
+
+                <button
+                        type="submit"
+                        class="btn-bat-dau">
+
+                    📝 Tạo đoạn văn
+
+                </button>
+
+            </form>
+
+        </div>
+
+
+        <!-- =====================================================
+             THÔNG BÁO LỖI
+             ===================================================== -->
+
+        <div class="loi"
+             th:if="${loi}"
+             th:text="${loi}">
+        </div>
+
+
+        <!-- =====================================================
+             ĐOẠN VĂN CẦN DỊCH
+             ===================================================== -->
+
+        <div class="doan-van"
+             th:if="${doanVan != null}">
+
+            <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+                <h3 class="mb-0 text-success fw-bold">
+                    📖 Đoạn văn cần dịch
+                </h3>
 
                 <div class="d-flex gap-2">
-                    <button type="button" class="btn btn-outline-primary btn-sm px-3 py-2 fw-semibold rounded-pill d-flex align-items-center gap-1" id="btnNgheDoanVan" title="Nghe toàn bộ đoạn văn">
-                        <span>🔊</span> Nghe phát âm
+                    <button type="button" class="btn btn-outline-primary btn-sm px-3 py-1" id="btnNgheDoanVan" title="Nghe toàn bộ đoạn văn">
+                        🔊 Nghe đoạn văn
                     </button>
-                    <button type="button" class="btn btn-outline-danger btn-sm px-3 py-2 fw-semibold rounded-pill d-flex align-items-center gap-1" id="btnDungNgheDoanVan" style="display: none;" title="Dừng đọc đoạn văn">
-                        <span>⏹️</span> Dừng đọc
+                    <button type="button" class="btn btn-outline-danger btn-sm px-3 py-1" id="btnDungNgheDoanVan" style="display: none;" title="Dừng đọc đoạn văn">
+                        ⏹️ Dừng đọc
                     </button>
                 </div>
             </div>
@@ -84,125 +114,209 @@
                  class="noi-dung-doan-van"
                  th:data-doan-van="${doanVan}">
             </div>
+
         </div>
 
+
         <!-- =====================================================
-             KHU VỰC NHẬP BẢN DỊCH
+             NHẬP BẢN DỊCH
              ===================================================== -->
-        <div class="card-box editor-card mb-4" th:if="${doanVan != null}">
-            <div class="card-header-custom mb-3">
-                <div class="d-flex align-items-center gap-2">
-                    <span class="section-icon">✍️</span>
-                    <h4 class="mb-0 fw-bold text-dark">Bản dịch tiếng Việt của bạn</h4>
-                </div>
-                <p class="text-muted small mb-0 mt-1">Dịch đoạn văn tiếng Anh trên theo cách hiểu tự nhiên nhất của bạn</p>
-            </div>
 
-            <form method="post" action="/dich-doan-van/kiem-tra" id="formKiemTra">
-                <input type="hidden" name="doanVan" th:value="${doanVan}">
+        <div class="phan-dich"
+             th:if="${doanVan != null}">
 
-                <div class="mb-3">
-                    <textarea name="banDich"
-                              class="form-control o-nhap-ban-dich"
-                              placeholder="Nhập bản dịch tiếng Việt của bạn vào đây..."
-                              rows="5"
-                              required th:text="${banDich}"></textarea>
-                </div>
+            <h3>
+                ✍️ Bản dịch của bạn
+            </h3>
 
-                <div class="d-flex justify-content-end">
-                    <button type="submit" class="btn btn-success btn-cham-bai px-4 py-2 fw-bold" id="btnKiemTra">
-                        ✅ Chấm điểm bản dịch bằng AI
-                    </button>
-                </div>
+            <p class="mo-ta">
+                Hãy tự dịch đoạn văn tiếng Anh sang tiếng Việt.
+            </p>
+
+
+            <form method="post"
+                  action="/dich-doan-van/kiem-tra">
+
+
+                <!--
+                    Giữ lại đoạn văn tiếng Anh
+                    để Controller nhận lại khi kiểm tra
+                -->
+
+                <input
+                        type="hidden"
+                        name="doanVan"
+                        th:value="${doanVan}">
+
+
+                <!--
+                    Người dùng nhập bản dịch
+                -->
+
+                <textarea
+                        name="banDich"
+                        class="o-nhap-ban-dich"
+                        placeholder="Nhập bản dịch tiếng Việt của bạn..."
+                        required></textarea>
+
+
+                <!--
+                    Nút kiểm tra
+                -->
+
+                <button
+                        type="submit"
+                        class="btn-kiem-tra">
+
+                    ✅ Kiểm tra bản dịch
+
+                </button>
+
             </form>
+
+        </div>
+
+
+        <!-- =====================================================
+             HIỂN THỊ LẠI BẢN DỊCH NGƯỜI DÙNG
+             ===================================================== -->
+
+        <div class="ket-qua-ban-dich"
+             th:if="${banDich != null}">
+
+            <h3>
+                📝 Bản dịch của bạn
+            </h3>
+
+            <div class="noi-dung-ban-dich"
+                 th:text="${banDich}">
+            </div>
+
         </div>
 
         <!-- =====================================================
-             KẾT QUẢ ĐÁNH GIÁ CỦA AI (MÀU SẮC SINH ĐỘNG)
-             ===================================================== -->
-        <div class="card-box result-card mb-4" th:if="${ketQua != null}">
-            <div class="d-flex align-items-center justify-content-between mb-4 pb-2 border-bottom">
-                <div class="d-flex align-items-center gap-2">
-                    <span class="section-icon">🤖</span>
-                    <h3 class="mb-0 fw-bold text-dark">Kết quả nhận xét từ AI</h3>
+       KẾT QUẢ GEMINI ĐÁNH GIÁ
+       ===================================================== -->
+
+        <div class="ket-qua-gemini"
+             th:if="${ketQua != null}">
+
+            <h3>
+                🤖 Kết quả đánh giá
+            </h3>
+
+
+            <!-- =================================================
+                 ĐÁNH GIÁ
+                 ================================================= -->
+
+            <div class="phan-ket-qua danh-gia">
+
+                <h4>
+                    📊 Đánh giá
+                </h4>
+
+                <div class="gia-tri-danh-gia"
+                     th:text="${danhGia}">
                 </div>
-                <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-2 rounded-pill fw-bold">Hoàn thành chấm điểm</span>
+
             </div>
 
-            <!-- 1. ĐÁNH GIÁ TỔNG QUAN -->
-            <div class="result-section verdict-section mb-3">
-                <div class="verdict-box" th:classappend="${danhGia != null and (danhGia.toLowerCase().contains('đúng') or danhGia.toLowerCase().contains('dung')) and not danhGia.toLowerCase().contains('sai') ? 'verdict-dung' : (danhGia != null and (danhGia.toLowerCase().contains('gần') or danhGia.toLowerCase().contains('gan')) ? 'verdict-gandung' : 'verdict-sai')}">
-                    <div class="verdict-icon">📊</div>
-                    <div>
-                        <div class="verdict-label">ĐÁNH GIÁ TỔNG QUAN</div>
-                        <div class="verdict-value" th:text="${danhGia}">Đúng / Gần đúng / Chưa đạt</div>
-                    </div>
+
+            <!-- =================================================
+                 NHẬN XÉT
+                 ================================================= -->
+
+            <div class="phan-ket-qua">
+
+                <h4>
+                    💬 Nhận xét
+                </h4>
+
+                <div class="noi-dung-ket-qua"
+                     th:text="${nhanXet}">
                 </div>
+
             </div>
 
-            <!-- 2. NHẬN XÉT -->
-            <div class="result-section nhan-xet-box mb-3" th:if="${nhanXet != null && !nhanXet.isBlank()}">
-                <div class="section-title text-primary">
-                    <span>💬</span> Nhận xét của giáo viên
+
+            <!-- =================================================
+                 LỖI HOẶC Ý THIẾU
+                 ================================================= -->
+
+            <div class="phan-ket-qua">
+
+                <h4>
+                    ❌ Lỗi hoặc ý thiếu
+                </h4>
+
+                <div class="noi-dung-ket-qua"
+                     th:text="${loiHoacThieu}">
                 </div>
-                <div class="section-content" th:text="${nhanXet}">
-                    Nhận xét chi tiết...
-                </div>
+
             </div>
 
-            <!-- 3. LỖI HOẶC Ý THIẾU -->
-            <div class="result-section loi-box mb-3" th:if="${loiHoacThieu != null && !loiHoacThieu.isBlank()}">
-                <div class="section-title text-danger">
-                    <span>⚠️</span> Điểm cần lưu ý / Lỗi dịch
+
+            <!-- =================================================
+                 BẢN DỊCH GỢI Ý
+                 ================================================= -->
+
+            <div class="phan-ket-qua">
+
+                <h4>
+                    📖 Bản dịch gợi ý
+                </h4>
+
+                <div class="noi-dung-ket-qua"
+                     th:text="${banDichGoiY}">
                 </div>
-                <div class="section-content" th:text="${loiHoacThieu}">
-                    Các lỗi hoặc ý bị thiếu...
-                </div>
+
             </div>
 
-            <!-- 4. BẢN DỊCH GỢI Ý -->
-            <div class="result-section ban-dich-mau-box mb-3" th:if="${banDichGoiY != null && !banDichGoiY.isBlank()}">
-                <div class="section-title text-success">
-                    <span>🌟</span> Bản dịch gợi ý chuẩn xác & tự nhiên
-                </div>
-                <div class="section-content fw-semibold" th:text="${banDichGoiY}">
-                    Bản dịch mẫu...
-                </div>
-            </div>
 
-            <!-- 5. GỢI Ý CẢI THIỆN -->
-            <div class="result-section goi-y-box mb-3" th:if="${goiYCaiThien != null && !goiYCaiThien.isBlank()}">
-                <div class="section-title text-warning-emphasis">
-                    <span>💡</span> Mẹo cải thiện ngữ pháp & từ vựng
+            <!-- =================================================
+                 GỢI Ý CẢI THIỆN
+                 ================================================= -->
+
+            <div class="phan-ket-qua">
+
+                <h4>
+                    💡 Gợi ý cải thiện
+                </h4>
+
+                <div class="noi-dung-ket-qua"
+                     th:text="${goiYCaiThien}">
                 </div>
-                <div class="section-content" th:text="${goiYCaiThien}">
-                    Gợi ý cải thiện...
-                </div>
+
             </div>
 
         </div>
+
+        <!-- =====================================================
+             QUAY LẠI TRANG CHỦ
+             ===================================================== -->
+
+        <div class="quay-lai">
+
+            <a href="/">
+                ← Quay lại trang chủ
+            </a>
+
+        </div>
+
 
     </div>
+
+
 </div>
-
-<!-- Truyền dữ liệu từ vựng cho JS tra từ -->
 <script th:inline="javascript">
-    const tuVungTrongCSDL = /*[[${tuVungTuCSDL}]]*/ [];
+
+    const tuVungTrongCSDL =
+        /*[[${tuVungTuCSDL}]]*/ [];
+
 </script>
 
-<!-- Bootstrap Bundle JS -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
-
-<!-- JS riêng cho dịch đoạn văn -->
-<script th:src="@{/js/dich-doan-van.js(v=3)}"></script>
-
-<script>
-    document.getElementById("formTaoDoanVan")?.addEventListener("submit", function() {
-        const loadingBox = document.getElementById("loadingBox");
-        const btnTaoBai = document.getElementById("btnTaoBai");
-        if (loadingBox) loadingBox.style.display = "flex";
-        if (btnTaoBai) btnTaoBai.disabled = true;
-    });
-</script>
+<script th:src="@{/js/dich-doan-van.js(v=2)}"></script>
 </body>
-</html>
+
+</html>
