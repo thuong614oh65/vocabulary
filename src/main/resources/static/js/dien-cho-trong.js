@@ -46,11 +46,11 @@ document.addEventListener("DOMContentLoaded", function () {
         let doanVanTiengAnh = text;
         noiDungDichTiengViet = "";
 
-        // Tách khối bản dịch tiếng Việt nếu có
-        const matchDich = text.match(/\[DỊCH_TIẾNG_VIỆT\]([\s\S]*?)\[\/DỊCH_TIẾNG_VIỆT\]/i)
-                       || text.match(/\[DỊCH TIẾNG VIỆT\]([\s\S]*?)\[\/DỊCH TIẾNG VIỆT\]/i);
+        // Tách khối bản dịch tiếng Việt nếu có (chỉ hiển thị sau khi bấm chấm điểm)
+        const matchDich = text.match(/\[(?:DỊCH_TIẾNG_VIỆT|DICH_TIENG_VIET|DỊCH TIẾNG VIỆT|DICH TIENG VIET|DỊCH|DICH|BAN_DICH|BẢN_DỊCH)\]([\s\S]*?)\[\/(?:DỊCH_TIẾNG_VIỆT|DICH_TIENG_VIET|DỊCH TIẾNG VIỆT|DICH TIENG VIET|DỊCH|DICH|BAN_DICH|BẢN_DỊCH)\]/i)
+                       || text.match(/(?:\[(?:DỊCH_TIẾNG_VIỆT|DICH_TIENG_VIET|DỊCH TIẾNG VIỆT|DICH TIENG VIET|DỊCH|DICH)\]|(?:\*{1,3}|#{1,4}\s*)?(?:Bản dịch tiếng Việt|Ban dich tieng Viet|Bản dịch|Dịch nghĩa)[:\*\s]*)([\s\S]*)/i);
         if (matchDich) {
-            noiDungDichTiengViet = matchDich[1].trim();
+            noiDungDichTiengViet = matchDich[1].replace(/\[\/(?:DỊCH_TIẾNG_VIỆT|DICH_TIENG_VIET|DỊCH TIẾNG VIỆT|DICH TIENG VIET|DỊCH|DICH|BAN_DICH|BẢN_DỊCH)\]/gi, "").trim();
             doanVanTiengAnh = text.substring(0, matchDich.index).trim();
         }
 
