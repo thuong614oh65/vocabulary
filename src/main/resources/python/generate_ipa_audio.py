@@ -2,7 +2,6 @@
 import os
 import sys
 
-# Support utf-8 stdout on Windows console
 if sys.platform == "win32":
     sys.stdout.reconfigure(encoding='utf-8')
 
@@ -14,24 +13,28 @@ except ImportError:
 OUTPUT_DIR = os.path.normpath(os.path.join(os.path.dirname(__file__), "..", "static", "audio", "ipa"))
 VOICE = "en-GB-SoniaNeural"
 
-# 44 IPA Phonemes - Chuan Received Pronunciation (British RP - Adrian Underhill Chart)
-# Moi am doc dung 1 lan duy nhat, chuan xac 100% am vi quoc te
+# 44 IPA PHONEMES - CHUẨN QUỐC TẾ (BRITISH RP)
+# QUY TẮC:
+# - Âm ngắn: đọc dứt khoát, gọn gàng (rate: +15% đến +20%)
+# - Âm dài (:): đọc ngân dài rõ ràng hơn âm ngắn (rate: -25% đến -30%)
+# - Nguyên âm đôi: lướt mượt mà giữa 2 âm vị
+# - Phụ âm: phát âm thuần túy âm vị đó
 PHONEMES = [
-    # --- 12 NGUYÊN ÂM ĐƠN (MONOPHTHONGS) ---
-    ("i_long",  "iː",  '<phoneme alphabet="ipa" ph="iː">ee</phoneme>',   "-10%"),
-    ("i_short", "ɪ",   '<phoneme alphabet="ipa" ph="ɪ">i</phoneme>',     "-10%"),
-    ("u_short", "ʊ",   '<phoneme alphabet="ipa" ph="ʊ">u</phoneme>',     "-10%"),
-    ("u_long",  "uː",  '<phoneme alphabet="ipa" ph="uː">oo</phoneme>',   "-10%"),
-    ("e",       "e",   '<phoneme alphabet="ipa" ph="e">e</phoneme>',     "-10%"),
-    ("schwa",   "ə",   '<phoneme alphabet="ipa" ph="ə">er</phoneme>',    "-10%"),
-    ("er_long", "ɜː",  '<phoneme alphabet="ipa" ph="ɜː">ur</phoneme>',   "-10%"),
-    ("aw_long", "ɔː",  '<phoneme alphabet="ipa" ph="ɔː">or</phoneme>',   "-10%"),
-    ("ae",      "æ",   '<phoneme alphabet="ipa" ph="æ">a</phoneme>',     "-10%"),
-    ("uh",      "ʌ",   '<phoneme alphabet="ipa" ph="ʌ">u</phoneme>',     "-10%"),
-    ("ah_long", "ɑː",  '<phoneme alphabet="ipa" ph="ɑː">ar</phoneme>',   "-10%"),
-    ("o_short", "ɒ",   '<phoneme alphabet="ipa" ph="ɒ">o</phoneme>',     "-10%"),
+    # ── 12 NGUYÊN ÂM ĐƠN ──
+    ("i_long",  "iː",  '<phoneme alphabet="ipa" ph="iː">ee</phoneme>',   "-25%"), # i dài: ngân dài
+    ("i_short", "ɪ",   '<phoneme alphabet="ipa" ph="ɪ">i</phoneme>',     "+15%"), # i ngắn: dứt khoát
+    ("u_short", "ʊ",   '<phoneme alphabet="ipa" ph="ʊ">u</phoneme>',     "+15%"), # u ngắn: dứt khoát
+    ("u_long",  "uː",  '<phoneme alphabet="ipa" ph="uː">oo</phoneme>',   "-25%"), # u dài: ngân dài
+    ("e",       "e",   '<phoneme alphabet="ipa" ph="e">e</phoneme>',     "-5%"),  # e chuẩn
+    ("schwa",   "ə",   '<phoneme alphabet="ipa" ph="ə">er</phoneme>',    "+20%"), # ơ ngắn (schwa): rất nhẹ & ngắn
+    ("er_long", "ɜː",  '<phoneme alphabet="ipa" ph="ɜː">ur</phoneme>',   "-25%"), # ơ dài: ngân dài
+    ("aw_long", "ɔː",  '<phoneme alphabet="ipa" ph="ɔː">or</phoneme>',   "-25%"), # o dài: ngân dài
+    ("ae",      "æ",   '<phoneme alphabet="ipa" ph="æ">a</phoneme>',     "-5%"),  # a bẹt
+    ("uh",      "ʌ",   '<phoneme alphabet="ipa" ph="ʌ">u</phoneme>',     "+15%"), # á ngắn: dứt khoát
+    ("ah_long", "ɑː",  '<phoneme alphabet="ipa" ph="ɑː">ar</phoneme>',   "-25%"), # a dài: mở rộng ngân dài
+    ("o_short", "ɒ",   '<phoneme alphabet="ipa" ph="ɒ">o</phoneme>',     "+15%"), # o ngắn: tròn môi dứt khoát
 
-    # --- 8 NGUYÊN ÂM ĐÔI (DIPHTHONGS) ---
+    # ── 8 NGUYÊN ÂM ĐÔI ──
     ("ia",      "ɪə",  '<phoneme alphabet="ipa" ph="ɪə">ear</phoneme>',  "-10%"),
     ("ei",      "eɪ",  '<phoneme alphabet="ipa" ph="eɪ">ay</phoneme>',   "-10%"),
     ("ua",      "ʊə",  '<phoneme alphabet="ipa" ph="ʊə">ure</phoneme>',  "-10%"),
@@ -41,31 +44,31 @@ PHONEMES = [
     ("ai",      "aɪ",  '<phoneme alphabet="ipa" ph="aɪ">eye</phoneme>',  "-10%"),
     ("au",      "aʊ",  '<phoneme alphabet="ipa" ph="aʊ">ow</phoneme>',   "-10%"),
 
-    # --- 24 PHỤ ÂM (CONSONANTS) ---
-    ("p",       "p",   '<phoneme alphabet="ipa" ph="p">p</phoneme>',     "-10%"),
-    ("b",       "b",   '<phoneme alphabet="ipa" ph="b">b</phoneme>',     "-10%"),
-    ("t",       "t",   '<phoneme alphabet="ipa" ph="t">t</phoneme>',     "-10%"),
-    ("d",       "d",   '<phoneme alphabet="ipa" ph="d">d</phoneme>',     "-10%"),
-    ("tsh",     "tʃ",  '<phoneme alphabet="ipa" ph="tʃ">ch</phoneme>',   "-10%"),
-    ("dzh",     "dʒ",  '<phoneme alphabet="ipa" ph="dʒ">j</phoneme>',    "-10%"),
-    ("k",       "k",   '<phoneme alphabet="ipa" ph="k">k</phoneme>',     "-10%"),
-    ("g",       "g",   '<phoneme alphabet="ipa" ph="g">g</phoneme>',     "-10%"),
-    ("f",       "f",   '<phoneme alphabet="ipa" ph="f">f</phoneme>',     "-10%"),
-    ("v",       "v",   '<phoneme alphabet="ipa" ph="v">v</phoneme>',     "-10%"),
-    ("th_v",    "θ",   '<phoneme alphabet="ipa" ph="θ">th</phoneme>',    "-10%"),
-    ("th_d",    "ð",   '<phoneme alphabet="ipa" ph="ð">th</phoneme>',    "-10%"),
-    ("s",       "s",   '<phoneme alphabet="ipa" ph="s">s</phoneme>',     "-10%"),
-    ("z",       "z",   '<phoneme alphabet="ipa" ph="z">z</phoneme>',     "-10%"),
-    ("sh",      "ʃ",   '<phoneme alphabet="ipa" ph="ʃ">sh</phoneme>',    "-10%"),
-    ("zh",      "ʒ",   '<phoneme alphabet="ipa" ph="ʒ">zh</phoneme>',    "-10%"),
-    ("m",       "m",   '<phoneme alphabet="ipa" ph="m">m</phoneme>',     "-10%"),
-    ("n",       "n",   '<phoneme alphabet="ipa" ph="n">n</phoneme>',     "-10%"),
-    ("ng",      "ŋ",   '<phoneme alphabet="ipa" ph="ŋ">ng</phoneme>',    "-10%"),
-    ("h",       "h",   '<phoneme alphabet="ipa" ph="h">h</phoneme>',     "-10%"),
-    ("l",       "l",   '<phoneme alphabet="ipa" ph="l">l</phoneme>',     "-10%"),
-    ("r",       "r",   '<phoneme alphabet="ipa" ph="r">r</phoneme>',     "-10%"),
-    ("w",       "w",   '<phoneme alphabet="ipa" ph="w">w</phoneme>',     "-10%"),
-    ("y",       "j",   '<phoneme alphabet="ipa" ph="j">y</phoneme>',     "-10%"),
+    # ── 24 PHỤ ÂM ──
+    ("p",       "p",   '<phoneme alphabet="ipa" ph="p">p</phoneme>',     "-5%"),
+    ("b",       "b",   '<phoneme alphabet="ipa" ph="b">b</phoneme>',     "-5%"),
+    ("t",       "t",   '<phoneme alphabet="ipa" ph="t">t</phoneme>',     "-5%"),
+    ("d",       "d",   '<phoneme alphabet="ipa" ph="d">d</phoneme>',     "-5%"),
+    ("tsh",     "tʃ",  '<phoneme alphabet="ipa" ph="tʃ">ch</phoneme>',   "-5%"),
+    ("dzh",     "dʒ",  '<phoneme alphabet="ipa" ph="dʒ">j</phoneme>',    "-5%"),
+    ("k",       "k",   '<phoneme alphabet="ipa" ph="k">k</phoneme>',     "-5%"),
+    ("g",       "g",   '<phoneme alphabet="ipa" ph="g">g</phoneme>',     "-5%"),
+    ("f",       "f",   '<phoneme alphabet="ipa" ph="f">f</phoneme>',     "-5%"),
+    ("v",       "v",   '<phoneme alphabet="ipa" ph="v">v</phoneme>',     "-5%"),
+    ("th_v",    "θ",   '<phoneme alphabet="ipa" ph="θ">th</phoneme>',    "-5%"),
+    ("th_d",    "ð",   '<phoneme alphabet="ipa" ph="ð">th</phoneme>',    "-5%"),
+    ("s",       "s",   '<phoneme alphabet="ipa" ph="s">s</phoneme>',     "-5%"),
+    ("z",       "z",   '<phoneme alphabet="ipa" ph="z">z</phoneme>',     "-5%"),
+    ("sh",      "ʃ",   '<phoneme alphabet="ipa" ph="ʃ">sh</phoneme>',    "-5%"),
+    ("zh",      "ʒ",   '<phoneme alphabet="ipa" ph="ʒ">zh</phoneme>',    "-5%"),
+    ("m",       "m",   '<phoneme alphabet="ipa" ph="m">m</phoneme>',     "-5%"),
+    ("n",       "n",   '<phoneme alphabet="ipa" ph="n">n</phoneme>',     "-5%"),
+    ("ng",      "ŋ",   '<phoneme alphabet="ipa" ph="ŋ">ng</phoneme>',    "-5%"),
+    ("h",       "h",   '<phoneme alphabet="ipa" ph="h">h</phoneme>',     "-5%"),
+    ("l",       "l",   '<phoneme alphabet="ipa" ph="l">l</phoneme>',     "-5%"),
+    ("r",       "r",   '<phoneme alphabet="ipa" ph="r">r</phoneme>',     "-5%"),
+    ("w",       "w",   '<phoneme alphabet="ipa" ph="w">w</phoneme>',     "-5%"),
+    ("y",       "j",   '<phoneme alphabet="ipa" ph="j">y</phoneme>',     "-5%"),
 ]
 
 async def gen_file(fname, ipa, ssml, rate):
@@ -88,19 +91,19 @@ async def gen_file(fname, ipa, ssml, rate):
 
 async def main():
     os.makedirs(OUTPUT_DIR, exist_ok=True)
-    print("=" * 50)
-    print("TAO 44 FILE AUDIO IPA CHUAN QUOC TE (DOC 1 LAN)")
+    print("=" * 55)
+    print("TẠO 44 ÂM IPA: ÂM NGẮN GỌN GÀNG - ÂM DÀI (:) NGÂN DÀI")
     print(f"Voice: {VOICE}")
     print(f"Output: {OUTPUT_DIR}")
-    print("=" * 50)
+    print("=" * 55)
     success = 0
     for fname, ipa, ssml, rate in PHONEMES:
         if await gen_file(fname, ipa, ssml, rate):
             success += 1
         await asyncio.sleep(0.08)
-    print("=" * 50)
-    print(f"Hoan thanh: {success}/{len(PHONEMES)} am IPA")
-    print("=" * 50)
+    print("=" * 55)
+    print(f"Hoàn thành: {success}/{len(PHONEMES)} âm IPA")
+    print("=" * 55)
 
 if __name__ == "__main__":
     asyncio.run(main())
