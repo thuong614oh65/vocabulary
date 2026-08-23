@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
@@ -276,8 +276,10 @@ const ALL_PHONEMES = [
     'm','n','ng','h','l','r','w','y'
 ];
 
+const VERSION = '2.1';
+
 ALL_PHONEMES.forEach(key => {
-    const a = new Audio(BASE + key + '.mp3');
+    const a = new Audio(BASE + key + '.mp3?v=' + VERSION);
     a.preload = 'auto';
     a.load();
     audioCache[key] = a;
@@ -285,10 +287,10 @@ ALL_PHONEMES.forEach(key => {
 
 function showToast(ipa, word) {
     const toast = document.getElementById('playToast');
-    toast.textContent = '♪  /' + ipa + '/  —  ' + word;
+    toast.textContent = '♪  /' + ipa + '/  (Ví dụ: ' + word + ')';
     toast.classList.add('show');
     clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => toast.classList.remove('show'), 2800);
+    toastTimer = setTimeout(() => toast.classList.remove('show'), 2500);
 }
 
 function playPhoneme(cell) {
@@ -312,7 +314,7 @@ function playPhoneme(cell) {
     });
 
     if (!audioCache[key]) {
-        audioCache[key] = new Audio(BASE + key + '.mp3');
+        audioCache[key] = new Audio(BASE + key + '.mp3?v=' + VERSION);
     }
 
     const audio = audioCache[key];

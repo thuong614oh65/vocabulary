@@ -1,4 +1,4 @@
-﻿import asyncio
+import asyncio
 import os
 import sys
 
@@ -11,75 +11,75 @@ except ImportError:
     print("edge_tts not found"); sys.exit(1)
 
 OUTPUT_DIR = os.path.normpath(os.path.join(os.path.dirname(__file__), "..", "static", "audio", "ipa"))
+TARGET_OUTPUT_DIR = os.path.normpath(os.path.join(os.path.dirname(__file__), "..", "..", "..", "target", "classes", "static", "audio", "ipa"))
 VOICE = "en-GB-SoniaNeural"
 
-# 44 IPA PHONEMES - CHUẨN QUỐC TẾ (BRITISH RP)
-# QUY TẮC:
-# - Âm ngắn: đọc dứt khoát, gọn gàng (rate: +15% đến +20%)
-# - Âm dài (:): đọc ngân dài rõ ràng hơn âm ngắn (rate: -25% đến -30%)
-# - Nguyên âm đôi: lướt mượt mà giữa 2 âm vị
-# - Phụ âm: phát âm thuần túy âm vị đó
+# 44 IPA PHONEMES - PHÁT ÂM THUẦN TÚY 1 LẦN DUY NHẤT, KHÔNG ĐỌC TỪ VÍ DỤ
 PHONEMES = [
     # ── 12 NGUYÊN ÂM ĐƠN ──
-    ("i_long",  "iː",  '<phoneme alphabet="ipa" ph="iː">ee</phoneme>',   "-25%"), # i dài: ngân dài
-    ("i_short", "ɪ",   '<phoneme alphabet="ipa" ph="ɪ">i</phoneme>',     "+15%"), # i ngắn: dứt khoát
-    ("u_short", "ʊ",   '<phoneme alphabet="ipa" ph="ʊ">u</phoneme>',     "+15%"), # u ngắn: dứt khoát
-    ("u_long",  "uː",  '<phoneme alphabet="ipa" ph="uː">oo</phoneme>',   "-25%"), # u dài: ngân dài
-    ("e",       "e",   '<phoneme alphabet="ipa" ph="e">e</phoneme>',     "-5%"),  # e chuẩn
-    ("schwa",   "ə",   '<phoneme alphabet="ipa" ph="ə">er</phoneme>',    "+20%"), # ơ ngắn (schwa): rất nhẹ & ngắn
-    ("er_long", "ɜː",  '<phoneme alphabet="ipa" ph="ɜː">ur</phoneme>',   "-25%"), # ơ dài: ngân dài
-    ("aw_long", "ɔː",  '<phoneme alphabet="ipa" ph="ɔː">or</phoneme>',   "-25%"), # o dài: ngân dài
-    ("ae",      "æ",   '<phoneme alphabet="ipa" ph="æ">a</phoneme>',     "-5%"),  # a bẹt
-    ("uh",      "ʌ",   '<phoneme alphabet="ipa" ph="ʌ">u</phoneme>',     "+15%"), # á ngắn: dứt khoát
-    ("ah_long", "ɑː",  '<phoneme alphabet="ipa" ph="ɑː">ar</phoneme>',   "-25%"), # a dài: mở rộng ngân dài
-    ("o_short", "ɒ",   '<phoneme alphabet="ipa" ph="ɒ">o</phoneme>',     "+15%"), # o ngắn: tròn môi dứt khoát
+    ("i_long",  "iː",  "ee",   "-25%"), # i dài: ngân dài
+    ("i_short", "ɪ",   "ih",   "+20%"), # i ngắn: dứt khoát
+    ("u_short", "ʊ",   "uuh",  "+20%"), # u ngắn: dứt khoát
+    ("u_long",  "uː",  "ooo",  "-25%"), # u dài: ngân dài
+    ("e",       "e",   "eh",   "+0%"),  # e chuẩn
+    ("schwa",   "ə",   "uh",   "+25%"), # ơ ngắn (schwa): rất nhẹ & ngắn
+    ("er_long", "ɜː",  "ur",   "-25%"), # ơ dài: ngân dài
+    ("aw_long", "ɔː",  "aw",   "-25%"), # o dài: ngân dài
+    ("ae",      "æ",   "a",    "+0%"),  # a bẹt
+    ("uh",      "ʌ",   "uh",   "+15%"), # á ngắn: dứt khoát
+    ("ah_long", "ɑː",  "aah",  "-25%"), # a dài: mở rộng ngân dài
+    ("o_short", "ɒ",   "o",    "+20%"), # o ngắn: tròn môi dứt khoát
 
     # ── 8 NGUYÊN ÂM ĐÔI ──
-    ("ia",      "ɪə",  '<phoneme alphabet="ipa" ph="ɪə">ear</phoneme>',  "-10%"),
-    ("ei",      "eɪ",  '<phoneme alphabet="ipa" ph="eɪ">ay</phoneme>',   "-10%"),
-    ("ua",      "ʊə",  '<phoneme alphabet="ipa" ph="ʊə">ure</phoneme>',  "-10%"),
-    ("oi",      "ɔɪ",  '<phoneme alphabet="ipa" ph="ɔɪ">oy</phoneme>',   "-10%"),
-    ("ou",      "əʊ",  '<phoneme alphabet="ipa" ph="əʊ">ow</phoneme>',   "-10%"),
-    ("ea",      "eə",  '<phoneme alphabet="ipa" ph="eə">air</phoneme>',  "-10%"),
-    ("ai",      "aɪ",  '<phoneme alphabet="ipa" ph="aɪ">eye</phoneme>',  "-10%"),
-    ("au",      "aʊ",  '<phoneme alphabet="ipa" ph="aʊ">ow</phoneme>',   "-10%"),
+    ("ia",      "ɪə",  "eer",  "-15%"),
+    ("ei",      "eɪ",  "ay",   "-15%"),
+    ("ua",      "ʊə",  "oor",  "-15%"),
+    ("oi",      "ɔɪ",  "oy",   "-15%"),
+    ("ou",      "əʊ",  "oh",   "-15%"),
+    ("ea",      "eə",  "air",  "-15%"),
+    ("ai",      "aɪ",  "eye",  "-15%"),
+    ("au",      "aʊ",  "ow",   "-15%"),
 
     # ── 24 PHỤ ÂM ──
-    ("p",       "p",   '<phoneme alphabet="ipa" ph="p">p</phoneme>',     "-5%"),
-    ("b",       "b",   '<phoneme alphabet="ipa" ph="b">b</phoneme>',     "-5%"),
-    ("t",       "t",   '<phoneme alphabet="ipa" ph="t">t</phoneme>',     "-5%"),
-    ("d",       "d",   '<phoneme alphabet="ipa" ph="d">d</phoneme>',     "-5%"),
-    ("tsh",     "tʃ",  '<phoneme alphabet="ipa" ph="tʃ">ch</phoneme>',   "-5%"),
-    ("dzh",     "dʒ",  '<phoneme alphabet="ipa" ph="dʒ">j</phoneme>',    "-5%"),
-    ("k",       "k",   '<phoneme alphabet="ipa" ph="k">k</phoneme>',     "-5%"),
-    ("g",       "g",   '<phoneme alphabet="ipa" ph="g">g</phoneme>',     "-5%"),
-    ("f",       "f",   '<phoneme alphabet="ipa" ph="f">f</phoneme>',     "-5%"),
-    ("v",       "v",   '<phoneme alphabet="ipa" ph="v">v</phoneme>',     "-5%"),
-    ("th_v",    "θ",   '<phoneme alphabet="ipa" ph="θ">th</phoneme>',    "-5%"),
-    ("th_d",    "ð",   '<phoneme alphabet="ipa" ph="ð">th</phoneme>',    "-5%"),
-    ("s",       "s",   '<phoneme alphabet="ipa" ph="s">s</phoneme>',     "-5%"),
-    ("z",       "z",   '<phoneme alphabet="ipa" ph="z">z</phoneme>',     "-5%"),
-    ("sh",      "ʃ",   '<phoneme alphabet="ipa" ph="ʃ">sh</phoneme>',    "-5%"),
-    ("zh",      "ʒ",   '<phoneme alphabet="ipa" ph="ʒ">zh</phoneme>',    "-5%"),
-    ("m",       "m",   '<phoneme alphabet="ipa" ph="m">m</phoneme>',     "-5%"),
-    ("n",       "n",   '<phoneme alphabet="ipa" ph="n">n</phoneme>',     "-5%"),
-    ("ng",      "ŋ",   '<phoneme alphabet="ipa" ph="ŋ">ng</phoneme>',    "-5%"),
-    ("h",       "h",   '<phoneme alphabet="ipa" ph="h">h</phoneme>',     "-5%"),
-    ("l",       "l",   '<phoneme alphabet="ipa" ph="l">l</phoneme>',     "-5%"),
-    ("r",       "r",   '<phoneme alphabet="ipa" ph="r">r</phoneme>',     "-5%"),
-    ("w",       "w",   '<phoneme alphabet="ipa" ph="w">w</phoneme>',     "-5%"),
-    ("y",       "j",   '<phoneme alphabet="ipa" ph="j">y</phoneme>',     "-5%"),
+    ("p",       "p",   "p",    "+0%"),
+    ("b",       "b",   "b",    "+0%"),
+    ("t",       "t",   "t",    "+0%"),
+    ("d",       "d",   "d",    "+0%"),
+    ("tsh",     "tʃ",  "ch",   "+0%"),
+    ("dzh",     "dʒ",  "j",    "+0%"),
+    ("k",       "k",   "k",    "+0%"),
+    ("g",       "g",   "g",    "+0%"),
+    ("f",       "f",   "f",    "+0%"),
+    ("v",       "v",   "v",    "+0%"),
+    ("th_v",    "θ",   "th",   "+0%"),
+    ("th_d",    "ð",   "the",  "+0%"),
+    ("s",       "s",   "s",    "+0%"),
+    ("z",       "z",   "z",    "+0%"),
+    ("sh",      "ʃ",   "sh",   "+0%"),
+    ("zh",      "ʒ",   "zh",   "+0%"),
+    ("m",       "m",   "m",    "+0%"),
+    ("n",       "n",   "n",    "+0%"),
+    ("ng",      "ŋ",   "ng",   "+0%"),
+    ("h",       "h",   "h",    "+0%"),
+    ("l",       "l",   "l",    "+0%"),
+    ("r",       "r",   "r",    "+0%"),
+    ("w",       "w",   "w",    "+0%"),
+    ("y",       "j",   "y",    "+0%"),
 ]
 
-async def gen_file(fname, ipa, ssml, rate):
+async def gen_file(fname, ipa, text, rate):
     out_path = os.path.join(OUTPUT_DIR, fname + ".mp3")
     if os.path.exists(out_path):
         os.remove(out_path)
     try:
-        comm = edge_tts.Communicate(ssml, VOICE, rate=rate, volume="+20%")
+        comm = edge_tts.Communicate(text, VOICE, rate=rate, volume="+50%")
         await comm.save(out_path)
         size = os.path.getsize(out_path)
         if size > 1000:
+            # Sao chép sang target/classes nếu có
+            if os.path.exists(TARGET_OUTPUT_DIR):
+                import shutil
+                shutil.copy2(out_path, os.path.join(TARGET_OUTPUT_DIR, fname + ".mp3"))
             print(f"  [OK] /{ipa}/ -> {fname}.mp3 ({size} bytes)")
             return True
         else:
@@ -91,14 +91,16 @@ async def gen_file(fname, ipa, ssml, rate):
 
 async def main():
     os.makedirs(OUTPUT_DIR, exist_ok=True)
+    if os.path.exists(os.path.dirname(TARGET_OUTPUT_DIR)):
+        os.makedirs(TARGET_OUTPUT_DIR, exist_ok=True)
     print("=" * 55)
-    print("TẠO 44 ÂM IPA: ÂM NGẮN GỌN GÀNG - ÂM DÀI (:) NGÂN DÀI")
+    print("TẠO 44 ÂM IPA: CHỈ ĐỌC ÂM THUẦN TÚY 1 LẦN, TO RÕ CHUẨN")
     print(f"Voice: {VOICE}")
     print(f"Output: {OUTPUT_DIR}")
     print("=" * 55)
     success = 0
-    for fname, ipa, ssml, rate in PHONEMES:
-        if await gen_file(fname, ipa, ssml, rate):
+    for fname, ipa, text, rate in PHONEMES:
+        if await gen_file(fname, ipa, text, rate):
             success += 1
         await asyncio.sleep(0.08)
     print("=" * 55)
