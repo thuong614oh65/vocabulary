@@ -55,12 +55,12 @@ RUN chmod +x mvnw
 RUN ./mvnw -DskipTests clean package
 
 # =========================================================
-# CHẠY SPRING BOOT (PORT 7860 CHO HUGGING FACE SPACES / RENDER)
+# CHẠY SPRING BOOT (TỰ ĐỘNG NHẬN DIỆN PORT TRÊN RENDER / HF SPACES)
 # TỐI ƯU BỘ NHỚ CHO GÓI FREE 512MB RAM
 # =========================================================
 
 USER user
-ENV PORT=7860
-EXPOSE 7860
+EXPOSE 10000 8080 7860
 
-CMD ["sh", "-c", "java -XX:+UseSerialGC -Xss512k -XX:MaxMetaspaceSize=96m -Xms128m -Xmx220m -Dserver.port=${PORT:-7860} -jar target/*.jar"]
+CMD ["sh", "-c", "java -XX:+UseSerialGC -Xss512k -XX:MaxMetaspaceSize=96m -Xms128m -Xmx220m -Dserver.port=${PORT:-10000} -Dserver.address=0.0.0.0 -jar target/*.jar"]
+
