@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Số Đếm & Số Thứ Tự Tiếng Anh (Numbers & Ordinals)</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/so-dem.css(v=2)}">
+</head>
+<body>
+
+<!-- ==============================
+     HEADER
+     ============================== -->
+<div class="numbers-page-header">
+    <h1>🔢 Bảng Số Đếm &amp; Số Thứ Tự Tiếng Anh</h1>
+    <p>Nhấn vào từng ô để nghe đọc phát âm chuẩn bản xứ · 1 ô gồm Số và Chữ tương ứng</p>
+    <div class="d-flex justify-content-center gap-2 mt-2 flex-wrap">
+        <a href="/" class="btn-back-home">← Trang chủ</a>
+        <a href="/ipa" class="btn-back-home" style="background:#00838f">📢 Bảng IPA</a>
+    </div>
+</div>
+
+<!-- ==============================
+     THANH ĐIỀU HƯỚNG TAB
+     ============================== -->
+<div class="container text-center mb-4">
+    <div class="main-tab-nav">
+        <button type="button" class="btn-tab active" onclick="switchMainTab('cardinal', this)">
+            🔢 BẢNG SỐ ĐẾM (Cardinal Numbers)
+        </button>
+        <button type="button" class="btn-tab" onclick="switchMainTab('ordinal', this)">
+            🏅 BẢNG SỐ THỨ TỰ (Ordinal Numbers)
+        </button>
+    </div>
+</div>
+
+<!-- ==============================
+     PHẦN 1: BẢNG SỐ ĐẾM (CARDINAL NUMBERS)
+     ============================== -->
+<div id="tab-cardinal" class="numbers-container">
+
+    <!-- ── NHÓM 1: 0 ĐẾN 12 ──────────────────── -->
+    <div class="num-section">
+        <div class="num-section-title">
+            <span class="sec-icon">🟢</span>
+            <span>Số đếm cơ bản: 0 – 12</span>
+            <small>(Basic Numbers)</small>
+        </div>
+        <div class="num-grid">
+            <div class="num-card" data-word="zero" data-display="0 - zero" data-ipa="/ˈzɪərəʊ/" data-vi="không">
+                <span class="num-digit">0</span>
+                <span class="num-word">zero</span>
+                <span class="num-ipa">/ˈzɪərəʊ/</span>
+                <span class="num-vi">không</span>
+            </div>
+            <div class="num-card" data-word="one" data-display="1 - one" data-ipa="/wʌn/" data-vi="một">
+                <span class="num-digit">1</span>
+                <span class="num-word">one</span>
+                <span class="num-ipa">/wʌn/</span>
+                <span class="num-vi">một</span>
+            </div>
+            <div class="num-card" data-word="two" data-display="2 - two" data-ipa="/tuː/" data-vi="hai">
+                <span class="num-digit">2</span>
+                <span class="num-word">two</span>
+                <span class="num-ipa">/tuː/</span>
+                <span class="num-vi">hai</span>
+            </div>
+            <div class="num-card" data-word="three" data-display="3 - three" data-ipa="/θriː/" data-vi="ba">
+                <span class="num-digit">3</span>
+                <span class="num-word">three</span>
+                <span class="num-ipa">/θriː/</span>
+                <span class="num-vi">ba</span>
+            </div>
+            <div class="num-card" data-word="four" data-display="4 - four" data-ipa="/fɔː/" data-vi="bốn">
+                <span class="num-digit">4</span>
+                <span class="num-word">four</span>
+                <span class="num-ipa">/fɔː/</span>
+                <span class="num-vi">bốn</span>
+            </div>
+            <div class="num-card" data-word="five" data-display="5 - five" data-ipa="/faɪv/" data-vi="năm">
+                <span class="num-digit">5</span>
+                <span class="num-word">five</span>
+                <span class="num-ipa">/faɪv/</span>
+                <span class="num-vi">năm</span>
+            </div>
+            <div class="num-card" data-word="six" data-display="6 - six" data-ipa="/sɪks/" data-vi="sáu">
+                <span class="num-digit">6</span>
+                <span class="num-word">six</span>
+                <span class="num-ipa">/sɪks/</span>
+                <span class="num-vi">sáu</span>
+            </div>
+            <div class="num-card" data-word="seven" data-display="7 - seven" data-ipa="/ˈsevən/" data-vi="bảy">
+                <span class="num-digit">7</span>
+                <span class="num-word">seven</span>
+                <span class="num-ipa">/ˈsevən/</span>
+                <span class="num-vi">bảy</span>
+            </div>
+            <div class="num-card" data-word="eight" data-display="8 - eight" data-ipa="/eɪt/" data-vi="tám">
+                <span class="num-digit">8</span>
+                <span class="num-word">eight</span>
+                <span class="num-ipa">/eɪt/</span>
+                <span class="num-vi">tám</span>
+            </div>
+            <div class="num-card" data-word="nine" data-display="9 - nine" data-ipa="/naɪn/" data-vi="chín">
+                <span class="num-digit">9</span>
+                <span class="num-word">nine</span>
+                <span class="num-ipa">/naɪn/</span>
+                <span class="num-vi">chín</span>
+            </div>
+            <div class="num-card" data-word="ten" data-display="10 - ten" data-ipa="/ten/" data-vi="mười">
+                <span class="num-digit">10</span>
+                <span class="num-word">ten</span>
+                <span class="num-ipa">/ten/</span>
+                <span class="num-vi">mười</span>
+            </div>
+            <div class="num-card" data-word="eleven" data-display="11 - eleven" data-ipa="/ɪˈlevən/" data-vi="mười một">
+                <span class="num-digit">11</span>
+                <span class="num-word">eleven</span>
+                <span class="num-ipa">/ɪˈlevən/</span>
+                <span class="num-vi">mười một</span>
+            </div>
+            <div class="num-card" data-word="twelve" data-display="12 - twelve" data-ipa="/twelv/" data-vi="mười hai">
+                <span class="num-digit">12</span>
+                <span class="num-word">twelve</span>
+                <span class="num-ipa">/twelv/</span>
+                <span class="num-vi">mười hai</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── NHÓM 2: 13 ĐẾN 19 ──────────────────── -->
+    <div class="num-section">
+        <div class="num-section-title">
+            <span class="sec-icon">🔵</span>
+            <span>Số đếm 13 – 19 (Nhấn trọng âm đuôi -teen)</span>
+            <small>(Teens)</small>
+        </div>
+        <div class="num-grid">
+            <div class="num-card card-teen" data-word="thirteen" data-display="13 - thirteen" data-ipa="/ˌθɜːˈtiːn/" data-vi="mười ba">
+                <span class="num-digit">13</span>
+                <span class="num-word">thirteen</span>
+                <span class="num-ipa">/ˌθɜːˈtiːn/</span>
+                <span class="num-vi">mười ba</span>
+            </div>
+            <div class="num-card card-teen" data-word="fourteen" data-display="14 - fourteen" data-ipa="/ˌfɔːˈtiːn/" data-vi="mười bốn">
+                <span class="num-digit">14</span>
+                <span class="num-word">fourteen</span>
+                <span class="num-ipa">/ˌfɔːˈtiːn/</span>
+                <span class="num-vi">mười bốn</span>
+            </div>
+            <div class="num-card card-teen" data-word="fifteen" data-display="15 - fifteen" data-ipa="/ˌfɪfˈtiːn/" data-vi="mười lăm">
+                <span class="num-digit">15</span>
+                <span class="num-word">fifteen</span>
+                <span class="num-ipa">/ˌfɪfˈtiːn/</span>
+                <span class="num-vi">mười lăm</span>
+            </div>
+            <div class="num-card card-teen" data-word="sixteen" data-display="16 - sixteen" data-ipa="/ˌsɪksˈtiːn/" data-vi="mười sáu">
+                <span class="num-digit">16</span>
+                <span class="num-word">sixteen</span>
+                <span class="num-ipa">/ˌsɪksˈtiːn/</span>
+                <span class="num-vi">mười sáu</span>
+            </div>
+            <div class="num-card card-teen" data-word="seventeen" data-display="17 - seventeen" data-ipa="/ˌsevənˈtiːn/" data-vi="mười bảy">
+                <span class="num-digit">17</span>
+                <span class="num-word">seventeen</span>
+                <span class="num-ipa">/ˌsevənˈtiːn/</span>
+                <span class="num-vi">mười bảy</span>
+            </div>
+            <div class="num-card card-teen" data-word="eighteen" data-display="18 - eighteen" data-ipa="/ˌeɪˈtiːn/" data-vi="mười tám">
+                <span class="num-digit">18</span>
+                <span class="num-word">eighteen</span>
+                <span class="num-ipa">/ˌeɪˈtiːn/</span>
+                <span class="num-vi">mười tám</span>
+            </div>
+            <div class="num-card card-teen" data-word="nineteen" data-display="19 - nineteen" data-ipa="/ˌnaɪnˈtiːn/" data-vi="mười chín">
+                <span class="num-digit">19</span>
+                <span class="num-word">nineteen</span>
+                <span class="num-ipa">/ˌnaɪnˈtiːn/</span>
+                <span class="num-vi">mười chín</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── NHÓM 3: 20 ĐẾN 29 ──────────────────── -->
+    <div class="num-section">
+        <div class="num-section-title">
+            <span class="sec-icon">🟣</span>
+            <span>Số đếm 20 – 29 (Ghép số)</span>
+            <small>(Twenties)</small>
+        </div>
+        <div class="num-grid">
+            <div class="num-card card-twenty" data-word="twenty" data-display="20 - twenty" data-ipa="/ˈtwenti/" data-vi="hai mươi">
+                <span class="num-digit">20</span>
+                <span class="num-word">twenty</span>
+                <span class="num-ipa">/ˈtwenti/</span>
+                <span class="num-vi">hai mươi</span>
+            </div>
+            <div class="num-card card-twenty" data-word="twenty-one" data-display="21 - twenty-one" data-ipa="/ˌtwenti ˈwʌn/" data-vi="hai mươi mốt">
+                <span class="num-digit">21</span>
+                <span class="num-word">twenty-one</span>
+                <span class="num-ipa">/ˌtwenti ˈwʌn/</span>
+                <span class="num-vi">hai mươi mốt</span>
+            </div>
+            <div class="num-card card-twenty" data-word="twenty-two" data-display="22 - twenty-two" data-ipa="/ˌtwenti ˈtuː/" data-vi="hai mươi hai">
+                <span class="num-digit">22</span>
+                <span class="num-word">twenty-two</span>
+                <span class="num-ipa">/ˌtwenti ˈtuː/</span>
+                <span class="num-vi">hai mươi hai</span>
+            </div>
+            <div class="num-card card-twenty" data-word="twenty-three" data-display="23 - twenty-three" data-ipa="/ˌtwenti ˈθriː/" data-vi="hai mươi ba">
+                <span class="num-digit">23</span>
+                <span class="num-word">twenty-three</span>
+                <span class="num-ipa">/ˌtwenti ˈθriː/</span>
+                <span class="num-vi">hai mươi ba</span>
+            </div>
+            <div class="num-card card-twenty" data-word="twenty-four" data-display="24 - twenty-four" data-ipa="/ˌtwenti ˈfɔː/" data-vi="hai mươi bốn">
+                <span class="num-digit">24</span>
+                <span class="num-word">twenty-four</span>
+                <span class="num-ipa">/ˌtwenti ˈfɔː/</span>
+                <span class="num-vi">hai mươi bốn</span>
+            </div>
+            <div class="num-card card-twenty" data-word="twenty-five" data-display="25 - twenty-five" data-ipa="/ˌtwenti ˈfaɪv/" data-vi="hai mươi lăm">
+                <span class="num-digit">25</span>
+                <span class="num-word">twenty-five</span>
+                <span class="num-ipa">/ˌtwenti ˈfaɪv/</span>
+                <span class="num-vi">hai mươi lăm</span>
+            </div>
+            <div class="num-card card-twenty" data-word="twenty-six" data-display="26 - twenty-six" data-ipa="/ˌtwenti ˈsɪks/" data-vi="hai mươi sáu">
+                <span class="num-digit">26</span>
+                <span class="num-word">twenty-six</span>
+                <span class="num-ipa">/ˌtwenti ˈsɪks/</span>
+                <span class="num-vi">hai mươi sáu</span>
+            </div>
+            <div class="num-card card-twenty" data-word="twenty-seven" data-display="27 - twenty-seven" data-ipa="/ˌtwenti ˈsevən/" data-vi="hai mươi bảy">
+                <span class="num-digit">27</span>
+                <span class="num-word">twenty-seven</span>
+                <span class="num-ipa">/ˌtwenti ˈsevən/</span>
+                <span class="num-vi">hai mươi bảy</span>
+            </div>
+            <div class="num-card card-twenty" data-word="twenty-eight" data-display="28 - twenty-eight" data-ipa="/ˌtwenti ˈeɪt/" data-vi="hai mươi tám">
+                <span class="num-digit">28</span>
+                <span class="num-word">twenty-eight</span>
+                <span class="num-ipa">/ˌtwenti ˈeɪt/</span>
+                <span class="num-vi">hai mươi tám</span>
+            </div>
+            <div class="num-card card-twenty" data-word="twenty-nine" data-display="29 - twenty-nine" data-ipa="/ˌtwenti ˈnaɪn/" data-vi="hai mươi chín">
+                <span class="num-digit">29</span>
+                <span class="num-word">twenty-nine</span>
+                <span class="num-ipa">/ˌtwenti ˈnaɪn/</span>
+                <span class="num-vi">hai mươi chín</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── NHÓM 4: HÀNG CHỤC TRÒN 30 - 90 ──────────────────── -->
+    <div class="num-section">
+        <div class="num-section-title">
+            <span class="sec-icon">🟠</span>
+            <span>Hàng chục tròn: 30, 40, 50, 60, 70, 80, 90 (Đuôi -ty)</span>
+            <small>(Tens)</small>
+        </div>
+        <div class="num-grid">
+            <div class="num-card card-tens" data-word="thirty" data-display="30 - thirty" data-ipa="/ˈθɜːti/" data-vi="ba mươi">
+                <span class="num-digit">30</span>
+                <span class="num-word">thirty</span>
+                <span class="num-ipa">/ˈθɜːti/</span>
+                <span class="num-vi">ba mươi</span>
+            </div>
+            <div class="num-card card-tens" data-word="forty" data-display="40 - forty" data-ipa="/ˈfɔːti/" data-vi="bốn mươi">
+                <span class="num-digit">40</span>
+                <span class="num-word">forty</span>
+                <span class="num-ipa">/ˈfɔːti/</span>
+                <span class="num-vi">bốn mươi</span>
+            </div>
+            <div class="num-card card-tens" data-word="fifty" data-display="50 - fifty" data-ipa="/ˈfɪfti/" data-vi="năm mươi">
+                <span class="num-digit">50</span>
+                <span class="num-word">fifty</span>
+                <span class="num-ipa">/ˈfɪfti/</span>
+                <span class="num-vi">năm mươi</span>
+            </div>
+            <div class="num-card card-tens" data-word="sixty" data-display="60 - sixty" data-ipa="/ˈsɪksti/" data-vi="sáu mươi">
+                <span class="num-digit">60</span>
+                <span class="num-word">sixty</span>
+                <span class="num-ipa">/ˈsɪksti/</span>
+                <span class="num-vi">sáu mươi</span>
+            </div>
+            <div class="num-card card-tens" data-word="seventy" data-display="70 - seventy" data-ipa="/ˈsevənti/" data-vi="bảy mươi">
+                <span class="num-digit">70</span>
+                <span class="num-word">seventy</span>
+                <span class="num-ipa">/ˈsevənti/</span>
+                <span class="num-vi">bảy mươi</span>
+            </div>
+            <div class="num-card card-tens" data-word="eighty" data-display="80 - eighty" data-ipa="/ˈeɪti/" data-vi="tám mươi">
+                <span class="num-digit">80</span>
+                <span class="num-word">eighty</span>
+                <span class="num-ipa">/ˈeɪti/</span>
+                <span class="num-vi">tám mươi</span>
+            </div>
+            <div class="num-card card-tens" data-word="ninety" data-display="90 - ninety" data-ipa="/ˈnaɪnti/" data-vi="chín mươi">
+                <span class="num-digit">90</span>
+                <span class="num-word">ninety</span>
+                <span class="num-ipa">/ˈnaɪnti/</span>
+                <span class="num-vi">chín mươi</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── NHÓM 5: SỐ LỚN (100, 1,000, 1,000,000...) ──────────────────── -->
+    <div class="num-section">
+        <div class="num-section-title">
+            <span class="sec-icon">🔴</span>
+            <span>Hàng trăm, hàng nghìn, hàng triệu, tỷ...</span>
+            <small>(Hundreds, Thousands, Millions)</small>
+        </div>
+        <div class="num-grid">
+            <div class="num-card card-large" data-word="one hundred" data-display="100 - one hundred" data-ipa="/wʌn ˈhʌndrəd/" data-vi="một trăm">
+                <span class="num-digit">100</span>
+                <span class="num-word">one hundred</span>
+                <span class="num-ipa">/wʌn ˈhʌndrəd/</span>
+                <span class="num-vi">một trăm</span>
+            </div>
+            <div class="num-card card-large" data-word="two hundred" data-display="200 - two hundred" data-ipa="/tuː ˈhʌndrəd/" data-vi="hai trăm">
+                <span class="num-digit">200</span>
+                <span class="num-word">two hundred</span>
+                <span class="num-ipa">/tuː ˈhʌndrəd/</span>
+                <span class="num-vi">hai trăm</span>
+            </div>
+            <div class="num-card card-large" data-word="five hundred" data-display="500 - five hundred" data-ipa="/faɪv ˈhʌndrəd/" data-vi="năm trăm">
+                <span class="num-digit">500</span>
+                <span class="num-word">five hundred</span>
+                <span class="num-ipa">/faɪv ˈhʌndrəd/</span>
+                <span class="num-vi">năm trăm</span>
+            </div>
+            <div class="num-card card-large" data-word="one thousand" data-display="1,000 - one thousand" data-ipa="/wʌn ˈθaʊznd/" data-vi="một nghìn">
+                <span class="num-digit">1,000</span>
+                <span class="num-word">one thousand</span>
+                <span class="num-ipa">/wʌn ˈθaʊznd/</span>
+                <span class="num-vi">một nghìn</span>
+            </div>
+            <div class="num-card card-large" data-word="ten thousand" data-display="10,000 - ten thousand" data-ipa="/ten ˈθaʊznd/" data-vi="mười nghìn">
+                <span class="num-digit">10,000</span>
+                <span class="num-word">ten thousand</span>
+                <span class="num-ipa">/ten ˈθaʊznd/</span>
+                <span class="num-vi">mười nghìn</span>
+            </div>
+            <div class="num-card card-large" data-word="one hundred thousand" data-display="100,000 - one hundred thousand" data-ipa="/wʌn ˈhʌndrəd ˈθaʊznd/" data-vi="một trăm nghìn">
+                <span class="num-digit">100,000</span>
+                <span class="num-word">one hundred thousand</span>
+                <span class="num-ipa">/wʌn ˈhʌndrəd ˈθaʊznd/</span>
+                <span class="num-vi">một trăm nghìn</span>
+            </div>
+            <div class="num-card card-large" data-word="one million" data-display="1,000,000 - one million" data-ipa="/wʌn ˈmɪljən/" data-vi="một triệu">
+                <span class="num-digit">1,000,000</span>
+                <span class="num-word">one million</span>
+                <span class="num-ipa">/wʌn ˈmɪljən/</span>
+                <span class="num-vi">một triệu</span>
+            </div>
+            <div class="num-card card-large" data-word="one billion" data-display="1,000,000,000 - one billion" data-ipa="/wʌn ˈbɪljən/" data-vi="một tỷ">
+                <span class="num-digit">1,000,000,000</span>
+                <span class="num-word">one billion</span>
+                <span class="num-ipa">/wʌn ˈbɪljən/</span>
+                <span class="num-vi">một tỷ</span>
+            </div>
+        </div>
+    </div>
+
+</div><!-- /tab-cardinal -->
+
+
+<!-- ==============================
+     PHẦN 2: BẢNG SỐ THỨ TỰ (ORDINAL NUMBERS)
+     ============================== -->
+<div id="tab-ordinal" class="numbers-container">
+
+    <!-- ── NHÓM 1: 1st ĐẾN 12th ──────────────────── -->
+    <div class="num-section section-ordinal">
+        <div class="num-section-title">
+            <span class="sec-icon">🏅</span>
+            <span>Số thứ tự 1st – 12th (Đặc biệt: 1st, 2nd, 3rd)</span>
+            <small>(1st to 12th)</small>
+        </div>
+        <div class="num-grid">
+            <div class="num-card card-ord-special" data-word="first" data-display="1st - first" data-ipa="/ˈfɜːst/" data-vi="thứ nhất">
+                <span class="num-digit">1st</span>
+                <span class="num-word">first</span>
+                <span class="num-ipa">/ˈfɜːst/</span>
+                <span class="num-vi">thứ nhất</span>
+            </div>
+            <div class="num-card card-ord-special" data-word="second" data-display="2nd - second" data-ipa="/ˈsekənd/" data-vi="thứ hai">
+                <span class="num-digit">2nd</span>
+                <span class="num-word">second</span>
+                <span class="num-ipa">/ˈsekənd/</span>
+                <span class="num-vi">thứ hai</span>
+            </div>
+            <div class="num-card card-ord-special" data-word="third" data-display="3rd - third" data-ipa="/ˈθɜːd/" data-vi="thứ ba">
+                <span class="num-digit">3rd</span>
+                <span class="num-word">third</span>
+                <span class="num-ipa">/ˈθɜːd/</span>
+                <span class="num-vi">thứ ba</span>
+            </div>
+            <div class="num-card card-ord" data-word="fourth" data-display="4th - fourth" data-ipa="/fɔːθ/" data-vi="thứ tư">
+                <span class="num-digit">4th</span>
+                <span class="num-word">fourth</span>
+                <span class="num-ipa">/fɔːθ/</span>
+                <span class="num-vi">thứ tư</span>
+            </div>
+            <div class="num-card card-ord" data-word="fifth" data-display="5th - fifth" data-ipa="/fɪfθ/" data-vi="thứ năm">
+                <span class="num-digit">5th</span>
+                <span class="num-word">fifth</span>
+                <span class="num-ipa">/fɪfθ/</span>
+                <span class="num-vi">thứ năm</span>
+            </div>
+            <div class="num-card card-ord" data-word="sixth" data-display="6th - sixth" data-ipa="/sɪksθ/" data-vi="thứ sáu">
+                <span class="num-digit">6th</span>
+                <span class="num-word">sixth</span>
+                <span class="num-ipa">/sɪksθ/</span>
+                <span class="num-vi">thứ sáu</span>
+            </div>
+            <div class="num-card card-ord" data-word="seventh" data-display="7th - seventh" data-ipa="/ˈsevənθ/" data-vi="thứ bảy">
+                <span class="num-digit">7th</span>
+                <span class="num-word">seventh</span>
+                <span class="num-ipa">/ˈsevənθ/</span>
+                <span class="num-vi">thứ bảy</span>
+            </div>
+            <div class="num-card card-ord" data-word="eighth" data-display="8th - eighth" data-ipa="/eɪtθ/" data-vi="thứ tám">
+                <span class="num-digit">8th</span>
+                <span class="num-word">eighth</span>
+                <span class="num-ipa">/eɪtθ/</span>
+                <span class="num-vi">thứ tám</span>
+            </div>
+            <div class="num-card card-ord" data-word="ninth" data-display="9th - ninth" data-ipa="/naɪnθ/" data-vi="thứ chín">
+                <span class="num-digit">9th</span>
+                <span class="num-word">ninth</span>
+                <span class="num-ipa">/naɪnθ/</span>
+                <span class="num-vi">thứ chín</span>
+            </div>
+            <div class="num-card card-ord" data-word="tenth" data-display="10th - tenth" data-ipa="/tenθ/" data-vi="thứ mười">
+                <span class="num-digit">10th</span>
+                <span class="num-word">tenth</span>
+                <span class="num-ipa">/tenθ/</span>
+                <span class="num-vi">thứ mười</span>
+            </div>
+            <div class="num-card card-ord" data-word="eleventh" data-display="11th - eleventh" data-ipa="/ɪˈlevənθ/" data-vi="thứ mười một">
+                <span class="num-digit">11th</span>
+                <span class="num-word">eleventh</span>
+                <span class="num-ipa">/ɪˈlevənθ/</span>
+                <span class="num-vi">thứ mười một</span>
+            </div>
+            <div class="num-card card-ord" data-word="twelfth" data-display="12th - twelfth" data-ipa="/twelfθ/" data-vi="thứ mười hai">
+                <span class="num-digit">12th</span>
+                <span class="num-word">twelfth</span>
+                <span class="num-ipa">/twelfθ/</span>
+                <span class="num-vi">thứ mười hai</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── NHÓM 2: 13th ĐẾN 19th ──────────────────── -->
+    <div class="num-section section-ordinal">
+        <div class="num-section-title">
+            <span class="sec-icon">🎖️</span>
+            <span>Số thứ tự 13th – 19th (Đuôi -teenth)</span>
+            <small>(13th to 19th)</small>
+        </div>
+        <div class="num-grid">
+            <div class="num-card card-ord" data-word="thirteenth" data-display="13th - thirteenth" data-ipa="/ˌθɜːˈtiːnθ/" data-vi="thứ mười ba">
+                <span class="num-digit">13th</span>
+                <span class="num-word">thirteenth</span>
+                <span class="num-ipa">/ˌθɜːˈtiːnθ/</span>
+                <span class="num-vi">thứ mười ba</span>
+            </div>
+            <div class="num-card card-ord" data-word="fourteenth" data-display="14th - fourteenth" data-ipa="/ˌfɔːˈtiːnθ/" data-vi="thứ mười bốn">
+                <span class="num-digit">14th</span>
+                <span class="num-word">fourteenth</span>
+                <span class="num-ipa">/ˌfɔːˈtiːnθ/</span>
+                <span class="num-vi">thứ mười bốn</span>
+            </div>
+            <div class="num-card card-ord" data-word="fifteenth" data-display="15th - fifteenth" data-ipa="/ˌfɪfˈtiːnθ/" data-vi="thứ mười lăm">
+                <span class="num-digit">15th</span>
+                <span class="num-word">fifteenth</span>
+                <span class="num-ipa">/ˌfɪfˈtiːnθ/</span>
+                <span class="num-vi">thứ mười lăm</span>
+            </div>
+            <div class="num-card card-ord" data-word="sixteenth" data-display="16th - sixteenth" data-ipa="/ˌsɪksˈtiːnθ/" data-vi="thứ mười sáu">
+                <span class="num-digit">16th</span>
+                <span class="num-word">sixteenth</span>
+                <span class="num-ipa">/ˌsɪksˈtiːnθ/</span>
+                <span class="num-vi">thứ mười sáu</span>
+            </div>
+            <div class="num-card card-ord" data-word="seventeenth" data-display="17th - seventeenth" data-ipa="/ˌsevənˈtiːnθ/" data-vi="thứ mười bảy">
+                <span class="num-digit">17th</span>
+                <span class="num-word">seventeenth</span>
+                <span class="num-ipa">/ˌsevənˈtiːnθ/</span>
+                <span class="num-vi">thứ mười bảy</span>
+            </div>
+            <div class="num-card card-ord" data-word="eighteenth" data-display="18th - eighteenth" data-ipa="/ˌeɪˈtiːnθ/" data-vi="thứ mười tám">
+                <span class="num-digit">18th</span>
+                <span class="num-word">eighteenth</span>
+                <span class="num-ipa">/ˌeɪˈtiːnθ/</span>
+                <span class="num-vi">thứ mười tám</span>
+            </div>
+            <div class="num-card card-ord" data-word="nineteenth" data-display="19th - nineteenth" data-ipa="/ˌnaɪnˈtiːnθ/" data-vi="thứ mười chín">
+                <span class="num-digit">19th</span>
+                <span class="num-word">nineteenth</span>
+                <span class="num-ipa">/ˌnaɪnˈtiːnθ/</span>
+                <span class="num-vi">thứ mười chín</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── NHÓM 3: 20th ĐẾN 29th ──────────────────── -->
+    <div class="num-section section-ordinal">
+        <div class="num-section-title">
+            <span class="sec-icon">🏆</span>
+            <span>Số thứ tự 20th – 29th</span>
+            <small>(20th to 29th)</small>
+        </div>
+        <div class="num-grid">
+            <div class="num-card card-ord" data-word="twentieth" data-display="20th - twentieth" data-ipa="/ˈtwentiəθ/" data-vi="thứ hai mươi">
+                <span class="num-digit">20th</span>
+                <span class="num-word">twentieth</span>
+                <span class="num-ipa">/ˈtwentiəθ/</span>
+                <span class="num-vi">thứ hai mươi</span>
+            </div>
+            <div class="num-card card-ord-special" data-word="twenty-first" data-display="21st - twenty-first" data-ipa="/ˌtwenti ˈfɜːst/" data-vi="thứ hai mươi mốt">
+                <span class="num-digit">21st</span>
+                <span class="num-word">twenty-first</span>
+                <span class="num-ipa">/ˌtwenti ˈfɜːst/</span>
+                <span class="num-vi">thứ hai mươi mốt</span>
+            </div>
+            <div class="num-card card-ord-special" data-word="twenty-second" data-display="22nd - twenty-second" data-ipa="/ˌtwenti ˈsekənd/" data-vi="thứ hai mươi hai">
+                <span class="num-digit">22nd</span>
+                <span class="num-word">twenty-second</span>
+                <span class="num-ipa">/ˌtwenti ˈsekənd/</span>
+                <span class="num-vi">thứ hai mươi hai</span>
+            </div>
+            <div class="num-card card-ord-special" data-word="twenty-third" data-display="23rd - twenty-third" data-ipa="/ˌtwenti ˈθɜːd/" data-vi="thứ hai mươi ba">
+                <span class="num-digit">23rd</span>
+                <span class="num-word">twenty-third</span>
+                <span class="num-ipa">/ˌtwenti ˈθɜːd/</span>
+                <span class="num-vi">thứ hai mươi ba</span>
+            </div>
+            <div class="num-card card-ord" data-word="twenty-fourth" data-display="24th - twenty-fourth" data-ipa="/ˌtwenti ˈfɔːθ/" data-vi="thứ hai mươi bốn">
+                <span class="num-digit">24th</span>
+                <span class="num-word">twenty-fourth</span>
+                <span class="num-ipa">/ˌtwenti ˈfɔːθ/</span>
+                <span class="num-vi">thứ hai mươi bốn</span>
+            </div>
+            <div class="num-card card-ord" data-word="twenty-fifth" data-display="25th - twenty-fifth" data-ipa="/ˌtwenti ˈfaɪvθ/" data-vi="thứ hai mươi lăm">
+                <span class="num-digit">25th</span>
+                <span class="num-word">twenty-fifth</span>
+                <span class="num-ipa">/ˌtwenti ˈfaɪvθ/</span>
+                <span class="num-vi">thứ hai mươi lăm</span>
+            </div>
+            <div class="num-card card-ord" data-word="twenty-sixth" data-display="26th - twenty-sixth" data-ipa="/ˌtwenti ˈsɪksθ/" data-vi="thứ hai mươi sáu">
+                <span class="num-digit">26th</span>
+                <span class="num-word">twenty-sixth</span>
+                <span class="num-ipa">/ˌtwenti ˈsɪksθ/</span>
+                <span class="num-vi">thứ hai mươi sáu</span>
+            </div>
+            <div class="num-card card-ord" data-word="twenty-seventh" data-display="27th - twenty-seventh" data-ipa="/ˌtwenti ˈsevənθ/" data-vi="thứ hai mươi bảy">
+                <span class="num-digit">27th</span>
+                <span class="num-word">twenty-seventh</span>
+                <span class="num-ipa">/ˌtwenti ˈsevənθ/</span>
+                <span class="num-vi">thứ hai mươi bảy</span>
+            </div>
+            <div class="num-card card-ord" data-word="twenty-eighth" data-display="28th - twenty-eighth" data-ipa="/ˌtwenti ˈeɪtθ/" data-vi="thứ hai mươi tám">
+                <span class="num-digit">28th</span>
+                <span class="num-word">twenty-eighth</span>
+                <span class="num-ipa">/ˌtwenti ˈeɪtθ/</span>
+                <span class="num-vi">thứ hai mươi tám</span>
+            </div>
+            <div class="num-card card-ord" data-word="twenty-ninth" data-display="29th - twenty-ninth" data-ipa="/ˌtwenti ˈnaɪnθ/" data-vi="thứ hai mươi chín">
+                <span class="num-digit">29th</span>
+                <span class="num-word">twenty-ninth</span>
+                <span class="num-ipa">/ˌtwenti ˈnaɪnθ/</span>
+                <span class="num-vi">thứ hai mươi chín</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── NHÓM 4: HÀNG CHỤC THỨ TỰ (30th - 90th) ──────────────────── -->
+    <div class="num-section section-ordinal">
+        <div class="num-section-title">
+            <span class="sec-icon">🎖️</span>
+            <span>Hàng chục thứ tự: 30th, 40th, 50th, 60th, 70th, 80th, 90th (Đuôi -tieth)</span>
+            <small>(Decades Ordinals)</small>
+        </div>
+        <div class="num-grid">
+            <div class="num-card card-ord" data-word="thirtieth" data-display="30th - thirtieth" data-ipa="/ˈθɜːtiəθ/" data-vi="thứ ba mươi">
+                <span class="num-digit">30th</span>
+                <span class="num-word">thirtieth</span>
+                <span class="num-ipa">/ˈθɜːtiəθ/</span>
+                <span class="num-vi">thứ ba mươi</span>
+            </div>
+            <div class="num-card card-ord" data-word="fortieth" data-display="40th - fortieth" data-ipa="/ˈfɔːtiəθ/" data-vi="thứ bốn mươi">
+                <span class="num-digit">40th</span>
+                <span class="num-word">fortieth</span>
+                <span class="num-ipa">/ˈfɔːtiəθ/</span>
+                <span class="num-vi">thứ bốn mươi</span>
+            </div>
+            <div class="num-card card-ord" data-word="fiftieth" data-display="50th - fiftieth" data-ipa="/ˈfɪftiəθ/" data-vi="thứ năm mươi">
+                <span class="num-digit">50th</span>
+                <span class="num-word">fiftieth</span>
+                <span class="num-ipa">/ˈfɪftiəθ/</span>
+                <span class="num-vi">thứ năm mươi</span>
+            </div>
+            <div class="num-card card-ord" data-word="sixtieth" data-display="60th - sixtieth" data-ipa="/ˈsɪkstiəθ/" data-vi="thứ sáu mươi">
+                <span class="num-digit">60th</span>
+                <span class="num-word">sixtieth</span>
+                <span class="num-ipa">/ˈsɪkstiəθ/</span>
+                <span class="num-vi">thứ sáu mươi</span>
+            </div>
+            <div class="num-card card-ord" data-word="seventieth" data-display="70th - seventieth" data-ipa="/ˈsevəntiəθ/" data-vi="thứ bảy mươi">
+                <span class="num-digit">70th</span>
+                <span class="num-word">seventieth</span>
+                <span class="num-ipa">/ˈsevəntiəθ/</span>
+                <span class="num-vi">thứ bảy mươi</span>
+            </div>
+            <div class="num-card card-ord" data-word="eightieth" data-display="80th - eightieth" data-ipa="/ˈeɪtiəθ/" data-vi="thứ tám mươi">
+                <span class="num-digit">80th</span>
+                <span class="num-word">eightieth</span>
+                <span class="num-ipa">/ˈeɪtiəθ/</span>
+                <span class="num-vi">thứ tám mươi</span>
+            </div>
+            <div class="num-card card-ord" data-word="ninetieth" data-display="90th - ninetieth" data-ipa="/ˈnaɪntiəθ/" data-vi="thứ chín mươi">
+                <span class="num-digit">90th</span>
+                <span class="num-word">ninetieth</span>
+                <span class="num-ipa">/ˈnaɪntiəθ/</span>
+                <span class="num-vi">thứ chín mươi</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── NHÓM 5: THỨ TỰ SỐ LỚN (100th, 1,000th...) ──────────────────── -->
+    <div class="num-section section-ordinal">
+        <div class="num-section-title">
+            <span class="sec-icon">👑</span>
+            <span>Số thứ tự lớn: 100th, 1,000th, 1,000,000th...</span>
+            <small>(Large Ordinals)</small>
+        </div>
+        <div class="num-grid">
+            <div class="num-card card-ord" data-word="hundredth" data-display="100th - hundredth" data-ipa="/ˈhʌndrədθ/" data-vi="thứ một trăm">
+                <span class="num-digit">100th</span>
+                <span class="num-word">hundredth</span>
+                <span class="num-ipa">/ˈhʌndrədθ/</span>
+                <span class="num-vi">thứ một trăm</span>
+            </div>
+            <div class="num-card card-ord" data-word="two hundredth" data-display="200th - two hundredth" data-ipa="/tuː ˈhʌndrədθ/" data-vi="thứ hai trăm">
+                <span class="num-digit">200th</span>
+                <span class="num-word">two hundredth</span>
+                <span class="num-ipa">/tuː ˈhʌndrədθ/</span>
+                <span class="num-vi">thứ hai trăm</span>
+            </div>
+            <div class="num-card card-ord" data-word="thousandth" data-display="1,000th - thousandth" data-ipa="/ˈθaʊzndθ/" data-vi="thứ một nghìn">
+                <span class="num-digit">1,000th</span>
+                <span class="num-word">thousandth</span>
+                <span class="num-ipa">/ˈθaʊzndθ/</span>
+                <span class="num-vi">thứ một nghìn</span>
+            </div>
+            <div class="num-card card-ord" data-word="millionth" data-display="1,000,000th - millionth" data-ipa="/ˈmɪljənθ/" data-vi="thứ một triệu">
+                <span class="num-digit">1,000,000th</span>
+                <span class="num-word">millionth</span>
+                <span class="num-ipa">/ˈmɪljənθ/</span>
+                <span class="num-vi">thứ một triệu</span>
+            </div>
+            <div class="num-card card-ord" data-word="billionth" data-display="1,000,000,000th - billionth" data-ipa="/ˈbɪljənθ/" data-vi="thứ một tỷ">
+                <span class="num-digit">1,000,000,000th</span>
+                <span class="num-word">billionth</span>
+                <span class="num-ipa">/ˈbɪljənθ/</span>
+                <span class="num-vi">thứ một tỷ</span>
+            </div>
+        </div>
+    </div>
+
+</div><!-- /tab-ordinal -->
+
+<!-- Toast notification -->
+<div class="play-toast" id="playToast"></div>
+
+<script>
+// ============================================================
+//  QUẢN LÝ PHÁT ÂM SỐ ĐẾM & SỐ THỨ TỰ (SPEECH SYNTHESIS)
+// ============================================================
+let currentCard = null;
+let toastTimer = null;
+let currentAudio = null;
+
+function stopAllAudio() {
+    if (window.speechSynthesis) {
+        window.speechSynthesis.cancel();
+    }
+    if (currentAudio) {
+        currentAudio.pause();
+        currentAudio.currentTime = 0;
+        currentAudio = null;
+    }
+    if (currentCard) {
+        currentCard.classList.remove('playing');
+    }
+}
+
+function showToast(display, ipa, vi) {
+    const toast = document.getElementById('playToast');
+    toast.innerHTML = `<strong>🔊 ${display}</strong> &nbsp; <small style="color:#b0bec5">${ipa}</small> &nbsp; (${vi})`;
+    toast.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toast.classList.remove('show'), 2500);
+}
+
+function playNumber(card) {
+    const word = card.dataset.word;
+    const display = card.dataset.display;
+    const ipa = card.dataset.ipa;
+    const vi = card.dataset.vi;
+
+    // Reset visual
+    if (currentCard && currentCard !== card) {
+        currentCard.classList.remove('playing');
+    }
+    currentCard = card;
+    card.classList.add('playing');
+
+    // Dừng âm thanh đang phát trước đó
+    stopAllAudio();
+    showToast(display, ipa, vi);
+
+    // Phát âm giọng đọc chuẩn bản xứ SpeechSynthesis
+    if (window.speechSynthesis) {
+        const u = new SpeechSynthesisUtterance(word);
+        u.lang = 'en-US';
+        u.rate = 0.85; // Tốc độ đọc chuẩn, chậm rãi, tròn vành rõ chữ
+        u.pitch = 1.0;
+
+        u.onend = () => {
+            card.classList.remove('playing');
+        };
+        u.onerror = () => {
+            card.classList.remove('playing');
+        };
+
+        window.speechSynthesis.speak(u);
+    } else {
+        const tenFile = word.toLowerCase().trim().replace(/[\\/:*?"<>|]/g, "").split(/\s+/).join("-");
+        const audio = new Audio('/audio/tu-vung/' + tenFile + '.mp3');
+        currentAudio = audio;
+        audio.onended = () => card.classList.remove('playing');
+        audio.onerror = () => card.classList.remove('playing');
+        audio.play().catch(() => card.classList.remove('playing'));
+    }
+}
+
+// Gắn click listener cho từng thẻ số
+document.querySelectorAll('.num-card').forEach(card => {
+    card.addEventListener('click', () => playNumber(card));
+});
+
+// Chuyển đổi tab Số Đếm / Số Thứ Tự
+function switchMainTab(tabName, btn) {
+    document.querySelectorAll('.btn-tab').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+
+    const tabCardinal = document.getElementById('tab-cardinal');
+    const tabOrdinal = document.getElementById('tab-ordinal');
+
+    if (tabName === 'cardinal') {
+        tabCardinal.style.display = 'block';
+        tabOrdinal.style.display = 'none';
+    } else if (tabName === 'ordinal') {
+        tabCardinal.style.display = 'none';
+        tabOrdinal.style.display = 'block';
+    }
+}
+</script>
+
+</body>
+</html>
