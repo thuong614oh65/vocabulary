@@ -1,0 +1,346 @@
+﻿<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Bảng IPA – Phát âm chuẩn RP</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/ipa.css}">
+</head>
+<body>
+
+<!-- ==============================
+     HEADER
+     ============================== -->
+<div class="ipa-page-header">
+    <h1>📢 Bảng Phiên Âm IPA</h1>
+    <p>44 âm chuẩn British RP · Nhấn vào ô để nghe phát âm</p>
+    <a href="/" class="btn-back-home">← Trang chủ</a>
+</div>
+
+<!-- ==============================
+     CHART
+     ============================== -->
+<div class="ipa-chart-container">
+
+    <!-- ── NGUYÊN ÂM ──────────────────── -->
+    <div class="ipa-section section-vowels">
+        <div class="ipa-section-title">🔵 NGUYÊN ÂM &nbsp;<small style="font-weight:400;font-size:0.8em">(VOWELS)</small></div>
+
+        <!-- Nguyên âm đơn (Monophthongs) -->
+        <div class="ipa-sub-label">Nguyên âm đơn – Monophthongs</div>
+        <div class="phoneme-grid">
+            <div class="ph-cell cell-vowel" data-audio="i_long">
+                <span class="ph-symbol">iː</span>
+                <span class="ph-word">sheep</span>
+            </div>
+            <div class="ph-cell cell-vowel" data-audio="i_short">
+                <span class="ph-symbol">ɪ</span>
+                <span class="ph-word">ship</span>
+            </div>
+            <div class="ph-cell cell-vowel" data-audio="u_short">
+                <span class="ph-symbol">ʊ</span>
+                <span class="ph-word">good</span>
+            </div>
+            <div class="ph-cell cell-vowel" data-audio="u_long">
+                <span class="ph-symbol">uː</span>
+                <span class="ph-word">shoot</span>
+            </div>
+            <div class="ph-cell cell-vowel" data-audio="e">
+                <span class="ph-symbol">e</span>
+                <span class="ph-word">bed</span>
+            </div>
+            <div class="ph-cell cell-vowel" data-audio="schwa">
+                <span class="ph-symbol">ə</span>
+                <span class="ph-word">teacher</span>
+            </div>
+            <div class="ph-cell cell-vowel" data-audio="er_long">
+                <span class="ph-symbol">ɜː</span>
+                <span class="ph-word">bird</span>
+            </div>
+            <div class="ph-cell cell-vowel" data-audio="aw_long">
+                <span class="ph-symbol">ɔː</span>
+                <span class="ph-word">door</span>
+            </div>
+            <div class="ph-cell cell-vowel" data-audio="ae">
+                <span class="ph-symbol">æ</span>
+                <span class="ph-word">cat</span>
+            </div>
+            <div class="ph-cell cell-vowel" data-audio="uh">
+                <span class="ph-symbol">ʌ</span>
+                <span class="ph-word">up</span>
+            </div>
+            <div class="ph-cell cell-vowel" data-audio="ah_long">
+                <span class="ph-symbol">ɑː</span>
+                <span class="ph-word">far</span>
+            </div>
+            <div class="ph-cell cell-vowel" data-audio="o_short">
+                <span class="ph-symbol">ɒ</span>
+                <span class="ph-word">on</span>
+            </div>
+        </div>
+
+        <!-- Nguyên âm đôi (Diphthongs) -->
+        <div class="ipa-sub-label">Nguyên âm đôi – Diphthongs</div>
+        <div class="phoneme-grid">
+            <div class="ph-cell cell-diph" data-audio="ia">
+                <span class="ph-symbol">ɪə</span>
+                <span class="ph-word">here</span>
+            </div>
+            <div class="ph-cell cell-diph" data-audio="ei">
+                <span class="ph-symbol">eɪ</span>
+                <span class="ph-word">wait</span>
+            </div>
+            <div class="ph-cell cell-diph" data-audio="ua">
+                <span class="ph-symbol">ʊə</span>
+                <span class="ph-word">tourist</span>
+            </div>
+            <div class="ph-cell cell-diph" data-audio="oi">
+                <span class="ph-symbol">ɔɪ</span>
+                <span class="ph-word">boy</span>
+            </div>
+            <div class="ph-cell cell-diph" data-audio="ou">
+                <span class="ph-symbol">əʊ</span>
+                <span class="ph-word">show</span>
+            </div>
+            <div class="ph-cell cell-diph" data-audio="ea">
+                <span class="ph-symbol">eə</span>
+                <span class="ph-word">hair</span>
+            </div>
+            <div class="ph-cell cell-diph" data-audio="ai">
+                <span class="ph-symbol">aɪ</span>
+                <span class="ph-word">my</span>
+            </div>
+            <div class="ph-cell cell-diph" data-audio="au">
+                <span class="ph-symbol">aʊ</span>
+                <span class="ph-word">cow</span>
+            </div>
+        </div>
+
+        <!-- Legend -->
+        <div class="ipa-legend">
+            <div class="legend-item"><div class="legend-swatch sw-mono"></div> Nguyên âm đơn</div>
+            <div class="legend-item"><div class="legend-swatch sw-diph"></div> Nguyên âm đôi</div>
+            <div class="legend-item" style="margin-left:auto;color:#90a4ae;font-size:0.75rem">
+                Tổng: 20 nguyên âm
+            </div>
+        </div>
+    </div>
+
+    <!-- ── PHỤ ÂM ───────────────────────── -->
+    <div class="ipa-section section-cons">
+        <div class="ipa-section-title">🟡 PHỤ ÂM &nbsp;<small style="font-weight:400;font-size:0.8em">(CONSONANTS)</small></div>
+
+        <!-- Row 1: plosives + affricates -->
+        <div class="ipa-sub-label">Tắc (Plosives) &amp; Tắc xát (Affricates)</div>
+        <div class="phoneme-grid">
+            <div class="ph-cell cell-cons unvoiced" data-audio="p">
+                <span class="ph-symbol">p</span>
+                <span class="ph-word">pea</span>
+            </div>
+            <div class="ph-cell cell-cons voiced" data-audio="b">
+                <span class="ph-symbol">b</span>
+                <span class="ph-word">boat</span>
+            </div>
+            <div class="ph-cell cell-cons unvoiced" data-audio="t">
+                <span class="ph-symbol">t</span>
+                <span class="ph-word">tea</span>
+            </div>
+            <div class="ph-cell cell-cons voiced" data-audio="d">
+                <span class="ph-symbol">d</span>
+                <span class="ph-word">dog</span>
+            </div>
+            <div class="ph-cell cell-cons unvoiced" data-audio="tsh">
+                <span class="ph-symbol">tʃ</span>
+                <span class="ph-word">cheese</span>
+            </div>
+            <div class="ph-cell cell-cons voiced" data-audio="dzh">
+                <span class="ph-symbol">dʒ</span>
+                <span class="ph-word">June</span>
+            </div>
+            <div class="ph-cell cell-cons unvoiced" data-audio="k">
+                <span class="ph-symbol">k</span>
+                <span class="ph-word">car</span>
+            </div>
+            <div class="ph-cell cell-cons voiced" data-audio="g">
+                <span class="ph-symbol">g</span>
+                <span class="ph-word">go</span>
+            </div>
+        </div>
+
+        <!-- Row 2: fricatives -->
+        <div class="ipa-sub-label">Xát (Fricatives)</div>
+        <div class="phoneme-grid">
+            <div class="ph-cell cell-cons unvoiced" data-audio="f">
+                <span class="ph-symbol">f</span>
+                <span class="ph-word">fly</span>
+            </div>
+            <div class="ph-cell cell-cons voiced" data-audio="v">
+                <span class="ph-symbol">v</span>
+                <span class="ph-word">video</span>
+            </div>
+            <div class="ph-cell cell-cons unvoiced" data-audio="th_v">
+                <span class="ph-symbol">θ</span>
+                <span class="ph-word">think</span>
+            </div>
+            <div class="ph-cell cell-cons voiced" data-audio="th_d">
+                <span class="ph-symbol">ð</span>
+                <span class="ph-word">this</span>
+            </div>
+            <div class="ph-cell cell-cons unvoiced" data-audio="s">
+                <span class="ph-symbol">s</span>
+                <span class="ph-word">see</span>
+            </div>
+            <div class="ph-cell cell-cons voiced" data-audio="z">
+                <span class="ph-symbol">z</span>
+                <span class="ph-word">zoo</span>
+            </div>
+            <div class="ph-cell cell-cons unvoiced" data-audio="sh">
+                <span class="ph-symbol">ʃ</span>
+                <span class="ph-word">shall</span>
+            </div>
+            <div class="ph-cell cell-cons voiced" data-audio="zh">
+                <span class="ph-symbol">ʒ</span>
+                <span class="ph-word">vision</span>
+            </div>
+        </div>
+
+        <!-- Row 3: nasals, laterals, approximants -->
+        <div class="ipa-sub-label">Mũi (Nasals) · Bên (Laterals) · Tiếp (Approximants)</div>
+        <div class="phoneme-grid">
+            <div class="ph-cell cell-cons" data-audio="m">
+                <span class="ph-symbol">m</span>
+                <span class="ph-word">man</span>
+            </div>
+            <div class="ph-cell cell-cons" data-audio="n">
+                <span class="ph-symbol">n</span>
+                <span class="ph-word">now</span>
+            </div>
+            <div class="ph-cell cell-cons" data-audio="ng">
+                <span class="ph-symbol">ŋ</span>
+                <span class="ph-word">sing</span>
+            </div>
+            <div class="ph-cell cell-cons unvoiced" data-audio="h">
+                <span class="ph-symbol">h</span>
+                <span class="ph-word">hat</span>
+            </div>
+            <div class="ph-cell cell-cons" data-audio="l">
+                <span class="ph-symbol">l</span>
+                <span class="ph-word">love</span>
+            </div>
+            <div class="ph-cell cell-cons" data-audio="r">
+                <span class="ph-symbol">r</span>
+                <span class="ph-word">red</span>
+            </div>
+            <div class="ph-cell cell-cons" data-audio="w">
+                <span class="ph-symbol">w</span>
+                <span class="ph-word">wet</span>
+            </div>
+            <div class="ph-cell cell-cons" data-audio="y">
+                <span class="ph-symbol">j</span>
+                <span class="ph-word">yes</span>
+            </div>
+        </div>
+
+        <!-- Legend -->
+        <div class="ipa-legend">
+            <div class="legend-item"><div class="legend-swatch sw-cons"></div> Vô thanh (Unvoiced)</div>
+            <div class="legend-item"><div class="legend-swatch" style="background:#fff3e0;border:1px solid rgba(0,0,0,.1)"></div> Hữu thanh (Voiced)</div>
+            <div class="legend-item" style="margin-left:auto;color:#90a4ae;font-size:0.75rem">
+                Tổng: 24 phụ âm · 44 âm vị
+            </div>
+        </div>
+    </div>
+
+</div><!-- /ipa-chart-container -->
+
+<!-- Toast notification -->
+<div class="play-toast" id="playToast"></div>
+
+<script>
+// ============================================================
+//  Audio Playback Engine
+// ============================================================
+const BASE = '/audio/ipa/';
+const audioCache = {};
+let currentCell = null;
+let toastTimer = null;
+
+// Pre-load all 44 audio files immediately for zero-latency playback
+const ALL_PHONEMES = [
+    'i_long','i_short','u_short','u_long','e','schwa','er_long','aw_long',
+    'ae','uh','ah_long','o_short',
+    'ia','ei','ua','oi','ou','ea','ai','au',
+    'p','b','t','d','tsh','dzh','k','g',
+    'f','v','th_v','th_d','s','z','sh','zh',
+    'm','n','ng','h','l','r','w','y'
+];
+
+ALL_PHONEMES.forEach(key => {
+    const a = new Audio(BASE + key + '.mp3');
+    a.preload = 'auto';
+    a.load();
+    audioCache[key] = a;
+});
+
+function showToast(ipa, word) {
+    const toast = document.getElementById('playToast');
+    toast.textContent = '♪  /' + ipa + '/  —  ' + word;
+    toast.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toast.classList.remove('show'), 2800);
+}
+
+function playPhoneme(cell) {
+    const key = cell.dataset.audio;
+    const ipa  = cell.querySelector('.ph-symbol').textContent;
+    const word = cell.querySelector('.ph-word').textContent;
+
+    // Visual: reset previous
+    if (currentCell && currentCell !== cell) {
+        currentCell.classList.remove('playing');
+    }
+    currentCell = cell;
+    cell.classList.add('playing');
+
+    // Stop all, play this one
+    ALL_PHONEMES.forEach(k => {
+        if (audioCache[k]) {
+            audioCache[k].pause();
+            audioCache[k].currentTime = 0;
+        }
+    });
+
+    if (!audioCache[key]) {
+        audioCache[key] = new Audio(BASE + key + '.mp3');
+    }
+
+    const audio = audioCache[key];
+    audio.currentTime = 0;
+
+    audio.onended = () => cell.classList.remove('playing');
+    audio.onerror = () => {
+        cell.classList.remove('playing');
+        console.warn('Audio not found:', key);
+    };
+
+    audio.play().catch(() => {
+        cell.classList.remove('playing');
+    });
+
+    showToast(ipa, word);
+}
+
+// Attach click listeners to all cells
+document.querySelectorAll('.ph-cell').forEach(cell => {
+    cell.addEventListener('click', () => playPhoneme(cell));
+    // Touch support
+    cell.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        playPhoneme(cell);
+    }, { passive: false });
+});
+</script>
+
+</body>
+</html>
