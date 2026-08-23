@@ -1,231 +1,252 @@
 // =========================================================
-// KHỞI TẠO
+// QUẢN LÝ ÂM THANH
 // =========================================================
+let audioHienTai = null;
+let soLanDoc = 0;
 
+function dungTatCaAmThanh() {
+    if (window.speechSynthesis) {
+        window.speechSynthesis.cancel();
+    }
+    if (audioHienTai) {
+        audioHienTai.pause();
+        audioHienTai.currentTime = 0;
+        audioHienTai = null;
+    }
+}
+
+function docTu(tu) {
+    if (!tu) return;
+    dungTatCaAmThanh();
+
+    let tenFile = tu.toLowerCase().trim().replace(/[\\/:*?"<>|]/g, "").split(/\s+/).join("-");
+    let duongDan = "/audio/tu-vung/" + tenFile + ".mp3";
+
+    let daFallback = false;
+    function fallbackSpeech() {
+        if (daFallback) return;
+        daFallback = true;
+        if (window.speechSynthesis) {
+            let utterance = new SpeechSynthesisUtterance(tu);
+            utterance.lang = 'en-US';
+            utterance.rate = 0.9;
+            window.speechSynthesis.speak(utterance);
+        }
+    }
+
+    audioHienTai = new Audio(duongDan);
+    audioHienTai.onerror = fallbackSpeech;
+    audioHienTai.play().catch(fallbackSpeech);
+}
+window.docTu = docTu;
+
+// =========================================================
+// HÀM TÍNH TOÁN SO SÁNH KÝ TỰ ĐÚNG / SAI (CHARACTER DIFF)
+// =========================================================
+function buildCharDiff(userInput, targetAnswer) {
+    if (!userInput || !userInput.trim()) {
+        return {
+            userHtml: '<span class="char-diff char-wrong">(chưa nhập)</span>',
+            isMatch: false
+        };
+    }
+
+    const rawUser = userInput.trim();
+    const s1 = rawUser.toLowerCase();
+    const s2 = targetAnswer.trim().toLowerCase();
+
+    if (s1 === s2) {
+        let userHtml = '';
+        for (let i = 0; i < rawUser.length; i++) {
+            const ch = rawUser[i];
+            userHtml += `<span class="char-diff char-correct">${ch === ' ' ? '&nbsp;' : ch}</span>`;
+        }
+        return { userHtml, isMatch: true };
+    }
+
+    // Dynamic Programming LCS (Longest Common Subsequence)
+    const m = s1.length;
+    const n = s2.length;
+    const dp = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
+
+    for (let i = 1; i <= m; i++) {
+        for (let j = 1; j <= n; j++) {
+            if (s1[i - 1] === s2[j - 1]) {
+                dp[i][j] = dp[i - 1][j - 1] + 1;
+            } else {
+                dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
+            }
+        }
+    }
+
+    // Backtrack to identify exact matched indices in s1 (userInput)
+    const userMatched = Array(m).fill(false);
+    let i = m, j = n;
+    while (i > 0 && j > 0) {
+        if (s1[i - 1] === s2[j - 1]) {
+            userMatched[i - 1] = true;
+            i--;
+            j--;
+        } else if (dp[i - 1][j] >= dp[i][j - 1]) {
+            i--;
+        } else {
+            j--;
+        }
+    }
+
+    let userHtml = '';
+    for (let k = 0; k < rawUser.length; k++) {
+        const ch = rawUser[k];
+        const displayChar = ch === ' ' ? '&nbsp;' : ch;
+        if (userMatched[k]) {
+            userHtml += `<span class="char-diff char-correct">${displayChar}</span>`;
+        } else {
+            userHtml += `<span class="char-diff char-wrong">${displayChar}</span>`;
+        }
+    }
+
+    return { userHtml, isMatch: false };
+}
+
+function getLcsLength(s1, s2) {
+    const m = s1.length, n = s2.length;
+    const dp = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
+    for (let i = 1; i <= m; i++) {
+        for (let j = 1; j <= n; j++) {
+            if (s1[i - 1] === s2[j - 1]) dp[i][j] = dp[i - 1][j - 1] + 1;
+            else dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
+        }
+    }
+    return dp[m][n];
+}
+
+// =========================================================
+// KHỞI TẠO EVENT LISTENERS
+// =========================================================
 document.addEventListener("DOMContentLoaded", function () {
-
-    document
-        .querySelectorAll(".cau-tra-loi")
-        .forEach(function (input) {
-
-            // -------------------------------------------------
-            // Nhấn ENTER để chấm
-            // -------------------------------------------------
-
-            input.addEventListener(
-                "keydown",
-                function (e) {
-
-                    if (e.key === "Enter") {
-
-                        e.preventDefault();
-
-                        chamDiem(this);
-
-                    }
-
-                }
-            );
-
+    document.querySelectorAll(".cau-tra-loi").forEach(function (input) {
+        // Nhấn ENTER để chấm
+        input.addEventListener("keydown", function (e) {
+            if (e.key === "Enter") {
+                e.preventDefault();
+                chamDiem(this);
+            }
         });
-
+    });
 });
-
 
 // =========================================================
 // NÚT ✓ TRÊN ĐIỆN THOẠI
 // =========================================================
-
 function chamDiemTuNut(button) {
-
-    // Lấy dòng <tr>
     let row = button.closest("tr");
-
-    if (!row) {
-        return;
+    if (!row) return;
+    let input = row.querySelector(".cau-tra-loi");
+    if (input) {
+        chamDiem(input);
     }
-
-
-    // Tìm ô nhập
-    let input =
-        row.querySelector(".cau-tra-loi");
-
-    if (!input) {
-        return;
-    }
-
-
-    // Chấm điểm
-    chamDiem(input);
-
 }
-
 
 // =========================================================
 // CHẤM ĐIỂM
 // =========================================================
-
 function chamDiem(input) {
+    if (input.disabled) return;
 
-    // -------------------------------------------------
-    // Nếu đã chấm rồi thì không chấm lại
-    // -------------------------------------------------
+    let dapAnRaw = input.dataset.dapAn || "";
+    if (!dapAnRaw) return;
 
-    if (input.disabled) {
-        return;
-    }
-
-
-    // -------------------------------------------------
-    // Lấy đáp án
-    // -------------------------------------------------
-
-    let dapAn =
-        input.dataset.dapAn;
-
-    if (!dapAn) {
-        return;
-    }
-
-
-    dapAn =
-        dapAn.toLowerCase();
-
-
-    // -------------------------------------------------
-    // Hỗ trợ nhiều đáp án cách nhau bằng ;
-    // -------------------------------------------------
-
-    let danhSach =
-        dapAn.split(";");
-
-
-    // -------------------------------------------------
-    // Lấy câu trả lời
-    // -------------------------------------------------
-
-    let nhap =
-        input.value
-            .trim()
-            .toLowerCase();
-
+    let danhSach = dapAnRaw.split(";").map(s => s.trim()).filter(s => s.length > 0);
+    let nhap = input.value.trim();
 
     let dung = false;
-
-
-    // -------------------------------------------------
-    // Kiểm tra đáp án
-    // -------------------------------------------------
+    let bestDa = danhSach[0] || dapAnRaw.trim();
+    let bestScore = -1;
 
     for (let da of danhSach) {
-
-        if (nhap === da.trim()) {
-
+        if (nhap.toLowerCase() === da.toLowerCase()) {
             dung = true;
-
+            bestDa = da;
             break;
-
         }
-
+        let score = getLcsLength(nhap.toLowerCase(), da.toLowerCase());
+        if (score > bestScore) {
+            bestScore = score;
+            bestDa = da;
+        }
     }
 
-
-    // -------------------------------------------------
-    // ĐÚNG
-    // -------------------------------------------------
+    const diff = buildCharDiff(nhap, bestDa);
+    const containerKetQua = input.parentElement.querySelector(".ket-qua");
 
     if (dung) {
+        input.classList.add("input-dung");
+        input.classList.remove("input-sai");
 
-        input.style.background =
-            "lightgreen";
+        if (containerKetQua) {
+            containerKetQua.innerHTML = `
+                <div class="ket-qua-box kq-dung">
+                    <div class="d-flex align-items-center justify-content-between flex-wrap gap-1">
+                        <div>
+                            <span class="char-diff-container">${diff.userHtml}</span>
+                            <span class="ms-2 fw-bold text-success">✅ Chính xác!</span>
+                        </div>
+                        <button type="button" class="btn-mini-audio" onclick="docTu('${bestDa.replace(/'/g, "\\'")}')" title="Nghe phát âm">🔊</button>
+                    </div>
+                </div>
+            `;
+        }
 
+        fetch("/hoc/dung/" + input.dataset.id, { method: "POST" });
+    } else {
+        input.classList.add("input-sai");
+        input.classList.remove("input-dung");
 
-        fetch(
-            "/hoc/dung/" + input.dataset.id,
-            {
-                method: "POST"
-            }
-        );
+        if (containerKetQua) {
+            containerKetQua.innerHTML = `
+                <div class="ket-qua-box kq-sai">
+                    <div class="mb-1">
+                        <small class="text-muted">Bạn nhập:</small>
+                        <span class="char-diff-container ms-1">${diff.userHtml}</span>
+                    </div>
+                    <div class="d-flex align-items-center justify-content-between flex-wrap gap-1">
+                        <div>
+                            <small class="text-muted">Đáp án đúng:</small>
+                            <span class="dap-an-chuan-badge">${bestDa}</span>
+                        </div>
+                        <button type="button" class="btn-mini-audio" onclick="docTu('${bestDa.replace(/'/g, "\\'")}')" title="Nghe phát âm">🔊</button>
+                    </div>
+                </div>
+            `;
+        }
 
+        fetch("/hoc/sai/" + input.dataset.id, { method: "POST" });
     }
 
-
-    // -------------------------------------------------
-    // SAI
-    // -------------------------------------------------
-
-    else {
-
-        input.style.background =
-            "pink";
-
-
-        fetch(
-            "/hoc/sai/" + input.dataset.id,
-            {
-                method: "POST"
-            }
-        );
-
-    }
-
-
-    // -------------------------------------------------
-    // KHÓA ô nhập
-    // -------------------------------------------------
+    // Tự động phát âm từ tiếng Anh chuẩn
+    docTu(bestDa);
 
     input.disabled = true;
 
-
-    // -------------------------------------------------
     // Chuyển sang ô tiếp theo
-    // -------------------------------------------------
-
     setTimeout(function () {
-
-        let inputs =
-            document.querySelectorAll(
-                ".cau-tra-loi"
-            );
-
-
-        let viTri =
-            Array.from(inputs)
-                .indexOf(input);
-
-
+        let inputs = document.querySelectorAll(".cau-tra-loi");
+        let viTri = Array.from(inputs).indexOf(input);
         if (inputs[viTri + 1]) {
-
-            inputs[
-                viTri + 1
-            ].focus();
-
+            inputs[viTri + 1].focus();
         }
-
-    }, 500);
-
+    }, 800);
 }
 
-
 // =========================================================
-// TIẾP LƯỢT
+// TIẾP LƯỢT & DỪNG HỌC
 // =========================================================
-
 function tiepLuot() {
-
-    window.location =
-        "/hoc/tiep";
-
+    dungTatCaAmThanh();
+    window.location = "/hoc/tiep";
 }
-
-
-// =========================================================
-// DỪNG HỌC
-// =========================================================
 
 function dungHoc() {
-
-    window.location =
-        "/hoc/dung";
-
+    dungTatCaAmThanh();
+    window.location = "/hoc/dung";
 }
