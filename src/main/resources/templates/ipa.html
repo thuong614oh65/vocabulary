@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Bảng IPA – Phát âm chuẩn American IPA Chart</title>
+    <title>Bảng IPA – Phát âm chuẩn Pronunciation Studio</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" th:href="@{/css/ipa.css(v=6)}">
+    <link rel="stylesheet" th:href="@{/css/ipa.css(v=7)}">
 </head>
 <body>
 
@@ -13,8 +13,8 @@
      HEADER
      ============================== -->
 <div class="ipa-page-header">
-    <h1>📢 Bảng Phiên Âm Tiếng Anh IPA (American Accent)</h1>
-    <p>44 âm chuẩn American IPA Chart · Nhấn ô để nghe âm phát 1 lần · Bấm icon 🎬 để xem video khẩu hình</p>
+    <h1>📢 Bảng Phiên Âm Tiếng Anh IPA (Pronunciation Studio)</h1>
+    <p>Trọn bộ 44 âm chuẩn Pronunciation Studio · Nhấn ô để nghe âm phát 1 lần · Bấm icon 🎬 để xem video khẩu hình</p>
     <a href="/" class="btn-back-home">← Trang chủ</a>
 </div>
 
@@ -349,7 +349,7 @@
             </div>
             <div class="modal-footer ipa-modal-footer">
                 <button type="button" class="btn btn-outline-primary" id="btnModalPlayAudio">
-                    🔊 Nghe âm chuẩn American IPA
+                    🔊 Nghe âm chuẩn Pronunciation Studio
                 </button>
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
             </div>
@@ -365,7 +365,7 @@
 
 <script>
 // ============================================================
-//  Dữ liệu 44 Âm IPA chuẩn American IPA Chart & Quốc tế
+//  Dữ liệu 44 Âm IPA chuẩn Pronunciation Studio & Quốc tế
 // ============================================================
 const IPA_DATA = {
   "i_long": {
@@ -899,7 +899,7 @@ const IPA_DATA = {
 };
 
 const BASE = '/audio/ipa/';
-const VERSION = '6.0';
+const VERSION = '7.0';
 const audioCache = {};
 let currentCell = null;
 let toastTimer = null;
@@ -907,7 +907,7 @@ let currentModalKey = null;
 
 const ALL_PHONEMES = Object.keys(IPA_DATA);
 
-// Tạo Audio Object chuẩn American IPA Chart
+// Tạo Audio Object chuẩn Pronunciation Studio
 function createAudio(key) {
     const a = new Audio(BASE + key + '.mp3?v=' + VERSION);
     a.preload = 'auto';
@@ -942,7 +942,7 @@ function stopAllAudio() {
     }
 }
 
-// Phát âm thanh khi bấm vào ô ở ngoài (Bản chuẩn American IPA Chart)
+// Phát âm thanh khi bấm vào ô ở ngoài (Bản chuẩn Pronunciation Studio)
 function playPhoneme(cell) {
     const key = cell.dataset.audio;
     const item = IPA_DATA[key];
