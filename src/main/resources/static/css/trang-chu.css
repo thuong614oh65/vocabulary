@@ -367,20 +367,16 @@ body {
    ========================================================= */
 
 .nut-dich {
-    background: white;
-    color: #6f42c1;
-
-    border: 2px solid #6f42c1;
-
+    background: linear-gradient(135deg, #4f46e5 0%, #4338ca 100%);
+    color: white;
+    border: none;
     box-shadow:
-        0 6px 15px rgba(111, 66, 193, 0.15);
+        0 6px 15px rgba(79, 70, 229, 0.30);
 }
 
 .nut-dich:hover {
-    background: #f8f5ff;
-    color: #59359a;
-
-    border-color: #59359a;
+    background: linear-gradient(135deg, #4338ca 0%, #3730a3 100%);
+    color: white;
 }
 
 /* =========================================================
