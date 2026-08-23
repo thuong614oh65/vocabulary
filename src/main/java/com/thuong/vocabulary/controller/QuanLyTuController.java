@@ -115,4 +115,28 @@ public class QuanLyTuController {
         }
         return "redirect:/quan-ly-tu";
     }
+
+    // =========================================================
+    // XÓA BỘ TỪ VỰNG (KÈM TOÀN BỘ TỪ TRONG BỘ)
+    // =========================================================
+    @PostMapping("/xoa-bo/{boId}")
+    public String xoaBo(
+            @PathVariable Long boId,
+            HttpSession session,
+            RedirectAttributes redirectAttributes
+    ) {
+        TaiKhoan taiKhoan = layTaiKhoanDangNhap(session);
+        if (taiKhoan == null) {
+            return "redirect:/dangnhap";
+        }
+
+        boolean thanhCong = quanLyTuService.xoaBo(boId, taiKhoan.getId());
+        if (thanhCong) {
+            redirectAttributes.addFlashAttribute("thongBaoThanhCong", "Đã xóa bộ từ vựng và toàn bộ từ trong bộ thành công!");
+        } else {
+            redirectAttributes.addFlashAttribute("thongBaoLoi", "Xóa bộ từ vựng thất bại hoặc không tìm thấy bộ từ!");
+        }
+
+        return "redirect:/quan-ly-tu";
+    }
 }

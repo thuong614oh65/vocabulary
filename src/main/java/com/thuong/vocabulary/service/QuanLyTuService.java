@@ -19,4 +19,6 @@ public interface QuanLyTuService {
     boolean capNhatTu(CapNhatTuDTO dto, Long taiKhoanId);
 
     boolean xoaTu(Long id, Long taiKhoanId);
+
+    boolean xoaBo(Long boId, Long taiKhoanId);
 }

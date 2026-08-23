@@ -2,9 +2,12 @@ package com.thuong.vocabulary.service.impl;
 
 import com.thuong.vocabulary.entity.BoTuVung;
 import com.thuong.vocabulary.entity.TaiKhoan;
+import com.thuong.vocabulary.entity.TuVung;
 import com.thuong.vocabulary.repository.BoTuVungRepository;
+import com.thuong.vocabulary.repository.TuVungRepository;
 import com.thuong.vocabulary.service.BoTuVungService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -12,9 +15,14 @@ import java.util.List;
 public class BoTuVungServiceImpl implements BoTuVungService {
 
     private final BoTuVungRepository boTuVungRepository;
+    private final TuVungRepository tuVungRepository;
 
-    public BoTuVungServiceImpl(BoTuVungRepository boTuVungRepository) {
+    public BoTuVungServiceImpl(
+            BoTuVungRepository boTuVungRepository,
+            TuVungRepository tuVungRepository
+    ) {
         this.boTuVungRepository = boTuVungRepository;
+        this.tuVungRepository = tuVungRepository;
     }
 
     @Override
@@ -54,11 +62,16 @@ public class BoTuVungServiceImpl implements BoTuVungService {
 
     // Xóa bộ từ
     @Override
+    @Transactional
     public void xoaBo(Long boId, Long taiKhoanId) {
 
         BoTuVung bo = timBo(boId, taiKhoanId);
 
         if (bo != null) {
+            List<TuVung> tuTrongBo = tuVungRepository.findAllByBoTuVungIdAndBoTuVungTaiKhoanId(boId, taiKhoanId);
+            if (tuTrongBo != null && !tuTrongBo.isEmpty()) {
+                tuVungRepository.deleteAll(tuTrongBo);
+            }
             boTuVungRepository.delete(bo);
         }
     }

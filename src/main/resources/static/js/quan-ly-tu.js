@@ -144,6 +144,24 @@ function xacNhanXoa(id, tiengAnh) {
 }
 
 // =========================================================
+// XÁC NHẬN VÀ XÓA TOÀN BỘ BỘ TỪ
+// =========================================================
+function xacNhanXoaBo(boId, tenBo, soLuongTu) {
+    let thongBao = "⚠️ BẠN CÓ CHẮC CHẮN MUỐN XÓA BỘ TỪ: \"" + tenBo + "\" KHÔNG?\n\n"
+        + "• Tất cả " + (soLuongTu || 0) + " từ vựng bên trong bộ từ này cũng sẽ bị xóa vĩnh viễn!\n"
+        + "• Hành động này không thể hoàn tác!";
+
+    if (confirm(thongBao)) {
+        let formXoaBo = document.getElementById("formXoaBo");
+        if (formXoaBo) {
+            formXoaBo.action = "/quan-ly-tu/xoa-bo/" + boId;
+            formXoaBo.submit();
+        }
+    }
+}
+
+
+// =========================================================
 // TÌM KIẾM TỪ KHÓA TRÊN BẢNG
 // =========================================================
 function timKiemTu() {
@@ -232,5 +250,6 @@ function doiBoLoc() {
 window.docTu = docTu;
 window.moModalSua = moModalSua;
 window.xacNhanXoa = xacNhanXoa;
+window.xacNhanXoaBo = xacNhanXoaBo;
 window.timKiemTu = timKiemTu;
 window.doiBoLoc = doiBoLoc;

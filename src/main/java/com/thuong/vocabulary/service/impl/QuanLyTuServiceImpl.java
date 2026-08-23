@@ -127,4 +127,30 @@ public class QuanLyTuServiceImpl implements QuanLyTuService {
         tuVungRepository.delete(tu);
         return true;
     }
+
+    @Override
+    @Transactional
+    public boolean xoaBo(Long boId, Long taiKhoanId) {
+        if (boId == null || taiKhoanId == null) {
+            return false;
+        }
+
+        BoTuVung bo = boTuVungRepository.findById(boId)
+                .filter(b -> b.getTaiKhoan() != null && b.getTaiKhoan().getId().equals(taiKhoanId))
+                .orElse(null);
+
+        if (bo == null) {
+            return false;
+        }
+
+        // Xóa tất cả từ vựng thuộc bộ từ này trước
+        List<TuVung> tuTrongBo = tuVungRepository.findAllByBoTuVungIdAndBoTuVungTaiKhoanId(boId, taiKhoanId);
+        if (tuTrongBo != null && !tuTrongBo.isEmpty()) {
+            tuVungRepository.deleteAll(tuTrongBo);
+        }
+
+        // Xóa bộ từ
+        boTuVungRepository.delete(bo);
+        return true;
+    }
 }
