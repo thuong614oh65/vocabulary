@@ -1,12 +1,9 @@
-﻿package com.thuong.vocabulary.controller;
+package com.thuong.vocabulary.controller;
 
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
-/**
- * Controller phục vụ trang Bảng Phiên Âm IPA
- */
 @Controller
 public class IpaController {
 
