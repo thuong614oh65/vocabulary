@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Bảng IPA – Phát âm chuẩn quốc tế</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" th:href="@{/css/ipa.css(v=3)}">
+    <link rel="stylesheet" th:href="@{/css/ipa.css(v=4)}">
 </head>
 <body>
 
@@ -899,7 +899,7 @@ const IPA_DATA = {
 };
 
 const BASE = '/audio/ipa/';
-const VERSION = '3.0';
+const VERSION = '4.0';
 const audioCache = {};
 let currentCell = null;
 let toastTimer = null;
@@ -907,10 +907,23 @@ let currentModalKey = null;
 
 const ALL_PHONEMES = Object.keys(IPA_DATA);
 
+// Tạo Audio Object với OGG chuẩn phòng thu & fallback MP3
+function createAudio(key) {
+    const a = new Audio();
+    a.src = BASE + key + '.ogg?v=' + VERSION;
+    a.preload = 'auto';
+    a.onerror = () => {
+        if (!a.src.includes('.mp3')) {
+            a.src = BASE + key + '.mp3?v=' + VERSION;
+            a.load();
+        }
+    };
+    return a;
+}
+
 // Pre-load tất cả 44 file audio
 ALL_PHONEMES.forEach(key => {
-    const a = new Audio(BASE + key + '.mp3?v=' + VERSION);
-    a.preload = 'auto';
+    const a = createAudio(key);
     a.load();
     audioCache[key] = a;
 });
@@ -933,7 +946,7 @@ function stopAllAudio() {
     });
 }
 
-// Phát âm thanh khi bấm vào ô
+// Phát âm thanh khi bấm vào ô ở ngoài
 function playPhoneme(cell) {
     const key = cell.dataset.audio;
     const item = IPA_DATA[key];
@@ -950,7 +963,7 @@ function playPhoneme(cell) {
     stopAllAudio();
 
     if (!audioCache[key]) {
-        audioCache[key] = new Audio(BASE + key + '.mp3?v=' + VERSION);
+        audioCache[key] = createAudio(key);
     }
 
     const audio = audioCache[key];
@@ -1001,7 +1014,7 @@ function openVideoGuide(event, key) {
 document.getElementById('btnModalPlayAudio').addEventListener('click', function () {
     if (currentModalKey && IPA_DATA[currentModalKey]) {
         stopAllAudio();
-        const a = audioCache[currentModalKey] || new Audio(BASE + currentModalKey + '.mp3?v=' + VERSION);
+        const a = audioCache[currentModalKey] || createAudio(currentModalKey);
         a.currentTime = 0;
         a.play().catch(e => console.warn(e));
     }
