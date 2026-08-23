@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Bảng IPA – Phát âm chuẩn RP</title>
+    <title>Bảng IPA – Phát âm chuẩn quốc tế</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" th:href="@{/css/ipa.css}">
+    <link rel="stylesheet" th:href="@{/css/ipa.css(v=3)}">
 </head>
 <body>
 
@@ -13,8 +13,8 @@
      HEADER
      ============================== -->
 <div class="ipa-page-header">
-    <h1>📢 Bảng Phiên Âm IPA</h1>
-    <p>44 âm chuẩn British RP · Nhấn vào ô để nghe phát âm</p>
+    <h1>📢 Bảng Phiên Âm Tiếng Anh IPA</h1>
+    <p>44 âm chuẩn quốc tế · Nhấn ô để nghe âm · Bấm icon 🎬 để xem video hướng dẫn</p>
     <a href="/" class="btn-back-home">← Trang chủ</a>
 </div>
 
@@ -28,92 +28,112 @@
         <div class="ipa-section-title">🔵 NGUYÊN ÂM &nbsp;<small style="font-weight:400;font-size:0.8em">(VOWELS)</small></div>
 
         <!-- Nguyên âm đơn (Monophthongs) -->
-        <div class="ipa-sub-label">Nguyên âm đơn – Monophthongs</div>
+        <div class="ipa-sub-label">Nguyên âm đơn – Monophthongs (12 âm)</div>
         <div class="phoneme-grid">
-            <div class="ph-cell cell-vowel" data-audio="i_long">
+            <div class="ph-cell cell-vowel " data-audio="i_long">
+                <button type="button" class="btn-video-guide" onclick="openVideoGuide(event, 'i_long')" title="Xem video & hướng dẫn phát âm">🎬</button>
                 <span class="ph-symbol">iː</span>
-                <span class="ph-word">sheep</span>
+                <span class="ph-word" title="sea, green">sea, green</span>
             </div>
-            <div class="ph-cell cell-vowel" data-audio="i_short">
+            <div class="ph-cell cell-vowel " data-audio="i_short">
+                <button type="button" class="btn-video-guide" onclick="openVideoGuide(event, 'i_short')" title="Xem video & hướng dẫn phát âm">🎬</button>
                 <span class="ph-symbol">ɪ</span>
-                <span class="ph-word">ship</span>
+                <span class="ph-word" title="his, kid">his, kid</span>
             </div>
-            <div class="ph-cell cell-vowel" data-audio="u_short">
+            <div class="ph-cell cell-vowel " data-audio="u_short">
+                <button type="button" class="btn-video-guide" onclick="openVideoGuide(event, 'u_short')" title="Xem video & hướng dẫn phát âm">🎬</button>
                 <span class="ph-symbol">ʊ</span>
-                <span class="ph-word">good</span>
+                <span class="ph-word" title="good, put">good, put</span>
             </div>
-            <div class="ph-cell cell-vowel" data-audio="u_long">
+            <div class="ph-cell cell-vowel " data-audio="u_long">
+                <button type="button" class="btn-video-guide" onclick="openVideoGuide(event, 'u_long')" title="Xem video & hướng dẫn phát âm">🎬</button>
                 <span class="ph-symbol">uː</span>
-                <span class="ph-word">shoot</span>
+                <span class="ph-word" title="goose, school">goose, school</span>
             </div>
-            <div class="ph-cell cell-vowel" data-audio="e">
+            <div class="ph-cell cell-vowel " data-audio="e">
+                <button type="button" class="btn-video-guide" onclick="openVideoGuide(event, 'e')" title="Xem video & hướng dẫn phát âm">🎬</button>
                 <span class="ph-symbol">e</span>
-                <span class="ph-word">bed</span>
+                <span class="ph-word" title="bed, send">bed, send</span>
             </div>
-            <div class="ph-cell cell-vowel" data-audio="schwa">
+            <div class="ph-cell cell-vowel " data-audio="schwa">
+                <button type="button" class="btn-video-guide" onclick="openVideoGuide(event, 'schwa')" title="Xem video & hướng dẫn phát âm">🎬</button>
                 <span class="ph-symbol">ə</span>
-                <span class="ph-word">teacher</span>
+                <span class="ph-word" title="banana, doctor">banana, doctor</span>
             </div>
-            <div class="ph-cell cell-vowel" data-audio="er_long">
+            <div class="ph-cell cell-vowel " data-audio="er_long">
+                <button type="button" class="btn-video-guide" onclick="openVideoGuide(event, 'er_long')" title="Xem video & hướng dẫn phát âm">🎬</button>
                 <span class="ph-symbol">ɜː</span>
-                <span class="ph-word">bird</span>
+                <span class="ph-word" title="burn, birthday">burn, birthday</span>
             </div>
-            <div class="ph-cell cell-vowel" data-audio="aw_long">
+            <div class="ph-cell cell-vowel " data-audio="aw_long">
+                <button type="button" class="btn-video-guide" onclick="openVideoGuide(event, 'aw_long')" title="Xem video & hướng dẫn phát âm">🎬</button>
                 <span class="ph-symbol">ɔː</span>
-                <span class="ph-word">door</span>
+                <span class="ph-word" title="ball, law">ball, law</span>
             </div>
-            <div class="ph-cell cell-vowel" data-audio="ae">
+            <div class="ph-cell cell-vowel " data-audio="ae">
+                <button type="button" class="btn-video-guide" onclick="openVideoGuide(event, 'ae')" title="Xem video & hướng dẫn phát âm">🎬</button>
                 <span class="ph-symbol">æ</span>
-                <span class="ph-word">cat</span>
+                <span class="ph-word" title="cat, apple">cat, apple</span>
             </div>
-            <div class="ph-cell cell-vowel" data-audio="uh">
+            <div class="ph-cell cell-vowel " data-audio="uh">
+                <button type="button" class="btn-video-guide" onclick="openVideoGuide(event, 'uh')" title="Xem video & hướng dẫn phát âm">🎬</button>
                 <span class="ph-symbol">ʌ</span>
-                <span class="ph-word">up</span>
+                <span class="ph-word" title="cup, money">cup, money</span>
             </div>
-            <div class="ph-cell cell-vowel" data-audio="ah_long">
+            <div class="ph-cell cell-vowel " data-audio="ah_long">
+                <button type="button" class="btn-video-guide" onclick="openVideoGuide(event, 'ah_long')" title="Xem video & hướng dẫn phát âm">🎬</button>
                 <span class="ph-symbol">ɑː</span>
-                <span class="ph-word">far</span>
+                <span class="ph-word" title="start, father">start, father</span>
             </div>
-            <div class="ph-cell cell-vowel" data-audio="o_short">
+            <div class="ph-cell cell-vowel " data-audio="o_short">
+                <button type="button" class="btn-video-guide" onclick="openVideoGuide(event, 'o_short')" title="Xem video & hướng dẫn phát âm">🎬</button>
                 <span class="ph-symbol">ɒ</span>
-                <span class="ph-word">on</span>
+                <span class="ph-word" title="not, box">not, box</span>
             </div>
         </div>
 
         <!-- Nguyên âm đôi (Diphthongs) -->
-        <div class="ipa-sub-label">Nguyên âm đôi – Diphthongs</div>
+        <div class="ipa-sub-label">Nguyên âm đôi – Diphthongs (8 âm)</div>
         <div class="phoneme-grid">
-            <div class="ph-cell cell-diph" data-audio="ia">
+            <div class="ph-cell cell-diph " data-audio="ia">
+                <button type="button" class="btn-video-guide" onclick="openVideoGuide(event, 'ia')" title="Xem video & hướng dẫn phát âm">🎬</button>
                 <span class="ph-symbol">ɪə</span>
-                <span class="ph-word">here</span>
+                <span class="ph-word" title="here, beer">here, beer</span>
             </div>
-            <div class="ph-cell cell-diph" data-audio="ei">
+            <div class="ph-cell cell-diph " data-audio="ei">
+                <button type="button" class="btn-video-guide" onclick="openVideoGuide(event, 'ei')" title="Xem video & hướng dẫn phát âm">🎬</button>
                 <span class="ph-symbol">eɪ</span>
-                <span class="ph-word">wait</span>
+                <span class="ph-word" title="say, eight">say, eight</span>
             </div>
-            <div class="ph-cell cell-diph" data-audio="ua">
+            <div class="ph-cell cell-diph " data-audio="ua">
+                <button type="button" class="btn-video-guide" onclick="openVideoGuide(event, 'ua')" title="Xem video & hướng dẫn phát âm">🎬</button>
                 <span class="ph-symbol">ʊə</span>
-                <span class="ph-word">tourist</span>
+                <span class="ph-word" title="tour, poor">tour, poor</span>
             </div>
-            <div class="ph-cell cell-diph" data-audio="oi">
+            <div class="ph-cell cell-diph " data-audio="oi">
+                <button type="button" class="btn-video-guide" onclick="openVideoGuide(event, 'oi')" title="Xem video & hướng dẫn phát âm">🎬</button>
                 <span class="ph-symbol">ɔɪ</span>
-                <span class="ph-word">boy</span>
+                <span class="ph-word" title="boy, choice">boy, choice</span>
             </div>
-            <div class="ph-cell cell-diph" data-audio="ou">
+            <div class="ph-cell cell-diph " data-audio="ou">
+                <button type="button" class="btn-video-guide" onclick="openVideoGuide(event, 'ou')" title="Xem video & hướng dẫn phát âm">🎬</button>
                 <span class="ph-symbol">əʊ</span>
-                <span class="ph-word">show</span>
+                <span class="ph-word" title="show, no">show, no</span>
             </div>
-            <div class="ph-cell cell-diph" data-audio="ea">
+            <div class="ph-cell cell-diph " data-audio="ea">
+                <button type="button" class="btn-video-guide" onclick="openVideoGuide(event, 'ea')" title="Xem video & hướng dẫn phát âm">🎬</button>
                 <span class="ph-symbol">eə</span>
-                <span class="ph-word">hair</span>
+                <span class="ph-word" title="hair, pair">hair, pair</span>
             </div>
-            <div class="ph-cell cell-diph" data-audio="ai">
+            <div class="ph-cell cell-diph " data-audio="ai">
+                <button type="button" class="btn-video-guide" onclick="openVideoGuide(event, 'ai')" title="Xem video & hướng dẫn phát âm">🎬</button>
                 <span class="ph-symbol">aɪ</span>
-                <span class="ph-word">my</span>
+                <span class="ph-word" title="die, my">die, my</span>
             </div>
-            <div class="ph-cell cell-diph" data-audio="au">
+            <div class="ph-cell cell-diph " data-audio="au">
+                <button type="button" class="btn-video-guide" onclick="openVideoGuide(event, 'au')" title="Xem video & hướng dẫn phát âm">🎬</button>
                 <span class="ph-symbol">aʊ</span>
-                <span class="ph-word">cow</span>
+                <span class="ph-word" title="cow, now">cow, now</span>
             </div>
         </div>
 
@@ -135,36 +155,44 @@
         <div class="ipa-sub-label">Tắc (Plosives) &amp; Tắc xát (Affricates)</div>
         <div class="phoneme-grid">
             <div class="ph-cell cell-cons unvoiced" data-audio="p">
+                <button type="button" class="btn-video-guide" onclick="openVideoGuide(event, 'p')" title="Xem video & hướng dẫn phát âm">🎬</button>
                 <span class="ph-symbol">p</span>
-                <span class="ph-word">pea</span>
+                <span class="ph-word" title="pen, stop">pen, stop</span>
             </div>
             <div class="ph-cell cell-cons voiced" data-audio="b">
+                <button type="button" class="btn-video-guide" onclick="openVideoGuide(event, 'b')" title="Xem video & hướng dẫn phát âm">🎬</button>
                 <span class="ph-symbol">b</span>
-                <span class="ph-word">boat</span>
+                <span class="ph-word" title="bag, table">bag, table</span>
             </div>
             <div class="ph-cell cell-cons unvoiced" data-audio="t">
+                <button type="button" class="btn-video-guide" onclick="openVideoGuide(event, 't')" title="Xem video & hướng dẫn phát âm">🎬</button>
                 <span class="ph-symbol">t</span>
-                <span class="ph-word">tea</span>
+                <span class="ph-word" title="tea, hot">tea, hot</span>
             </div>
             <div class="ph-cell cell-cons voiced" data-audio="d">
+                <button type="button" class="btn-video-guide" onclick="openVideoGuide(event, 'd')" title="Xem video & hướng dẫn phát âm">🎬</button>
                 <span class="ph-symbol">d</span>
-                <span class="ph-word">dog</span>
+                <span class="ph-word" title="dog, need">dog, need</span>
             </div>
             <div class="ph-cell cell-cons unvoiced" data-audio="tsh">
+                <button type="button" class="btn-video-guide" onclick="openVideoGuide(event, 'tsh')" title="Xem video & hướng dẫn phát âm">🎬</button>
                 <span class="ph-symbol">tʃ</span>
-                <span class="ph-word">cheese</span>
+                <span class="ph-word" title="chicken, watch">chicken, watch</span>
             </div>
             <div class="ph-cell cell-cons voiced" data-audio="dzh">
+                <button type="button" class="btn-video-guide" onclick="openVideoGuide(event, 'dzh')" title="Xem video & hướng dẫn phát âm">🎬</button>
                 <span class="ph-symbol">dʒ</span>
-                <span class="ph-word">June</span>
+                <span class="ph-word" title="jam, age">jam, age</span>
             </div>
             <div class="ph-cell cell-cons unvoiced" data-audio="k">
+                <button type="button" class="btn-video-guide" onclick="openVideoGuide(event, 'k')" title="Xem video & hướng dẫn phát âm">🎬</button>
                 <span class="ph-symbol">k</span>
-                <span class="ph-word">car</span>
+                <span class="ph-word" title="cat, book">cat, book</span>
             </div>
             <div class="ph-cell cell-cons voiced" data-audio="g">
+                <button type="button" class="btn-video-guide" onclick="openVideoGuide(event, 'g')" title="Xem video & hướng dẫn phát âm">🎬</button>
                 <span class="ph-symbol">g</span>
-                <span class="ph-word">go</span>
+                <span class="ph-word" title="go, big">go, big</span>
             </div>
         </div>
 
@@ -172,73 +200,89 @@
         <div class="ipa-sub-label">Xát (Fricatives)</div>
         <div class="phoneme-grid">
             <div class="ph-cell cell-cons unvoiced" data-audio="f">
+                <button type="button" class="btn-video-guide" onclick="openVideoGuide(event, 'f')" title="Xem video & hướng dẫn phát âm">🎬</button>
                 <span class="ph-symbol">f</span>
-                <span class="ph-word">fly</span>
+                <span class="ph-word" title="fan, laugh">fan, laugh</span>
             </div>
             <div class="ph-cell cell-cons voiced" data-audio="v">
+                <button type="button" class="btn-video-guide" onclick="openVideoGuide(event, 'v')" title="Xem video & hướng dẫn phát âm">🎬</button>
                 <span class="ph-symbol">v</span>
-                <span class="ph-word">video</span>
+                <span class="ph-word" title="van, leave">van, leave</span>
             </div>
             <div class="ph-cell cell-cons unvoiced" data-audio="th_v">
+                <button type="button" class="btn-video-guide" onclick="openVideoGuide(event, 'th_v')" title="Xem video & hướng dẫn phát âm">🎬</button>
                 <span class="ph-symbol">θ</span>
-                <span class="ph-word">think</span>
+                <span class="ph-word" title="think, teeth">think, teeth</span>
             </div>
             <div class="ph-cell cell-cons voiced" data-audio="th_d">
+                <button type="button" class="btn-video-guide" onclick="openVideoGuide(event, 'th_d')" title="Xem video & hướng dẫn phát âm">🎬</button>
                 <span class="ph-symbol">ð</span>
-                <span class="ph-word">this</span>
+                <span class="ph-word" title="this, mother">this, mother</span>
             </div>
             <div class="ph-cell cell-cons unvoiced" data-audio="s">
+                <button type="button" class="btn-video-guide" onclick="openVideoGuide(event, 's')" title="Xem video & hướng dẫn phát âm">🎬</button>
                 <span class="ph-symbol">s</span>
-                <span class="ph-word">see</span>
+                <span class="ph-word" title="sun, miss">sun, miss</span>
             </div>
             <div class="ph-cell cell-cons voiced" data-audio="z">
+                <button type="button" class="btn-video-guide" onclick="openVideoGuide(event, 'z')" title="Xem video & hướng dẫn phát âm">🎬</button>
                 <span class="ph-symbol">z</span>
-                <span class="ph-word">zoo</span>
+                <span class="ph-word" title="zero, buzz">zero, buzz</span>
             </div>
             <div class="ph-cell cell-cons unvoiced" data-audio="sh">
+                <button type="button" class="btn-video-guide" onclick="openVideoGuide(event, 'sh')" title="Xem video & hướng dẫn phát âm">🎬</button>
                 <span class="ph-symbol">ʃ</span>
-                <span class="ph-word">shall</span>
+                <span class="ph-word" title="ship, sure">ship, sure</span>
             </div>
             <div class="ph-cell cell-cons voiced" data-audio="zh">
+                <button type="button" class="btn-video-guide" onclick="openVideoGuide(event, 'zh')" title="Xem video & hướng dẫn phát âm">🎬</button>
                 <span class="ph-symbol">ʒ</span>
-                <span class="ph-word">vision</span>
+                <span class="ph-word" title="pleasure, vision">pleasure, vision</span>
             </div>
         </div>
 
         <!-- Row 3: nasals, laterals, approximants -->
         <div class="ipa-sub-label">Mũi (Nasals) · Bên (Laterals) · Tiếp (Approximants)</div>
         <div class="phoneme-grid">
-            <div class="ph-cell cell-cons" data-audio="m">
+            <div class="ph-cell cell-cons voiced" data-audio="m">
+                <button type="button" class="btn-video-guide" onclick="openVideoGuide(event, 'm')" title="Xem video & hướng dẫn phát âm">🎬</button>
                 <span class="ph-symbol">m</span>
-                <span class="ph-word">man</span>
+                <span class="ph-word" title="money, mean">money, mean</span>
             </div>
-            <div class="ph-cell cell-cons" data-audio="n">
+            <div class="ph-cell cell-cons voiced" data-audio="n">
+                <button type="button" class="btn-video-guide" onclick="openVideoGuide(event, 'n')" title="Xem video & hướng dẫn phát âm">🎬</button>
                 <span class="ph-symbol">n</span>
-                <span class="ph-word">now</span>
+                <span class="ph-word" title="nice, sun">nice, sun</span>
             </div>
-            <div class="ph-cell cell-cons" data-audio="ng">
+            <div class="ph-cell cell-cons voiced" data-audio="ng">
+                <button type="button" class="btn-video-guide" onclick="openVideoGuide(event, 'ng')" title="Xem video & hướng dẫn phát âm">🎬</button>
                 <span class="ph-symbol">ŋ</span>
-                <span class="ph-word">sing</span>
+                <span class="ph-word" title="ring, long">ring, long</span>
             </div>
             <div class="ph-cell cell-cons unvoiced" data-audio="h">
+                <button type="button" class="btn-video-guide" onclick="openVideoGuide(event, 'h')" title="Xem video & hướng dẫn phát âm">🎬</button>
                 <span class="ph-symbol">h</span>
-                <span class="ph-word">hat</span>
+                <span class="ph-word" title="hot, behind">hot, behind</span>
             </div>
-            <div class="ph-cell cell-cons" data-audio="l">
+            <div class="ph-cell cell-cons voiced" data-audio="l">
+                <button type="button" class="btn-video-guide" onclick="openVideoGuide(event, 'l')" title="Xem video & hướng dẫn phát âm">🎬</button>
                 <span class="ph-symbol">l</span>
-                <span class="ph-word">love</span>
+                <span class="ph-word" title="light, feel">light, feel</span>
             </div>
-            <div class="ph-cell cell-cons" data-audio="r">
+            <div class="ph-cell cell-cons voiced" data-audio="r">
+                <button type="button" class="btn-video-guide" onclick="openVideoGuide(event, 'r')" title="Xem video & hướng dẫn phát âm">🎬</button>
                 <span class="ph-symbol">r</span>
-                <span class="ph-word">red</span>
+                <span class="ph-word" title="right, sorry">right, sorry</span>
             </div>
-            <div class="ph-cell cell-cons" data-audio="w">
+            <div class="ph-cell cell-cons voiced" data-audio="w">
+                <button type="button" class="btn-video-guide" onclick="openVideoGuide(event, 'w')" title="Xem video & hướng dẫn phát âm">🎬</button>
                 <span class="ph-symbol">w</span>
-                <span class="ph-word">wet</span>
+                <span class="ph-word" title="wet, win">wet, win</span>
             </div>
-            <div class="ph-cell cell-cons" data-audio="y">
+            <div class="ph-cell cell-cons voiced" data-audio="y">
+                <button type="button" class="btn-video-guide" onclick="openVideoGuide(event, 'y')" title="Xem video & hướng dẫn phát âm">🎬</button>
                 <span class="ph-symbol">j</span>
-                <span class="ph-word">yes</span>
+                <span class="ph-word" title="yes, use">yes, use</span>
             </div>
         </div>
 
@@ -254,30 +298,616 @@
 
 </div><!-- /ipa-chart-container -->
 
+<!-- ==============================
+     MODAL VIDEO & HƯỚNG DẪN PHÁT ÂM
+     ============================== -->
+<div class="modal fade" id="videoGuideModal" tabindex="-1" aria-labelledby="modalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content ipa-modal-content">
+            <div class="modal-header ipa-modal-header">
+                <div class="d-flex align-items-center gap-3">
+                    <span class="modal-ipa-badge" id="modalIpaSymbol">/iː/</span>
+                    <div>
+                        <h5 class="modal-title mb-0 fw-bold" id="modalTitle">Nguyên âm dài /iː/</h5>
+                        <small class="text-muted" id="modalTypeLabel">Nguyên âm đơn dài</small>
+                    </div>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+            </div>
+            <div class="modal-body p-0">
+                <!-- Video player container -->
+                <div class="ratio ratio-16x9 bg-dark">
+                    <iframe id="modalVideoIframe" src="" title="Video hướng dẫn phát âm IPA" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+                </div>
+
+                <!-- Chi tiết hướng dẫn phát âm chuẩn ZIM -->
+                <div class="p-3 p-md-4">
+                    <div class="row g-3">
+                        <div class="col-md-6 col-12">
+                            <div class="guide-box">
+                                <h6>💡 Cách phát âm</h6>
+                                <p class="mb-0" id="modalGuideText">Hướng dẫn phát âm...</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-12">
+                            <div class="guide-box">
+                                <h6>👄 Khẩu hình miệng</h6>
+                                <p class="mb-0" id="modalMouthText">Khẩu hình miệng...</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 2 Ví dụ -->
+                    <div class="examples-box mt-3">
+                        <h6>📚 2 Từ ví dụ chuẩn:</h6>
+                        <div class="d-flex gap-3 flex-wrap">
+                            <span class="badge-example" id="modalExample1">sea /siː/</span>
+                            <span class="badge-example" id="modalExample2">green /ɡriːn/</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer ipa-modal-footer">
+                <button type="button" class="btn btn-outline-primary" id="btnModalPlayAudio">
+                    🔊 Nghe âm vị này
+                </button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Toast notification -->
 <div class="play-toast" id="playToast"></div>
 
+<!-- Bootstrap 5 JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
+
 <script>
 // ============================================================
-//  Audio Playback Engine
+//  Dữ liệu 44 Âm IPA chuẩn ZIM Academy & Quốc tế
 // ============================================================
+const IPA_DATA = {
+  "i_long": {
+    "symbol": "iː",
+    "name": "Nguyên âm dài (âm e dài)",
+    "type": "vowel",
+    "type_label": "Nguyên âm đơn dài",
+    "words": "sea, green",
+    "word1": "sea /siː/",
+    "word2": "green /ɡriːn/",
+    "vimeo": "https://player.vimeo.com/video/799053416?h=4b62519b74&badge=0&autopause=0",
+    "guide": "Kéo dài âm 'i', âm phát từ trong khoang miệng chứ không thổi hơi ra. Môi mở rộng sang hai bên như đang cười, lưỡi nâng cao.",
+    "mouth": "Môi mở rộng sang 2 bên như đang mỉm cười, đầu lưỡi nâng cao chạm nhẹ nướu dưới."
+  },
+  "i_short": {
+    "symbol": "ɪ",
+    "name": "Nguyên âm ngắn /ɪ/",
+    "type": "vowel",
+    "type_label": "Nguyên âm đơn ngắn",
+    "words": "his, kid",
+    "word1": "his /hɪz/",
+    "word2": "kid /kɪd/",
+    "vimeo": "https://player.vimeo.com/video/799053148?h=be9fb2b856&badge=0&autopause=0",
+    "guide": "Phát âm gần giống âm 'i' tiếng Việt nhưng ngắn hơn, dứt khoát.",
+    "mouth": "Môi hơi mở sang hai bên, lưỡi hạ thấp hơn âm /iː/, phát âm nhanh, gọn gàng."
+  },
+  "u_short": {
+    "symbol": "ʊ",
+    "name": "Nguyên âm ngắn /ʊ/",
+    "type": "vowel",
+    "type_label": "Nguyên âm đơn ngắn",
+    "words": "good, put",
+    "word1": "good /ɡʊd/",
+    "word2": "put /pʊt/",
+    "vimeo": "https://player.vimeo.com/video/799022336?h=57fc047f21&badge=0&autopause=0",
+    "guide": "Âm 'u' ngắn, đẩy hơi dứt khoát từ cổ họng.",
+    "mouth": "Môi hơi tròn, đẩy nhẹ về phía trước, lưỡi hạ thấp và phát âm dứt khoát."
+  },
+  "u_long": {
+    "symbol": "uː",
+    "name": "Nguyên âm dài /uː/",
+    "type": "vowel",
+    "type_label": "Nguyên âm đơn dài",
+    "words": "goose, school",
+    "word1": "goose /ɡuːs/",
+    "word2": "school /skuːl/",
+    "vimeo": "https://player.vimeo.com/video/799023321?h=724e2c9082&badge=0&autopause=0",
+    "guide": "Kéo dài âm 'u', âm phát trong khoang miệng.",
+    "mouth": "Môi tròn, chu ra phía trước, cuống lưỡi nâng cao về phía ngạc mềm."
+  },
+  "e": {
+    "symbol": "e",
+    "name": "Nguyên âm /e/",
+    "type": "vowel",
+    "type_label": "Nguyên âm đơn ngắn",
+    "words": "bed, send",
+    "word1": "bed /bed/",
+    "word2": "send /send/",
+    "vimeo": "https://player.vimeo.com/video/799018681?h=c8a9d48c4d&badge=0&autopause=0",
+    "guide": "Tương tự âm 'e' tiếng Việt nhưng phát âm dứt khoát hơn.",
+    "mouth": "Mở rộng miệng sang hai bên nhiều hơn âm /ɪ/, lưỡi hạ thấp hơn."
+  },
+  "schwa": {
+    "symbol": "ə",
+    "name": "Nguyên âm /ə/ (Schwa)",
+    "type": "vowel",
+    "type_label": "Nguyên âm đơn ngắn",
+    "words": "banana, doctor",
+    "word1": "banana /bəˈnɑːnə/",
+    "word2": "doctor /ˈdɒktə(r)/",
+    "vimeo": "https://player.vimeo.com/video/799019910?h=d367d2f7d2&badge=0&autopause=0",
+    "guide": "Âm ơ rất ngắn và nhẹ, là nguyên âm phổ biến nhất trong tiếng Anh.",
+    "mouth": "Môi mở tự nhiên, lưỡi thả lỏng ở vị trí trung tâm, phát âm nhẹ và ngắn."
+  },
+  "er_long": {
+    "symbol": "ɜː",
+    "name": "Nguyên âm dài /ɜː/",
+    "type": "vowel",
+    "type_label": "Nguyên âm đơn dài",
+    "words": "burn, birthday",
+    "word1": "burn /bɜːn/",
+    "word2": "birthday /ˈbɜːθdeɪ/",
+    "vimeo": "https://player.vimeo.com/video/799020959?h=380b7874bb&badge=0&autopause=0",
+    "guide": "Âm 'ơ' kéo dài, âm phát từ cổ họng.",
+    "mouth": "Môi mở tự nhiên, lưỡi nâng lên vừa phải, cong nhẹ vào trong và ngân dài."
+  },
+  "aw_long": {
+    "symbol": "ɔː",
+    "name": "Nguyên âm dài /ɔː/",
+    "type": "vowel",
+    "type_label": "Nguyên âm đơn dài",
+    "words": "ball, law",
+    "word1": "ball /bɔːl/",
+    "word2": "law /lɔː/",
+    "vimeo": "https://player.vimeo.com/video/799025423?h=3a82d409dd&badge=0&autopause=0",
+    "guide": "Âm 'o' kéo dài, tròn môi.",
+    "mouth": "Môi tròn mở rộng, lưỡi cong nhẹ chạm ngạc trên, phát âm ngân dài."
+  },
+  "ae": {
+    "symbol": "æ",
+    "name": "Nguyên âm ngắn /æ/ (a bẹt)",
+    "type": "vowel",
+    "type_label": "Nguyên âm đơn ngắn",
+    "words": "cat, apple",
+    "word1": "cat /kæt/",
+    "word2": "apple /ˈæpl/",
+    "vimeo": "https://player.vimeo.com/video/799028170?h=dc7f026866&badge=0&autopause=0",
+    "guide": "Âm nằm giữa âm 'a' và 'e', hơi dẹt môi.",
+    "mouth": "Miệng mở rộng sang hai bên, hàm hạ thấp, đầu lưỡi đặt nhẹ chân răng hàm dưới."
+  },
+  "uh": {
+    "symbol": "ʌ",
+    "name": "Nguyên âm ngắn /ʌ/",
+    "type": "vowel",
+    "type_label": "Nguyên âm đơn ngắn",
+    "words": "cup, money",
+    "word1": "cup /kʌp/",
+    "word2": "money /ˈmʌni/",
+    "vimeo": "https://player.vimeo.com/video/799025165?h=08f343bebe&badge=0&autopause=0",
+    "guide": "Gần giống âm 'ă' tiếng Việt, dứt khoát.",
+    "mouth": "Miệng mở tự nhiên, lưỡi nâng nhẹ ở phần giữa, phát âm dứt khoát."
+  },
+  "ah_long": {
+    "symbol": "ɑː",
+    "name": "Nguyên âm dài /ɑː/",
+    "type": "vowel",
+    "type_label": "Nguyên âm đơn dài",
+    "words": "start, father",
+    "word1": "start /stɑːt/",
+    "word2": "father /ˈfɑːðə(r)/",
+    "vimeo": "https://player.vimeo.com/video/799028410?h=2c77aa9867&badge=0&autopause=0",
+    "guide": "Âm 'a' mở rộng miệng và ngân dài.",
+    "mouth": "Miệng mở rộng hết cỡ theo chiều dọc, lưỡi hạ thấp sâu trong khoang miệng, ngân dài."
+  },
+  "o_short": {
+    "symbol": "ɒ",
+    "name": "Nguyên âm ngắn /ɒ/",
+    "type": "vowel",
+    "type_label": "Nguyên âm đơn ngắn",
+    "words": "not, box",
+    "word1": "not /nɒt/",
+    "word2": "box /bɒks/",
+    "vimeo": "https://player.vimeo.com/video/803333593?h=6adc718c73&badge=0&autopause=0",
+    "guide": "Âm 'o' ngắn, tròn môi dứt khoát.",
+    "mouth": "Môi tròn mở rộng, lưỡi hạ thấp, phát âm dứt khoát."
+  },
+  "ia": {
+    "symbol": "ɪə",
+    "name": "Nguyên âm đôi /ɪə/",
+    "type": "diphthong",
+    "type_label": "Nguyên âm đôi",
+    "words": "here, beer",
+    "word1": "here /hɪə(r)/",
+    "word2": "beer /bɪə(r)/",
+    "vimeo": "https://player.vimeo.com/video/799034185?h=e31a8f3fbc&badge=0&autopause=0",
+    "guide": "Lướt từ âm /ɪ/ sang âm /ə/.",
+    "mouth": "Bắt đầu ở âm /ɪ/ rồi lướt nhẹ sang /ə/, kết thúc môi mở tự nhiên."
+  },
+  "ei": {
+    "symbol": "eɪ",
+    "name": "Nguyên âm đôi /eɪ/",
+    "type": "diphthong",
+    "type_label": "Nguyên âm đôi",
+    "words": "say, eight",
+    "word1": "say /seɪ/",
+    "word2": "eight /eɪt/",
+    "vimeo": "https://player.vimeo.com/video/799034426?h=c511125579&badge=0&autopause=0",
+    "guide": "Lướt từ âm /e/ sang âm /ɪ/.",
+    "mouth": "Bắt đầu bằng âm /e/ mở rộng miệng, lướt dần sang /ɪ/ khép môi sang hai bên."
+  },
+  "ua": {
+    "symbol": "ʊə",
+    "name": "Nguyên âm đôi /ʊə/",
+    "type": "diphthong",
+    "type_label": "Nguyên âm đôi",
+    "words": "tour, poor",
+    "word1": "tour /tʊə(r)/",
+    "word2": "poor /pʊə(r)/",
+    "vimeo": "https://player.vimeo.com/video/799038699?h=082b944b89&badge=0&autopause=0",
+    "guide": "Lướt từ âm /ʊ/ sang âm /ə/.",
+    "mouth": "Bắt đầu với môi tròn âm /ʊ/, lướt dần sang âm /ə/ thả lỏng tự nhiên."
+  },
+  "oi": {
+    "symbol": "ɔɪ",
+    "name": "Nguyên âm đôi /ɔɪ/",
+    "type": "diphthong",
+    "type_label": "Nguyên âm đôi",
+    "words": "boy, choice",
+    "word1": "boy /bɔɪ/",
+    "word2": "choice /tʃɔɪs/",
+    "vimeo": "https://player.vimeo.com/video/799038374?h=8b0f9926ce&badge=0&autopause=0",
+    "guide": "Lướt từ âm /ɔː/ sang âm /ɪ/.",
+    "mouth": "Bắt đầu với môi tròn âm /ɔː/, lướt dần sang /ɪ/ kéo dẹt môi sang hai bên."
+  },
+  "ou": {
+    "symbol": "əʊ",
+    "name": "Nguyên âm đôi /əʊ/",
+    "type": "diphthong",
+    "type_label": "Nguyên âm đôi",
+    "words": "show, no",
+    "word1": "show /ʃəʊ/",
+    "word2": "no /nəʊ/",
+    "vimeo": "https://player.vimeo.com/video/799035152?h=546b90fad7&badge=0&autopause=0",
+    "guide": "Lướt từ âm /ə/ sang âm /ʊ/.",
+    "mouth": "Bắt đầu ở âm /ə/ mở tự nhiên, lướt dần sang /ʊ/ thu tròn môi."
+  },
+  "ea": {
+    "symbol": "eə",
+    "name": "Nguyên âm đôi /eə/",
+    "type": "diphthong",
+    "type_label": "Nguyên âm đôi",
+    "words": "hair, pair",
+    "word1": "hair /heə(r)/",
+    "word2": "pair /peə(r)/",
+    "vimeo": "https://player.vimeo.com/video/805797587?h=71d1e256c0&badge=0&autopause=0",
+    "guide": "Lướt từ âm /e/ sang âm /ə/.",
+    "mouth": "Bắt đầu ở âm /e/, lướt dần sang âm /ə/, môi mở tự nhiên."
+  },
+  "ai": {
+    "symbol": "aɪ",
+    "name": "Nguyên âm đôi /aɪ/",
+    "type": "diphthong",
+    "type_label": "Nguyên âm đôi",
+    "words": "die, my",
+    "word1": "die /daɪ/",
+    "word2": "my /maɪ/",
+    "vimeo": "https://player.vimeo.com/video/799034911?h=3af79a3759&badge=0&autopause=0",
+    "guide": "Lướt từ âm /a/ sang âm /ɪ/.",
+    "mouth": "Mở rộng miệng ở âm /a/, lướt dần sang /ɪ/ khép môi sang hai bên."
+  },
+  "au": {
+    "symbol": "aʊ",
+    "name": "Nguyên âm đôi /aʊ/",
+    "type": "diphthong",
+    "type_label": "Nguyên âm đôi",
+    "words": "cow, now",
+    "word1": "cow /kaʊ/",
+    "word2": "now /naʊ/",
+    "vimeo": "https://player.vimeo.com/video/799037174?h=ca7ab60654&badge=0&autopause=0",
+    "guide": "Lướt từ âm /a/ sang âm /ʊ/.",
+    "mouth": "Bắt đầu mở rộng miệng âm /a/, lướt dần sang /ʊ/ thu tròn môi."
+  },
+  "p": {
+    "symbol": "p",
+    "name": "Phụ âm vô thanh /p/",
+    "type": "consonant",
+    "type_label": "Phụ âm vô thanh (Unvoiced)",
+    "words": "pen, stop",
+    "word1": "pen /pen/",
+    "word2": "stop /stɒp/",
+    "vimeo": "https://player.vimeo.com/video/799048874?h=6d240d8ebe&badge=0&autopause=0",
+    "guide": "Mím chặt 2 môi rồi bật mạnh luồng khí ra, không rung thanh quản.",
+    "mouth": "Hai môi ngậm chặt, chặn luồng khí sau môi rồi bật bung hơi ra ngoài mà không làm rung cổ."
+  },
+  "b": {
+    "symbol": "b",
+    "name": "Phụ âm hữu thanh /b/",
+    "type": "consonant",
+    "type_label": "Phụ âm hữu thanh (Voiced)",
+    "words": "bag, table",
+    "word1": "bag /bæɡ/",
+    "word2": "table /ˈteɪbl/",
+    "vimeo": "https://player.vimeo.com/video/799049174?h=bb7d7e5b68&badge=0&autopause=0",
+    "guide": "Mím 2 môi rồi bật ra đồng thời làm rung thanh quản.",
+    "mouth": "Tương tự âm /p/ nhưng phát ra tiếng làm rung dây thanh quản ở cổ họng."
+  },
+  "t": {
+    "symbol": "t",
+    "name": "Phụ âm vô thanh /t/",
+    "type": "consonant",
+    "type_label": "Phụ âm vô thanh (Unvoiced)",
+    "words": "tea, hot",
+    "word1": "tea /tiː/",
+    "word2": "hot /hɒt/",
+    "vimeo": "https://player.vimeo.com/video/799049410?h=da9b27a30a&badge=0&autopause=0",
+    "guide": "Đầu lưỡi chạm nướu trên rồi bật mạnh luồng hơi, không rung thanh quản.",
+    "mouth": "Đầu lưỡi áp chặt vào nướu răng hàm trên, sau đó bật mạnh luồng hơi ra ngoài."
+  },
+  "d": {
+    "symbol": "d",
+    "name": "Phụ âm hữu thanh /d/",
+    "type": "consonant",
+    "type_label": "Phụ âm hữu thanh (Voiced)",
+    "words": "dog, need",
+    "word1": "dog /dɒɡ/",
+    "word2": "need /niːd/",
+    "vimeo": "https://player.vimeo.com/video/799049745?h=1a5bc1cae0&badge=0&autopause=0",
+    "guide": "Đầu lưỡi chạm nướu trên bật ra đồng thời làm rung thanh quản.",
+    "mouth": "Khẩu hình giống âm /t/ nhưng rung dây thanh quản."
+  },
+  "tsh": {
+    "symbol": "tʃ",
+    "name": "Phụ âm vô thanh /tʃ/",
+    "type": "consonant",
+    "type_label": "Phụ âm vô thanh (Unvoiced)",
+    "words": "chicken, watch",
+    "word1": "chicken /ˈtʃɪkɪn/",
+    "word2": "watch /wɒtʃ/",
+    "vimeo": "https://player.vimeo.com/video/799050073?h=6251c6ee22&badge=0&autopause=0",
+    "guide": "Chu môi, thân lưỡi nâng chạm ngạc cứng rồi bật xát luồng hơi mạnh ra.",
+    "mouth": "Môi hơi chu về phía trước, đầu lưỡi chạm nướu trên rồi giật lùi xát hơi mà không rung cổ."
+  },
+  "dzh": {
+    "symbol": "dʒ",
+    "name": "Phụ âm hữu thanh /dʒ/",
+    "type": "consonant",
+    "type_label": "Phụ âm hữu thanh (Voiced)",
+    "words": "jam, age",
+    "word1": "jam /dʒæm/",
+    "word2": "age /eɪdʒ/",
+    "vimeo": "https://player.vimeo.com/video/799050433?h=926969597d&badge=0&autopause=0",
+    "guide": "Khẩu hình giống /tʃ/ nhưng phát ra tiếng rung thanh quản.",
+    "mouth": "Môi chu về phía trước, lưỡi áp ngạc trên rồi bật xát làm rung dây thanh quản."
+  },
+  "k": {
+    "symbol": "k",
+    "name": "Phụ âm vô thanh /k/",
+    "type": "consonant",
+    "type_label": "Phụ âm vô thanh (Unvoiced)",
+    "words": "cat, book",
+    "word1": "cat /kæt/",
+    "word2": "book /bʊk/",
+    "vimeo": "https://player.vimeo.com/video/799716570?h=e9d4ed8b97&badge=0&autopause=0",
+    "guide": "Nâng cuống lưỡi chạm ngạc mềm rồi bật mạnh luồng khí ra, không rung cổ.",
+    "mouth": "Phần sau của lưỡi nâng lên chạm ngạc mềm chặn khí, sau đó hạ xuống để bật hơi mạnh ra."
+  },
+  "g": {
+    "symbol": "g",
+    "name": "Phụ âm hữu thanh /g/",
+    "type": "consonant",
+    "type_label": "Phụ âm hữu thanh (Voiced)",
+    "words": "go, big",
+    "word1": "go /ɡəʊ/",
+    "word2": "big /bɪɡ/",
+    "vimeo": "https://player.vimeo.com/video/799051365?h=1ce719e473&badge=0&autopause=0",
+    "guide": "Khẩu hình giống /k/ nhưng phát ra tiếng rung thanh quản.",
+    "mouth": "Cuống lưỡi chạm ngạc mềm rồi hạ xuống bật âm rung dây thanh quản."
+  },
+  "f": {
+    "symbol": "f",
+    "name": "Phụ âm vô thanh /f/",
+    "type": "consonant",
+    "type_label": "Phụ âm vô thanh (Unvoiced)",
+    "words": "fan, laugh",
+    "word1": "fan /fæn/",
+    "word2": "laugh /lɑːf/",
+    "vimeo": "https://player.vimeo.com/video/799051556?h=31b489851a&badge=0&autopause=0",
+    "guide": "Răng cửa hàm trên chạm nhẹ môi dưới, thổi luồng khí qua kẽ răng.",
+    "mouth": "Răng cửa trên đặt nhẹ lên bờ môi dưới, đẩy luồng hơi xì qua khe hở mà không rung cổ."
+  },
+  "v": {
+    "symbol": "v",
+    "name": "Phụ âm hữu thanh /v/",
+    "type": "consonant",
+    "type_label": "Phụ âm hữu thanh (Voiced)",
+    "words": "van, leave",
+    "word1": "van /væn/",
+    "word2": "leave /liːv/",
+    "vimeo": "https://player.vimeo.com/video/799051845?h=8731ac54df&badge=0&autopause=0",
+    "guide": "Khẩu hình giống /f/ nhưng rung dây thanh quản.",
+    "mouth": "Răng cửa hàm trên chạm môi dưới, phát âm làm rung dây thanh quản ở cổ họng."
+  },
+  "th_v": {
+    "symbol": "θ",
+    "name": "Phụ âm vô thanh /θ/ (thổi gió)",
+    "type": "consonant",
+    "type_label": "Phụ âm vô thanh (Unvoiced)",
+    "words": "think, teeth",
+    "word1": "think /θɪŋk/",
+    "word2": "teeth /tiːθ/",
+    "vimeo": "https://player.vimeo.com/video/799048470?h=193730697e&badge=0&autopause=0",
+    "guide": "Đặt đầu lưỡi nhẹ giữa hai hàm răng, thổi luồng hơi ra, không rung cổ.",
+    "mouth": "Đầu lưỡi đặt giữa răng cửa trên và dưới, đẩy luồng khí thoát ra giữa lưỡi và răng trên."
+  },
+  "th_d": {
+    "symbol": "ð",
+    "name": "Phụ âm hữu thanh /ð/",
+    "type": "consonant",
+    "type_label": "Phụ âm hữu thanh (Voiced)",
+    "words": "this, mother",
+    "word1": "this /ðɪs/",
+    "word2": "mother /ˈmʌðə(r)/",
+    "vimeo": "https://player.vimeo.com/video/799713097?h=69e9fc9137&badge=0&autopause=0",
+    "guide": "Khẩu hình giống /θ/ nhưng rung thanh quản.",
+    "mouth": "Đầu lưỡi kẹp nhẹ giữa 2 hàm răng, đẩy luồng khí ra đồng thời làm rung thanh quản."
+  },
+  "s": {
+    "symbol": "s",
+    "name": "Phụ âm vô thanh /s/",
+    "type": "consonant",
+    "type_label": "Phụ âm vô thanh (Unvoiced)",
+    "words": "sun, miss",
+    "word1": "sun /sʌn/",
+    "word2": "miss /mɪs/",
+    "vimeo": "https://player.vimeo.com/video/799713752?h=b29065bb07&badge=0&autopause=0",
+    "guide": "Đầu lưỡi gần nướu trên, hai hàm răng khép hờ, thổi luồng khí xì nhẹ.",
+    "mouth": "Đầu lưỡi đặt gần nướu răng hàm trên, không chạm hẳn, thổi luồng hơi xì qua khe giữa."
+  },
+  "z": {
+    "symbol": "z",
+    "name": "Phụ âm hữu thanh /z/",
+    "type": "consonant",
+    "type_label": "Phụ âm hữu thanh (Voiced)",
+    "words": "zero, buzz",
+    "word1": "zero /ˈzɪərəʊ/",
+    "word2": "buzz /bʌz/",
+    "vimeo": "https://player.vimeo.com/video/799713912?h=9a13ffc9d5&badge=0&autopause=0",
+    "guide": "Khẩu hình giống /s/ nhưng làm rung thanh quản.",
+    "mouth": "Vị trí lưỡi và răng như âm /s/ nhưng phát ra tiếng rung dây thanh quản."
+  },
+  "sh": {
+    "symbol": "ʃ",
+    "name": "Phụ âm vô thanh /ʃ/",
+    "type": "consonant",
+    "type_label": "Phụ âm vô thanh (Unvoiced)",
+    "words": "ship, sure",
+    "word1": "ship /ʃɪp/",
+    "word2": "sure /ʃɔː(r)/",
+    "vimeo": "https://player.vimeo.com/video/799714545?h=9ccddda2fd&badge=0&autopause=0",
+    "guide": "Môi chu tròn hướng ra trước, thân lưỡi nâng lên ngạc trên, thổi hơi xát mạnh.",
+    "mouth": "Môi chu tròn về phía trước, mặt lưỡi chạm nướu trên, đẩy luồng khí mạnh thoát ra."
+  },
+  "zh": {
+    "symbol": "ʒ",
+    "name": "Phụ âm hữu thanh /ʒ/",
+    "type": "consonant",
+    "type_label": "Phụ âm hữu thanh (Voiced)",
+    "words": "pleasure, vision",
+    "word1": "pleasure /ˈpleʒə(r)/",
+    "word2": "vision /ˈvɪʒn/",
+    "vimeo": "https://player.vimeo.com/video/799714707?h=68f76b7ceb&badge=0&autopause=0",
+    "guide": "Khẩu hình giống /ʃ/ nhưng làm rung thanh quản.",
+    "mouth": "Môi chu tròn về phía trước, thân lưỡi nâng cao và phát âm rung thanh quản."
+  },
+  "m": {
+    "symbol": "m",
+    "name": "Phụ âm mũi /m/",
+    "type": "consonant",
+    "type_label": "Phụ âm mũi (Nasal)",
+    "words": "money, mean",
+    "word1": "money /ˈmʌni/",
+    "word2": "mean /miːn/",
+    "vimeo": "https://player.vimeo.com/video/799714910?h=66685b8082&badge=0&autopause=0",
+    "guide": "Ngậm hai môi lại, luồng khí thoát ra bằng mũi làm rung thanh quản.",
+    "mouth": "Hai môi ngậm kín, hạ ngạc mềm để khí thoát hoàn toàn qua đường mũi."
+  },
+  "n": {
+    "symbol": "n",
+    "name": "Phụ âm mũi /n/",
+    "type": "consonant",
+    "type_label": "Phụ âm mũi (Nasal)",
+    "words": "nice, sun",
+    "word1": "nice /naɪs/",
+    "word2": "sun /sʌn/",
+    "vimeo": "https://player.vimeo.com/video/799715128?h=ee57d25a7f&badge=0&autopause=0",
+    "guide": "Đầu lưỡi chạm nướu trên, chặn luồng khí ở miệng để khí thoát qua mũi.",
+    "mouth": "Môi hé mở tự nhiên, đầu lưỡi dán chặt vào nướu răng trên, khí thoát qua mũi."
+  },
+  "ng": {
+    "symbol": "ŋ",
+    "name": "Phụ âm mũi /ŋ/",
+    "type": "consonant",
+    "type_label": "Phụ âm mũi (Nasal)",
+    "words": "ring, long",
+    "word1": "ring /rɪŋ/",
+    "word2": "long /lɒŋ/",
+    "vimeo": "https://player.vimeo.com/video/799715291?h=4fb6959d60&badge=0&autopause=0",
+    "guide": "Cuống lưỡi nâng chạm ngạc mềm, luồng khí thoát ra bằng đường mũi.",
+    "mouth": "Phần sau của lưỡi nâng cao chạm ngạc mềm, môi hé mở, khí thoát qua mũi."
+  },
+  "h": {
+    "symbol": "h",
+    "name": "Phụ âm /h/",
+    "type": "consonant",
+    "type_label": "Phụ âm hơi (Glottal)",
+    "words": "hot, behind",
+    "word1": "hot /hɒt/",
+    "word2": "behind /bɪˈhaɪnd/",
+    "vimeo": "https://player.vimeo.com/video/799715413?h=eaf39b6eb0&badge=0&autopause=0",
+    "guide": "Môi hé mở, lưỡi hạ thấp, thở nhẹ luồng khí từ thanh môn ra.",
+    "mouth": "Miệng mở tự nhiên, luồng hơi thở nhẹ nhàng từ sâu trong cổ họng ra ngoài."
+  },
+  "l": {
+    "symbol": "l",
+    "name": "Phụ âm bên /l/",
+    "type": "consonant",
+    "type_label": "Phụ âm bên (Lateral)",
+    "words": "light, feel",
+    "word1": "light /laɪt/",
+    "word2": "feel /fiːl/",
+    "vimeo": "https://player.vimeo.com/video/799715572?h=41d393086b&badge=0&autopause=0",
+    "guide": "Đầu lưỡi cong lên chạm nướu trên, luồng khí thoát ra hai bên lưỡi.",
+    "mouth": "Đầu lưỡi đặt vào nướu răng trên, hạ hai bên cạnh lưỡi để luồng khí lướt qua."
+  },
+  "r": {
+    "symbol": "r",
+    "name": "Phụ âm tiếp /r/",
+    "type": "consonant",
+    "type_label": "Phụ âm tiếp (Approximant)",
+    "words": "right, sorry",
+    "word1": "right /raɪt/",
+    "word2": "sorry /ˈsɒri/",
+    "vimeo": "https://player.vimeo.com/video/799715754?h=788187cd38&badge=0&autopause=0",
+    "guide": "Môi tròn hơi chu ra trước, đầu lưỡi uốn cong vào trong nhưng không chạm vòm họng.",
+    "mouth": "Môi hơi chu tròn, uốn đầu lưỡi về phía sau vòm miệng mà không chạm ngạc."
+  },
+  "w": {
+    "symbol": "w",
+    "name": "Bán nguyên âm /w/",
+    "type": "consonant",
+    "type_label": "Bán nguyên âm (Semivowel)",
+    "words": "wet, win",
+    "word1": "wet /wet/",
+    "word2": "win /wɪn/",
+    "vimeo": "https://player.vimeo.com/video/799715924?h=bed60cb452&badge=0&autopause=0",
+    "guide": "Môi tròn chu về trước rồi mở rộng nhanh chóng khi luồng khí phát ra.",
+    "mouth": "Môi chu tròn nhỏ phía trước như phát âm /uː/ rồi nhanh chóng mở rộng sang nguyên âm tiếp theo."
+  },
+  "y": {
+    "symbol": "j",
+    "name": "Bán nguyên âm /j/",
+    "type": "consonant",
+    "type_label": "Bán nguyên âm (Semivowel)",
+    "words": "yes, use",
+    "word1": "yes /jes/",
+    "word2": "use /juːz/",
+    "vimeo": "https://player.vimeo.com/video/799716079?h=d87ed66f8f&badge=0&autopause=0",
+    "guide": "Thân lưỡi nâng cao về phía ngạc cứng, môi mở nhẹ rồi lướt nhanh sang âm sau.",
+    "mouth": "Phần trước của lưỡi nâng cao gần ngạc cứng, phát âm làm rung dây thanh quản."
+  }
+};
+
 const BASE = '/audio/ipa/';
+const VERSION = '3.0';
 const audioCache = {};
 let currentCell = null;
 let toastTimer = null;
+let currentModalKey = null;
 
-// Pre-load all 44 audio files immediately for zero-latency playback
-const ALL_PHONEMES = [
-    'i_long','i_short','u_short','u_long','e','schwa','er_long','aw_long',
-    'ae','uh','ah_long','o_short',
-    'ia','ei','ua','oi','ou','ea','ai','au',
-    'p','b','t','d','tsh','dzh','k','g',
-    'f','v','th_v','th_d','s','z','sh','zh',
-    'm','n','ng','h','l','r','w','y'
-];
+const ALL_PHONEMES = Object.keys(IPA_DATA);
 
-const VERSION = '2.1';
-
+// Pre-load tất cả 44 file audio
 ALL_PHONEMES.forEach(key => {
     const a = new Audio(BASE + key + '.mp3?v=' + VERSION);
     a.preload = 'auto';
@@ -285,33 +915,39 @@ ALL_PHONEMES.forEach(key => {
     audioCache[key] = a;
 });
 
-function showToast(ipa, word) {
+function showToast(ipa, words) {
     const toast = document.getElementById('playToast');
-    toast.textContent = '♪  /' + ipa + '/  (Ví dụ: ' + word + ')';
+    toast.textContent = '♪  /' + ipa + '/  (Ví dụ: ' + words + ')';
     toast.classList.add('show');
     clearTimeout(toastTimer);
     toastTimer = setTimeout(() => toast.classList.remove('show'), 2500);
 }
 
-function playPhoneme(cell) {
-    const key = cell.dataset.audio;
-    const ipa  = cell.querySelector('.ph-symbol').textContent;
-    const word = cell.querySelector('.ph-word').textContent;
-
-    // Visual: reset previous
-    if (currentCell && currentCell !== cell) {
-        currentCell.classList.remove('playing');
-    }
-    currentCell = cell;
-    cell.classList.add('playing');
-
-    // Stop all, play this one
+// Dừng toàn bộ âm thanh đang phát ngay lập tức
+function stopAllAudio() {
     ALL_PHONEMES.forEach(k => {
         if (audioCache[k]) {
             audioCache[k].pause();
             audioCache[k].currentTime = 0;
         }
     });
+}
+
+// Phát âm thanh khi bấm vào ô
+function playPhoneme(cell) {
+    const key = cell.dataset.audio;
+    const item = IPA_DATA[key];
+    if (!item) return;
+
+    // Reset visual
+    if (currentCell && currentCell !== cell) {
+        currentCell.classList.remove('playing');
+    }
+    currentCell = cell;
+    cell.classList.add('playing');
+
+    // Bấm đọc từ khác -> dừng từ đọc trước đó ngay lập tức!
+    stopAllAudio();
 
     if (!audioCache[key]) {
         audioCache[key] = new Audio(BASE + key + '.mp3?v=' + VERSION);
@@ -330,17 +966,57 @@ function playPhoneme(cell) {
         cell.classList.remove('playing');
     });
 
-    showToast(ipa, word);
+    showToast(item.symbol, item.words);
 }
 
-// Attach click listeners to all cells
+// Mở Modal Video & Hướng Dẫn Phát Âm
+function openVideoGuide(event, key) {
+    if (event) {
+        event.stopPropagation(); // Ngăn chặn kích hoạt click vào cell
+    }
+
+    const item = IPA_DATA[key];
+    if (!item) return;
+
+    currentModalKey = key;
+    stopAllAudio();
+
+    document.getElementById('modalIpaSymbol').textContent = '/' + item.symbol + '/';
+    document.getElementById('modalTitle').textContent = item.name;
+    document.getElementById('modalTypeLabel').textContent = item.type_label;
+    document.getElementById('modalGuideText').textContent = item.guide;
+    document.getElementById('modalMouthText').textContent = item.mouth;
+    document.getElementById('modalExample1').textContent = item.word1;
+    document.getElementById('modalExample2').textContent = item.word2;
+
+    // Gán URL video Vimeo
+    const iframe = document.getElementById('modalVideoIframe');
+    iframe.src = item.vimeo;
+
+    const modal = new bootstrap.Modal(document.getElementById('videoGuideModal'));
+    modal.show();
+}
+
+// Nút nghe lại âm trong modal
+document.getElementById('btnModalPlayAudio').addEventListener('click', function () {
+    if (currentModalKey && IPA_DATA[currentModalKey]) {
+        stopAllAudio();
+        const a = audioCache[currentModalKey] || new Audio(BASE + currentModalKey + '.mp3?v=' + VERSION);
+        a.currentTime = 0;
+        a.play().catch(e => console.warn(e));
+    }
+});
+
+// Dừng video khi đóng modal
+const videoGuideModalEl = document.getElementById('videoGuideModal');
+videoGuideModalEl.addEventListener('hidden.bs.modal', function () {
+    const iframe = document.getElementById('modalVideoIframe');
+    iframe.src = ''; // Xóa src để dừng video ngay lập tức
+});
+
+// Gắn click listener cho từng ô
 document.querySelectorAll('.ph-cell').forEach(cell => {
     cell.addEventListener('click', () => playPhoneme(cell));
-    // Touch support
-    cell.addEventListener('touchstart', (e) => {
-        e.preventDefault();
-        playPhoneme(cell);
-    }, { passive: false });
 });
 </script>
 
