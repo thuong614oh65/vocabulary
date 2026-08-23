@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Bảng IPA – Phát âm chuẩn quốc tế</title>
+    <title>Bảng IPA – Phát âm chuẩn ZIM Academy</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" th:href="@{/css/ipa.css(v=4)}">
+    <link rel="stylesheet" th:href="@{/css/ipa.css(v=5)}">
 </head>
 <body>
 
@@ -14,7 +14,7 @@
      ============================== -->
 <div class="ipa-page-header">
     <h1>📢 Bảng Phiên Âm Tiếng Anh IPA</h1>
-    <p>44 âm chuẩn quốc tế · Nhấn ô để nghe âm · Bấm icon 🎬 để xem video hướng dẫn</p>
+    <p>44 âm chuẩn ZIM Academy · Nhấn ô để nghe âm thanh video · Bấm icon 🎬 để xem video khẩu hình</p>
     <a href="/" class="btn-back-home">← Trang chủ</a>
 </div>
 
@@ -349,7 +349,7 @@
             </div>
             <div class="modal-footer ipa-modal-footer">
                 <button type="button" class="btn btn-outline-primary" id="btnModalPlayAudio">
-                    🔊 Nghe âm vị này
+                    🔄 Phát lại video này
                 </button>
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
             </div>
@@ -357,11 +357,15 @@
     </div>
 </div>
 
+<!-- Container phát âm thanh video ẩn khi bấm vào ô -->
+<div id="hiddenVideoAudioContainer" style="position: absolute; width: 1px; height: 1px; overflow: hidden; opacity: 0.001; pointer-events: none; top: -100px; left: -100px;"></div>
+
 <!-- Toast notification -->
 <div class="play-toast" id="playToast"></div>
 
-<!-- Bootstrap 5 JS -->
+<!-- Bootstrap 5 JS & Vimeo Player SDK -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://player.vimeo.com/api/player.js"></script>
 
 <script>
 // ============================================================
@@ -898,94 +902,79 @@ const IPA_DATA = {
   }
 };
 
-const BASE = '/audio/ipa/';
-const VERSION = '4.0';
-const audioCache = {};
 let currentCell = null;
 let toastTimer = null;
 let currentModalKey = null;
-
-const ALL_PHONEMES = Object.keys(IPA_DATA);
-
-// Tạo Audio Object với OGG chuẩn phòng thu & fallback MP3
-function createAudio(key) {
-    const a = new Audio();
-    a.src = BASE + key + '.ogg?v=' + VERSION;
-    a.preload = 'auto';
-    a.onerror = () => {
-        if (!a.src.includes('.mp3')) {
-            a.src = BASE + key + '.mp3?v=' + VERSION;
-            a.load();
-        }
-    };
-    return a;
-}
-
-// Pre-load tất cả 44 file audio
-ALL_PHONEMES.forEach(key => {
-    const a = createAudio(key);
-    a.load();
-    audioCache[key] = a;
-});
+let activeVimeoPlayer = null;
+let currentPlayingKey = null;
 
 function showToast(ipa, words) {
     const toast = document.getElementById('playToast');
-    toast.textContent = '♪  /' + ipa + '/  (Ví dụ: ' + words + ')';
+    toast.textContent = '🔊 Đang phát âm thanh video: /' + ipa + '/  (' + words + ')';
     toast.classList.add('show');
     clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => toast.classList.remove('show'), 2500);
+    toastTimer = setTimeout(() => toast.classList.remove('show'), 3500);
 }
 
-// Dừng toàn bộ âm thanh đang phát ngay lập tức
+// Dừng toàn bộ âm thanh video đang phát
 function stopAllAudio() {
-    ALL_PHONEMES.forEach(k => {
-        if (audioCache[k]) {
-            audioCache[k].pause();
-            audioCache[k].currentTime = 0;
-        }
-    });
+    const container = document.getElementById('hiddenVideoAudioContainer');
+    if (container) {
+        container.innerHTML = '';
+    }
+    activeVimeoPlayer = null;
+    currentPlayingKey = null;
+
+    if (currentCell) {
+        currentCell.classList.remove('playing');
+        currentCell = null;
+    }
 }
 
-// Phát âm thanh khi bấm vào ô ở ngoài
+// Phát âm thanh video khi bấm vào ô ở ngoài
 function playPhoneme(cell) {
     const key = cell.dataset.audio;
     const item = IPA_DATA[key];
     if (!item) return;
 
-    // Reset visual
-    if (currentCell && currentCell !== cell) {
-        currentCell.classList.remove('playing');
+    // Nếu bấm lại đúng ô đang phát -> dừng
+    if (currentPlayingKey === key) {
+        stopAllAudio();
+        return;
     }
-    currentCell = cell;
-    cell.classList.add('playing');
 
-    // Bấm đọc từ khác -> dừng từ đọc trước đó ngay lập tức!
+    // Dừng âm trước đó ngay lập tức
     stopAllAudio();
 
-    if (!audioCache[key]) {
-        audioCache[key] = createAudio(key);
+    currentCell = cell;
+    currentPlayingKey = key;
+    cell.classList.add('playing');
+
+    // Chèn iframe phát âm thanh video chính xác của ZIM
+    const container = document.getElementById('hiddenVideoAudioContainer');
+    const iframeId = 'vimeo_hidden_' + Date.now();
+    container.innerHTML = `<iframe id="${iframeId}" src="${item.vimeo}&autoplay=1&muted=0" allow="autoplay" style="width:200px;height:150px;"></iframe>`;
+
+    const iframeEl = document.getElementById(iframeId);
+    if (typeof Vimeo !== 'undefined' && iframeEl) {
+        try {
+            activeVimeoPlayer = new Vimeo.Player(iframeEl);
+            activeVimeoPlayer.on('ended', () => {
+                if (currentCell) currentCell.classList.remove('playing');
+                currentPlayingKey = null;
+            });
+        } catch (e) {
+            console.log('Vimeo SDK hook:', e);
+        }
     }
-
-    const audio = audioCache[key];
-    audio.currentTime = 0;
-
-    audio.onended = () => cell.classList.remove('playing');
-    audio.onerror = () => {
-        cell.classList.remove('playing');
-        console.warn('Audio not found:', key);
-    };
-
-    audio.play().catch(() => {
-        cell.classList.remove('playing');
-    });
 
     showToast(item.symbol, item.words);
 }
 
-// Mở Modal Video & Hướng Dẫn Phát Âm
+// Mở Modal Video & Hướng Dẫn Phát Âm (khi bấm icon 🎬)
 function openVideoGuide(event, key) {
     if (event) {
-        event.stopPropagation(); // Ngăn chặn kích hoạt click vào cell
+        event.stopPropagation(); // Không kích hoạt click vào cell
     }
 
     const item = IPA_DATA[key];
@@ -1004,19 +993,17 @@ function openVideoGuide(event, key) {
 
     // Gán URL video Vimeo
     const iframe = document.getElementById('modalVideoIframe');
-    iframe.src = item.vimeo;
+    iframe.src = item.vimeo + '&autoplay=1';
 
     const modal = new bootstrap.Modal(document.getElementById('videoGuideModal'));
     modal.show();
 }
 
-// Nút nghe lại âm trong modal
+// Nút phát lại video trong modal
 document.getElementById('btnModalPlayAudio').addEventListener('click', function () {
     if (currentModalKey && IPA_DATA[currentModalKey]) {
-        stopAllAudio();
-        const a = audioCache[currentModalKey] || createAudio(currentModalKey);
-        a.currentTime = 0;
-        a.play().catch(e => console.warn(e));
+        const iframe = document.getElementById('modalVideoIframe');
+        iframe.src = IPA_DATA[currentModalKey].vimeo + '&autoplay=1';
     }
 });
 
