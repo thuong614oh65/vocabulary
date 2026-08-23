@@ -31,7 +31,8 @@
         <div class="card-box mb-4">
             <form th:action="@{/nghe-dien/tao}" method="post" id="formTaoBaiNghe">
                 <div class="row align-items-center g-3">
-                    <div class="col-md-5 col-12">
+                    <!-- Chọn bộ từ vựng -->
+                    <div class="col-lg-4 col-md-6 col-12">
                         <label for="boId" class="form-label fw-bold text-secondary">
                             📚 Chọn bộ từ vựng:
                         </label>
@@ -45,25 +46,50 @@
                         </select>
                     </div>
 
-                    <div class="col-md-3 col-12">
+                    <!-- Chọn cấp độ -->
+                    <div class="col-lg-4 col-md-6 col-12">
+                        <label for="capDo" class="form-label fw-bold text-secondary">
+                            🎯 Chọn cấp độ nghe:
+                        </label>
+                        <select name="capDo" id="capDo" class="form-select select-bo select-cap-do">
+                            <option value="1" th:selected="${capDoChon == null || capDoChon == 1}">
+                                🌱 Cấp 1: Cơ bản (1 CN + 1 ĐT + 1 Tân ngữ)
+                            </option>
+                            <option value="2" th:selected="${capDoChon == 2}">
+                                🚀 Cấp 2: Nâng cao (Câu ghép, câu phức)
+                            </option>
+                        </select>
+                    </div>
+
+                    <!-- Số lượng câu -->
+                    <div class="col-lg-2 col-md-6 col-6">
                         <label for="soCau" class="form-label fw-bold text-secondary">
-                            🔢 Số lượng câu:
+                            🔢 Số câu:
                         </label>
                         <select name="soCau" id="soCau" class="form-select select-bo">
                             <option value="10" th:selected="${soCauChon == 10}">10 câu</option>
-                            <option value="15" th:selected="${soCauChon == null || soCauChon == 15}">15 câu (Chuẩn)</option>
+                            <option value="15" th:selected="${soCauChon == null || soCauChon == 15}">15 câu</option>
                             <option value="20" th:selected="${soCauChon == 20}">20 câu</option>
                         </select>
                     </div>
 
-                    <div class="col-md-4 col-12 d-flex gap-2 align-self-end">
+                    <!-- Nút tạo bài & Trang chủ -->
+                    <div class="col-lg-2 col-md-6 col-6 d-flex gap-2 align-self-end">
                         <button type="submit" class="btn btn-primary btn-tao-bai w-100" id="btnTaoBai">
-                            ✨ Tạo bài nghe mới
+                            ✨ Tạo bài
                         </button>
-                        <a href="/" class="btn btn-outline-secondary btn-quay-ve">
-                            🏠 Trang chủ
+                        <a href="/" class="btn btn-outline-secondary btn-quay-ve" title="Về trang chủ">
+                            🏠
                         </a>
                     </div>
+                </div>
+
+                <!-- Chú thích cấp độ nhỏ bên dưới -->
+                <div class="level-desc-note mt-3">
+                    <span class="fw-bold text-primary">💡 Phân cấp độ:</span> 
+                    <strong>Cấp 1:</strong> Câu đơn giản (1 Chủ ngữ + 1 Động từ + 1 Tân ngữ/Trạng từ, 3-6 từ) dễ nghe cho người mới. 
+                    <span class="d-none d-md-inline">|</span> 
+                    <strong>Cấp 2:</strong> Câu dài nâng cao (câu ghép, câu phức, mệnh đề quan hệ, 8-16 từ) luyện phản xạ chuyên sâu.
                 </div>
             </form>
 
@@ -80,7 +106,7 @@
         <div class="alert alert-danger shadow-sm rounded-3" th:if="${loi}" th:text="${loi}"></div>
 
         <!-- =====================================================
-             KHU VỰC BÀI TẬP 15 CÂU NGHE ĐIỀN
+             KHU VỰC BÀI TẬP CÁC CÂU NGHE ĐIỀN
              ===================================================== -->
         <div class="card-box exercise-box" id="exerciseBox" th:if="${rawCauNgheDien != null}">
 
@@ -89,9 +115,13 @@
 
             <!-- Header danh sách câu -->
             <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2 pb-2 border-bottom">
-                <h4 class="exercise-title mb-0">
-                    📝 Bấm nghe và gõ lại chính xác câu tiếng Anh:
-                </h4>
+                <div class="d-flex align-items-center gap-2 flex-wrap">
+                    <h4 class="exercise-title mb-0">
+                        📝 Nghe và gõ lại câu tiếng Anh:
+                    </h4>
+                    <span th:if="${capDoChon == null || capDoChon == 1}" class="badge-level badge-level-1">🌱 Cấp 1: Cơ bản</span>
+                    <span th:if="${capDoChon == 2}" class="badge-level badge-level-2">🚀 Cấp 2: Nâng cao</span>
+                </div>
                 <div class="badge-count bg-light text-dark px-3 py-2 rounded-pill border">
                     Tổng số câu: <span id="tongSoCauText" class="fw-bold text-primary">15</span>
                 </div>
@@ -99,7 +129,7 @@
 
             <!-- Danh sách các câu hỏi -->
             <div class="dictation-list" id="dictationList">
-                <!-- Sẽ render động 15 câu bằng JS -->
+                <!-- Sẽ render động các câu bằng JS -->
             </div>
 
             <!-- Nút hành động -->
@@ -132,7 +162,7 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
 
 <!-- JS riêng cho tính năng nghe điền -->
-<script th:src="@{/js/nghe-dien.js(v=2)}"></script>
+<script th:src="@{/js/nghe-dien.js(v=3)}"></script>
 
 </body>
 </html>

@@ -70,6 +70,39 @@ body {
     border: 1.5px solid #d0d7de;
 }
 
+.level-desc-note {
+    background: #f8fafc;
+    border-left: 3px solid #0d6efd;
+    padding: 9px 14px;
+    border-radius: 8px;
+    font-size: 13.5px;
+    color: #475569;
+    line-height: 1.5;
+}
+
+.badge-level {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.2px;
+}
+
+.badge-level-1 {
+    background: #ecfdf5;
+    color: #047857;
+    border: 1.5px solid #a7f3d0;
+}
+
+.badge-level-2 {
+    background: #eff6ff;
+    color: #1d4ed8;
+    border: 1.5px solid #bfdbfe;
+}
+
 .btn-tao-bai {
     border-radius: 12px;
     padding: 10px 20px;
@@ -135,6 +168,7 @@ body {
     display: flex;
     gap: 8px;
     align-items: center;
+    flex-wrap: wrap;
 }
 
 .btn-audio {
@@ -171,27 +205,62 @@ body {
 }
 
 .btn-hint-toggle {
-    background: #f1f5f9;
-    color: #475569;
-    border: 1px solid #e2e8f0;
+    background: #fffbeb;
+    color: #b45309;
+    border: 1.5px solid #fcd34d;
     border-radius: 20px;
     font-size: 13px;
-    padding: 5px 12px;
+    font-weight: 600;
+    padding: 5px 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
 }
 
 .btn-hint-toggle:hover {
-    background: #e2e8f0;
+    background: #fef3c7;
+    color: #92400e;
+    transform: translateY(-1px);
+    box-shadow: 0 3px 8px rgba(245, 158, 11, 0.22);
+}
+
+.btn-hint-toggle.active {
+    background: #f59e0b;
+    color: #ffffff;
+    border-color: #d97706;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15);
 }
 
 .hint-box {
-    background: #f8fafc;
-    border-left: 3px solid #3b82f6;
-    padding: 8px 12px;
-    border-radius: 6px;
-    font-size: 14px;
-    color: #334155;
-    margin-bottom: 12px;
-    display: none;
+    background: #fffdf5;
+    border: 1.5px solid #fde68a;
+    border-left: 4px solid #f59e0b;
+    padding: 10px 14px;
+    border-radius: 10px;
+    font-size: 14.5px;
+    color: #78350f;
+    margin-bottom: 14px;
+    animation: fadeIn 0.25s ease;
+}
+
+.hint-inner {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.hint-badge {
+    font-weight: 700;
+    color: #b45309;
+    font-size: 13.5px;
+}
+
+.hint-text {
+    font-weight: 600;
+    color: #92400e;
 }
 
 .input-sentence {
@@ -246,22 +315,37 @@ body {
 .feedback-correct {
     color: #15803d;
     font-weight: 600;
+    padding: 6px 0;
+}
+
+.meaning-correct-hint {
+    color: #166534;
+    font-weight: 500;
+    margin-left: 6px;
+    font-size: 14px;
 }
 
 .feedback-wrong-details {
     background: white;
     border: 1px solid #fecaca;
-    padding: 10px;
-    border-radius: 8px;
+    padding: 12px 14px;
+    border-radius: 10px;
 }
 
 .correct-text {
     font-weight: bold;
     color: #15803d;
-    margin-bottom: 4px;
+    margin-bottom: 6px;
+    font-size: 15px;
 }
 
 .meaning-text {
+    color: #334155;
+    font-size: 14.5px;
+    margin-bottom: 6px;
+}
+
+.user-text {
     color: #64748b;
     font-size: 14px;
 }

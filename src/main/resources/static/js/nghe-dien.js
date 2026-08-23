@@ -1,5 +1,5 @@
 // =========================================================
-// XỬ LÝ TRANG NGHE ĐIỀN CÂU (DICTATION)
+// XỬ LÝ TRANG NGHE ĐIỀN CÂU (DICTATION) - 2 CẤP ĐỘ + GỢI Ý
 // =========================================================
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -21,11 +21,14 @@ document.addEventListener("DOMContentLoaded", function () {
     if (formTaoBaiNghe) {
         formTaoBaiNghe.addEventListener("submit", function () {
             if (loadingBox) loadingBox.style.display = "block";
-            if (btnTaoBai) btnTaoBai.disabled = true;
+            if (btnTaoBai) {
+                btnTaoBai.disabled = true;
+                btnTaoBai.innerHTML = "⏳ Đang tạo bài...";
+            }
         });
     }
 
-    // Nếu có dữ liệu từ AI -> Parse và render danh sách 15 câu
+    // Nếu có dữ liệu từ AI -> Parse và render danh sách các câu
     if (dataRawCauNgheDien && dataRawCauNgheDien.textContent.trim()) {
         const rawText = dataRawCauNgheDien.textContent.trim();
         parseVaRenderDanhSachCau(rawText);
@@ -33,10 +36,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // =========================================================
     // PARSE VÀ RENDER DANH SÁCH CÂU
-    // Format mẫu: [CÂU:1:English sentence:Nghĩa tiếng Việt]
+    // Hỗ trợ format: [CAU:1:English sentence:Nghĩa tiếng Việt]
     // =========================================================
     function parseVaRenderDanhSachCau(text) {
-        const regex = /\[CÂU:(\d+):([^:]+):?([^\]]*)\]/g;
+        // Khớp cả [CAU:...], [CÂU:...], [cau:...], [câu:...]
+        const regex = /\[(?:CAU|CÂU|cau|câu):(\d+):([^:]+):?([^\]]*)\]/gi;
         let dsCau = [];
         let match;
         let index = 0;
@@ -54,8 +58,30 @@ document.addEventListener("DOMContentLoaded", function () {
         if (dsCau.length === 0) {
             const lines = text.split("\n");
             lines.forEach(function (line) {
-                const cleanLine = line.replace(/^\d+[\.\-\)]\s*/, "").trim();
-                if (cleanLine.length > 5) {
+                const trimmed = line.trim();
+                if (!trimmed) return;
+
+                // Thử tách theo dấu : hoặc -
+                const colonIdx = trimmed.indexOf(":");
+                if (colonIdx > 0 && !trimmed.startsWith("http")) {
+                    const left = trimmed.substring(0, colonIdx)
+                        .replace(/^\d+[\.\-\)]\s*/, "")
+                        .replace(/^\[(?:CAU|CÂU|cau|câu):?\d*\]?\s*/i, "")
+                        .trim();
+                    const right = trimmed.substring(colonIdx + 1).replace(/\]$/, "").trim();
+                    if (left.length > 2) {
+                        index++;
+                        dsCau.push({
+                            num: index,
+                            english: left,
+                            meaning: right
+                        });
+                        return;
+                    }
+                }
+
+                const cleanLine = trimmed.replace(/^\d+[\.\-\)]\s*/, "").trim();
+                if (cleanLine.length > 3) {
                     index++;
                     dsCau.push({
                         num: index,
@@ -79,6 +105,7 @@ document.addEventListener("DOMContentLoaded", function () {
             card.id = "card-cau-" + cau.num;
             card.dataset.num = cau.num;
             card.dataset.answer = cau.english;
+            card.dataset.meaning = cau.meaning || "";
 
             card.innerHTML = `
                 <div class="sentence-header">
@@ -87,23 +114,31 @@ document.addEventListener("DOMContentLoaded", function () {
                     </div>
 
                     <div class="audio-controls">
-                        <button type="button" class="btn btn-audio btn-audio-normal" onclick="phatAmCau('${cau.english.replace(/'/g, "\\'")}', 1.0)">
+                        <button type="button" class="btn btn-audio btn-audio-normal" onclick="phatAmCau('${cau.english.replace(/'/g, "\\'")}', 1.0)" title="Nghe với tốc độ chuẩn">
                             🔊 Nghe chuẩn (1.0x)
                         </button>
-                        <button type="button" class="btn btn-audio btn-audio-slow" onclick="phatAmCau('${cau.english.replace(/'/g, "\\'")}', 0.75)">
+                        <button type="button" class="btn btn-audio btn-audio-slow" onclick="phatAmCau('${cau.english.replace(/'/g, "\\'")}', 0.75)" title="Nghe với tốc độ chậm">
                             🐢 Nghe chậm (0.75x)
                         </button>
-                        ${cau.meaning ? `<button type="button" class="btn btn-hint-toggle" onclick="toggleGoiY(${cau.num})">💡 Gợi ý</button>` : ''}
+                        <button type="button" class="btn btn-hint-toggle" id="btn-hint-${cau.num}" onclick="toggleGoiY(${cau.num})" title="Xem nghĩa tiếng Việt của câu này">
+                            💡 Gợi ý nghĩa
+                        </button>
                     </div>
                 </div>
 
-                ${cau.meaning ? `<div class="hint-box" id="hint-box-${cau.num}">📖 <strong>Nghĩa:</strong> ${cau.meaning}</div>` : ''}
+                <!-- Khung gợi ý nghĩa tiếng Việt -->
+                <div class="hint-box" id="hint-box-${cau.num}" style="display: none;">
+                    <div class="hint-inner">
+                        <span class="hint-badge">💡 Gợi ý nghĩa câu:</span>
+                        <span class="hint-text">${cau.meaning ? cau.meaning : '(Đang nghe và viết lại câu theo nghĩa ngữ cảnh)'}</span>
+                    </div>
+                </div>
 
                 <div class="input-wrapper">
                     <input type="text" 
                            class="input-sentence" 
                            data-num="${cau.num}" 
-                           placeholder="Gõ lại câu bạn nghe được..." 
+                           placeholder="Gõ lại câu tiếng Anh bạn nghe được (bấm Enter để sang câu tiếp)..." 
                            autocomplete="off" 
                            spellcheck="false" />
                 </div>
@@ -142,7 +177,7 @@ document.addEventListener("DOMContentLoaded", function () {
             if (dsCau.length > 0) {
                 setTimeout(function () {
                     phatAmCau(dsCau[0].english, 1.0);
-                }, 500);
+                }, 400);
             }
         }
     }
@@ -160,7 +195,7 @@ document.addEventListener("DOMContentLoaded", function () {
         if (!str) return "";
         return str
             .toLowerCase()
-            .replace(/[.,\/#!$%\^&\*;:{}=\-_`~()?"']/g, "")
+            .replace(/[.,\/#!$%\^&\*;:{}=\-_`~()?"'’]/g, "")
             .replace(/\s+/g, " ")
             .trim();
     }
@@ -176,7 +211,8 @@ document.addEventListener("DOMContentLoaded", function () {
             const input = card.querySelector(".input-sentence");
             const feedbackBox = card.querySelector(".feedback-box");
             const rawCorrect = card.dataset.answer || "";
-            const rawUser = input.value || "";
+            const rawMeaning = card.dataset.meaning || "";
+            const rawUser = input ? (input.value || "").trim() : "";
 
             const cleanCorrect = chuanHoaCau(rawCorrect);
             const cleanUser = chuanHoaCau(rawUser);
@@ -186,10 +222,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
             if (cleanUser.length > 0 && cleanUser === cleanCorrect) {
                 card.classList.add("correct");
-                input.disabled = true;
+                if (input) input.disabled = true;
                 feedbackBox.innerHTML = `
                     <div class="feedback-correct">
-                        ✅ Chính xác!
+                        ✅ Chính xác! ${rawMeaning ? `<span class="meaning-correct-hint">— <em>${rawMeaning}</em></span>` : ''}
                     </div>
                 `;
                 soCauDung++;
@@ -198,7 +234,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 feedbackBox.innerHTML = `
                     <div class="feedback-wrong-details">
                         <div class="correct-text">✨ Câu đúng: <strong>${rawCorrect}</strong></div>
-                        <div class="meaning-text">Câu bạn nhập: <span class="text-danger">${rawUser || "(chưa nhập)"}</span></div>
+                        ${rawMeaning ? `<div class="meaning-text">📖 Nghĩa tiếng Việt: <strong>${rawMeaning}</strong></div>` : ''}
+                        <div class="user-text">✍️ Bạn đã nhập: <span class="text-danger fw-semibold">${rawUser || "(chưa nhập)"}</span></div>
                     </div>
                 `;
             }
@@ -227,7 +264,7 @@ document.addEventListener("DOMContentLoaded", function () {
             } else {
                 resultBox.classList.add("poor");
                 if (resultIcon) resultIcon.textContent = "💪";
-                resultComment.textContent = "Đừng lo lắng! Hãy bấm nghe lại câu mẫu và chép lại để nâng cao kỹ năng nghe.";
+                resultComment.textContent = "Đừng lo lắng! Hãy bấm nút 💡 Gợi ý nghĩa và nghe lại nhiều lần để nhớ câu nhé.";
             }
 
             resultBox.scrollIntoView({ behavior: "smooth", block: "center" });
@@ -255,6 +292,16 @@ document.addEventListener("DOMContentLoaded", function () {
                 if (feedbackBox) {
                     feedbackBox.style.display = "none";
                     feedbackBox.innerHTML = "";
+                }
+
+                // Reset hint box
+                const num = card.dataset.num;
+                const hintBox = document.getElementById("hint-box-" + num);
+                const btnHint = document.getElementById("btn-hint-" + num);
+                if (hintBox) hintBox.style.display = "none";
+                if (btnHint) {
+                    btnHint.classList.remove("active");
+                    btnHint.innerHTML = "💡 Gợi ý nghĩa";
                 }
             });
 
@@ -356,11 +403,27 @@ function phatAmCau(cau, tocDo) {
     });
 }
 
-// Ẩn / hiện gợi ý nghĩa tiếng Việt
+// =========================================================
+// BẬT / TẮT GỢI Ý NGHĨA TIẾNG VIỆT
+// =========================================================
 function toggleGoiY(num) {
     const hintBox = document.getElementById("hint-box-" + num);
-    if (hintBox) {
-        hintBox.style.display = (hintBox.style.display === "none" || hintBox.style.display === "") ? "block" : "none";
+    const btnHint = document.getElementById("btn-hint-" + num);
+    if (!hintBox) return;
+
+    const isHidden = (hintBox.style.display === "none" || !hintBox.style.display || getComputedStyle(hintBox).display === "none");
+    if (isHidden) {
+        hintBox.style.display = "block";
+        if (btnHint) {
+            btnHint.classList.add("active");
+            btnHint.innerHTML = "🙈 Ẩn gợi ý";
+        }
+    } else {
+        hintBox.style.display = "none";
+        if (btnHint) {
+            btnHint.classList.remove("active");
+            btnHint.innerHTML = "💡 Gợi ý nghĩa";
+        }
     }
 }
 

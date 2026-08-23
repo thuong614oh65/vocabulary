@@ -46,6 +46,7 @@ public class NgheDienController {
     @GetMapping
     public String hienThiTrangNgheDien(
             @RequestParam(required = false) Long boId,
+            @RequestParam(defaultValue = "1") int capDo,
             HttpSession session,
             Model model
     ) {
@@ -64,17 +65,19 @@ public class NgheDienController {
         model.addAttribute("boIdChon", boId);
         model.addAttribute("tongSoTu", dsTu.size());
         model.addAttribute("soCauChon", 15);
+        model.addAttribute("capDoChon", capDo);
 
         return "nghe-dien";
     }
 
     // =========================================================
-    // TẠO 15 CÂU NGHE ĐIỀN BẰNG AI
+    // TẠO CÁC CÂU NGHE ĐIỀN BẰNG AI (THEO CẤP ĐỘ)
     // =========================================================
     @PostMapping("/tao")
     public String taoBaiTapNgheDien(
             @RequestParam(required = false) Long boId,
             @RequestParam(defaultValue = "15") int soCau,
+            @RequestParam(defaultValue = "1") int capDo,
             HttpSession session,
             Model model
     ) {
@@ -92,11 +95,15 @@ public class NgheDienController {
         if (soCau <= 0) {
             soCau = 15;
         }
+        if (capDo != 1 && capDo != 2) {
+            capDo = 1;
+        }
 
         model.addAttribute("dsBo", dsBo);
         model.addAttribute("boIdChon", boId);
         model.addAttribute("tongSoTu", dsTu.size());
         model.addAttribute("soCauChon", soCau);
+        model.addAttribute("capDoChon", capDo);
 
         if (dsTu.isEmpty()) {
             model.addAttribute("loi", "Bạn chưa có từ vựng nào trong danh sách được chọn để tạo bài nghe điền!");
@@ -123,7 +130,7 @@ public class NgheDienController {
         }
 
         try {
-            String rawCauNgheDien = geminiService.taoCauNgheDien(danhSachTu.toString(), soCau);
+            String rawCauNgheDien = geminiService.taoCauNgheDien(danhSachTu.toString(), soCau, capDo);
             model.addAttribute("rawCauNgheDien", rawCauNgheDien);
         } catch (Exception e) {
             e.printStackTrace();

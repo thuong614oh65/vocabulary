@@ -260,27 +260,69 @@ public class GeminiService {
     }
 
     // =====================================================
-    // 4. TẠO CÁC CÂU LUYỆN NGHE ĐIỀN (DICTATION)
+    // =====================================================
+    // 4. TẠO CÁC CÂU LUYỆN NGHE ĐIỀN (DICTATION) - 2 CẤP ĐỘ
     // =====================================================
     public String taoCauNgheDien(String danhSachTu, int soCau) {
+        return taoCauNgheDien(danhSachTu, soCau, 1);
+    }
+
+    public String taoCauNgheDien(String danhSachTu, int soCau, int capDo) {
+        String quyTacCapDo;
+
+        if (capDo == 1) {
+            // CẤP 1: CÂU ĐƠN CƠ BẢN (1 CHỦ NGỮ, 1 ĐỘNG TỪ, 1 TÂN NGỮ / TRẠNG TỪ / TÍNH TỪ)
+            quyTacCapDo = """
+                QUY TAC BAT BUOC CHO CAP DO 1 (CO BAN):
+                1. CAU TRUC CAU: Moi cau phai la CAU DON RAT CO BAN va cuc ky don gian.
+                   Chi gom DUNG 1 Chu ngu + 1 Dong tu + 1 Tan ngu/Trang tu/Tinh tu (moi thanh phan dung 1 cai, khong phuc tap).
+                   Cac mau cau cho phep:
+                   * S + V + O (Vi du: "I eat an apple." / "She reads a book." / "They play football.")
+                   * S + V + Adv (Vi du: "He walks slowly." / "She sings beautifully." / "The bird flies high.")
+                   * S + be + Adj/Noun (Vi du: "The weather is hot." / "He is a student." / "The room is clean.")
+                2. DO DAI: Rat ngan gon, chi tu 3 den 6 tu moi cau.
+                3. TUYET DOI KHONG SU DUNG:
+                   - Khong dung lien tu ghep hoac phu thuoc (and, but, or, so, because, although, while, when, if...).
+                   - Khong dung menh de quan he (who, which, that, where...).
+                   - Khong dung cau phuc hay cau ghep nhieu thanh phan.
+                """;
+        } else {
+            // CẤP 2: CÂU NÂNG CAO (CÂU PHỨC, CÂU GHÉP, MỆNH ĐỀ QUAN HỆ, LIÊN TỪ)
+            quyTacCapDo = """
+                QUY TAC BAT BUOC CHO CAP DO 2 (NANG CAO):
+                1. CAU TRUC CAU: La cau nang cao, cau phuc, cau ghep hoac cau co nhieu thanh phan phong phu:
+                   - Su dung lien tu phu thuoc hoac ket hop (because, although, even though, while, when, if, so that, however...).
+                   - Su dung menh de quan he (who, whom, which, that, whose, where...).
+                   - Su dung cac thi nang cao (hien tai hoan thanh, qua khu tiep dien, the bi dong, cau dieu kien...).
+                   - Ket hop cum gioi tu, trang tu va tinh tu phong phu.
+                   Vi du mau:
+                   * "Although it was raining heavily, they decided to walk to school."
+                   * "The doctor who examined my father yesterday gave him very useful advice."
+                   * "If you practice speaking English every day, your pronunciation will improve rapidly."
+                2. DO DAI: Tu 8 den 16 tu moi cau.
+                """;
+        }
+
         String prompt = """
                 Ban la giao vien tieng Anh ban xu.
-                Hay tao chinh xac %d cau tieng Anh ngan gon, tu nhien, thiet thuc (moi cau tu 5 den 12 tu) de nguoi hoc luyen nghe va chep chinh ta (Dictation).
+                Hay tao chinh xac %d cau tieng Anh theo dung CAP DO %d ben duoi de nguoi hoc luyen nghe va chep chinh ta (Dictation).
 
-                QUY TAC BAT BUOC:
+                %s
+                QUY TAC CHUNG CHO TAT CA CAC CAU:
                 1. MUC TIEU HOC TAP: Moi cau phai long ghep kheo leo it nhat 1 tu vung trong danh sach cua nguoi hoc ben duoi.
-                2. CHUAN NGU PHAP VA DUNG NGU CANH: Cau van phai hoan toan tu nhien, chuan xac ngu phap tieng Anh. Tuyet doi khong ghep tu vo nghia.
+                2. CHUAN NGU PHAP VA DUNG NGU CANH: Cau van phai hoan toan tu nhien, chuan xac 100%% ngu phap tieng Anh. Tuyet doi khong ghep tu vo nghia.
                 3. LINH HOAT THEM TU: Neu danh sach tu vung it, hay bo sung cac tu ngu quen thuoc, tu nhien.
                 4. Tao dung %d cau (danh so tu 1 den %d).
-                5. Tra ve dung dinh dang tung dong:
+                5. NGHIA TIENG VIET CHUAN XAC: Bat buoc phai co nghia tieng Viet ro rang, chuan xac de lam goi y cho nguoi hoc.
+                6. Tra ve dung dinh dang tung dong (khong them bat ky loi chao hay giai thich nao khac):
                    [CAU:so_thu_tu:cau_tieng_anh:nghia_tieng_viet]
                    Vi du:
-                   [CAU:1:I enjoy drinking hot coffee every morning.:Toi thich uong ca phe nong moi sang.]
-                6. Chi tra ve danh sach cac dong [CAU:...], khong them bat ky loi chao hay giai thich nao khac.
+                   [CAU:1:She drinks fresh water.:Cô ấy uống nước sạch.]
+                   [CAU:2:The cat sleeps peacefully.:Con mèo ngủ một cách yên bình.]
 
                 Danh sach tu vung cua nguoi hoc:
                 %s
-                """.formatted(soCau, soCau, soCau, danhSachTu);
+                """.formatted(soCau, capDo, quyTacCapDo, soCau, soCau, danhSachTu);
 
         try {
             return goiGeminiAnToan(prompt, new String[]{MODEL_FLASH_LITE, MODEL_FLASH});
