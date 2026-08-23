@@ -484,4 +484,78 @@ public class GeminiService {
                 + "\"encouragement\":\"Dung nan long, hay thu lai nhe!\"}";
         }
     }
+
+    // =====================================================
+    // 6. TRÍCH XUẤT TỪ VỰNG TỪ HÌNH ẢNH / TÀI LIỆU (OCR)
+    // =====================================================
+    public List<String> trichXuatTuTuHinhAnh(byte[] fileBytes, String contentType) throws Exception {
+        if (clients.isEmpty()) {
+            throw new IllegalStateException("Hệ thống chưa được cấu hình GEMINI_API_KEY. Vui lòng thêm API Key vào application.properties hoặc biến môi trường.");
+        }
+
+        String mimeType = "image/jpeg";
+        if (contentType != null && !contentType.isBlank() && !contentType.equals("application/octet-stream")) {
+            mimeType = contentType.split(";")[0].trim().toLowerCase();
+        }
+
+        String prompt = """
+                Bạn là một trợ lý hỗ trợ học từ vựng tiếng Anh.
+                Hãy trích xuất TẤT CẢ các từ vựng tiếng Anh (English words/phrases) xuất hiện trong hình ảnh hoặc tài liệu này.
+                
+                YÊU CẦU BẮT BUỘC:
+                1. Mỗi dòng chỉ chứa đúng một từ hoặc cụm từ tiếng Anh nguyên thể.
+                2. Bỏ qua số thứ tự, bullet points, dấu câu, ký tự đặc biệt, giải thích tiếng Việt.
+                3. Loại bỏ các từ bị lặp lại.
+                4. Không giải thích, không dịch sang tiếng Việt.
+                5. Chỉ trả về danh sách từ tiếng Anh, mỗi từ trên một dòng.
+                """;
+
+        Part filePart = Part.fromBytes(fileBytes, mimeType);
+        Part promptPart = Part.fromText(prompt);
+
+        Content content = Content.builder()
+                .parts(List.of(filePart, promptPart))
+                .build();
+
+        int tongSoClient = clients.size();
+        String[] models = new String[]{MODEL_FLASH, MODEL_FLASH_LITE};
+        Exception lastImgEx = null;
+
+        for (String modelName : models) {
+            for (int attempt = 0; attempt < tongSoClient; attempt++) {
+                int index = keyIndex.getAndUpdate(i -> (i + 1) % tongSoClient);
+                Client currentClient = clients.get(index);
+
+                try {
+                    GenerateContentResponse response = currentClient.models.generateContent(
+                            modelName,
+                            content,
+                            null
+                    );
+
+                    String resultText = response.text();
+                    if (resultText != null && !resultText.isBlank()) {
+                        Set<String> setTu = new LinkedHashSet<>();
+                        String[] lines = resultText.split("\\R");
+                        for (String line : lines) {
+                            String cleaned = line.trim()
+                                    .replaceAll("^[-*•0-9.]+\\s*", "")
+                                    .replaceAll("[^a-zA-Z\\s\\-']", "")
+                                    .trim();
+                            if (!cleaned.isEmpty() && cleaned.length() >= 2) {
+                                setTu.add(cleaned.toLowerCase());
+                            }
+                        }
+                        return new ArrayList<>(setTu);
+                    }
+                } catch (Exception e) {
+                    lastImgEx = e;
+                    System.err.printf("[GeminiService] OCR - Key #%d model '%s' lỗi: %s%n",
+                            index + 1, modelName, e.getMessage());
+                }
+            }
+        }
+
+        throw lastImgEx != null ? lastImgEx : new RuntimeException("Không thể nhận diện hình ảnh qua Gemini AI.");
+    }
 }

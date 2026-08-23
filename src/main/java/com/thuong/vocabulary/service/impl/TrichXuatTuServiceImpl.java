@@ -1,9 +1,6 @@
 package com.thuong.vocabulary.service.impl;
 
-import com.google.genai.Client;
-import com.google.genai.types.Content;
-import com.google.genai.types.GenerateContentResponse;
-import com.google.genai.types.Part;
+import com.thuong.vocabulary.service.GeminiService;
 import com.thuong.vocabulary.service.TrichXuatTuService;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -17,15 +14,10 @@ import java.util.regex.Pattern;
 @Service
 public class TrichXuatTuServiceImpl implements TrichXuatTuService {
 
-    private final Client client;
+    private final GeminiService geminiService;
 
-    public TrichXuatTuServiceImpl() {
-        String apiKey = System.getenv("GEMINI_API_KEY");
-        if (apiKey != null && !apiKey.isBlank()) {
-            this.client = Client.builder().apiKey(apiKey).build();
-        } else {
-            this.client = null;
-        }
+    public TrichXuatTuServiceImpl(GeminiService geminiService) {
+        this.geminiService = geminiService;
     }
 
     @Override
@@ -47,62 +39,12 @@ public class TrichXuatTuServiceImpl implements TrichXuatTuService {
                 || fileName.endsWith(".jpeg") || fileName.endsWith(".webp") || fileName.endsWith(".pdf")
                 || contentType.equals("application/pdf")) {
 
-            if (client == null) {
-                throw new IllegalStateException("GEMINI_API_KEY chưa được thiết lập để nhận diện ảnh/file.");
-            }
-
-            return trichXuatTuQuaGemini(file);
+            byte[] bytes = file.getBytes();
+            return geminiService.trichXuatTuTuHinhAnh(bytes, contentType);
         }
 
         // Thử đọc dạng văn bản nếu là file khác
         return trichXuatTuVanBan(file);
-    }
-
-    private List<String> trichXuatTuQuaGemini(MultipartFile file) throws Exception {
-        byte[] bytes = file.getBytes();
-        String contentType = file.getContentType();
-        if (contentType == null || contentType.isBlank() || contentType.equals("application/octet-stream")) {
-            String fileName = file.getOriginalFilename() != null ? file.getOriginalFilename().toLowerCase() : "";
-            if (fileName.endsWith(".png")) {
-                contentType = "image/png";
-            } else if (fileName.endsWith(".jpg") || fileName.endsWith(".jpeg")) {
-                contentType = "image/jpeg";
-            } else if (fileName.endsWith(".webp")) {
-                contentType = "image/webp";
-            } else if (fileName.endsWith(".pdf")) {
-                contentType = "application/pdf";
-            } else {
-                contentType = "image/jpeg";
-            }
-        }
-
-        String prompt = """
-                Bạn là một trợ lý hỗ trợ học từ vựng tiếng Anh.
-                Hãy trích xuất TẤT CẢ các từ vựng tiếng Anh (English words/phrases) xuất hiện trong hình ảnh hoặc tài liệu này.
-                
-                YÊU CẦU BẮT BUỘC:
-                1. Mỗi dòng chỉ chứa đúng một từ hoặc cụm từ tiếng Anh nguyên thể.
-                2. Bỏ qua số thứ tự, bullet points, dấu câu, ký tự đặc biệt, giải thích tiếng Việt.
-                3. Loại bỏ các từ bị lặp lại.
-                4. Không giải thích, không dịch sang tiếng Việt.
-                5. Chỉ trả về danh sách từ tiếng Anh, mỗi từ trên một dòng.
-                """;
-
-        Part filePart = Part.fromBytes(bytes, contentType);
-        Part promptPart = Part.fromText(prompt);
-
-        Content content = Content.builder()
-                .parts(List.of(filePart, promptPart))
-                .build();
-
-        GenerateContentResponse response = client.models.generateContent(
-                "gemini-3.6-flash",
-                content,
-                null
-        );
-
-        String resultText = response.text();
-        return parseDanhSachTu(resultText);
     }
 
     private List<String> trichXuatTuVanBan(MultipartFile file) throws Exception {
@@ -138,25 +80,5 @@ public class TrichXuatTuServiceImpl implements TrichXuatTuService {
             }
         }
         return new ArrayList<>(danhSach);
-    }
-
-    private List<String> parseDanhSachTu(String rawText) {
-        if (rawText == null || rawText.isBlank()) {
-            return List.of();
-        }
-
-        Set<String> setTu = new LinkedHashSet<>();
-        String[] lines = rawText.split("\\R");
-        for (String line : lines) {
-            String cleaned = line.trim()
-                    .replaceAll("^[-*•0-9.]+\\s*", "") // Xóa số thứ tự, bullet points ở đầu dòng
-                    .replaceAll("[^a-zA-Z\\s\\-']", "") // Giữ lại chữ cái tiếng Anh, dấu cách, gạch nối
-                    .trim();
-
-            if (!cleaned.isEmpty() && cleaned.length() >= 2) {
-                setTu.add(cleaned.toLowerCase());
-            }
-        }
-        return new ArrayList<>(setTu);
     }
 }
