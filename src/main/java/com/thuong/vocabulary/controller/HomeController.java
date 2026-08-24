@@ -432,7 +432,7 @@ public class HomeController {
         session.removeAttribute("luotHoc");
 
 
-        return "redirect:/";
+        return "redirect:/hoc";
     }
 
 
