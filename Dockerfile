@@ -1,11 +1,11 @@
 FROM eclipse-temurin:21-jdk-jammy
 
 # =========================================================
-# CÀI PYTHON + PIP + VENV
+# CÀI PYTHON + PIP + VENV (KHÔNG CÀI JAVA 11)
 # =========================================================
 
 RUN apt-get update \
-    && apt-get install -y maven python3 python3-pip python3-venv \
+    && apt-get install -y --no-install-recommends python3 python3-pip python3-venv wget ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 
 # =========================================================
@@ -27,10 +27,11 @@ RUN /opt/venv/bin/pip install --no-cache-dir edge-tts==7.2.8
 RUN /opt/venv/bin/python -c "import edge_tts; print('EDGE_TTS_OK')"
 
 # =========================================================
-# ĐƯA PYTHON VENV VÀO PATH
+# ĐƯA JAVA 21 VÀ PYTHON VENV VÀO PATH
 # =========================================================
 
-ENV PATH="/opt/venv/bin:$PATH"
+ENV JAVA_HOME="/opt/java/openjdk"
+ENV PATH="/opt/java/openjdk/bin:/opt/venv/bin:$PATH"
 
 # =========================================================
 # PROJECT
@@ -50,8 +51,8 @@ RUN useradd -m -u 1000 user && \
 # MAVEN
 # =========================================================
 
-RUN chmod +x mvnw || true
-RUN mvn -DskipTests clean package || ./mvnw -DskipTests clean package
+RUN chmod +x mvnw
+RUN ./mvnw -DskipTests clean package
 
 # =========================================================
 # CHẠY SPRING BOOT (TỰ ĐỘNG NHẬN DIỆN PORT TRÊN RENDER / HF SPACES)
