@@ -776,7 +776,47 @@ function tachDanhSachNghiaTiengViet(dapAnRaw) {
     return Array.from(new Set(danhSach.filter(s => s.length > 0)));
 }
 
-// Kiểm tra đáp án tiếng Việt (chấm dễ, số/chữ tương đương, không dấu vẫn đúng, đúng 1 nghĩa là đúng)
+// Loại bỏ từ chỉ loại / mạo từ tiếng Việt (ví dụ: quả táo -> táo, con mèo -> mèo, cái bàn -> bàn...)
+const TU_CHI_LOAI_TIENG_VIET = [
+    "qua", "trai", "con", "cai", "chiec", "nguoi", "cay", "bong", "cu", "hat",
+    "vi", "su", "viec", "tinh", "cuoc", "mot", "nhung", "cac", "loai", "giong",
+    "thu", "bup", "doa", "buc", "to", "cuon", "quyen", "hop", "goi", "can", "toa", "dan", "bay"
+];
+
+function loaiBoTuChiLoai(str) {
+    if (!str) return "";
+    let words = str.trim().split(/\s+/);
+    while (words.length > 1 && TU_CHI_LOAI_TIENG_VIET.includes(words[0])) {
+        words.shift();
+    }
+    return words.join(" ");
+}
+
+// Tính khoảng cách Levenshtein kiểm tra sai lệch nhỏ
+function tinhKhoangCachLevenshtein(s1, s2) {
+    if (!s1 || !s2) return Math.max(s1 ? s1.length : 0, s2 ? s2.length : 0);
+    const m = s1.length, n = s2.length;
+    const dp = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
+    for (let i = 0; i <= m; i++) dp[i][0] = i;
+    for (let j = 0; j <= n; j++) dp[0][j] = j;
+
+    for (let i = 1; i <= m; i++) {
+        for (let j = 1; j <= n; j++) {
+            if (s1[i - 1] === s2[j - 1]) {
+                dp[i][j] = dp[i - 1][j - 1];
+            } else {
+                dp[i][j] = Math.min(
+                    dp[i - 1][j] + 1,     // deletion
+                    dp[i][j - 1] + 1,     // insertion
+                    dp[i - 1][j - 1] + 1  // substitution
+                );
+            }
+        }
+    }
+    return dp[m][n];
+}
+
+// Kiểm tra đáp án tiếng Việt (chấm dễ, số/chữ tương đương, không dấu, gần đúng, bỏ từ chỉ loại như quả táo -> táo)
 function kiemTraTiengVietDung(nhapRaw, dapAnRaw) {
     if (!nhapRaw || !nhapRaw.trim()) return false;
     if (!dapAnRaw || !dapAnRaw.trim()) return false;
@@ -801,6 +841,42 @@ function kiemTraTiengVietDung(nhapRaw, dapAnRaw) {
                 return true;
             }
             if (words.includes(nghiaChuan) && (words.includes(nhapChuan) || nhapChuan === key)) {
+                return true;
+            }
+        }
+
+        // 3. So khớp loại bỏ từ chỉ loại (ví dụ: "quả táo" <-> "táo", "con mèo" <-> "mèo", "chiếc xe" <-> "xe")
+        const nhapGoc = loaiBoTuChiLoai(nhapChuan);
+        const nghiaGoc = loaiBoTuChiLoai(nghiaChuan);
+
+        if (nhapGoc === nghiaGoc || nhapChuan === nghiaGoc || nhapGoc === nghiaChuan) {
+            return true;
+        }
+
+        // 4. So khớp bao hàm từ khóa / từ cốt lõi (ví dụ: "táo" trong "quả táo", "chạy" trong "chạy bộ", "học" trong "học tập")
+        const wordsNhap = nhapGoc.split(/\s+/).filter(w => w.length > 0);
+        const wordsNghia = nghiaGoc.split(/\s+/).filter(w => w.length > 0);
+
+        // Nếu người dùng nhập tập con các từ trong nghĩa hoặc ngược lại
+        const isNhapSubset = wordsNhap.length > 0 && wordsNhap.every(w => wordsNghia.includes(w));
+        const isNghiaSubset = wordsNghia.length > 0 && wordsNghia.every(w => wordsNhap.includes(w));
+        if (isNhapSubset || isNghiaSubset) {
+            return true;
+        }
+
+        // Nếu một chuỗi là chuỗi con của chuỗi kia (độ dài >= 3 ký tự)
+        if (nhapGoc.length >= 3 && (nghiaGoc.includes(nhapGoc) || nhapGoc.includes(nghiaGoc))) {
+            return true;
+        }
+
+        // 5. Kiểm tra lỗi gõ phím nhỏ (Fuzzy matching Levenshtein)
+        const maxLen = Math.max(nhapGoc.length, nghiaGoc.length);
+        if (maxLen >= 4) {
+            const dist = tinhKhoangCachLevenshtein(nhapGoc, nghiaGoc);
+            if (dist <= 1) {
+                return true;
+            }
+            if (maxLen >= 8 && dist <= 2) {
                 return true;
             }
         }
