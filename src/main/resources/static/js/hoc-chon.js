@@ -682,87 +682,135 @@ function chamDiemTuNut(button) {
 
 
 // =========================================================
-// HÀM TÍNH TOÁN SO SÁNH KÝ TỰ ĐÚNG / SAI (CHARACTER DIFF)
+// HÀM CHUẨN HÓA TIẾNG VIỆT & BỎ DẤU
 // =========================================================
-function buildCharDiff(userInput, targetAnswer) {
-    if (!userInput || !userInput.trim()) {
-        return {
-            userHtml: '<span class="char-diff char-wrong">(chưa nhập)</span>',
-            isMatch: false
-        };
-    }
+function boDauTiengViet(str) {
+    if (!str) return "";
+    return str
+        .toString()
+        .toLowerCase()
+        .replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, "a")
+        .replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ/g, "e")
+        .replace(/ì|í|ị|ỉ|ĩ/g, "i")
+        .replace(/ò|ó|ọ|ỏ|õ|ô|ồ|ố|ộ|ổ|ỗ|ơ|ờ|ớ|ợ|ở|ỡ/g, "o")
+        .replace(/ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ/g, "u")
+        .replace(/ỳ|ý|ỵ|ỷ|ỹ/g, "y")
+        .replace(/đ/g, "d")
+        .replace(/\u0300|\u0301|\u0303|\u0309|\u0323/g, "")
+        .replace(/\u02C6|\u0306|\u031B/g, "")
+        .replace(/[^\w\s]/g, " ")
+        .replace(/\s+/g, " ")
+        .trim();
+}
 
-    const rawUser = userInput.trim();
-    const s1 = rawUser.toLowerCase();
-    const s2 = targetAnswer.trim().toLowerCase();
+// Bảng ánh xạ số và chữ số tiếng Việt thông dụng
+const BANG_SO_TIENG_VIET = {
+    "0": ["0", "khong", "so khong"],
+    "1": ["1", "mot", "so 1", "so mot", "1st", "nhat", "thu nhat", "thu 1", "dau tien"],
+    "2": ["2", "hai", "so 2", "so hai", "2nd", "nhi", "thu hai", "thu 2"],
+    "3": ["3", "ba", "so 3", "so ba", "3rd", "tam", "thu ba", "thu 3"],
+    "4": ["4", "bon", "tu", "so 4", "so bon", "4th", "thu tu", "thu 4", "thu bon"],
+    "5": ["5", "nam", "lam", "so 5", "so nam", "5th", "thu nam", "thu 5", "thu lam"],
+    "6": ["6", "sau", "so 6", "so sau", "6th", "thu sau", "thu 6"],
+    "7": ["7", "bay", "so 7", "so bay", "7th", "thu bay", "thu 7"],
+    "8": ["8", "tam", "so 8", "so tam", "8th", "thu tam", "thu 8"],
+    "9": ["9", "chin", "so 9", "so chin", "9th", "thu chin", "thu 9"],
+    "10": ["10", "muoi", "so 10", "so muoi", "chuc", "10th", "thu muoi", "thu 10"],
+    "11": ["11", "muoi mot", "so 11", "11th", "thu muoi mot", "thu 11"],
+    "12": ["12", "muoi hai", "so 12", "12th", "thu muoi hai", "thu 12"],
+    "13": ["13", "muoi ba", "so 13", "13th", "thu muoi ba", "thu 13"],
+    "14": ["14", "muoi bon", "muoi tu", "so 14", "14th", "thu muoi bon", "thu muoi tu", "thu 14"],
+    "15": ["15", "muoi lam", "muoi nam", "so 15", "15th", "thu muoi lam", "thu 15"],
+    "16": ["16", "muoi sau", "so 16", "16th", "thu muoi sau", "thu 16"],
+    "17": ["17", "muoi bay", "so 17", "17th", "thu muoi bay", "thu 17"],
+    "18": ["18", "muoi tam", "so 18", "18th", "thu muoi tam", "thu 18"],
+    "19": ["19", "muoi chin", "so 19", "19th", "thu muoi chin", "thu 19"],
+    "20": ["20", "hai muoi", "so 20", "20th", "thu hai muoi", "thu 20"],
+    "21": ["21", "hai muoi mot", "so 21", "21st", "thu hai muoi mot", "thu 21"],
+    "22": ["22", "hai muoi hai", "so 22", "22nd", "thu hai muoi hai", "thu 22"],
+    "23": ["23", "hai muoi ba", "so 23", "23rd", "thu hai muoi ba", "thu 23"],
+    "24": ["24", "hai muoi bon", "hai muoi tu", "so 24", "24th", "thu hai muoi bon", "thu 24"],
+    "25": ["25", "hai muoi lam", "hai muoi nam", "so 25", "25th", "thu hai muoi lam", "thu 25"],
+    "26": ["26", "hai muoi sau", "so 26", "26th", "thu hai muoi sau", "thu 26"],
+    "27": ["27", "hai muoi bay", "so 27", "27th", "thu hai muoi bay", "thu 27"],
+    "28": ["28", "hai muoi tam", "so 28", "28th", "thu hai muoi tam", "thu 28"],
+    "29": ["29", "hai muoi chin", "so 29", "29th", "thu hai muoi chin", "thu 29"],
+    "30": ["30", "ba muoi", "so 30", "30th", "thu ba muoi", "thu 30"],
+    "40": ["40", "bon muoi", "so 40", "40th", "thu bon muoi", "thu 40"],
+    "50": ["50", "nam muoi", "so 50", "50th", "thu nam muoi", "thu 50"],
+    "60": ["60", "sau muoi", "so 60", "60th", "thu sau muoi", "thu 60"],
+    "70": ["70", "bay muoi", "so 70", "70th", "thu bay muoi", "thu 70"],
+    "80": ["80", "tam muoi", "so 80", "80th", "thu tam muoi", "thu 80"],
+    "90": ["90", "chin muoi", "so 90", "90th", "thu chin muoi", "thu 90"],
+    "100": ["100", "mot tram", "tram", "so 100", "100th", "thu mot tram", "thu tram", "thu 100"],
+    "1000": ["1000", "1 000", "1.000", "1,000", "mot nghin", "mot ngan", "nghin", "ngan", "1000th", "thu mot nghin", "thu 1000"],
+    "1000000": ["1000000", "1 000 000", "1.000.000", "1,000,000", "mot trieu", "trieu", "1000000th", "thu mot trieu", "thu 1000000"],
+    "1000000000": ["1000000000", "1 000 000 000", "1.000.000.000", "1,000,000,000", "mot ty", "mot ti", "ty", "ti", "1000000000th", "thu mot ty", "thu 1000000000"]
+};
 
-    if (s1 === s2) {
-        let userHtml = '';
-        for (let i = 0; i < rawUser.length; i++) {
-            const ch = rawUser[i];
-            userHtml += `<span class="char-diff char-correct">${ch === ' ' ? '&nbsp;' : ch}</span>`;
+// Tách đáp án tiếng Việt thành các nghĩa riêng lẻ (theo dấu phẩy, chấm phẩy, gạch chéo, ngoặc đơn)
+function tachDanhSachNghiaTiengViet(dapAnRaw) {
+    if (!dapAnRaw) return [];
+    let parts = dapAnRaw.split(/[,;/|\n\r]+/);
+    let danhSach = [];
+    
+    parts.forEach(p => {
+        let trimmed = p.trim();
+        if (!trimmed) return;
+        danhSach.push(trimmed);
+
+        // Nếu có ngoặc đơn e.g. "xe hơi (ô tô)" -> thêm cả "xe hơi" và "ô tô"
+        let matches = trimmed.match(/\(([^)]+)\)/g);
+        if (matches) {
+            matches.forEach(m => {
+                let inside = m.replace(/[()]/g, "").trim();
+                if (inside) danhSach.push(inside);
+            });
+            let outside = trimmed.replace(/\([^)]*\)/g, "").trim();
+            if (outside && outside !== trimmed) {
+                danhSach.push(outside);
+            }
         }
-        return { userHtml, isMatch: true };
-    }
+    });
 
-    // Dynamic Programming LCS (Longest Common Subsequence)
-    const m = s1.length;
-    const n = s2.length;
-    const dp = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
+    return Array.from(new Set(danhSach.filter(s => s.length > 0)));
+}
 
-    for (let i = 1; i <= m; i++) {
-        for (let j = 1; j <= n; j++) {
-            if (s1[i - 1] === s2[j - 1]) {
-                dp[i][j] = dp[i - 1][j - 1] + 1;
-            } else {
-                dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
+// Kiểm tra đáp án tiếng Việt (chấm dễ, số/chữ tương đương, không dấu vẫn đúng, đúng 1 nghĩa là đúng)
+function kiemTraTiengVietDung(nhapRaw, dapAnRaw) {
+    if (!nhapRaw || !nhapRaw.trim()) return false;
+    if (!dapAnRaw || !dapAnRaw.trim()) return false;
+
+    const nhapChuan = boDauTiengViet(nhapRaw);
+    if (!nhapChuan) return false;
+
+    const danhSachNghia = tachDanhSachNghiaTiengViet(dapAnRaw);
+
+    for (let nghia of danhSachNghia) {
+        const nghiaChuan = boDauTiengViet(nghia);
+
+        // 1. So khớp trực tiếp (có dấu hoặc không dấu)
+        if (nhapChuan === nghiaChuan) {
+            return true;
+        }
+
+        // 2. So khớp số <-> chữ
+        for (let key in BANG_SO_TIENG_VIET) {
+            let words = BANG_SO_TIENG_VIET[key];
+            if (words.includes(nhapChuan) && (words.includes(nghiaChuan) || nghiaChuan === key)) {
+                return true;
+            }
+            if (words.includes(nghiaChuan) && (words.includes(nhapChuan) || nhapChuan === key)) {
+                return true;
             }
         }
     }
 
-    // Backtrack to identify exact matched indices in s1 (userInput)
-    const userMatched = Array(m).fill(false);
-    let i = m, j = n;
-    while (i > 0 && j > 0) {
-        if (s1[i - 1] === s2[j - 1]) {
-            userMatched[i - 1] = true;
-            i--;
-            j--;
-        } else if (dp[i - 1][j] >= dp[i][j - 1]) {
-            i--;
-        } else {
-            j--;
-        }
-    }
-
-    let userHtml = '';
-    for (let k = 0; k < rawUser.length; k++) {
-        const ch = rawUser[k];
-        const displayChar = ch === ' ' ? '&nbsp;' : ch;
-        if (userMatched[k]) {
-            userHtml += `<span class="char-diff char-correct">${displayChar}</span>`;
-        } else {
-            userHtml += `<span class="char-diff char-wrong">${displayChar}</span>`;
-        }
-    }
-
-    return { userHtml, isMatch: false };
-}
-
-function getLcsLength(s1, s2) {
-    const m = s1.length, n = s2.length;
-    const dp = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
-    for (let i = 1; i <= m; i++) {
-        for (let j = 1; j <= n; j++) {
-            if (s1[i - 1] === s2[j - 1]) dp[i][j] = dp[i - 1][j - 1] + 1;
-            else dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
-        }
-    }
-    return dp[m][n];
+    return false;
 }
 
 // =========================================================
-// CHẤM ĐIỂM
+// CHẤM ĐIỂM TIẾNG VIỆT (HOC-CHON)
 // =========================================================
 function chamDiem(input) {
     if (input.disabled) {
@@ -774,27 +822,9 @@ function chamDiem(input) {
         return;
     }
 
-    let danhSach = dapAnRaw.split(";").map(s => s.trim()).filter(s => s.length > 0);
     let nhap = input.value.trim();
+    let dung = kiemTraTiengVietDung(nhap, dapAnRaw);
 
-    let dung = false;
-    let bestDa = danhSach[0] || dapAnRaw.trim();
-    let bestScore = -1;
-
-    for (let da of danhSach) {
-        if (nhap.toLowerCase() === da.toLowerCase()) {
-            dung = true;
-            bestDa = da;
-            break;
-        }
-        let score = getLcsLength(nhap.toLowerCase(), da.toLowerCase());
-        if (score > bestScore) {
-            bestScore = score;
-            bestDa = da;
-        }
-    }
-
-    const diff = buildCharDiff(nhap, bestDa);
     const containerKetQua = input.parentElement.querySelector(".ket-qua");
 
     if (dung) {
@@ -804,10 +834,7 @@ function chamDiem(input) {
         if (containerKetQua) {
             containerKetQua.innerHTML = `
                 <div class="ket-qua-box kq-dung">
-                    <div>
-                        <span class="char-diff-container">${diff.userHtml}</span>
-                        <span class="ms-2 fw-bold text-success">✅ Chính xác!</span>
-                    </div>
+                    <span class="fw-bold text-success">✅ Chính xác!</span>
                 </div>
             `;
         }
@@ -822,11 +849,11 @@ function chamDiem(input) {
                 <div class="ket-qua-box kq-sai">
                     <div class="mb-1">
                         <small class="text-muted">Bạn nhập:</small>
-                        <span class="char-diff-container ms-1">${diff.userHtml}</span>
+                        <span class="ms-1 fw-bold text-danger">${nhap || '(chưa nhập)'}</span>
                     </div>
                     <div>
                         <small class="text-muted">Đáp án đúng:</small>
-                        <span class="dap-an-chuan-badge">${bestDa}</span>
+                        <span class="dap-an-chuan-badge">${dapAnRaw}</span>
                     </div>
                 </div>
             `;
@@ -837,7 +864,7 @@ function chamDiem(input) {
 
     input.disabled = true;
 
-    // Tìm từ tiếp theo
+    // Tìm ô tiếp theo
     setTimeout(function () {
         let inputs = document.querySelectorAll(".cau-tra-loi");
         let viTri = Array.from(inputs).indexOf(input);
