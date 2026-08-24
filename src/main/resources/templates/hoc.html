@@ -8,7 +8,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css"
           rel="stylesheet">
 
-    <link rel="stylesheet" th:href="@{/css/hoc.css}">
+    <link rel="stylesheet" th:href="@{/css/hoc.css(v=2)}">
 
 </head>
 
@@ -96,12 +96,28 @@
 
         </div>
 
-        <br>
+        <div class="mt-4 d-flex gap-2 flex-wrap align-items-center btn-action-group">
+            <button type="submit"
+                    class="btn btn-success px-4 fw-bold">
+                📖 Học
+            </button>
 
-        <button type="submit"
-                class="btn btn-success">
-            Học
-        </button>
+            <a href="/"
+               class="btn btn-secondary px-3">
+                🏠 Trang chủ
+            </a>
+
+            <a href="/them-tu"
+               class="btn btn-outline-primary px-3">
+                ➕ Thêm từ
+            </a>
+
+            <a href="/quan-ly-tu"
+               class="btn btn-outline-warning px-3"
+               style="color: #b45309; border-color: #f59e0b;">
+                📋 Quản lí từ
+            </a>
+        </div>
 
     <hr>
 

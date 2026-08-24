@@ -100,21 +100,23 @@ form {
 
 
 /* =========================================================
-   7. NÚT HỌC
+   7. CÁC NÚT HÀNH ĐỘNG
    ========================================================= */
 
-button[type="submit"] {
-    min-width: 130px;
-    min-height: 45px;
+.btn-action-group .btn {
+    min-height: 44px;
     border-radius: 10px;
     font-weight: 600;
-    font-size: 16px;
+    font-size: 15px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     transition: all 0.2s ease;
 }
 
-button[type="submit"]:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 5px 12px rgba(25, 135, 84, 0.25);
+.btn-action-group .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
 }
 
 
@@ -311,8 +313,20 @@ input[type="checkbox"] {
         font-size: 15px;
     }
 
-    button[type="submit"] {
-        width: 100%;
+    .btn-action-group {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px !important;
+    }
+
+    .btn-action-group .btn {
+        flex: 1 1 calc(50% - 8px);
+        min-height: 45px;
+        font-size: 14px;
+    }
+
+    .btn-action-group button[type="submit"] {
+        flex: 1 1 100%;
         min-height: 48px;
         font-size: 16px;
     }
