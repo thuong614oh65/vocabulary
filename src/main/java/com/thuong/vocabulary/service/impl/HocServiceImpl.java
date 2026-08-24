@@ -43,7 +43,7 @@ public class HocServiceImpl implements HocService {
     ) {
 
         return repository
-                .findAllByBoTuVungIdAndBoTuVungTaiKhoanId(
+                .findAllByBoTuVungIdAndBoTuVungTaiKhoanIdOrderByIdAsc(
                         boId,
                         taiKhoanId
                 );
