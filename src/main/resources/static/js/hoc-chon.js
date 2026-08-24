@@ -13,84 +13,73 @@ let soLanDoc = 0;
 // =========================================================
 // KHỞI TẠO
 // =========================================================
+// HÀM CUỘN VÀO CHÍNH GIỮA MÀN HÌNH
+// =========================================================
+function cuonVaoGiuaManHinh(element) {
+    if (!element) return;
+    const row = element.closest("tr") || element;
+
+    document.querySelectorAll("tr.hang-dang-hoc").forEach(function (r) {
+        r.classList.remove("hang-dang-hoc");
+    });
+
+    if (row.tagName === "TR") {
+        row.classList.add("hang-dang-hoc");
+    }
+
+    row.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+        inline: "nearest"
+    });
+}
 
 document.addEventListener("DOMContentLoaded", function () {
+    const allInputs = document.querySelectorAll(".cau-tra-loi");
 
-    document
-        .querySelectorAll(".cau-tra-loi")
-        .forEach(function (input) {
+    allInputs.forEach(function (input) {
+        // -------------------------------------------------
+        // Khi click / focus vào ô nhập
+        // -------------------------------------------------
+        input.addEventListener("focus", function () {
+            cuonVaoGiuaManHinh(this);
 
+            let tu = this.dataset.tu;
+            console.log("Chọn từ:", tu);
 
-            // -------------------------------------------------
-            // Khi click / focus vào ô nhập
-            // -------------------------------------------------
+            if (!tu) {
+                return;
+            }
 
-            input.addEventListener(
-                "focus",
-                function () {
+            // Tạo lượt đọc mới
+            soLanDoc++;
+            let maDoc = soLanDoc;
 
-                    let tu = this.dataset.tu;
+            // Dừng âm thanh cũ
+            dungTatCaAmThanh();
 
-
-                    console.log(
-                        "Chọn từ:",
-                        tu
-                    );
-
-
-                    if (!tu) {
-
-                        return;
-
-                    }
-
-
-                    // Tạo lượt đọc mới
-
-                    soLanDoc++;
-
-
-                    let maDoc =
-                        soLanDoc;
-
-
-                    // Dừng âm thanh cũ
-
-                    dungTatCaAmThanh();
-
-
-                    // Bắt đầu đọc từ
-
-                    batDauDocTu(
-                        tu,
-                        maDoc
-                    );
-
-                }
-            );
-
-
-            // -------------------------------------------------
-            // Máy tính: nhấn ENTER để chấm
-            // -------------------------------------------------
-
-            input.addEventListener(
-                "keydown",
-                function (e) {
-
-                    if (e.key === "Enter") {
-
-                        e.preventDefault();
-
-                        chamDiem(this);
-
-                    }
-
-                }
-            );
-
+            // Bắt đầu đọc từ
+            batDauDocTu(tu, maDoc);
         });
 
+        // -------------------------------------------------
+        // Máy tính: nhấn ENTER để chấm
+        // -------------------------------------------------
+        input.addEventListener("keydown", function (e) {
+            if (e.key === "Enter") {
+                e.preventDefault();
+                chamDiem(this);
+            }
+        });
+    });
+
+    // Tự động focus và cuộn hàng đầu tiên vào giữa màn hình khi mới vào trang
+    if (allInputs.length > 0) {
+        setTimeout(function () {
+            allInputs[0].focus();
+            cuonVaoGiuaManHinh(allInputs[0]);
+        }, 300);
+    }
 });
 
 
@@ -953,6 +942,7 @@ function chamDiem(input) {
         let viTri = Array.from(inputs).indexOf(input);
         if (inputs[viTri + 1]) {
             inputs[viTri + 1].focus();
+            cuonVaoGiuaManHinh(inputs[viTri + 1]);
         }
     }, 800);
 }
