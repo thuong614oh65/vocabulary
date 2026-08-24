@@ -223,6 +223,24 @@ public class HomeController {
                                 taiKhoanId
                         );
 
+                if (dsHoc != null && !dsHoc.isEmpty()) {
+                    if ("TU_DEN".equals(hocDTO.getPhamViBo())) {
+                        int total = dsHoc.size();
+                        int from = (hocDTO.getTuTu() != null) ? hocDTO.getTuTu() : 1;
+                        int to = (hocDTO.getDenTu() != null) ? hocDTO.getDenTu() : total;
+                        if (from > to) {
+                            int temp = from;
+                            from = to;
+                            to = temp;
+                        }
+                        from = Math.max(1, Math.min(from, total));
+                        to = Math.max(1, Math.min(to, total));
+                        if (from <= to) {
+                            dsHoc = new ArrayList<>(dsHoc.subList(from - 1, to));
+                        }
+                    }
+                }
+
                 break;
 
 

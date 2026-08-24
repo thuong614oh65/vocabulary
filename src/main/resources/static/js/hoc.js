@@ -12,23 +12,55 @@ const bangTatCa =
     document.getElementById("bangTatCa");
 
 
-function capNhat() {
+const tuyChonPhamViBo = document.getElementById("tuyChonPhamViBo");
+const phamViTatCa = document.getElementById("phamViTatCa");
+const phamViTuDen = document.getElementById("phamViTuDen");
+const tuTu = document.getElementById("tuTu");
+const denTu = document.getElementById("denTu");
 
+function capNhat() {
     if (!ngauNhien || !tuSai || !theoBo || !chonTu) {
         return;
     }
 
-    boHoc.disabled =
-        !theoBo.checked;
+    boHoc.disabled = !theoBo.checked;
 
-    bangTheoBo.style.display =
-        theoBo.checked ? "block" : "none";
+    const coChonBo = theoBo.checked && boHoc.value !== "";
 
-    bangTatCa.style.display =
-        chonTu.checked ? "block" : "none";
+    if (tuyChonPhamViBo) {
+        tuyChonPhamViBo.style.display = coChonBo ? "block" : "none";
+    }
 
+    bangTheoBo.style.display = coChonBo ? "block" : "none";
+    bangTatCa.style.display = chonTu.checked ? "block" : "none";
+
+    capNhatPhamViBo();
 }
 
+function capNhatPhamViBo() {
+    if (!phamViTuDen || !tuTu || !denTu) return;
+    const isTuDen = phamViTuDen.checked;
+    tuTu.disabled = !isTuDen;
+    denTu.disabled = !isTuDen;
+}
+
+if (tuTu) {
+    tuTu.addEventListener("focus", function () {
+        if (phamViTuDen) {
+            phamViTuDen.checked = true;
+            capNhatPhamViBo();
+        }
+    });
+}
+
+if (denTu) {
+    denTu.addEventListener("focus", function () {
+        if (phamViTuDen) {
+            phamViTuDen.checked = true;
+            capNhatPhamViBo();
+        }
+    });
+}
 
 if (ngauNhien) {
     ngauNhien.onchange = capNhat;
@@ -46,19 +78,12 @@ if (chonTu) {
     chonTu.onchange = capNhat;
 }
 
-
 capNhat();
 
-
 function doiBo() {
-
     if (boHoc && boHoc.value != "") {
-
-        window.location =
-            "/hoc/bo/" + boHoc.value;
-
+        window.location = "/hoc/bo/" + boHoc.value;
     }
-
 }
 
 let audioHienTai = null;

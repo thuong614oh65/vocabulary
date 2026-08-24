@@ -34,5 +34,33 @@ public class HocDTO {
         this.tuIds = tuIds;
     }
 
+    private String phamViBo = "TAT_CA";
 
+    private Integer tuTu = 1;
+
+    private Integer denTu;
+
+    public String getPhamViBo() {
+        return phamViBo;
+    }
+
+    public void setPhamViBo(String phamViBo) {
+        this.phamViBo = phamViBo;
+    }
+
+    public Integer getTuTu() {
+        return tuTu;
+    }
+
+    public void setTuTu(Integer tuTu) {
+        this.tuTu = tuTu;
+    }
+
+    public Integer getDenTu() {
+        return denTu;
+    }
+
+    public void setDenTu(Integer denTu) {
+        this.denTu = denTu;
+    }
 }
