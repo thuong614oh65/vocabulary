@@ -5,8 +5,15 @@ FROM eclipse-temurin:21-jdk-jammy
 # =========================================================
 
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends python3 python3-pip python3-venv wget ca-certificates \
+    && apt-get install -y --no-install-recommends python3 python3-pip python3-venv wget curl ca-certificates \
     && rm -rf /var/lib/apt/lists/*
+
+# =========================================================
+# CÀI MAVEN 3.9.9 TRỰC TIẾP (DÙNG JAVA 21, KHÔNG BỊ XUNG ĐỘT)
+# =========================================================
+
+RUN curl -fsSL https://archive.apache.org/dist/maven/maven-3/3.9.9/binaries/apache-maven-3.9.9-bin.tar.gz | tar -xz -C /opt \
+    && ln -s /opt/apache-maven-3.9.9 /opt/maven
 
 # =========================================================
 # TẠO PYTHON VIRTUAL ENVIRONMENT
@@ -27,11 +34,12 @@ RUN /opt/venv/bin/pip install --no-cache-dir edge-tts==7.2.8
 RUN /opt/venv/bin/python -c "import edge_tts; print('EDGE_TTS_OK')"
 
 # =========================================================
-# ĐƯA JAVA 21 VÀ PYTHON VENV VÀO PATH
+# ĐƯA MAVEN, JAVA 21 VÀ PYTHON VENV VÀO PATH
 # =========================================================
 
+ENV MAVEN_HOME="/opt/maven"
 ENV JAVA_HOME="/opt/java/openjdk"
-ENV PATH="/opt/java/openjdk/bin:/opt/venv/bin:$PATH"
+ENV PATH="/opt/maven/bin:/opt/java/openjdk/bin:/opt/venv/bin:$PATH"
 
 # =========================================================
 # PROJECT
@@ -48,11 +56,10 @@ RUN useradd -m -u 1000 user && \
     chmod -R 777 /app /opt/venv
 
 # =========================================================
-# MAVEN
+# MAVEN BUILD
 # =========================================================
 
-RUN chmod +x mvnw
-RUN ./mvnw -DskipTests clean package
+RUN mvn -DskipTests clean package
 
 # =========================================================
 # CHẠY SPRING BOOT (TỰ ĐỘNG NHẬN DIỆN PORT TRÊN RENDER / HF SPACES)
