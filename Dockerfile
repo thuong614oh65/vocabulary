@@ -5,7 +5,7 @@ FROM eclipse-temurin:21-jdk-jammy
 # =========================================================
 
 RUN apt-get update \
-    && apt-get install -y python3 python3-pip python3-venv \
+    && apt-get install -y maven python3 python3-pip python3-venv \
     && rm -rf /var/lib/apt/lists/*
 
 # =========================================================
@@ -50,9 +50,8 @@ RUN useradd -m -u 1000 user && \
 # MAVEN
 # =========================================================
 
-RUN chmod +x mvnw
-
-RUN ./mvnw -DskipTests clean package
+RUN chmod +x mvnw || true
+RUN mvn -DskipTests clean package || ./mvnw -DskipTests clean package
 
 # =========================================================
 # CHẠY SPRING BOOT (TỰ ĐỘNG NHẬN DIỆN PORT TRÊN RENDER / HF SPACES)
