@@ -56,10 +56,11 @@ RUN useradd -m -u 1000 user && \
     chmod -R 777 /app /opt/venv
 
 # =========================================================
-# MAVEN BUILD
+# MAVEN BUILD (DÙNG GOOGLE MAVEN MIRROR ĐỂ TRÁNH LỖI 429)
 # =========================================================
 
-RUN mvn -DskipTests clean package
+RUN mkdir -p /root/.m2 && cp .mvn/settings.xml /root/.m2/settings.xml
+RUN mvn -s .mvn/settings.xml -DskipTests clean package
 
 # =========================================================
 # CHẠY SPRING BOOT (TỰ ĐỘNG NHẬN DIỆN PORT TRÊN RENDER / HF SPACES)
