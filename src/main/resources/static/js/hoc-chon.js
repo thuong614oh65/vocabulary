@@ -703,50 +703,59 @@ function boDauTiengViet(str) {
         .trim();
 }
 
-// Bảng ánh xạ số và chữ số tiếng Việt thông dụng
-const BANG_SO_TIENG_VIET = {
-    "0": ["0", "khong", "so khong"],
-    "1": ["1", "mot", "so 1", "so mot", "1st", "nhat", "thu nhat", "thu 1", "dau tien"],
-    "2": ["2", "hai", "so 2", "so hai", "2nd", "nhi", "thu hai", "thu 2"],
-    "3": ["3", "ba", "so 3", "so ba", "3rd", "tam", "thu ba", "thu 3"],
-    "4": ["4", "bon", "tu", "so 4", "so bon", "4th", "thu tu", "thu 4", "thu bon"],
-    "5": ["5", "nam", "lam", "so 5", "so nam", "5th", "thu nam", "thu 5", "thu lam"],
-    "6": ["6", "sau", "so 6", "so sau", "6th", "thu sau", "thu 6"],
-    "7": ["7", "bay", "so 7", "so bay", "7th", "thu bay", "thu 7"],
-    "8": ["8", "tam", "so 8", "so tam", "8th", "thu tam", "thu 8"],
-    "9": ["9", "chin", "so 9", "so chin", "9th", "thu chin", "thu 9"],
-    "10": ["10", "muoi", "so 10", "so muoi", "chuc", "10th", "thu muoi", "thu 10"],
-    "11": ["11", "muoi mot", "so 11", "11th", "thu muoi mot", "thu 11"],
-    "12": ["12", "muoi hai", "so 12", "12th", "thu muoi hai", "thu 12"],
-    "13": ["13", "muoi ba", "so 13", "13th", "thu muoi ba", "thu 13"],
-    "14": ["14", "muoi bon", "muoi tu", "so 14", "14th", "thu muoi bon", "thu muoi tu", "thu 14"],
-    "15": ["15", "muoi lam", "muoi nam", "so 15", "15th", "thu muoi lam", "thu 15"],
-    "16": ["16", "muoi sau", "so 16", "16th", "thu muoi sau", "thu 16"],
-    "17": ["17", "muoi bay", "so 17", "17th", "thu muoi bay", "thu 17"],
-    "18": ["18", "muoi tam", "so 18", "18th", "thu muoi tam", "thu 18"],
-    "19": ["19", "muoi chin", "so 19", "19th", "thu muoi chin", "thu 19"],
-    "20": ["20", "hai muoi", "so 20", "20th", "thu hai muoi", "thu 20"],
-    "21": ["21", "hai muoi mot", "so 21", "21st", "thu hai muoi mot", "thu 21"],
-    "22": ["22", "hai muoi hai", "so 22", "22nd", "thu hai muoi hai", "thu 22"],
-    "23": ["23", "hai muoi ba", "so 23", "23rd", "thu hai muoi ba", "thu 23"],
-    "24": ["24", "hai muoi bon", "hai muoi tu", "so 24", "24th", "thu hai muoi bon", "thu 24"],
-    "25": ["25", "hai muoi lam", "hai muoi nam", "so 25", "25th", "thu hai muoi lam", "thu 25"],
-    "26": ["26", "hai muoi sau", "so 26", "26th", "thu hai muoi sau", "thu 26"],
-    "27": ["27", "hai muoi bay", "so 27", "27th", "thu hai muoi bay", "thu 27"],
-    "28": ["28", "hai muoi tam", "so 28", "28th", "thu hai muoi tam", "thu 28"],
-    "29": ["29", "hai muoi chin", "so 29", "29th", "thu hai muoi chin", "thu 29"],
-    "30": ["30", "ba muoi", "so 30", "30th", "thu ba muoi", "thu 30"],
-    "40": ["40", "bon muoi", "so 40", "40th", "thu bon muoi", "thu 40"],
-    "50": ["50", "nam muoi", "so 50", "50th", "thu nam muoi", "thu 50"],
-    "60": ["60", "sau muoi", "so 60", "60th", "thu sau muoi", "thu 60"],
-    "70": ["70", "bay muoi", "so 70", "70th", "thu bay muoi", "thu 70"],
-    "80": ["80", "tam muoi", "so 80", "80th", "thu tam muoi", "thu 80"],
-    "90": ["90", "chin muoi", "so 90", "90th", "thu chin muoi", "thu 90"],
-    "100": ["100", "mot tram", "tram", "so 100", "100th", "thu mot tram", "thu tram", "thu 100"],
-    "1000": ["1000", "1 000", "1.000", "1,000", "mot nghin", "mot ngan", "nghin", "ngan", "1000th", "thu mot nghin", "thu 1000"],
-    "1000000": ["1000000", "1 000 000", "1.000.000", "1,000,000", "mot trieu", "trieu", "1000000th", "thu mot trieu", "thu 1000000"],
-    "1000000000": ["1000000000", "1 000 000 000", "1.000.000.000", "1,000,000,000", "mot ty", "mot ti", "ty", "ti", "1000000000th", "thu mot ty", "thu 1000000000"]
-};
+// Bảng regex chuyển đổi số chữ sang chữ số trong toàn bộ cụm từ (ví dụ: "tháng bảy" -> "thang 7", "thứ hai" -> "thu 2")
+const DANH_SACH_SO_CHU_REGEX = [
+    [/\b(mot\s+ty|mot\s+ti|ty|ti)\b/g, '1000000000'],
+    [/\b(mot\s+trieu|trieu)\b/g, '1000000'],
+    [/\b(mot\s+nghin|mot\s+ngan|nghin|ngan)\b/g, '1000'],
+    [/\b(mot\s+tram|tram)\b/g, '100'],
+    [/\b(chin\s+muoi)\b/g, '90'],
+    [/\b(tam\s+muoi)\b/g, '80'],
+    [/\b(bay\s+muoi|bay\s+muoi)\b/g, '70'],
+    [/\b(sau\s+muoi)\b/g, '60'],
+    [/\b(nam\s+muoi)\b/g, '50'],
+    [/\b(bon\s+muoi)\b/g, '40'],
+    [/\b(ba\s+muoi)\b/g, '30'],
+    [/\b(hai\s+muoi\s+chin)\b/g, '29'],
+    [/\b(hai\s+muoi\s+tam)\b/g, '28'],
+    [/\b(hai\s+muoi\s+bay|hai\s+muoi\s+bay)\b/g, '27'],
+    [/\b(hai\s+muoi\s+sau)\b/g, '26'],
+    [/\b(hai\s+muoi\s+lam|hai\s+muoi\s+nam)\b/g, '25'],
+    [/\b(hai\s+muoi\s+bon|hai\s+muoi\s+tu)\b/g, '24'],
+    [/\b(hai\s+muoi\s+ba)\b/g, '23'],
+    [/\b(hai\s+muoi\s+hai)\b/g, '22'],
+    [/\b(hai\s+muoi\s+mot|hai\s+muoi\s+mot)\b/g, '21'],
+    [/\b(hai\s+muoi)\b/g, '20'],
+    [/\b(muoi\s+chin)\b/g, '19'],
+    [/\b(muoi\s+tam)\b/g, '18'],
+    [/\b(muoi\s+bay|muoi\s+bay)\b/g, '17'],
+    [/\b(muoi\s+sau)\b/g, '16'],
+    [/\b(muoi\s+lam|muoi\s+nam)\b/g, '15'],
+    [/\b(muoi\s+bon|muoi\s+tu)\b/g, '14'],
+    [/\b(muoi\s+ba)\b/g, '13'],
+    [/\b(muoi\s+hai|thang\s+chap)\b/g, '12'],
+    [/\b(muoi\s+mot)\b/g, '11'],
+    [/\b(muoi|chuc)\b/g, '10'],
+    [/\b(chin)\b/g, '9'],
+    [/\b(tam)\b/g, '8'],
+    [/\b(bay|bay)\b/g, '7'],
+    [/\b(sau)\b/g, '6'],
+    [/\b(nam|lam)\b/g, '5'],
+    [/\b(bon|tu)\b/g, '4'],
+    [/\b(ba)\b/g, '3'],
+    [/\b(hai|nhi)\b/g, '2'],
+    [/\b(mot|mot|gieng|nhat)\b/g, '1'],
+    [/\b(khong)\b/g, '0']
+];
+
+function chuanHoaSoTrongChuoi(s) {
+    if (!s) return "";
+    let norm = boDauTiengViet(s);
+    for (let [regex, rep] of DANH_SACH_SO_CHU_REGEX) {
+        norm = norm.replace(regex, rep);
+    }
+    return norm.replace(/\s+/g, " ").trim();
+}
 
 // Tách đáp án tiếng Việt thành các nghĩa riêng lẻ (theo dấu phẩy, chấm phẩy, gạch chéo, ngoặc đơn)
 function tachDanhSachNghiaTiengViet(dapAnRaw) {
@@ -816,36 +825,31 @@ function tinhKhoangCachLevenshtein(s1, s2) {
     return dp[m][n];
 }
 
-// Kiểm tra đáp án tiếng Việt (chấm dễ, số/chữ tương đương, không dấu, gần đúng, bỏ từ chỉ loại như quả táo -> táo)
+// Kiểm tra đáp án tiếng Việt (chấm dễ, số/chữ tương đương trong cả cụm từ như "tháng 7" <-> "tháng bảy", không dấu, gần đúng, bỏ từ chỉ loại như quả táo -> táo)
 function kiemTraTiengVietDung(nhapRaw, dapAnRaw) {
     if (!nhapRaw || !nhapRaw.trim()) return false;
     if (!dapAnRaw || !dapAnRaw.trim()) return false;
 
-    const nhapChuan = boDauTiengViet(nhapRaw);
-    if (!nhapChuan) return false;
-
     const danhSachNghia = tachDanhSachNghiaTiengViet(dapAnRaw);
+
+    const nhapChuan = boDauTiengViet(nhapRaw);
+    const nhapCanon = chuanHoaSoTrongChuoi(nhapRaw);
+    const nhapNoCls = loaiBoTuChiLoai(nhapCanon);
 
     for (let nghia of danhSachNghia) {
         const nghiaChuan = boDauTiengViet(nghia);
+        const nghiaCanon = chuanHoaSoTrongChuoi(nghia);
+        const nghiaNoCls = loaiBoTuChiLoai(nghiaCanon);
 
-        // 1. So khớp trực tiếp (có dấu hoặc không dấu)
-        if (nhapChuan === nghiaChuan) {
+        // 1. So khớp trực tiếp (bỏ dấu hoặc chuẩn hóa số: tháng 7 <-> tháng bảy)
+        if (nhapChuan === nghiaChuan || nhapCanon === nghiaCanon || nhapNoCls === nghiaNoCls) {
+            return true;
+        }
+        if (nhapCanon === nghiaNoCls || nhapNoCls === nghiaCanon) {
             return true;
         }
 
-        // 2. So khớp số <-> chữ
-        for (let key in BANG_SO_TIENG_VIET) {
-            let words = BANG_SO_TIENG_VIET[key];
-            if (words.includes(nhapChuan) && (words.includes(nghiaChuan) || nghiaChuan === key)) {
-                return true;
-            }
-            if (words.includes(nghiaChuan) && (words.includes(nhapChuan) || nhapChuan === key)) {
-                return true;
-            }
-        }
-
-        // 3. So khớp loại bỏ từ chỉ loại (ví dụ: "quả táo" <-> "táo", "con mèo" <-> "mèo", "chiếc xe" <-> "xe")
+        // 2. So khớp loại bỏ từ chỉ loại (ví dụ: "quả táo" <-> "táo", "con mèo" <-> "mèo", "chiếc xe" <-> "xe")
         const nhapGoc = loaiBoTuChiLoai(nhapChuan);
         const nghiaGoc = loaiBoTuChiLoai(nghiaChuan);
 
@@ -853,9 +857,9 @@ function kiemTraTiengVietDung(nhapRaw, dapAnRaw) {
             return true;
         }
 
-        // 4. So khớp bao hàm từ khóa / từ cốt lõi (ví dụ: "táo" trong "quả táo", "chạy" trong "chạy bộ", "học" trong "học tập")
-        const wordsNhap = nhapGoc.split(/\s+/).filter(w => w.length > 0);
-        const wordsNghia = nghiaGoc.split(/\s+/).filter(w => w.length > 0);
+        // 3. So khớp bao hàm từ khóa / từ cốt lõi (ví dụ: "táo" trong "quả táo", "chạy" trong "chạy bộ", "học" trong "học tập")
+        const wordsNhap = nhapNoCls.split(/\s+/).filter(w => w.length > 0);
+        const wordsNghia = nghiaNoCls.split(/\s+/).filter(w => w.length > 0);
 
         // Nếu người dùng nhập tập con các từ trong nghĩa hoặc ngược lại
         const isNhapSubset = wordsNhap.length > 0 && wordsNhap.every(w => wordsNghia.includes(w));
@@ -864,8 +868,11 @@ function kiemTraTiengVietDung(nhapRaw, dapAnRaw) {
             return true;
         }
 
-        // Nếu một chuỗi là chuỗi con của chuỗi kia (độ dài >= 3 ký tự)
-        if (nhapGoc.length >= 3 && (nghiaGoc.includes(nhapGoc) || nhapGoc.includes(nghiaGoc))) {
+        // 4. Nếu một chuỗi là chuỗi con của chuỗi kia (độ dài >= 2 ký tự)
+        if (nhapNoCls.length >= 2 && (nghiaNoCls.includes(nhapNoCls) || nhapNoCls.includes(nghiaNoCls))) {
+            return true;
+        }
+        if (nhapGoc.length >= 2 && (nghiaGoc.includes(nhapGoc) || nhapGoc.includes(nghiaGoc))) {
             return true;
         }
 
