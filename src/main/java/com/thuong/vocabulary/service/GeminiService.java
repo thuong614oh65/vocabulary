@@ -558,4 +558,89 @@ public class GeminiService {
 
         throw lastImgEx != null ? lastImgEx : new RuntimeException("Không thể nhận diện hình ảnh qua Gemini AI.");
     }
+
+    // =====================================================
+    // 7. TRA TỪ & DỊCH THUẬT CHUYÊN SÂU BẰNG GEMINI AI
+    // =====================================================
+    public String traTuChuyenSau(String text, String mode) {
+        String huongDan;
+        if ("VI_EN".equalsIgnoreCase(mode)) {
+            huongDan = """
+                Nhiệm vụ: Bạn là chuyên gia từ điển song ngữ Việt - Anh.
+                Hãy dịch từ/cụm từ/câu TIẾNG VIỆT sau sang TIẾNG ANH một cách chuẩn xác, tự nhiên và phong phú nhất.
+                Từ/câu tiếng Việt: "%s"
+                
+                YÊU CẦU TRẢ VỀ DUY NHẤT JSON hợp lệ (không có markdown hay text nào ngoài JSON) với cấu trúc:
+                {
+                  "banDich": "bản dịch tiếng Anh chuẩn nhất",
+                  "phienAm": "/phiên âm IPA của từ/cụm từ tiếng Anh/",
+                  "tuLoai": "Noun / Verb / Adjective / Idiom / Sentence...",
+                  "giaiThich": "Giải thích ngắn gọn ngữ cảnh và sắc thái sử dụng bằng tiếng Việt (1-2 câu)",
+                  "cacNghiaKhac": ["từ tiếng Anh đồng nghĩa 1", "từ 2", "cách diễn đạt 3"],
+                  "dinhNghia": [
+                    {
+                      "partOfSpeech": "từ loại",
+                      "definitionEn": "English definition",
+                      "definitionVi": "Nghĩa tiếng Việt",
+                      "examples": ["English sample sentence"]
+                    }
+                  ],
+                  "viDu": [
+                    {"cauTiengAnh": "English sentence 1", "cauTiengViet": "Dịch tiếng Việt 1"},
+                    {"cauTiengAnh": "English sentence 2", "cauTiengViet": "Dịch tiếng Việt 2"}
+                  ],
+                  "dongNghia": ["synonym 1", "synonym 2", "synonym 3"],
+                  "traiNghia": ["antonym 1", "antonym 2"]
+                }
+                """.formatted(text);
+        } else {
+            huongDan = """
+                Nhiệm vụ: Bạn là từ điển Oxford/Cambridge song ngữ Anh - Việt.
+                Hãy giải nghĩa từ/cụm từ/câu TIẾNG ANH sau sang TIẾNG VIỆT chuẩn xác, tự nhiên nhất.
+                Từ/câu tiếng Anh: "%s"
+                
+                YÊU CẦU TRẢ VỀ DUY NHẤT JSON hợp lệ (không có markdown hay text nào ngoài JSON) với cấu trúc:
+                {
+                  "banDich": "nghĩa tiếng Việt chuẩn nhất",
+                  "phienAm": "/phiên âm IPA chuẩn/",
+                  "tuLoai": "Noun / Verb / Adjective / Phrase / Sentence...",
+                  "giaiThich": "Giải thích ngắn gọn cách dùng và sắc thái ngữ nghĩa (1-2 câu)",
+                  "cacNghiaKhac": ["nghĩa tiếng Việt khác 1", "nghĩa 2"],
+                  "dinhNghia": [
+                    {
+                      "partOfSpeech": "từ loại",
+                      "definitionEn": "English definition",
+                      "definitionVi": "Nghĩa tiếng Việt",
+                      "examples": ["English sample sentence"]
+                    }
+                  ],
+                  "viDu": [
+                    {"cauTiengAnh": "English sentence 1", "cauTiengViet": "Dịch tiếng Việt 1"},
+                    {"cauTiengAnh": "English sentence 2", "cauTiengViet": "Dịch tiếng Việt 2"}
+                  ],
+                  "dongNghia": ["synonym 1", "synonym 2", "synonym 3"],
+                  "traiNghia": ["antonym 1", "antonym 2"]
+                }
+                """.formatted(text);
+        }
+
+        try {
+            String res = goiGeminiAnToan(huongDan, new String[]{MODEL_FLASH_LITE, MODEL_FLASH});
+            if (res != null) {
+                res = res.trim();
+                if (res.startsWith("```json")) {
+                    res = res.substring(7);
+                } else if (res.startsWith("```")) {
+                    res = res.substring(3);
+                }
+                if (res.endsWith("```")) {
+                    res = res.substring(0, res.length() - 3);
+                }
+                return res.trim();
+            }
+        } catch (Exception e) {
+            System.err.println("[GeminiService] traTuChuyenSau error: " + e.getMessage());
+        }
+        return null;
+    }
 }

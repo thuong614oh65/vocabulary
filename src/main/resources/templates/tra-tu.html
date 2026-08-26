@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Tra từ & Dịch thuật Anh - Việt / Việt - Anh</title>
+    
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- CSS riêng -->
+    <link rel="stylesheet" th:href="@{/css/tra-tu.css(v=1)}">
+</head>
+<body>
+
+<!-- =========================================================
+     HEADER
+     ========================================================= -->
+<div class="tra-tu-header">
+    <div class="container text-center">
+        <div class="header-badge">
+            <span>🌐 Từ điển &amp; Dịch thuật 2 chiều</span>
+        </div>
+        <h1>🔍 Tra Từ &amp; Dịch Song Ngữ</h1>
+        <p class="header-subtitle">
+            Dịch chuẩn xác Anh ➔ Việt &amp; Việt ➔ Anh · Phiên âm chuẩn IPA · Phát âm bản xứ · Ví dụ ngữ cảnh · Lưu nhanh vào bộ từ
+        </p>
+
+        <div class="header-nav">
+            <a href="/" class="btn-nav-link">🏠 Trang chủ</a>
+            <a href="/them-tu" class="btn-nav-link">➕ Thêm từ</a>
+            <a href="/hoc" class="btn-nav-link">📖 Học</a>
+            <a href="/ipa" class="btn-nav-link">📢 Bảng IPA</a>
+            <a href="/so-dem" class="btn-nav-link">🔢 Số đếm</a>
+            <a href="/dich-doan-van" class="btn-nav-link">📝 Dịch đoạn văn</a>
+            <a href="/quan-ly-tu" class="btn-nav-link">📋 Quản lí từ</a>
+        </div>
+    </div>
+</div>
+
+<!-- =========================================================
+     MAIN CONTAINER
+     ========================================================= -->
+<div class="container main-container">
+
+    <!-- =====================================================
+         CARD TRA TỪ / NHẬP LIỆU
+         ===================================================== -->
+    <div class="search-card">
+        
+        <!-- Thanh chọn chế độ dịch -->
+        <div class="mode-bar">
+            <div class="mode-group">
+                <button type="button" class="btn-mode active" id="btnModeEnVi" onclick="setMode('EN_VI')">
+                    <span class="flag">🇬🇧</span> Tiếng Anh ➔ <span class="flag">🇻🇳</span> Tiếng Việt
+                </button>
+                <button type="button" class="btn-swap" id="btnSwap" onclick="swapLanguage()" title="Đổi chiều dịch (Swap)">
+                    <span class="swap-icon">⇄</span>
+                </button>
+                <button type="button" class="btn-mode" id="btnModeViEn" onclick="setMode('VI_EN')">
+                    <span class="flag">🇻🇳</span> Tiếng Việt ➔ <span class="flag">🇬🇧</span> Tiếng Anh
+                </button>
+                <button type="button" class="btn-mode" id="btnModeAuto" onclick="setMode('AUTO')">
+                    ✨ Tự động nhận diện
+                </button>
+            </div>
+        </div>
+
+        <!-- Khung nhập từ / văn bản -->
+        <div class="input-wrapper">
+            <textarea id="txtInput" 
+                      class="form-control input-box" 
+                      rows="2" 
+                      placeholder="Nhập từ vựng, cụm từ hoặc câu tiếng Anh / tiếng Việt... (Nhấn Enter hoặc click Tra từ)"
+                      autofocus></textarea>
+            
+            <div class="input-actions">
+                <button type="button" class="btn-tool" id="btnMic" onclick="toggleSpeechRecognition()" title="Nhập bằng giọng nói (Microphone)">
+                    🎙️
+                </button>
+                <button type="button" class="btn-tool" id="btnClear" onclick="clearInput()" title="Xóa văn bản">
+                    ✕
+                </button>
+            </div>
+        </div>
+
+        <!-- Nút Tra từ & Gợi ý từ nhanh -->
+        <div class="search-bottom-bar">
+            <div class="quick-tags">
+                <span class="quick-label">Gợi ý thử:</span>
+                <span class="tag-chip" onclick="quickSearch('resilience')">resilience</span>
+                <span class="tag-chip" onclick="quickSearch('break a leg')">break a leg</span>
+                <span class="tag-chip" onclick="quickSearch('thành công')">thành công</span>
+                <span class="tag-chip" onclick="quickSearch('kiên trì')">kiên trì</span>
+                <span class="tag-chip" onclick="quickSearch('chúc may mắn')">chúc may mắn</span>
+            </div>
+
+            <button type="button" class="btn-tra-tu" id="btnTraTu" onclick="thucHienTraTu()">
+                <span class="btn-icon">🔍</span>
+                <span>Tra từ / Dịch</span>
+            </button>
+        </div>
+
+    </div>
+
+    <!-- =====================================================
+         LOADING SPINNER
+         ===================================================== -->
+    <div id="loadingBox" class="loading-container" style="display: none;">
+        <div class="spinner-border text-primary" role="status" style="width: 2.5rem; height: 2.5rem;"></div>
+        <div class="loading-text" id="loadingText">Đang tra cứu từ điển và tổng hợp nghĩa...</div>
+    </div>
+
+    <!-- =====================================================
+         THÔNG BÁO LỖI
+         ===================================================== -->
+    <div id="errorBox" class="alert alert-danger shadow-sm mt-3" style="display: none;">
+        <span id="errorMsg">Đã xảy ra lỗi khi tra từ.</span>
+    </div>
+
+    <!-- =====================================================
+         KẾT QUẢ TRA TỪ & TỪ ĐIỂN (Hiển thị khi có kết quả)
+         ===================================================== -->
+    <div id="resultContainer" class="result-container" style="display: none;">
+
+        <!-- 1. THẺ KẾT QUẢ CHÍNH -->
+        <div class="result-primary-card">
+            
+            <div class="primary-header">
+                <div class="word-info">
+                    <div class="word-title-row">
+                        <h2 class="word-heading" id="resWord">Word</h2>
+                        <span class="badge-pos" id="resPos">Noun</span>
+                        <span class="badge-direction" id="resDirection">EN ➔ VI</span>
+                    </div>
+
+                    <div class="phonetic-row" id="phoneticRow">
+                        <span class="ipa-badge" id="resPhonetic">/ipa/</span>
+                        <button type="button" class="btn-audio" id="btnPlayNormal" onclick="phatAmTiengAnh(1.0)" title="Nghe phát âm tốc độ chuẩn">
+                            <span class="audio-icon">🔊</span>
+                            <span>Nghe US/UK</span>
+                        </button>
+                        <button type="button" class="btn-audio btn-audio-slow" id="btnPlaySlow" onclick="phatAmTiengAnh(0.7)" title="Nghe phát âm chậm">
+                            <span>🐢 Chậm</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Các nút tác vụ nhanh -->
+                <div class="quick-actions-bar">
+                    <button type="button" class="btn-action-save" onclick="moModalLuuTu()">
+                        💾 Lưu vào bộ từ
+                    </button>
+                    <button type="button" class="btn-action-copy" onclick="copyText(document.getElementById('resTranslation').textContent, this)">
+                        📋 Sao chép
+                    </button>
+                </div>
+            </div>
+
+            <!-- Nghĩa dịch chính -->
+            <div class="translation-main-box">
+                <div class="translation-label">Nghĩa tiếng Việt / Bản dịch:</div>
+                <div class="translation-text" id="resTranslation">Bản dịch</div>
+            </div>
+
+            <!-- Giải thích ngữ cảnh & sắc thái sử dụng -->
+            <div class="usage-note-box" id="usageNoteBox" style="display: none;">
+                <span class="note-icon">💡</span>
+                <span class="note-content" id="resUsageNote">Giải thích ngữ cảnh</span>
+            </div>
+
+            <!-- Các nghĩa khác / Từ tương đương -->
+            <div class="other-meanings-box" id="otherMeaningsBox" style="display: none;">
+                <span class="other-label">Các nghĩa / từ tương đương khác:</span>
+                <div class="other-tags" id="resOtherMeanings"></div>
+            </div>
+
+        </div>
+
+        <!-- 2. VÍ DỤ MINH HỌA SONG NGỮ (BILINGUAL EXAMPLES) -->
+        <div class="result-section-card" id="examplesSection" style="display: none;">
+            <div class="section-title">
+                <span class="sec-icon">💬</span>
+                <span>Ví dụ câu thực tế (Bilingual Examples)</span>
+            </div>
+            <div class="examples-list" id="resExamplesList">
+                <!-- Dynamic items -->
+            </div>
+        </div>
+
+        <!-- 3. ĐỊNH NGHĨA CHI TIẾT THEO TỪ LOẠI (DEFINITIONS) -->
+        <div class="result-section-card" id="definitionsSection" style="display: none;">
+            <div class="section-title">
+                <span class="sec-icon">📖</span>
+                <span>Định nghĩa chi tiết &amp; Phân loại (Oxford / Cambridge)</span>
+            </div>
+            <div class="definitions-list" id="resDefinitionsList">
+                <!-- Dynamic items -->
+            </div>
+        </div>
+
+        <!-- 4. TỪ ĐỒNG NGHĨA & TRÁI NGHĨA (SYNONYMS & ANTONYMS) -->
+        <div class="result-section-card" id="synonymsSection" style="display: none;">
+            <div class="section-title">
+                <span class="sec-icon">🔗</span>
+                <span>Từ đồng nghĩa &amp; Trái nghĩa (Synonyms &amp; Antonyms)</span>
+            </div>
+            
+            <div class="synonyms-content">
+                <div class="syn-group" id="synGroup" style="display: none;">
+                    <div class="syn-label text-success">🟢 Đồng nghĩa (Synonyms):</div>
+                    <div class="syn-tags" id="resSynonyms"></div>
+                </div>
+
+                <div class="syn-group" id="antGroup" style="display: none;">
+                    <div class="syn-label text-danger">🔴 Trái nghĩa (Antonyms):</div>
+                    <div class="syn-tags" id="resAntonyms"></div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- =====================================================
+         LỊCH SỬ TRA CỨU GẦN ĐÂY (SEARCH HISTORY)
+         ===================================================== -->
+    <div class="history-card" id="historyCard">
+        <div class="history-header">
+            <div class="history-title">
+                <span>🕒 Lịch sử tra cứu gần đây</span>
+            </div>
+            <button type="button" class="btn-clear-history" onclick="xoaToanBoLichSu()">
+                🗑️ Xóa lịch sử
+            </button>
+        </div>
+
+        <div class="history-list" id="historyList">
+            <div class="history-empty text-muted">Chưa có lịch sử tra cứu nào.</div>
+        </div>
+    </div>
+
+</div>
+
+<!-- =========================================================
+     MODAL LƯU TỪ VÀO BỘ TỪ
+     ========================================================= -->
+<div class="modal fade" id="modalLuuTu" tabindex="-1" aria-labelledby="modalLuuTuLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content modal-custom">
+            
+            <div class="modal-header">
+                <h5 class="modal-title fw-bold text-primary" id="modalLuuTuLabel">
+                    💾 Lưu từ vào danh sách từ vựng
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body">
+                <form id="formLuuTu" onsubmit="event.preventDefault(); submitLuuTu();">
+                    
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Từ tiếng Anh:</label>
+                        <input type="text" class="form-control" id="saveTiengAnh" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Nghĩa tiếng Việt:</label>
+                        <input type="text" class="form-control" id="saveTiengViet" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Phiên âm IPA:</label>
+                        <input type="text" class="form-control" id="savePhienAm">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Ví dụ minh họa:</label>
+                        <textarea class="form-control" id="saveViDu" rows="2"></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Chọn bộ từ để lưu:</label>
+                        <select class="form-select" id="saveBoId" onchange="toggleBoMoiInput(this.value)">
+                            <option value="" th:if="${#lists.isEmpty(dsBo)}">Tạo Bộ 1 (Mặc định)</option>
+                            <option th:each="bo : ${dsBo}" th:value="${bo.id}" th:text="${bo.tenBo}"></option>
+                            <option value="NEW">+ Tạo bộ từ mới...</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3" id="groupBoMoi" style="display: none;">
+                        <label class="form-label fw-bold text-success">Tên bộ từ mới:</label>
+                        <input type="text" class="form-control" id="saveTenBoMoi" placeholder="Ví dụ: Bộ từ giao tiếp, TOEIC 600...">
+                    </div>
+
+                    <div id="saveAlert" class="alert mt-3" style="display: none;"></div>
+
+                    <div class="d-flex justify-content-end gap-2 mt-4">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                        <button type="submit" class="btn btn-success px-4" id="btnXacNhanLuu">
+                            💾 Lưu ngay
+                        </button>
+                    </div>
+
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- Toast notification -->
+<div class="app-toast" id="appToast"></div>
+
+<!-- Server Initial State Data -->
+<input type="hidden" id="initQuery" th:value="${tuKhoaBanDau}">
+<input type="hidden" id="initMode" th:value="${cheDoBanDau}">
+
+<!-- Bootstrap JS Bundle -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
+<!-- JS riêng -->
+<script th:src="@{/js/tra-tu.js(v=1)}"></script>
+
+</body>
+</html>

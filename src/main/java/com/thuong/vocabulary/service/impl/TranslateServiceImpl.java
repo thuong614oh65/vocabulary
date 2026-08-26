@@ -28,20 +28,27 @@ public class TranslateServiceImpl implements TranslateService {
 
     @Override
     public String dich(String text) {
+        return dich(text, "en", "vi");
+    }
+
+    @Override
+    public String dich(String text, String fromLang, String toLang) {
         if (text == null || text.isBlank()) {
             return "";
         }
 
         String tuChuanHoa = text.trim();
+        String sl = (fromLang == null || fromLang.isBlank()) ? "auto" : fromLang.trim().toLowerCase();
+        String tl = (toLang == null || toLang.isBlank()) ? "vi" : toLang.trim().toLowerCase();
 
         // 1. Tầng 1: Google Translate GTX (Siêu tốc, không giới hạn)
-        String nghiaGoogle = dichQuaGoogleGTX(tuChuanHoa);
+        String nghiaGoogle = dichQuaGoogleGTX(tuChuanHoa, sl, tl);
         if (nghiaGoogle != null && !nghiaGoogle.isBlank()) {
             return chuanHoaDauCau(nghiaGoogle);
         }
 
         // 2. Tầng 2: MyMemory (Dự phòng)
-        String nghiaMyMemory = dichQuaMyMemory(tuChuanHoa);
+        String nghiaMyMemory = dichQuaMyMemory(tuChuanHoa, sl, tl);
         if (nghiaMyMemory != null && !nghiaMyMemory.isBlank()) {
             return chuanHoaDauCau(nghiaMyMemory);
         }
@@ -49,10 +56,21 @@ public class TranslateServiceImpl implements TranslateService {
         return "";
     }
 
-    private String dichQuaGoogleGTX(String text) {
+    @Override
+    public String dichAnhSangViet(String text) {
+        return dich(text, "en", "vi");
+    }
+
+    @Override
+    public String dichVietSangAnh(String text) {
+        return dich(text, "vi", "en");
+    }
+
+    private String dichQuaGoogleGTX(String text, String sl, String tl) {
         try {
             String encoded = URLEncoder.encode(text, StandardCharsets.UTF_8);
-            String url = "https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=vi&dt=t&q=" + encoded;
+            String url = "https://translate.googleapis.com/translate_a/single?client=gtx&sl="
+                    + sl + "&tl=" + tl + "&dt=t&dt=bd&q=" + encoded;
 
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(url))
@@ -82,15 +100,16 @@ public class TranslateServiceImpl implements TranslateService {
                 }
             }
         } catch (Exception e) {
-            System.err.println("[TranslateService] Google GTX fallback: " + e.getMessage());
+            System.err.println("[TranslateService] Google GTX (" + sl + "->" + tl + ") error: " + e.getMessage());
         }
         return null;
     }
 
-    private String dichQuaMyMemory(String text) {
+    private String dichQuaMyMemory(String text, String sl, String tl) {
         try {
             String encoded = URLEncoder.encode(text, StandardCharsets.UTF_8);
-            String url = "https://api.mymemory.translated.net/get?q=" + encoded + "&langpair=en|vi";
+            String langpair = (sl.equals("auto") ? "en" : sl) + "|" + tl;
+            String url = "https://api.mymemory.translated.net/get?q=" + encoded + "&langpair=" + langpair;
 
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(url))
