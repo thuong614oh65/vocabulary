@@ -177,7 +177,7 @@ public class HocController {
             List<String> viDu,
 
             @RequestParam(required = false)
-            Long boId,
+            String boId,
 
             @RequestParam(required = false)
             String tenBo,
@@ -234,13 +234,22 @@ public class HocController {
             danhSach.add(dto);
         }
 
+        Long parsedBoId = null;
+        if (boId != null && !boId.isBlank()) {
+            try {
+                parsedBoId = Long.parseLong(boId.trim());
+            } catch (Exception ignored) {
+            }
+        }
+
         String thongBao =
                 luuTuVungService.luuBo(
                         danhSach,
                         taiKhoan,
-                        boId,
+                        parsedBoId,
                         tenBo
                 );
+
 
 
 

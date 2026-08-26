@@ -123,24 +123,33 @@
             </h4>
 
             <!-- =====================================================
-                 CHỌN HOẶC ĐẶT TÊN CHO BỘ TỪ
+                 ĐẶT TÊN CHO BỘ MỚI HOẶC CHỌN BỘ CÓ SẴN
                  ===================================================== -->
-            <div class="row align-items-center mb-3 p-3 bg-light rounded-3 border">
-                <div class="col-md-6 mb-2 mb-md-0">
-                    <label class="form-label fw-bold text-primary mb-1">
-                        🗂️ Chọn bộ từ vựng để lưu:
-                    </label>
-                    <select class="form-select shadow-sm" id="selectBoLuu" name="boId" onchange="doiTuyChonBo(this.value)">
-                        <option value="" th:text="'✨ Tạo bộ mới (Mặc định: ' + ${tenBoGoiY != null ? tenBoGoiY : 'Bộ mới'} + ')'"></option>
-                        <option th:each="bo : ${dsBo}" th:value="${bo.id}" th:text="'📁 ' + ${bo.tenBo} + ' (' + ${bo.soLuongTu} + ' từ)'"></option>
-                        <option value="CUSTOM">✏️ Tự đặt tên cho bộ mới...</option>
-                    </select>
-                </div>
-                <div class="col-md-6" id="khungTenBoMoi" style="display: none;">
+            <div class="row g-3 mb-3 p-3 bg-light rounded-3 border align-items-center">
+                <!-- 1. Tên bộ mới (Mặc định) -->
+                <div class="col-md-6">
                     <label class="form-label fw-bold text-success mb-1">
-                        🏷️ Nhập tên bộ từ mới:
+                        🏷️ Tên bộ từ vựng:
                     </label>
-                    <input type="text" class="form-control shadow-sm" name="tenBo" id="inputTenBoMoi" placeholder="Ví dụ: Từ vựng TOEIC Unit 1, Giao tiếp...">
+                    <input type="text"
+                           class="form-control shadow-sm"
+                           name="tenBo"
+                           id="inputTenBo"
+                           th:placeholder="${tenBoGoiY != null ? tenBoGoiY : 'Bộ mới'}">
+                </div>
+
+                <!-- 2. Lựa chọn lưu vào bộ có sẵn (nếu có) -->
+                <div class="col-md-6" th:if="${dsBo != null && !dsBo.isEmpty()}">
+                    <label class="form-label fw-bold text-primary mb-1">
+                        📁 Hoặc lưu vào bộ đã có sẵn:
+                    </label>
+                    <select class="form-select shadow-sm" id="selectBoLuu" name="boId" onchange="xuLyChonBo(this.value)">
+                        <option value="">-- Lưu thành bộ mới (theo tên ở trên) --</option>
+                        <option th:each="bo : ${dsBo}"
+                                th:value="${bo.id}"
+                                th:text="${bo.tenBo + ' (' + bo.soLuongTu + ' từ)'}">
+                        </option>
+                    </select>
                 </div>
             </div>
 
@@ -217,16 +226,15 @@
 <script th:src="@{/js/tra-hang-loat.js(v=2)}"></script>
 
 <script>
-    function doiTuyChonBo(val) {
-        const khung = document.getElementById('khungTenBoMoi');
-        const input = document.getElementById('inputTenBoMoi');
-        if (val === 'CUSTOM') {
-            khung.style.display = 'block';
-            input.required = true;
-            input.focus();
+    function xuLyChonBo(val) {
+        const inputTenBo = document.getElementById('inputTenBo');
+        if (!inputTenBo) return;
+        if (val && val.trim() !== '') {
+            inputTenBo.disabled = true;
+            inputTenBo.classList.add('bg-secondary-subtle');
         } else {
-            khung.style.display = 'none';
-            input.required = false;
+            inputTenBo.disabled = false;
+            inputTenBo.classList.remove('bg-secondary-subtle');
         }
     }
 </script>

@@ -154,11 +154,14 @@ public class LuuTuVungServiceImpl implements LuuTuVungService {
         // 2. Trường hợp tự đặt tên cho bộ mới
         if (bo == null && tenBoMoi != null && !tenBoMoi.isBlank()) {
             String tenChuanHoa = tenBoMoi.trim();
-            bo = new BoTuVung();
-            bo.setTenBo(tenChuanHoa);
-            bo.setNgayTao(LocalDateTime.now());
-            bo.setTaiKhoan(taiKhoan);
-            boRepo.save(bo);
+            bo = boRepo.findByTenBoAndTaiKhoanId(tenChuanHoa, taiKhoanId).orElse(null);
+            if (bo == null) {
+                bo = new BoTuVung();
+                bo.setTenBo(tenChuanHoa);
+                bo.setNgayTao(LocalDateTime.now());
+                bo.setTaiKhoan(taiKhoan);
+                bo = boRepo.save(bo);
+            }
         }
 
         // 3. Trường hợp mặc định: Tạo tên bộ tự động ("Bộ X")

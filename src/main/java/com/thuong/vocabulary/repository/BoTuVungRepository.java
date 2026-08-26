@@ -19,4 +19,6 @@ public interface BoTuVungRepository
 
     boolean existsByTenBoAndTaiKhoanId(String tenBo, Long taiKhoanId);
 
-}
+    java.util.Optional<BoTuVung> findByTenBoAndTaiKhoanId(String tenBo, Long taiKhoanId);
+
+}
