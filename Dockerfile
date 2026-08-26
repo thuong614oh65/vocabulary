@@ -70,5 +70,5 @@ RUN mvn -s .mvn/settings.xml -DskipTests clean package
 USER user
 EXPOSE 10000 8080 7860
 
-CMD ["sh", "-c", "java -XX:+UseSerialGC -Xss512k -XX:MaxMetaspaceSize=96m -Xms128m -Xmx220m -Dserver.port=${PORT:-10000} -Dserver.address=0.0.0.0 -jar target/*.jar"]
+CMD ["sh", "-c", "java -XX:+UseSerialGC -Xss512k -XX:MaxMetaspaceSize=128m -Xms128m -Xmx320m -Dserver.port=${PORT:-10000} -Dserver.address=0.0.0.0 -jar target/*.jar"]
 
