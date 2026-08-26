@@ -132,9 +132,11 @@
                 </thead>
                 <tbody>
                 <tr th:each="tu, stt : ${dsTu}"
-                    th:with="isFirstOfBo = ${stt.first or (tu.boTuVung != null and (dsTu[stt.index - 1].boTuVung == null or tu.boTuVung.id != dsTu[stt.index - 1].boTuVung.id)) or (tu.boTuVung == null and dsTu[stt.index - 1].boTuVung != null)}"
+                    th:with="idBo = ${tu.boTuVung != null ? tu.boTuVung.id : -1},
+                             isFirstOfBo = ${stt.first or (tu.boTuVung != null and (dsTu[stt.index - 1].boTuVung == null or tu.boTuVung.id != dsTu[stt.index - 1].boTuVung.id)) or (tu.boTuVung == null and dsTu[stt.index - 1].boTuVung != null)},
+                             colorIndex = ${boColorIndex != null && boColorIndex.containsKey(idBo) ? boColorIndex.get(idBo) : 0}"
                     class="hang-tu"
-                    th:classappend="${isFirstOfBo && !stt.first ? 'border-top-bo' : ''}"
+                    th:classappend="${(colorIndex % 2 == 0 ? 'bo-bg-pastel' : 'bo-bg-white') + (isFirstOfBo && !stt.first ? ' border-top-bo' : '')}"
                     th:data-tieng-anh="${tu.tiengAnh != null ? tu.tiengAnh.toLowerCase() : ''}"
                     th:data-tieng-viet="${tu.tiengViet != null ? tu.tiengViet.toLowerCase() : ''}"
                     th:data-ten-bo="${tu.boTuVung != null ? tu.boTuVung.tenBo.toLowerCase() : ''}"
@@ -142,17 +144,20 @@
                     
                     <td class="text-center text-muted" th:text="${stt.count}">1</td>
                     
-                    <!-- CỘT BỘ TỪ: 1 bộ hiển thị 1 lần ở đầu, căn lề trên (align-top) kèm số lượng từ bên dưới -->
-                    <td class="text-center align-top td-bo-tu">
-                        <div th:if="${isFirstOfBo}" class="d-flex flex-column align-items-center gap-1">
-                            <span class="badge-bo"
+                    <!-- CỘT BỘ TỪ: Gộp thành 1 ô duy nhất (rowspan) cho toàn bộ các từ trong bộ, căn ở đầu trên -->
+                    <td th:if="${isFirstOfBo}"
+                        th:rowspan="${soLuongTuTheoBo != null && soLuongTuTheoBo.containsKey(idBo) ? soLuongTuTheoBo.get(idBo) : 1}"
+                        class="td-bo-gop align-top"
+                        th:attr="data-original-rowspan=${soLuongTuTheoBo != null && soLuongTuTheoBo.containsKey(idBo) ? soLuongTuTheoBo.get(idBo) : 1}">
+                        <div class="d-flex flex-column align-items-center gap-1">
+                            <span class="badge-bo-title"
                                   th:text="${tu.boTuVung != null ? tu.boTuVung.tenBo : 'Chưa phân bộ'}">
                             </span>
-                            <small class="text-muted fw-semibold" style="font-size: 12px;"
-                                   th:if="${tu.boTuVung != null}"
-                                   th:text="${tu.boTuVung.soLuongTu + ' từ'}">
+                            <span class="badge-bo-count"
+                                  th:if="${tu.boTuVung != null}"
+                                  th:text="${tu.boTuVung.soLuongTu + ' từ'}">
                                 32 từ
-                            </small>
+                            </span>
                         </div>
                     </td>
                     

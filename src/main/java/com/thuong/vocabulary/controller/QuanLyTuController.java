@@ -51,8 +51,26 @@ public class QuanLyTuController {
             dsTu = quanLyTuService.layTatCaTu(taiKhoanId);
         }
 
+        // Tính số lượng từ trong mỗi bộ theo danh sách đang hiển thị (để làm rowspan)
+        // và gán chỉ số màu xen kẽ cho từng bộ
+        java.util.Map<Long, Integer> soLuongTuTheoBo = new java.util.LinkedHashMap<>();
+        java.util.Map<Long, Integer> boColorIndex = new java.util.LinkedHashMap<>();
+        int colorIdx = 0;
+
+        if (dsTu != null) {
+            for (TuVung tu : dsTu) {
+                Long idBo = (tu.getBoTuVung() != null) ? tu.getBoTuVung().getId() : -1L;
+                soLuongTuTheoBo.put(idBo, soLuongTuTheoBo.getOrDefault(idBo, 0) + 1);
+                if (!boColorIndex.containsKey(idBo)) {
+                    boColorIndex.put(idBo, colorIdx++);
+                }
+            }
+        }
+
         model.addAttribute("dsTu", dsTu);
         model.addAttribute("dsBo", dsBo);
+        model.addAttribute("soLuongTuTheoBo", soLuongTuTheoBo);
+        model.addAttribute("boColorIndex", boColorIndex);
         model.addAttribute("boIdHienTai", boId);
         model.addAttribute("tongSoTu", dsTu.size());
         model.addAttribute("capNhatTuDTO", new CapNhatTuDTO());

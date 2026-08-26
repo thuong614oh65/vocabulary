@@ -177,40 +177,60 @@ body {
     transition: background 0.15s ease;
 }
 
-.table tbody tr:hover {
-    background: #f0fdf4;
+/* 2 màu xen kẽ giữa các bộ từ: Trắng và Xanh pastel nhạt */
+.bo-bg-pastel {
+    background-color: #f1f8f5 !important;
 }
 
-/* Đường kẻ phân cách rõ ràng khi bắt đầu một bộ từ mới */
+.bo-bg-pastel:hover {
+    background-color: #e4f3ec !important;
+}
+
+.bo-bg-white {
+    background-color: #ffffff !important;
+}
+
+.bo-bg-white:hover {
+    background-color: #f8fafc !important;
+}
+
+/* Đường kẻ phân cách rõ ràng giữa 2 bộ từ */
 .border-top-bo {
-    border-top: 2.5px solid #198754 !important;
+    border-top: 2px solid #bfe3cf !important;
 }
 
-/* Cột Bộ từ: căn ở trên cùng (align-top), chỉ hiển thị 1 lần */
-.td-bo-tu {
+/* Cột Bộ từ gộp thành 1 ô duy nhất (Rowspan), căn ở đầu trên */
+.td-bo-gop {
     vertical-align: top !important;
-    padding-top: 14px !important;
-    background: #f8fafc !important;
-}
-
-.badge-bo {
-    background: #e8f5ee;
-    color: #198754;
-    border: 1px solid #c6e7d2;
-    padding: 6px 12px;
-    border-radius: 8px;
-    font-weight: 700;
-    font-size: 13px;
-    display: inline-block;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-}
-
-/* Cột Bộ từ vựng gộp */
-.td-bo-goc, .td-bo-tam {
-    font-weight: 600;
-    color: #198754 !important;
-    background: #f8fffa !important;
     text-align: center;
+    padding-top: 18px !important;
+    border-right: 1.5px solid #d1e7dd !important;
+}
+
+.td-bo-tam {
+    font-weight: 600;
+    color: #166534 !important;
+    background: #f1f8f5 !important;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.badge-bo-title {
+    font-weight: 700;
+    color: #15803d;
+    font-size: 14px;
+    letter-spacing: 0.2px;
+}
+
+.badge-bo-count {
+    color: #64748b;
+    font-size: 12px;
+    font-weight: 600;
+    margin-top: 4px;
+    background: rgba(25, 135, 84, 0.08);
+    padding: 2px 8px;
+    border-radius: 12px;
+    display: inline-block;
 }
 
 /* Từ tiếng Anh */
