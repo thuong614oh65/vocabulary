@@ -181,6 +181,30 @@ body {
     background: #f0fdf4;
 }
 
+/* Đường kẻ phân cách rõ ràng khi bắt đầu một bộ từ mới */
+.border-top-bo {
+    border-top: 2.5px solid #198754 !important;
+}
+
+/* Cột Bộ từ: căn ở trên cùng (align-top), chỉ hiển thị 1 lần */
+.td-bo-tu {
+    vertical-align: top !important;
+    padding-top: 14px !important;
+    background: #f8fafc !important;
+}
+
+.badge-bo {
+    background: #e8f5ee;
+    color: #198754;
+    border: 1px solid #c6e7d2;
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 13px;
+    display: inline-block;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
 /* Cột Bộ từ vựng gộp */
 .td-bo-goc, .td-bo-tam {
     font-weight: 600;

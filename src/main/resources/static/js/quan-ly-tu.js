@@ -162,6 +162,7 @@ function xacNhanXoaBo(boId, tenBo, soLuongTu) {
 
 
 // =========================================================
+// =========================================================
 // TÌM KIẾM TỪ KHÓA TRÊN BẢNG
 // =========================================================
 function timKiemTu() {
@@ -170,56 +171,18 @@ function timKiemTu() {
     let rows = document.querySelectorAll("#bangTuVung tbody tr.hang-tu");
     let dem = 0;
 
-    if (filter === "") {
-        rows.forEach(function (row) {
+    rows.forEach(function (row) {
+        let tiengAnh = row.getAttribute("data-tieng-anh") || "";
+        let tiengViet = row.getAttribute("data-tieng-viet") || "";
+        let tenBo = row.getAttribute("data-ten-bo") || "";
+
+        if (filter === "" || tiengAnh.includes(filter) || tiengViet.includes(filter) || tenBo.includes(filter)) {
             row.style.display = "";
-            let tempTd = row.querySelector(".td-bo-tam");
-            if (tempTd) {
-                tempTd.remove();
-            }
-            let originalTd = row.querySelector(".td-bo-goc");
-            if (originalTd) {
-                let oldRowspan = originalTd.getAttribute("data-old-rowspan");
-                if (oldRowspan) {
-                    originalTd.setAttribute("rowspan", oldRowspan);
-                }
-                originalTd.style.display = "";
-            }
             dem++;
-        });
-    } else {
-        rows.forEach(function (row) {
-            let tiengAnh = row.getAttribute("data-tieng-anh") || "";
-            let tiengViet = row.getAttribute("data-tieng-viet") || "";
-            let tenBo = row.getAttribute("data-ten-bo") || "";
-
-            if (tiengAnh.includes(filter) || tiengViet.includes(filter) || tenBo.includes(filter)) {
-                row.style.display = "";
-                dem++;
-
-                let originalTd = row.querySelector(".td-bo-goc");
-                if (!originalTd) {
-                    if (!row.querySelector(".td-bo-tam")) {
-                        let tdTam = document.createElement("td");
-                        tdTam.className = "text-center fw-bold align-middle bg-light td-bo-tam";
-                        tdTam.textContent = row.getAttribute("data-ten-bo-text") || "";
-                        let sttTd = row.children[0];
-                        if (sttTd) {
-                            row.insertBefore(tdTam, sttTd.nextSibling);
-                        }
-                    }
-                } else {
-                    if (!originalTd.hasAttribute("data-old-rowspan")) {
-                        originalTd.setAttribute("data-old-rowspan", originalTd.getAttribute("rowspan") || "1");
-                    }
-                    originalTd.setAttribute("rowspan", "1");
-                    originalTd.style.display = "";
-                }
-            } else {
-                row.style.display = "none";
-            }
-        });
-    }
+        } else {
+            row.style.display = "none";
+        }
+    });
 
     let emptyMessage = document.getElementById("khongCoKetQua");
     if (emptyMessage) {
@@ -248,11 +211,48 @@ function doiBoLoc() {
 }
 
 // =========================================================
-// MỞ MODAL SỬA TÊN BỘ TỪ
+// MỞ MODAL ĐỔI TÊN BỘ TỪ NHANH (NÚT Ở HEADER)
+// =========================================================
+function moModalDoiTenBoNhanh() {
+    let select = document.getElementById("selectBoCanSua");
+    let input = document.getElementById("inputTenBoMoiQuanLy");
+    if (select && select.options.length > 0) {
+        let currentSelected = select.options[select.selectedIndex];
+        if (currentSelected && input) {
+            input.value = currentSelected.getAttribute("data-ten") || "";
+        }
+    }
+    let editBoModal = new bootstrap.Modal(document.getElementById("modalSuaTenBo"));
+    editBoModal.show();
+    if (input) {
+        setTimeout(() => input.focus(), 400);
+    }
+}
+
+// =========================================================
+// KHI CHỌN BỘ KHÁC TRONG MODAL ĐỔI TÊN
+// =========================================================
+function chonBoDoiTen(selectEl) {
+    let input = document.getElementById("inputTenBoMoiQuanLy");
+    if (selectEl && selectEl.selectedIndex >= 0 && input) {
+        let selectedOption = selectEl.options[selectEl.selectedIndex];
+        input.value = selectedOption.getAttribute("data-ten") || "";
+        input.focus();
+    }
+}
+
+// =========================================================
+// MỞ MODAL SỬA TÊN BỘ TỪ (KHI BẤM NÚT Ở TỪNG BỘ)
 // =========================================================
 function moModalSuaBo(boId, tenBo) {
-    document.getElementById("modalSuaBoId").value = boId;
-    document.getElementById("inputTenBoMoiQuanLy").value = tenBo || "";
+    let select = document.getElementById("selectBoCanSua");
+    let input = document.getElementById("inputTenBoMoiQuanLy");
+    if (select && boId) {
+        select.value = boId;
+    }
+    if (input) {
+        input.value = tenBo || "";
+    }
 
     // Đóng modal quản lý bộ nếu đang mở
     let qlBoModalEl = document.getElementById("modalQuanLyBo");
@@ -265,13 +265,19 @@ function moModalSuaBo(boId, tenBo) {
 
     let editBoModal = new bootstrap.Modal(document.getElementById("modalSuaTenBo"));
     editBoModal.show();
+    if (input) {
+        setTimeout(() => input.focus(), 400);
+    }
 }
 
 window.docTu = docTu;
 window.moModalSua = moModalSua;
 window.moModalSuaBo = moModalSuaBo;
+window.moModalDoiTenBoNhanh = moModalDoiTenBoNhanh;
+window.chonBoDoiTen = chonBoDoiTen;
 window.xacNhanXoa = xacNhanXoa;
 window.xacNhanXoaBo = xacNhanXoaBo;
 window.timKiemTu = timKiemTu;
 window.doiBoLoc = doiBoLoc;
+
 

@@ -50,6 +50,9 @@
                 <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#modalQuanLyBo">
                     🗂️ Quản lý bộ từ
                 </button>
+                <button type="button" class="btn btn-outline-warning text-dark fw-bold" onclick="moModalDoiTenBoNhanh()" th:if="${dsBo != null && !dsBo.isEmpty()}">
+                    ✏️ Đổi tên bộ
+                </button>
                 <a href="/them-tu" class="btn btn-primary">
                     ➕ Thêm từ mới
                 </a>
@@ -117,7 +120,7 @@
                 <thead>
                 <tr>
                     <th style="width: 50px;" class="text-center">STT</th>
-                    <th style="width: 120px;" class="text-center">Bộ từ</th>
+                    <th style="width: 130px;" class="text-center">Bộ từ</th>
                     <th style="width: 180px;">Tiếng Anh</th>
                     <th style="width: 180px;">Nghĩa Tiếng Việt</th>
                     <th style="width: 130px;">Phiên âm</th>
@@ -129,7 +132,9 @@
                 </thead>
                 <tbody>
                 <tr th:each="tu, stt : ${dsTu}"
+                    th:with="isFirstOfBo = ${stt.first or (tu.boTuVung != null and (dsTu[stt.index - 1].boTuVung == null or tu.boTuVung.id != dsTu[stt.index - 1].boTuVung.id)) or (tu.boTuVung == null and dsTu[stt.index - 1].boTuVung != null)}"
                     class="hang-tu"
+                    th:classappend="${isFirstOfBo && !stt.first ? 'border-top-bo' : ''}"
                     th:data-tieng-anh="${tu.tiengAnh != null ? tu.tiengAnh.toLowerCase() : ''}"
                     th:data-tieng-viet="${tu.tiengViet != null ? tu.tiengViet.toLowerCase() : ''}"
                     th:data-ten-bo="${tu.boTuVung != null ? tu.boTuVung.tenBo.toLowerCase() : ''}"
@@ -137,8 +142,12 @@
                     
                     <td class="text-center text-muted" th:text="${stt.count}">1</td>
                     
-                    <td class="text-center fw-bold align-middle bg-light"
-                        th:text="${tu.boTuVung != null ? tu.boTuVung.tenBo : 'Chưa phân bộ'}">
+                    <!-- CỘT BỘ TỪ: 1 bộ hiển thị 1 lần ở đầu, căn lề trên (align-top) -->
+                    <td class="text-center align-top td-bo-tu">
+                        <span class="badge-bo"
+                              th:if="${isFirstOfBo}"
+                              th:text="${tu.boTuVung != null ? tu.boTuVung.tenBo : 'Chưa phân bộ'}">
+                        </span>
                     </td>
                     
                     <td>
@@ -330,22 +339,33 @@
      ========================================================= -->
 <div class="modal fade" id="modalSuaTenBo" tabindex="-1" aria-labelledby="modalSuaTenBoLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
+        <div class="modal-content shadow">
             <form th:action="@{/quan-ly-tu/sua-bo}" method="post">
                 <div class="modal-header bg-light">
-                    <h5 class="modal-title fw-bold" id="modalSuaTenBoLabel">✏️ Đổi tên bộ từ vựng</h5>
+                    <h5 class="modal-title fw-bold text-primary" id="modalSuaTenBoLabel">✏️ Đổi tên bộ từ vựng</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <input type="hidden" id="modalSuaBoId" name="boId">
                     <input type="hidden" name="boIdLoc" th:value="${boIdHienTai != null ? boIdHienTai : ''}">
                     
                     <div class="mb-3">
+                        <label for="selectBoCanSua" class="form-label fw-bold">Chọn bộ từ cần đổi tên <span class="text-danger">*</span></label>
+                        <select class="form-select shadow-sm" id="selectBoCanSua" name="boId" onchange="chonBoDoiTen(this)" required>
+                            <option th:each="bo : ${dsBo}" 
+                                    th:value="${bo.id}" 
+                                    th:text="${bo.tenBo + ' (' + bo.soLuongTu + ' từ)'}"
+                                    th:data-ten="${bo.tenBo}"
+                                    th:selected="${boIdHienTai != null && boIdHienTai == bo.id}">
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
                         <label for="inputTenBoMoiQuanLy" class="form-label fw-bold">Tên bộ từ mới <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" id="inputTenBoMoiQuanLy" name="tenBoMoi" placeholder="Ví dụ: Từ vựng IELTS, Giao tiếp..." required>
+                        <input type="text" class="form-control shadow-sm" id="inputTenBoMoiQuanLy" name="tenBoMoi" placeholder="Nhập tên mới cho bộ từ..." required>
                     </div>
                 </div>
-                <div class="modal-footer">
+                <div class="modal-footer bg-light">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
                     <button type="submit" class="btn btn-primary fw-bold">💾 Lưu tên mới</button>
                 </div>
