@@ -41,16 +41,28 @@ public class TranslateServiceImpl implements TranslateService {
         String sl = (fromLang == null || fromLang.isBlank()) ? "auto" : fromLang.trim().toLowerCase();
         String tl = (toLang == null || toLang.isBlank()) ? "vi" : toLang.trim().toLowerCase();
 
-        // 1. Tầng 1: Google Translate GTX (Siêu tốc, không giới hạn)
-        String nghiaGoogle = dichQuaGoogleGTX(tuChuanHoa, sl, tl);
-        if (nghiaGoogle != null && !nghiaGoogle.isBlank()) {
-            return chuanHoaDauCau(nghiaGoogle);
+        // 1. Tầng 1: Google Clients5 (Chrome Extension - cực kỳ nhanh, không bị 429)
+        String nghia1 = dichQuaGoogleClients5(tuChuanHoa, sl, tl);
+        if (nghia1 != null && !nghia1.isBlank()) {
+            return chuanHoaDauCau(nghia1);
         }
 
-        // 2. Tầng 2: MyMemory (Dự phòng)
-        String nghiaMyMemory = dichQuaMyMemory(tuChuanHoa, sl, tl);
-        if (nghiaMyMemory != null && !nghiaMyMemory.isBlank()) {
-            return chuanHoaDauCau(nghiaMyMemory);
+        // 2. Tầng 2: Google Mobile Web (Chính xác, ổn định)
+        String nghia2 = dichQuaGoogleMobile(tuChuanHoa, sl, tl);
+        if (nghia2 != null && !nghia2.isBlank()) {
+            return chuanHoaDauCau(nghia2);
+        }
+
+        // 3. Tầng 3: Google GTX
+        String nghia3 = dichQuaGoogleGTX(tuChuanHoa, sl, tl);
+        if (nghia3 != null && !nghia3.isBlank()) {
+            return chuanHoaDauCau(nghia3);
+        }
+
+        // 4. Tầng 4: MyMemory API (Dự phòng cuối cùng)
+        String nghia4 = dichQuaMyMemory(tuChuanHoa, sl, tl);
+        if (nghia4 != null && !nghia4.isBlank()) {
+            return chuanHoaDauCau(nghia4);
         }
 
         return "";
@@ -66,11 +78,12 @@ public class TranslateServiceImpl implements TranslateService {
         return dich(text, "vi", "en");
     }
 
-    private String dichQuaGoogleGTX(String text, String sl, String tl) {
+    // Tầng 1: Google Clients5 API
+    private String dichQuaGoogleClients5(String text, String sl, String tl) {
         try {
             String encoded = URLEncoder.encode(text, StandardCharsets.UTF_8);
-            String url = "https://translate.googleapis.com/translate_a/single?client=gtx&sl="
-                    + sl + "&tl=" + tl + "&dt=t&dt=bd&q=" + encoded;
+            String url = "https://clients5.google.com/translate_a/t?client=dict-chrome-ex&sl="
+                    + sl + "&tl=" + tl + "&q=" + encoded;
 
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(url))
@@ -79,7 +92,78 @@ public class TranslateServiceImpl implements TranslateService {
                     .GET()
                     .build();
 
-            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
+
+            if (response.statusCode() == 200) {
+                JsonNode root = objectMapper.readTree(response.body());
+                if (root.isArray() && root.size() > 0) {
+                    String res = root.get(0).asText("").trim();
+                    if (!res.isEmpty()) {
+                        return res;
+                    }
+                } else if (root.isTextual()) {
+                    return root.asText().trim();
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("[TranslateService] Google Clients5 error: " + e.getMessage());
+        }
+        return null;
+    }
+
+    // Tầng 2: Google Mobile Web Scraper
+    private String dichQuaGoogleMobile(String text, String sl, String tl) {
+        try {
+            String encoded = URLEncoder.encode(text, StandardCharsets.UTF_8);
+            String url = "https://translate.google.com/m?sl=" + sl + "&tl=" + tl + "&q=" + encoded;
+
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(url))
+                    .header("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64)")
+                    .timeout(Duration.ofSeconds(4))
+                    .GET()
+                    .build();
+
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
+
+            if (response.statusCode() == 200) {
+                String body = response.body();
+                String marker = "class=\"result-container\">";
+                int start = body.indexOf(marker);
+                if (start != -1) {
+                    start += marker.length();
+                    int end = body.indexOf("</div>", start);
+                    if (end != -1) {
+                        String res = body.substring(start, end).trim();
+                        // Giải mã HTML entities cơ bản nếu có
+                        res = org.springframework.web.util.HtmlUtils.htmlUnescape(res);
+                        if (!res.isEmpty()) {
+                            return res;
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("[TranslateService] Google Mobile error: " + e.getMessage());
+        }
+        return null;
+    }
+
+    // Tầng 3: Google GTX
+    private String dichQuaGoogleGTX(String text, String sl, String tl) {
+        try {
+            String encoded = URLEncoder.encode(text, StandardCharsets.UTF_8);
+            String url = "https://translate.googleapis.com/translate_a/single?client=gtx&sl="
+                    + sl + "&tl=" + tl + "&dt=t&q=" + encoded;
+
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(url))
+                    .header("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64)")
+                    .timeout(Duration.ofSeconds(4))
+                    .GET()
+                    .build();
+
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
 
             if (response.statusCode() == 200) {
                 JsonNode root = objectMapper.readTree(response.body());
@@ -100,15 +184,17 @@ public class TranslateServiceImpl implements TranslateService {
                 }
             }
         } catch (Exception e) {
-            System.err.println("[TranslateService] Google GTX (" + sl + "->" + tl + ") error: " + e.getMessage());
+            System.err.println("[TranslateService] Google GTX error: " + e.getMessage());
         }
         return null;
     }
 
+    // Tầng 4: MyMemory
     private String dichQuaMyMemory(String text, String sl, String tl) {
         try {
             String encoded = URLEncoder.encode(text, StandardCharsets.UTF_8);
-            String langpair = (sl.equals("auto") ? "en" : sl) + "|" + tl;
+            String source = sl.equals("auto") ? "en" : sl;
+            String langpair = URLEncoder.encode(source + "|" + tl, StandardCharsets.UTF_8);
             String url = "https://api.mymemory.translated.net/get?q=" + encoded + "&langpair=" + langpair;
 
             HttpRequest request = HttpRequest.newBuilder()
@@ -118,7 +204,7 @@ public class TranslateServiceImpl implements TranslateService {
                     .GET()
                     .build();
 
-            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
 
             if (response.statusCode() == 200) {
                 JsonNode root = objectMapper.readTree(response.body());
@@ -138,4 +224,4 @@ public class TranslateServiceImpl implements TranslateService {
         str = str.trim();
         return str.substring(0, 1).toUpperCase() + str.substring(1);
     }
-}
+}
