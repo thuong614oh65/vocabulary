@@ -142,12 +142,18 @@
                     
                     <td class="text-center text-muted" th:text="${stt.count}">1</td>
                     
-                    <!-- CỘT BỘ TỪ: 1 bộ hiển thị 1 lần ở đầu, căn lề trên (align-top) -->
+                    <!-- CỘT BỘ TỪ: 1 bộ hiển thị 1 lần ở đầu, căn lề trên (align-top) kèm số lượng từ bên dưới -->
                     <td class="text-center align-top td-bo-tu">
-                        <span class="badge-bo"
-                              th:if="${isFirstOfBo}"
-                              th:text="${tu.boTuVung != null ? tu.boTuVung.tenBo : 'Chưa phân bộ'}">
-                        </span>
+                        <div th:if="${isFirstOfBo}" class="d-flex flex-column align-items-center gap-1">
+                            <span class="badge-bo"
+                                  th:text="${tu.boTuVung != null ? tu.boTuVung.tenBo : 'Chưa phân bộ'}">
+                            </span>
+                            <small class="text-muted fw-semibold" style="font-size: 12px;"
+                                   th:if="${tu.boTuVung != null}"
+                                   th:text="${tu.boTuVung.soLuongTu + ' từ'}">
+                                32 từ
+                            </small>
+                        </div>
                     </td>
                     
                     <td>
