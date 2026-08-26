@@ -139,4 +139,69 @@ public class QuanLyTuController {
 
         return "redirect:/quan-ly-tu";
     }
+
+    // =========================================================
+    // SỬA / ĐỔI TÊN BỘ TỪ VỰNG
+    // =========================================================
+    @PostMapping("/sua-bo")
+    public String suaTenBo(
+            @RequestParam Long boId,
+            @RequestParam String tenBoMoi,
+            @RequestParam(required = false) Long boIdLoc,
+            HttpSession session,
+            RedirectAttributes redirectAttributes
+    ) {
+        TaiKhoan taiKhoan = layTaiKhoanDangNhap(session);
+        if (taiKhoan == null) {
+            return "redirect:/dangnhap";
+        }
+
+        if (tenBoMoi == null || tenBoMoi.isBlank()) {
+            redirectAttributes.addFlashAttribute("thongBaoLoi", "Tên bộ từ không được để trống!");
+            if (boIdLoc != null && boIdLoc > 0) return "redirect:/quan-ly-tu?boId=" + boIdLoc;
+            return "redirect:/quan-ly-tu";
+        }
+
+        boolean thanhCong = quanLyTuService.suaTenBo(boId, tenBoMoi, taiKhoan.getId());
+        if (thanhCong) {
+            redirectAttributes.addFlashAttribute("thongBaoThanhCong", "Đã đổi tên bộ từ thành \"" + tenBoMoi.trim() + "\" thành công!");
+        } else {
+            redirectAttributes.addFlashAttribute("thongBaoLoi", "Đổi tên bộ từ thất bại (tên bộ có thể đã trùng lặp hoặc không tìm thấy bộ từ)!");
+        }
+
+        if (boIdLoc != null && boIdLoc > 0) {
+            return "redirect:/quan-ly-tu?boId=" + boIdLoc;
+        }
+        return "redirect:/quan-ly-tu";
+    }
+
+    // =========================================================
+    // TẠO BỘ TỪ VỰNG MỚI
+    // =========================================================
+    @PostMapping("/tao-bo")
+    public String taoBoMoi(
+            @RequestParam String tenBo,
+            HttpSession session,
+            RedirectAttributes redirectAttributes
+    ) {
+        TaiKhoan taiKhoan = layTaiKhoanDangNhap(session);
+        if (taiKhoan == null) {
+            return "redirect:/dangnhap";
+        }
+
+        if (tenBo == null || tenBo.isBlank()) {
+            redirectAttributes.addFlashAttribute("thongBaoLoi", "Tên bộ từ mới không được để trống!");
+            return "redirect:/quan-ly-tu";
+        }
+
+        BoTuVung bo = quanLyTuService.taoBoMoi(tenBo, taiKhoan.getId());
+        if (bo != null) {
+            redirectAttributes.addFlashAttribute("thongBaoThanhCong", "Đã tạo bộ từ mới \"" + bo.getTenBo() + "\" thành công!");
+            return "redirect:/quan-ly-tu?boId=" + bo.getId();
+        } else {
+            redirectAttributes.addFlashAttribute("thongBaoLoi", "Tạo bộ từ thất bại! Tên bộ \"" + tenBo.trim() + "\" đã tồn tại trong tài khoản của bạn.");
+            return "redirect:/quan-ly-tu";
+        }
+    }
 }
+

@@ -23,15 +23,18 @@ public class HomeController {
     private final DanhSachTuService danhSachTuService;
     private final TuVungService tuVungService;
     private final HocService hocService;
+    private final com.thuong.vocabulary.repository.BoTuVungRepository boTuVungRepository;
 
     public HomeController(
             DanhSachTuService danhSachTuService,
             TuVungService tuVungService,
-            HocService hocService
+            HocService hocService,
+            com.thuong.vocabulary.repository.BoTuVungRepository boTuVungRepository
     ) {
         this.danhSachTuService = danhSachTuService;
         this.tuVungService = tuVungService;
         this.hocService = hocService;
+        this.boTuVungRepository = boTuVungRepository;
     }
 
 
@@ -73,10 +76,16 @@ public class HomeController {
             return "redirect:/dangnhap";
         }
 
+        TaiKhoan taiKhoan = (TaiKhoan) session.getAttribute("taiKhoan");
+        List<com.thuong.vocabulary.entity.BoTuVung> dsBo = boTuVungRepository.findByTaiKhoanId(taiKhoan.getId());
+        long soThuTu = boTuVungRepository.countByTaiKhoanId(taiKhoan.getId()) + 1;
+
         model.addAttribute(
                 "themTuDTO",
                 new ThemTuDTO()
         );
+        model.addAttribute("dsBo", dsBo);
+        model.addAttribute("tenBoGoiY", "Bộ " + soThuTu);
 
         return "them-tu";
     }
@@ -96,6 +105,10 @@ public class HomeController {
         if (chuaDangNhap(session)) {
             return "redirect:/dangnhap";
         }
+
+        TaiKhoan taiKhoan = (TaiKhoan) session.getAttribute("taiKhoan");
+        List<com.thuong.vocabulary.entity.BoTuVung> dsBo = boTuVungRepository.findByTaiKhoanId(taiKhoan.getId());
+        long soThuTu = boTuVungRepository.countByTaiKhoanId(taiKhoan.getId()) + 1;
 
         List<String> danhSach =
                 danhSachTuService.tachDanhSach(
@@ -138,6 +151,9 @@ public class HomeController {
                 "ketQua",
                 ketQua
         );
+
+        model.addAttribute("dsBo", dsBo);
+        model.addAttribute("tenBoGoiY", "Bộ " + soThuTu);
 
 
         if (!loi.isEmpty()) {

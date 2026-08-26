@@ -21,4 +21,9 @@ public interface QuanLyTuService {
     boolean xoaTu(Long id, Long taiKhoanId);
 
     boolean xoaBo(Long boId, Long taiKhoanId);
+
+    boolean suaTenBo(Long boId, String tenBoMoi, Long taiKhoanId);
+
+    BoTuVung taoBoMoi(String tenBo, Long taiKhoanId);
 }
+

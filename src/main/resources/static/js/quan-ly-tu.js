@@ -247,9 +247,31 @@ function doiBoLoc() {
     }
 }
 
+// =========================================================
+// MỞ MODAL SỬA TÊN BỘ TỪ
+// =========================================================
+function moModalSuaBo(boId, tenBo) {
+    document.getElementById("modalSuaBoId").value = boId;
+    document.getElementById("inputTenBoMoiQuanLy").value = tenBo || "";
+
+    // Đóng modal quản lý bộ nếu đang mở
+    let qlBoModalEl = document.getElementById("modalQuanLyBo");
+    if (qlBoModalEl) {
+        let qlBoModalInstance = bootstrap.Modal.getInstance(qlBoModalEl);
+        if (qlBoModalInstance) {
+            qlBoModalInstance.hide();
+        }
+    }
+
+    let editBoModal = new bootstrap.Modal(document.getElementById("modalSuaTenBo"));
+    editBoModal.show();
+}
+
 window.docTu = docTu;
 window.moModalSua = moModalSua;
+window.moModalSuaBo = moModalSuaBo;
 window.xacNhanXoa = xacNhanXoa;
 window.xacNhanXoaBo = xacNhanXoaBo;
 window.timKiemTu = timKiemTu;
 window.doiBoLoc = doiBoLoc;
+

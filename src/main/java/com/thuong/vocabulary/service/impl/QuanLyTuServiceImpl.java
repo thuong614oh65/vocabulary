@@ -18,15 +18,18 @@ public class QuanLyTuServiceImpl implements QuanLyTuService {
     private final TuVungRepository tuVungRepository;
     private final BoTuVungRepository boTuVungRepository;
     private final AudioService audioService;
+    private final com.thuong.vocabulary.repository.TaiKhoanRepository taiKhoanRepository;
 
     public QuanLyTuServiceImpl(
             TuVungRepository tuVungRepository,
             BoTuVungRepository boTuVungRepository,
-            AudioService audioService
+            AudioService audioService,
+            com.thuong.vocabulary.repository.TaiKhoanRepository taiKhoanRepository
     ) {
         this.tuVungRepository = tuVungRepository;
         this.boTuVungRepository = boTuVungRepository;
         this.audioService = audioService;
+        this.taiKhoanRepository = taiKhoanRepository;
     }
 
     @Override
@@ -152,5 +155,56 @@ public class QuanLyTuServiceImpl implements QuanLyTuService {
         // Xóa bộ từ
         boTuVungRepository.delete(bo);
         return true;
+    }
+
+    @Override
+    @Transactional
+    public boolean suaTenBo(Long boId, String tenBoMoi, Long taiKhoanId) {
+        if (boId == null || tenBoMoi == null || tenBoMoi.isBlank() || taiKhoanId == null) {
+            return false;
+        }
+
+        BoTuVung bo = boTuVungRepository.findById(boId)
+                .filter(b -> b.getTaiKhoan() != null && b.getTaiKhoan().getId().equals(taiKhoanId))
+                .orElse(null);
+
+        if (bo == null) {
+            return false;
+        }
+
+        String tenChuanHoa = tenBoMoi.trim();
+
+        // Kiểm tra xem tên mới đã có bộ nào khác dùng chưa trong cùng tài khoản
+        if (!bo.getTenBo().equalsIgnoreCase(tenChuanHoa) && boTuVungRepository.existsByTenBoAndTaiKhoanId(tenChuanHoa, taiKhoanId)) {
+            return false;
+        }
+
+        bo.setTenBo(tenChuanHoa);
+        boTuVungRepository.save(bo);
+        return true;
+    }
+
+    @Override
+    @Transactional
+    public BoTuVung taoBoMoi(String tenBo, Long taiKhoanId) {
+        if (tenBo == null || tenBo.isBlank() || taiKhoanId == null) {
+            return null;
+        }
+
+        com.thuong.vocabulary.entity.TaiKhoan taiKhoan = taiKhoanRepository.findById(taiKhoanId).orElse(null);
+        if (taiKhoan == null) {
+            return null;
+        }
+
+        String tenChuanHoa = tenBo.trim();
+        if (boTuVungRepository.existsByTenBoAndTaiKhoanId(tenChuanHoa, taiKhoanId)) {
+            return null; // Tên bộ đã tồn tại
+        }
+
+        BoTuVung bo = new BoTuVung();
+        bo.setTenBo(tenChuanHoa);
+        bo.setNgayTao(java.time.LocalDateTime.now());
+        bo.setTaiKhoan(taiKhoan);
+        return boTuVungRepository.save(bo);
     }
 }

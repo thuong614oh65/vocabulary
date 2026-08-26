@@ -11,4 +11,11 @@ public interface LuuTuVungService {
             List<TuVungDTO> danhSach,
             TaiKhoan taiKhoan
     );
-}
+
+    String luuBo(
+            List<TuVungDTO> danhSach,
+            TaiKhoan taiKhoan,
+            Long boId,
+            String tenBoMoi
+    );
+}

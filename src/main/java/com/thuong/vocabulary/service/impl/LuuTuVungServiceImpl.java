@@ -34,6 +34,16 @@ public class LuuTuVungServiceImpl implements LuuTuVungService {
             List<TuVungDTO> danhSach,
             TaiKhoan taiKhoan
     ) {
+        return luuBo(danhSach, taiKhoan, null, null);
+    }
+
+    @Override
+    public String luuBo(
+            List<TuVungDTO> danhSach,
+            TaiKhoan taiKhoan,
+            Long boId,
+            String tenBoMoi
+    ) {
 
         // =====================================================
         // KIỂM TRA TÀI KHOẢN
@@ -129,32 +139,41 @@ public class LuuTuVungServiceImpl implements LuuTuVungService {
 
 
         // =====================================================
-        // TẠO BỘ TỪ MỚI THEO TÀI KHOẢN
+        // XÁC ĐỊNH BỘ TỪ (CHỌN BỘ CÓ SẴN HOẶC TẠO BỘ MỚI VỚI TÊN TÙY CHỈNH)
         // =====================================================
 
-        long soThuTu = boRepo.countByTaiKhoanId(taiKhoanId) + 1;
-        while (boRepo.existsByTenBoAndTaiKhoanId("Bộ " + soThuTu, taiKhoanId)) {
-            soThuTu++;
+        BoTuVung bo = null;
+
+        // 1. Trường hợp chọn bộ từ đã có
+        if (boId != null && boId > 0) {
+            bo = boRepo.findById(boId)
+                    .filter(b -> b.getTaiKhoan() != null && b.getTaiKhoan().getId().equals(taiKhoanId))
+                    .orElse(null);
         }
 
-        BoTuVung bo = new BoTuVung();
+        // 2. Trường hợp tự đặt tên cho bộ mới
+        if (bo == null && tenBoMoi != null && !tenBoMoi.isBlank()) {
+            String tenChuanHoa = tenBoMoi.trim();
+            bo = new BoTuVung();
+            bo.setTenBo(tenChuanHoa);
+            bo.setNgayTao(LocalDateTime.now());
+            bo.setTaiKhoan(taiKhoan);
+            boRepo.save(bo);
+        }
 
-        bo.setTenBo(
-                "Bộ " + soThuTu
-        );
+        // 3. Trường hợp mặc định: Tạo tên bộ tự động ("Bộ X")
+        if (bo == null) {
+            long soThuTu = boRepo.countByTaiKhoanId(taiKhoanId) + 1;
+            while (boRepo.existsByTenBoAndTaiKhoanId("Bộ " + soThuTu, taiKhoanId)) {
+                soThuTu++;
+            }
 
-        bo.setNgayTao(
-                LocalDateTime.now()
-        );
-
-
-        // QUAN TRỌNG:
-        // Gắn bộ từ với tài khoản đang đăng nhập
-
-        bo.setTaiKhoan(taiKhoan);
-
-
-        boRepo.save(bo);
+            bo = new BoTuVung();
+            bo.setTenBo("Bộ " + soThuTu);
+            bo.setNgayTao(LocalDateTime.now());
+            bo.setTaiKhoan(taiKhoan);
+            boRepo.save(bo);
+        }
 
 
         // =====================================================
@@ -165,31 +184,24 @@ public class LuuTuVungServiceImpl implements LuuTuVungService {
 
             TuVung tu = new TuVung();
 
-
             tu.setTiengAnh(
                     dto.getTiengAnh()
             );
-
 
             tu.setTiengViet(
                     dto.getTiengViet()
             );
 
-
             tu.setPhienAm(
                     dto.getPhienAm()
             );
-
 
             tu.setViDu(
                     dto.getViDu()
             );
 
-
             // Gắn từ vào bộ
-
             tu.setBoTuVung(bo);
-
 
             tuRepo.save(tu);
         }
@@ -202,7 +214,9 @@ public class LuuTuVungServiceImpl implements LuuTuVungService {
         String ketQua =
                 "Đã lưu "
                         + dsLuu.size()
-                        + " từ";
+                        + " từ vào \""
+                        + bo.getTenBo()
+                        + "\"";
 
 
         if (!trung.isEmpty()) {

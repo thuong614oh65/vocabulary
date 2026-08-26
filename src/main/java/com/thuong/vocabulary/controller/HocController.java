@@ -176,6 +176,12 @@ public class HocController {
             @RequestParam(required = false)
             List<String> viDu,
 
+            @RequestParam(required = false)
+            Long boId,
+
+            @RequestParam(required = false)
+            String tenBo,
+
             HttpSession session
     ) {
 
@@ -231,8 +237,11 @@ public class HocController {
         String thongBao =
                 luuTuVungService.luuBo(
                         danhSach,
-                        taiKhoan
+                        taiKhoan,
+                        boId,
+                        tenBo
                 );
+
 
 
 // =====================================================

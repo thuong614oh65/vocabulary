@@ -47,8 +47,8 @@
                 <a href="/tra-tu" class="btn btn-outline-info">
                     🔍 Tra từ
                 </a>
-                <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#modalQuanLyBo" th:if="${dsBo != null && !dsBo.isEmpty()}">
-                    🗂️ Xóa bộ từ
+                <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#modalQuanLyBo">
+                    🗂️ Quản lý bộ từ
                 </button>
                 <a href="/them-tu" class="btn btn-primary">
                     ➕ Thêm từ mới
@@ -73,7 +73,7 @@
                            onkeyup="timKiemTu()">
                 </div>
 
-                <div class="d-flex align-items-center gap-2">
+                <div class="d-flex align-items-center gap-2 flex-wrap">
                     <select id="selectBoLoc" class="form-select filter-select" onchange="doiBoLoc()">
                         <option value="" th:selected="${boIdHienTai == null}">Tất cả bộ từ</option>
                         <option th:each="bo : ${dsBo}"
@@ -85,6 +85,12 @@
 
                     <th:block th:if="${boIdHienTai != null && boIdHienTai > 0}">
                         <th:block th:each="bo : ${dsBo}" th:if="${bo.id == boIdHienTai}">
+                            <button type="button"
+                                    class="btn btn-outline-primary btn-sm text-nowrap d-flex align-items-center gap-1"
+                                    th:attr="onclick=|moModalSuaBo(${bo.id}, '${#strings.escapeJavaScript(bo.tenBo)}')|"
+                                    title="Sửa tên bộ từ này">
+                                ✏️ Sửa tên bộ
+                            </button>
                             <button type="button"
                                     class="btn btn-outline-danger btn-sm text-nowrap d-flex align-items-center gap-1"
                                     th:attr="onclick=|xacNhanXoaBo(${bo.id}, '${#strings.escapeJavaScript(bo.tenBo)}', ${bo.soLuongTu})|"
@@ -265,30 +271,47 @@
 </div>
 
 <!-- =========================================================
-     MODAL QUẢN LÝ / XÓA BỘ TỪ VỰNG
+     MODAL QUẢN LÝ BỘ TỪ VỰNG (TẠO / SỬA / XÓA)
      ========================================================= -->
 <div class="modal fade" id="modalQuanLyBo" tabindex="-1" aria-labelledby="modalQuanLyBoLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header bg-light">
-                <h5 class="modal-title" id="modalQuanLyBoLabel">🗂️ Quản lý & Xóa bộ từ vựng</h5>
+                <h5 class="modal-title fw-bold" id="modalQuanLyBoLabel">🗂️ Quản lý danh sách bộ từ vựng</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body p-0">
-                <div class="p-3 bg-light border-bottom text-muted small">
-                    ⚠️ <strong>Lưu ý:</strong> Khi xóa một bộ từ, toàn bộ các từ vựng thuộc bộ từ đó cũng sẽ bị xóa vĩnh viễn khỏi tài khoản của bạn.
+                <!-- Form tạo nhanh bộ từ mới -->
+                <form th:action="@{/quan-ly-tu/tao-bo}" method="post" class="p-3 border-bottom bg-light">
+                    <label class="form-label fw-bold text-success small mb-1">➕ Thêm bộ từ mới:</label>
+                    <div class="input-group">
+                        <input type="text" name="tenBo" class="form-control form-control-sm" placeholder="Nhập tên bộ mới..." required>
+                        <button type="submit" class="btn btn-sm btn-success fw-bold">Tạo bộ</button>
+                    </div>
+                </form>
+
+                <div class="p-3 bg-white border-bottom text-muted small">
+                    💡 <em>Bạn có thể bấm <strong>Sửa tên</strong> để đổi tên bộ từ hoặc <strong>Xóa bộ</strong> (kèm tất cả từ trong bộ).</em>
                 </div>
+
                 <div class="list-group list-group-flush" th:if="${dsBo != null && !dsBo.isEmpty()}">
-                    <div th:each="bo : ${dsBo}" class="list-group-item d-flex justify-content-between align-items-center py-3">
+                    <div th:each="bo : ${dsBo}" class="list-group-item d-flex justify-content-between align-items-center py-3 flex-wrap gap-2">
                         <div>
                             <h6 class="mb-0 fw-bold text-dark" th:text="${bo.tenBo}">Tên bộ</h6>
                             <small class="text-muted" th:text="${bo.soLuongTu + ' từ vựng'}">0 từ vựng</small>
                         </div>
-                        <button type="button"
-                                class="btn btn-sm btn-outline-danger d-flex align-items-center gap-1"
-                                th:attr="onclick=|xacNhanXoaBo(${bo.id}, '${#strings.escapeJavaScript(bo.tenBo)}', ${bo.soLuongTu})|">
-                            🗑️ Xóa bộ
-                        </button>
+                        <div class="d-flex gap-2">
+                            <button type="button"
+                                    class="btn btn-sm btn-outline-primary d-flex align-items-center gap-1"
+                                    th:attr="onclick=|moModalSuaBo(${bo.id}, '${#strings.escapeJavaScript(bo.tenBo)}')|">
+                                ✏️ Sửa tên
+                            </button>
+                            <button type="button"
+                                    class="btn btn-sm btn-outline-danger d-flex align-items-center gap-1"
+                                    th:attr="onclick=|xacNhanXoaBo(${bo.id}, '${#strings.escapeJavaScript(bo.tenBo)}', ${bo.soLuongTu})|">
+                                🗑️ Xóa bộ
+                            </button>
+                        </div>
                     </div>
                 </div>
                 <div class="p-4 text-center text-muted" th:if="${dsBo == null || dsBo.isEmpty()}">
@@ -303,6 +326,35 @@
 </div>
 
 <!-- =========================================================
+     MODAL ĐỔI TÊN BỘ TỪ VỰNG
+     ========================================================= -->
+<div class="modal fade" id="modalSuaTenBo" tabindex="-1" aria-labelledby="modalSuaTenBoLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form th:action="@{/quan-ly-tu/sua-bo}" method="post">
+                <div class="modal-header bg-light">
+                    <h5 class="modal-title fw-bold" id="modalSuaTenBoLabel">✏️ Đổi tên bộ từ vựng</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="modalSuaBoId" name="boId">
+                    <input type="hidden" name="boIdLoc" th:value="${boIdHienTai != null ? boIdHienTai : ''}">
+                    
+                    <div class="mb-3">
+                        <label for="inputTenBoMoiQuanLy" class="form-label fw-bold">Tên bộ từ mới <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="inputTenBoMoiQuanLy" name="tenBoMoi" placeholder="Ví dụ: Từ vựng IELTS, Giao tiếp..." required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="submit" class="btn btn-primary fw-bold">💾 Lưu tên mới</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- =========================================================
      FORM XÓA TỪ & XÓA BỘ (ẨN)
      ========================================================= -->
 <form id="formXoaTu" method="post" style="display: none;"></form>
@@ -312,7 +364,7 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
 
 <!-- JS riêng -->
-<script th:src="@{/js/quan-ly-tu.js(v=4)}"></script>
+<script th:src="@{/js/quan-ly-tu.js(v=5)}"></script>
 
 </body>
 </html>
