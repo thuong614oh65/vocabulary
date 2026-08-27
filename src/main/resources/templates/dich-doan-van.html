@@ -126,95 +126,82 @@
 
 
         <!-- =====================================================
-             ĐOẠN VĂN CẦN DỊCH
+             ĐOẠN VĂN CẦN DỊCH & NHẬP BẢN DỊCH (CHIA ĐÔI MÀN HÌNH MÁY TÍNH)
              ===================================================== -->
 
-        <div class="doan-van"
-             th:if="${doanVan != null}">
+        <div class="khung-chia-doi" th:if="${doanVan != null}">
 
-            <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
-                <h3 class="mb-0 text-success fw-bold">
-                    📖 Đoạn văn cần dịch
+            <!-- CỘT 1: ĐOẠN VĂN TIẾNG ANH CẦN DỊCH -->
+            <div class="doan-van">
+
+                <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+                    <h3 class="mb-0 text-success fw-bold">
+                        📖 Đoạn văn cần dịch
+                    </h3>
+
+                    <div class="d-flex gap-2">
+                        <button type="button" class="btn btn-outline-primary btn-sm px-3 py-1" id="btnNgheDoanVan" title="Nghe toàn bộ đoạn văn">
+                            🔊 Nghe đoạn văn
+                        </button>
+                        <button type="button" class="btn btn-outline-danger btn-sm px-3 py-1" id="btnDungNgheDoanVan" style="display: none;" title="Dừng đọc đoạn văn">
+                            ⏹️ Dừng đọc
+                        </button>
+                    </div>
+                </div>
+
+                <div id="noiDungDoanVan"
+                     class="noi-dung-doan-van"
+                     th:data-doan-van="${doanVan}">
+                </div>
+
+            </div>
+
+
+            <!-- CỘT 2: NHẬP BẢN DỊCH TIẾNG VIỆT -->
+            <div class="phan-dich">
+
+                <h3>
+                    ✍️ Bản dịch của bạn
                 </h3>
 
-                <div class="d-flex gap-2">
-                    <button type="button" class="btn btn-outline-primary btn-sm px-3 py-1" id="btnNgheDoanVan" title="Nghe toàn bộ đoạn văn">
-                        🔊 Nghe đoạn văn
+                <p class="mo-ta">
+                    Hãy tự dịch đoạn văn tiếng Anh sang tiếng Việt.
+                </p>
+
+
+                <form method="post"
+                      action="/dich-doan-van/kiem-tra"
+                      class="form-dich-submit">
+
+                    <input
+                            type="hidden"
+                            name="doanVan"
+                            th:value="${doanVan}">
+
+                    <th:block th:each="id : ${boIdsChon}">
+                        <input type="hidden" name="boIds" th:value="${id}">
+                    </th:block>
+                    <input type="hidden" name="chonTatCa" th:value="${chonTatCa}">
+
+
+                    <textarea
+                            name="banDich"
+                            class="o-nhap-ban-dich"
+                            placeholder="Nhập bản dịch tiếng Việt của bạn..."
+                            required></textarea>
+
+
+                    <button
+                            type="submit"
+                            class="btn-kiem-tra">
+
+                        ✅ Kiểm tra bản dịch
+
                     </button>
-                    <button type="button" class="btn btn-outline-danger btn-sm px-3 py-1" id="btnDungNgheDoanVan" style="display: none;" title="Dừng đọc đoạn văn">
-                        ⏹️ Dừng đọc
-                    </button>
-                </div>
+
+                </form>
+
             </div>
-
-            <div id="noiDungDoanVan"
-                 class="noi-dung-doan-van"
-                 th:data-doan-van="${doanVan}">
-            </div>
-
-        </div>
-
-
-        <!-- =====================================================
-             NHẬP BẢN DỊCH
-             ===================================================== -->
-
-        <div class="phan-dich"
-             th:if="${doanVan != null}">
-
-            <h3>
-                ✍️ Bản dịch của bạn
-            </h3>
-
-            <p class="mo-ta">
-                Hãy tự dịch đoạn văn tiếng Anh sang tiếng Việt.
-            </p>
-
-
-            <form method="post"
-                  action="/dich-doan-van/kiem-tra">
-
-
-                <!--
-                    Giữ lại đoạn văn tiếng Anh
-                    để Controller nhận lại khi kiểm tra
-                -->
-
-                <input
-                        type="hidden"
-                        name="doanVan"
-                        th:value="${doanVan}">
-
-                <th:block th:each="id : ${boIdsChon}">
-                    <input type="hidden" name="boIds" th:value="${id}">
-                </th:block>
-                <input type="hidden" name="chonTatCa" th:value="${chonTatCa}">
-
-
-                <!--
-                    Người dùng nhập bản dịch
-                -->
-
-                <textarea
-                        name="banDich"
-                        class="o-nhap-ban-dich"
-                        placeholder="Nhập bản dịch tiếng Việt của bạn..."
-                        required></textarea>
-
-
-                <!--
-                    Nút kiểm tra
-                -->
-
-                <button
-                        type="submit"
-                        class="btn-kiem-tra">
-
-                    ✅ Kiểm tra bản dịch
-
-                </button>
-
-            </form>
 
         </div>
 

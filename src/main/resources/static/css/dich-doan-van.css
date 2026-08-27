@@ -296,78 +296,57 @@ body {
 
 
 /* =========================================================
+   KHUNG CHIA ĐÔI MÀN HÌNH (MÁY TÍNH: BÊN TRÁI VĂN BẢN, BÊN PHẢI BẢN DỊCH)
+   ========================================================= */
+
+.khung-chia-doi {
+    margin-top: 30px;
+    width: 100%;
+}
+
+/* =========================================================
    ĐOẠN VĂN
    ========================================================= */
 
 .doan-van {
-
-    margin-top: 30px;
-
+    margin-top: 25px;
     padding: 25px;
-
     background: #ffffff;
-
     border-radius: 15px;
-
     border: 2px solid #e9ecef;
-
     text-align: left;
 }
 
-
 .doan-van h3 {
-
     margin-top: 0;
-
     margin-bottom: 15px;
-
     color: #198754;
-
     font-size: 24px;
-
     text-align: center;
 }
 
-
 .noi-dung-doan-van {
-
     padding: 20px;
-
     background: white;
-
     border-radius: 12px;
-
     border-left: 5px solid #6f42c1;
-
     color: #212529;
-
     font-size: 17px;
-
     line-height: 1.9;
-
     white-space: pre-wrap;
-
-    box-shadow:
-        0 4px 12px rgba(0, 0, 0, 0.06);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
 }
-
 
 /* =========================================================
    PHẦN NHẬP BẢN DỊCH
    ========================================================= */
 
 .phan-dich {
-
-    margin-top: 30px;
-
+    margin-top: 25px;
     padding: 25px;
-
     background: #faf8ff;
-
     border: 2px solid #e6dcfa;
-
     border-radius: 15px;
-
     text-align: left;
 }
 
@@ -819,5 +798,50 @@ body {
     .ket-qua-gemini {
 
         padding: 18px;
+    }
+}
+
+/* =========================================================
+   MÁY TÍNH / LAPTOP (>= 992px): CHIA ĐÔI MÀN HÌNH BÊN VĂN BẢN - BÊN DỊCH
+   ========================================================= */
+
+@media (min-width: 992px) {
+    .khung {
+        max-width: 1200px;
+        padding: 40px 45px;
+    }
+
+    .khung-chia-doi {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 28px;
+        align-items: stretch;
+        margin-top: 30px;
+    }
+
+    .khung-chia-doi .doan-van,
+    .khung-chia-doi .phan-dich {
+        margin-top: 0;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        box-shadow: 0 4px 18px rgba(0, 0, 0, 0.05);
+    }
+
+    .khung-chia-doi .noi-dung-doan-van {
+        flex: 1;
+        font-size: 16.5px;
+        line-height: 1.95;
+    }
+
+    .khung-chia-doi .form-dich-submit {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+    }
+
+    .khung-chia-doi .o-nhap-ban-dich {
+        flex: 1;
+        min-height: 230px;
     }
 }
