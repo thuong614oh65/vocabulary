@@ -656,3 +656,40 @@ function hienThiThongTinTu(tu) {
     }, 0);
 
 }
+
+// =========================================================
+// XỬ LÝ CHỌN / BỎ CHỌN TẤT CẢ BỘ TỪ
+// =========================================================
+function chonTatCaBo(chon) {
+    const checkboxes = document.querySelectorAll(".check-bo");
+    checkboxes.forEach(function (cb) {
+        cb.checked = chon;
+    });
+}
+window.chonTatCaBo = chonTatCaBo;
+
+// Kiểm tra trước khi submit form tạo đoạn văn
+document.addEventListener("DOMContentLoaded", function () {
+    const formTao = document.getElementById("formTaoDoanVan");
+    if (formTao) {
+        formTao.addEventListener("submit", function (e) {
+            const checkboxes = document.querySelectorAll(".check-bo");
+            if (checkboxes.length > 0) {
+                const hasChecked = Array.from(checkboxes).some(cb => cb.checked);
+                if (!hasChecked) {
+                    e.preventDefault();
+                    alert("Vui lòng tích chọn ít nhất 1 bộ từ vựng để tạo đoạn văn!");
+                    return false;
+                }
+            }
+
+            // Hiển thị trạng thái đang tạo
+            const btn = document.getElementById("btnTaoDoanVan");
+            if (btn) {
+                btn.innerHTML = "⏳ Đang kết hợp từ & tạo đoạn văn...";
+                btn.disabled = true;
+                formTao.submit();
+            }
+        });
+    }
+});

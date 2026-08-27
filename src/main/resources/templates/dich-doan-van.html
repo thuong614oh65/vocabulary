@@ -57,19 +57,56 @@
 
 
         <!-- =====================================================
-             NÚT TẠO ĐOẠN VĂN
+             CHỌN BỘ TỪ VỰNG & NÚT TẠO ĐOẠN VĂN
              ===================================================== -->
 
-        <div class="hanh-dong">
+        <div class="hanh-dong text-start">
 
             <form method="post"
-                  action="/dich-doan-van">
+                  action="/dich-doan-van"
+                  id="formTaoDoanVan">
+
+                <div class="card-chon-bo p-3 mb-3 border rounded-3 bg-light">
+                    <div class="d-flex justify-content-between align-items-center mb-2 flex-wrap gap-2">
+                        <label class="fw-bold text-dark mb-0 d-flex align-items-center gap-2">
+                            <span>📚</span> <span>Chọn các bộ từ vựng để tạo đoạn văn:</span>
+                        </label>
+                        <div class="d-flex gap-2">
+                            <button type="button" class="btn btn-sm btn-outline-primary" onclick="chonTatCaBo(true)">
+                                ✅ Chọn tất cả
+                            </button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary" onclick="chonTatCaBo(false)">
+                                ❌ Bỏ chọn
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="danh-sach-bo-grid mt-2" th:if="${dsBo != null and !dsBo.isEmpty()}">
+                        <div class="bo-check-item" th:each="bo : ${dsBo}">
+                            <input class="form-check-input check-bo"
+                                   type="checkbox"
+                                   name="boIds"
+                                   th:value="${bo.id}"
+                                   th:id="${'bo_' + bo.id}"
+                                   th:checked="${chonTatCa or (boIdsChon != null and #lists.contains(boIdsChon, bo.id))}">
+                            <label class="form-check-label fw-semibold ms-2" th:for="${'bo_' + bo.id}">
+                                <span class="ten-bo-text" th:text="${bo.tenBo}">Bộ 1</span>
+                                <span class="badge bg-secondary-subtle text-secondary ms-1" style="font-size: 11px;" th:text="${bo.soLuongTu + ' từ'}">25 từ</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="text-muted small mt-2" th:if="${dsBo == null or dsBo.isEmpty()}">
+                        <em>Bạn chưa có bộ từ nào riêng. Hệ thống sẽ sử dụng toàn bộ từ vựng hiện có trong tài khoản của bạn.</em>
+                    </div>
+                </div>
 
                 <button
                         type="submit"
-                        class="btn-bat-dau">
+                        class="btn-bat-dau"
+                        id="btnTaoDoanVan">
 
-                    📝 Tạo đoạn văn
+                    ✨ Tạo đoạn văn luyện dịch
 
                 </button>
 
@@ -147,6 +184,11 @@
                         type="hidden"
                         name="doanVan"
                         th:value="${doanVan}">
+
+                <th:block th:each="id : ${boIdsChon}">
+                    <input type="hidden" name="boIds" th:value="${id}">
+                </th:block>
+                <input type="hidden" name="chonTatCa" th:value="${chonTatCa}">
 
 
                 <!--

@@ -46,6 +46,15 @@ public interface TuVungRepository extends JpaRepository<TuVung, Long> {
         return findAllByBoTuVungIdAndBoTuVungTaiKhoanIdOrderByIdAsc(boId, taiKhoanId);
     }
 
+    // =========================================================
+    // LẤY TỪ THEO DANH SÁCH NHIỀU BỘ + TÀI KHOẢN
+    // =========================================================
+
+    List<TuVung> findAllByBoTuVungIdInAndBoTuVungTaiKhoanIdOrderByIdAsc(
+            List<Long> boIds,
+            Long taiKhoanId
+    );
+
 
     // =========================================================
     // LẤY TẤT CẢ TỪ CỦA TÀI KHOẢN

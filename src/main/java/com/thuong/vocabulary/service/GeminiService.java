@@ -154,17 +154,17 @@ public class GeminiService {
     // =====================================================
     public String taoDoanVan(String danhSachTu) {
         String prompt = """
-                Ban la giao vien tieng Anh ban xu.
-                Hay viet mot doan van tieng Anh ngan gon, tu nhien, troi chay va co y nghia mach lac (khoang 80 den 140 tu) de nguoi hoc luyen dich.
+                Ban la mot giao vien tieng Anh ban xu chuyen tao bai tap luyen dich cho hoc vien.
+                Hay viet mot doan van tieng Anh ngan gon, tu nhien, troi chay va co cot truyen/ngu canh doi song mach lac (khoang 90 den 150 tu) de nguoi hoc luyen dich.
 
-                YEU CAU QUAN TRONG:
-                1. MUC TIEU HOC TAP: Uu tien su dung cac tu vung duoc cung cap trong danh sach cua nguoi hoc ben duoi.
-                2. NGU PHAP VA NGU CANH: Doan van phai chuan 100% ngu phap tieng Anh, cau van logic, tu nhien. Tuyet doi khong ghep tu guong ep khien cau vo nghia.
-                3. BO SUNG TU LINH HOAT: Neu danh sach tu vung it, hay linh hoat them cac tu ngu thong dung, tu nhien.
-                4. Do dai: 80 - 140 tu.
-                5. Chi tra ve duy nhat doan van tieng Anh, khong giai thich, khong dich, khong danh so.
+                QUY TAC VA YEU CAU BAT BUOC:
+                1. MUC TIEU TRONG TAM: Tich hop va uu tien su dung cac tu vung tu cac bo tu cua nguoi hoc trong danh sach ben duoi.
+                2. KET HOP TU NGU CO BAN: De cau van troi chay, logic va tu nhien, hay chu dong bo sung them cac tu vung, ngu phap co ban va thong dung (nhu dai tu, gioi tu, lien tu, tinh tu, thi co ban...). Tuyet doi khong ghep tu guong ep khien doan van kho hieu.
+                3. CHUAN VAN PHONG BAN XU: Doan van phai dung 100% ngu phap tieng Anh, mang phong cach tu nhien, sinh dong va thuc te.
+                4. DO DAI: Khoang 90 - 150 tu.
+                5. DINH DANG TRA VE: Chi tra ve DUY NHAT doan van tieng Anh, khong ghi tieu de, khong giai thich, khong dich, khong danh so hay ghi chu them.
 
-                Danh sach tu vung cua nguoi hoc:
+                Danh sach tu vung duoc chon cua nguoi hoc:
                 """ + danhSachTu;
 
         try {

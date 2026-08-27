@@ -1,9 +1,13 @@
 package com.thuong.vocabulary.controller;
 
+import com.thuong.vocabulary.entity.BoTuVung;
+import com.thuong.vocabulary.entity.TaiKhoan;
 import com.thuong.vocabulary.entity.TuVung;
 import com.thuong.vocabulary.repository.TuVungRepository;
+import com.thuong.vocabulary.service.BoTuVungService;
 import com.thuong.vocabulary.service.DichNghiaService;
 import com.thuong.vocabulary.service.GeminiService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,226 +24,176 @@ import java.util.Map;
 public class DichDoanVanController {
 
     private final TuVungRepository tuVungRepository;
+    private final BoTuVungService boTuVungService;
     private final GeminiService geminiService;
-
     private final DichNghiaService dichNghiaService;
 
     public DichDoanVanController(
             TuVungRepository tuVungRepository,
+            BoTuVungService boTuVungService,
             GeminiService geminiService,
             DichNghiaService dichNghiaService
     ) {
-
         this.tuVungRepository = tuVungRepository;
+        this.boTuVungService = boTuVungService;
         this.geminiService = geminiService;
-        this.dichNghiaService =
-                dichNghiaService;
+        this.dichNghiaService = dichNghiaService;
     }
 
+    private TaiKhoan layTaiKhoan(HttpSession session) {
+        return (TaiKhoan) session.getAttribute("taiKhoan");
+    }
 
     // =====================================================
     // MỞ TRANG DỊCH ĐOẠN VĂN
     // =====================================================
-
     @GetMapping("/dich-doan-van")
-    public String dichDoanVan(Model model) {
+    public String dichDoanVan(HttpSession session, Model model) {
+        TaiKhoan taiKhoan = layTaiKhoan(session);
+        if (taiKhoan == null) {
+            return "redirect:/dangnhap";
+        }
 
-        List<TuVung> dsTuVung =
-                tuVungRepository.findAll();
+        Long taiKhoanId = taiKhoan.getId();
+        List<BoTuVung> dsBo = boTuVungService.layDanhSachBo(taiKhoanId);
+        List<TuVung> dsTuVung = tuVungRepository.findAllByBoTuVungTaiKhoanId(taiKhoanId);
 
-        model.addAttribute(
-                "dsTuVung",
-                dsTuVung
-        );
+        model.addAttribute("dsBo", dsBo);
+        model.addAttribute("tongSoTu", dsTuVung.size());
+        model.addAttribute("dsTuVung", dsTuVung);
+        model.addAttribute("boIdsChon", new ArrayList<Long>());
+        model.addAttribute("chonTatCa", true);
 
         return "dich-doan-van";
     }
 
-
     // =====================================================
-    // TẠO ĐOẠN VĂN
+    // TẠO ĐOẠN VĂN TỪ CÁC BỘ ĐƯỢC CHỌN
     // =====================================================
-
     @PostMapping("/dich-doan-van")
-    public String taoDoanVan(Model model) {
+    public String taoDoanVan(
+            @RequestParam(value = "boIds", required = false) List<Long> boIds,
+            @RequestParam(value = "chonTatCa", required = false, defaultValue = "false") boolean chonTatCa,
+            HttpSession session,
+            Model model
+    ) {
+        TaiKhoan taiKhoan = layTaiKhoan(session);
+        if (taiKhoan == null) {
+            return "redirect:/dangnhap";
+        }
 
-        // Lấy toàn bộ từ trong CSDL
+        Long taiKhoanId = taiKhoan.getId();
+        List<BoTuVung> dsBo = boTuVungService.layDanhSachBo(taiKhoanId);
+        List<TuVung> dsTuVung;
 
-        List<TuVung> dsTuVung =
-                tuVungRepository.findAll();
+        if (chonTatCa || boIds == null || boIds.isEmpty()) {
+            dsTuVung = tuVungRepository.findAllByBoTuVungTaiKhoanId(taiKhoanId);
+            chonTatCa = true;
+            if (boIds == null) {
+                boIds = new ArrayList<>();
+            }
+        } else {
+            dsTuVung = tuVungRepository.findAllByBoTuVungIdInAndBoTuVungTaiKhoanIdOrderByIdAsc(boIds, taiKhoanId);
+        }
 
+        model.addAttribute("dsBo", dsBo);
+        model.addAttribute("boIdsChon", boIds);
+        model.addAttribute("chonTatCa", chonTatCa);
+        model.addAttribute("tongSoTu", dsTuVung.size());
 
-        // =================================================
-        // KIỂM TRA CÓ TỪ VỰNG HAY KHÔNG
-        // =================================================
-
+        // Kiểm tra có từ vựng hay không
         if (dsTuVung.isEmpty()) {
-
-            model.addAttribute(
-                    "loi",
-                    "Bạn chưa có từ vựng nào trong cơ sở dữ liệu."
-            );
-
-            model.addAttribute(
-                    "dsTuVung",
-                    dsTuVung
-            );
-
+            model.addAttribute("loi", "Không tìm thấy từ vựng nào trong các bộ từ bạn đã chọn để tạo đoạn văn.");
+            model.addAttribute("dsTuVung", dsTuVung);
             return "dich-doan-van";
         }
 
-
-        // =================================================
-        // TRỘN TỪ NGẪU NHIÊN
-        // =================================================
-
-        List<TuVung> tuNgauNhien =
-                new ArrayList<>(dsTuVung);
-
+        // Trộn từ ngẫu nhiên
+        List<TuVung> tuNgauNhien = new ArrayList<>(dsTuVung);
         Collections.shuffle(tuNgauNhien);
 
+        // Chọn tối đa 35 từ gửi cho Gemini
+        int soLuong = Math.min(35, tuNgauNhien.size());
+        List<TuVung> tuDuocChon = tuNgauNhien.subList(0, soLuong);
 
-        // =================================================
-        // CHỌN TỐI ĐA 50 TỪ
-        // =================================================
-
-        int soLuong =
-                Math.min(50, tuNgauNhien.size());
-
-        List<TuVung> tuDuocChon =
-                tuNgauNhien.subList(0, soLuong);
-
-
-        // =================================================
-        // TẠO DANH SÁCH TỪ TIẾNG ANH
-        // ĐỂ GỬI CHO GEMINI
-        // =================================================
-
-        StringBuilder danhSachTu =
-                new StringBuilder();
-
+        // Tạo danh sách từ tiếng Anh + tiếng Việt gửi cho Gemini
+        StringBuilder danhSachTu = new StringBuilder();
         for (TuVung tu : tuDuocChon) {
-
-            danhSachTu
-                    .append(tu.getTiengAnh())
-                    .append(", ");
+            String ta = tu.getTiengAnh() != null ? tu.getTiengAnh().trim() : "";
+            String tv = tu.getTiengViet() != null ? tu.getTiengViet().trim() : "";
+            if (!ta.isEmpty()) {
+                danhSachTu.append("- ").append(ta);
+                if (!tv.isEmpty()) {
+                    danhSachTu.append(" (nghĩa: ").append(tv).append(")");
+                }
+                danhSachTu.append("\n");
+            }
         }
 
-
-        // =================================================
-        // GỌI GEMINI
-        // =================================================
-
+        // Gọi Gemini
         String doanVan;
-
         try {
-
-            doanVan =
-                    geminiService.taoDoanVan(
-                            danhSachTu.toString()
-                    );
-
+            doanVan = geminiService.taoDoanVan(danhSachTu.toString());
         } catch (Exception e) {
-
-            System.out.println(
-                    "===== LỖI KHI TẠO ĐOẠN VĂN ====="
-            );
-
-            System.out.println(
-                    e.getMessage()
-            );
-
-            model.addAttribute(
-                    "loi",
-                    "Gemini đang hết lượt miễn phí hoặc đang quá tải. Vui lòng thử lại sau khoảng 1 phút."
-            );
-
-            model.addAttribute(
-                    "dsTuVung",
-                    dsTuVung
-            );
-
-            model.addAttribute(
-                    "tuVungTuCSDL",
-                    dsTuVung
-            );
-
+            System.err.println("===== LỖI KHI TẠO ĐOẠN VĂN =====");
+            e.printStackTrace();
+            model.addAttribute("loi", "Gemini AI đang tạm thời bận hoặc quá tải. Vui lòng thử lại sau 30 giây.");
+            model.addAttribute("dsTuVung", dsTuVung);
             return "dich-doan-van";
         }
 
-        // =================================================
-        // GỬI KẾT QUẢ VỀ HTML
-        // =================================================
+        // Gửi kết quả về HTML
+        model.addAttribute("doanVan", doanVan);
 
-        model.addAttribute(
-                "doanVan",
-                doanVan
-        );
-
-
-// =================================================
-// TẠO DỮ LIỆU TỪ VỰNG CHO JAVASCRIPT
-// =================================================
-
-        List<java.util.Map<String, String>> tuVungJS =
-                new ArrayList<>();
-
-        for (TuVung tu : dsTuVung) {
-
-            java.util.Map<String, String> item =
-                    new java.util.HashMap<>();
-
-            item.put(
-                    "tiengAnh",
-                    tu.getTiengAnh() != null
-                            ? tu.getTiengAnh()
-                            : ""
-            );
-
-            item.put(
-                    "tiengViet",
-                    tu.getTiengViet() != null
-                            ? tu.getTiengViet()
-                            : ""
-            );
-
+        // Dữ liệu từ vựng CSDL để click tra từ trên giao diện
+        List<Map<String, String>> tuVungJS = new ArrayList<>();
+        List<TuVung> tatCaTu = tuVungRepository.findAllByBoTuVungTaiKhoanId(taiKhoanId);
+        for (TuVung tu : tatCaTu) {
+            Map<String, String> item = new java.util.HashMap<>();
+            item.put("tiengAnh", tu.getTiengAnh() != null ? tu.getTiengAnh() : "");
+            item.put("tiengViet", tu.getTiengViet() != null ? tu.getTiengViet() : "");
             tuVungJS.add(item);
         }
 
-        model.addAttribute(
-                "tuVungTuCSDL",
-                tuVungJS
-        );
-
-        // Danh sách từ đã chọn
-
-        model.addAttribute(
-                "tuDuocChon",
-                tuDuocChon
-        );
-
-
-        // Toàn bộ từ vựng
-
-        model.addAttribute(
-                "dsTuVung",
-                dsTuVung
-        );
-
+        model.addAttribute("tuVungTuCSDL", tuVungJS);
+        model.addAttribute("tuDuocChon", tuDuocChon);
+        model.addAttribute("dsTuVung", dsTuVung);
 
         return "dich-doan-van";
     }
 
-
     // =====================================================
-// KIỂM TRA BẢN DỊCH BẰNG GEMINI
-// =====================================================
-
+    // KIỂM TRA BẢN DỊCH BẰNG GEMINI
+    // =====================================================
     @PostMapping("/dich-doan-van/kiem-tra")
     public String kiemTraBanDich(
             @RequestParam("doanVan") String doanVan,
             @RequestParam("banDich") String banDich,
+            @RequestParam(value = "boIds", required = false) List<Long> boIds,
+            @RequestParam(value = "chonTatCa", required = false, defaultValue = "false") boolean chonTatCa,
+            HttpSession session,
             Model model) {
+
+        TaiKhoan taiKhoan = layTaiKhoan(session);
+        Long taiKhoanId = (taiKhoan != null) ? taiKhoan.getId() : null;
+
+        if (taiKhoanId != null) {
+            List<BoTuVung> dsBo = boTuVungService.layDanhSachBo(taiKhoanId);
+            model.addAttribute("dsBo", dsBo);
+            model.addAttribute("boIdsChon", boIds != null ? boIds : new ArrayList<Long>());
+            model.addAttribute("chonTatCa", chonTatCa);
+
+            List<TuVung> tatCaTu = tuVungRepository.findAllByBoTuVungTaiKhoanId(taiKhoanId);
+            List<Map<String, String>> tuVungJS = new ArrayList<>();
+            for (TuVung tu : tatCaTu) {
+                Map<String, String> item = new java.util.HashMap<>();
+                item.put("tiengAnh", tu.getTiengAnh() != null ? tu.getTiengAnh() : "");
+                item.put("tiengViet", tu.getTiengViet() != null ? tu.getTiengViet() : "");
+                tuVungJS.add(item);
+            }
+            model.addAttribute("tuVungTuCSDL", tuVungJS);
+            model.addAttribute("dsTuVung", tatCaTu);
+        }
 
         // =================================================
         // KIỂM TRA DỮ LIỆU
