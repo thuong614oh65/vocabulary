@@ -666,14 +666,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 },
                 body: JSON.stringify({
                     text: selectedText,
-                    mode: 'AUTO'
+                    mode: 'AUTO',
+                    quickMode: true
                 })
             })
             .then(res => res.json())
             .then(data => {
                 loading.classList.add('d-none');
                 if (data.thanhCong && data.banDich) {
-                    // Hiển thị kết quả dịch
                     let html = `<div class="fw-bold text-primary mb-1">${data.tuGoc || selectedText}</div>`;
                     if (data.phienAm) html += `<div class="text-muted small mb-1">${data.phienAm}</div>`;
                     html += `<div class="fw-semibold">${data.banDich}</div>`;

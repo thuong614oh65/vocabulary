@@ -85,15 +85,15 @@ public class TraTuServiceImpl implements TraTuService {
         response.setLoaiDich(mode);
 
         if ("VI_EN".equals(mode)) {
-            xuLyDichVietAnh(rawText, response);
+            xuLyDichVietAnh(rawText, response, request.isQuickMode());
         } else {
-            xuLyDichAnhViet(rawText, response);
+            xuLyDichAnhViet(rawText, response, request.isQuickMode());
         }
 
         return response;
     }
 
-    private void xuLyDichAnhViet(String text, TraTuResponse response) {
+    private void xuLyDichAnhViet(String text, TraTuResponse response, boolean quickMode) {
         response.setNgonNguNguon("en");
         response.setNgonNguDich("vi");
 
@@ -147,11 +147,13 @@ public class TraTuServiceImpl implements TraTuService {
             }
         }
 
-        // 4. Bổ sung làm giàu bằng Gemini AI
-        lamGiauDuLieuQuaGemini(text, "EN_VI", response);
+        // 4. Bổ sung làm giàu bằng Gemini AI (Chỉ khi không phải dịch nhanh)
+        if (!quickMode) {
+            lamGiauDuLieuQuaGemini(text, "EN_VI", response);
+        }
     }
 
-    private void xuLyDichVietAnh(String text, TraTuResponse response) {
+    private void xuLyDichVietAnh(String text, TraTuResponse response, boolean quickMode) {
         response.setNgonNguNguon("vi");
         response.setNgonNguDich("en");
 
@@ -182,7 +184,9 @@ public class TraTuServiceImpl implements TraTuService {
         }
 
         // 3. Bổ sung làm giàu bằng Gemini AI
-        lamGiauDuLieuQuaGemini(text, "VI_EN", response);
+        if (!quickMode) {
+            lamGiauDuLieuQuaGemini(text, "VI_EN", response);
+        }
     }
 
     private void lamGiauDuLieuQuaGemini(String text, String mode, TraTuResponse response) {

@@ -4,6 +4,7 @@ public class TraTuRequest {
 
     private String text;
     private String mode; // "EN_VI", "VI_EN", "AUTO"
+    private boolean quickMode;
 
     public TraTuRequest() {
     }
@@ -27,5 +28,13 @@ public class TraTuRequest {
 
     public void setMode(String mode) {
         this.mode = mode;
+    }
+
+    public boolean isQuickMode() {
+        return quickMode;
+    }
+
+    public void setQuickMode(boolean quickMode) {
+        this.quickMode = quickMode;
     }
 }
