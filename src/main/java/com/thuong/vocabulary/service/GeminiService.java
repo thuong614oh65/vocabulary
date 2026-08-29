@@ -662,7 +662,7 @@ public class GeminiService {
                 Hãy phân tích kỹ lưỡng bức ảnh chứa bảng thông tin / lịch trình / tài liệu đính kèm.
                 
                 YÊU CẦU:
-                1. Đọc và trích xuất toàn bộ dữ liệu văn bản từ ảnh thành dạng tóm tắt cấu trúc bảng/văn bản rõ ràng.
+                1. Đọc và trích xuất TOÀN BỘ VĂN BẢN TIẾNG ANH từ ảnh một cách chính xác tuyệt đối (giống như OCR). GIỮ NGUYÊN 100% TIẾNG ANH gốc, KHÔNG DỊCH sang tiếng Việt, KHÔNG THÊM các nhãn tiếng Việt (như Sự kiện:, Địa điểm:, Thời gian:,...). Trình bày lại dưới dạng văn bản cấu trúc rõ ràng.
                 2. Đặt tiêu đề đề thi phù hợp bằng tiếng Anh và tiếng Việt.
                 3. Tạo tình huống người gọi (Caller Scenario) bằng tiếng Anh chuẩn giao tiếp tự nhiên kèm phụ đề tiếng Việt ngắn.
                    Ví dụ: "Hello, I'm calling to ask for some details about the upcoming event. Could you please answer a few questions?"
@@ -675,7 +675,7 @@ public class GeminiService {
                 YÊU CẦU TRẢ VỀ DUY NHẤT JSON hợp lệ (không markdown hay giải thích ngoài JSON):
                 {
                   "tieuDe": "Tiêu đề đề thi",
-                  "tomTatNoiDung": "Nội dung tóm tắt chi tiết của bảng thông tin trong ảnh",
+                  "tomTatNoiDung": "Toàn bộ văn bản tiếng Anh trích xuất nguyên bản từ ảnh (Giữ nguyên 100% tiếng Anh, tuyệt đối không dịch hay thêm tiếng Việt)",
                   "tinhHuong": "Caller scenario in English (kèm dịch tiếng Việt)",
                   "cauHoi1": "Question 1 (15s limit)",
                   "goiYCau1": "Model spoken answer for Question 1 (~20-30 words)",
