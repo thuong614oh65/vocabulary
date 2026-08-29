@@ -653,7 +653,9 @@ function hideLoading() {
 // -------------------------------------------------------------
 document.addEventListener('DOMContentLoaded', () => {
     const tooltip = document.getElementById('translateTooltip');
+    const tooltipButtons = document.getElementById('tooltipButtons');
     const btnTranslate = document.getElementById('btnTranslateTooltip');
+    const btnSpeak = document.getElementById('btnSpeakTooltip');
     const resultBox = document.getElementById('translateResultBox');
     const loading = document.getElementById('translateLoading');
     const content = document.getElementById('translateContent');
@@ -688,7 +690,7 @@ document.addEventListener('DOMContentLoaded', () => {
             
             // Reset trạng thái tooltip
             resultBox.classList.add('d-none');
-            btnTranslate.classList.remove('d-none');
+            tooltipButtons.classList.remove('d-none');
             tooltip.classList.remove('d-none');
         } else {
             // Ẩn tooltip nếu click ra ngoài hoặc không có text
@@ -698,12 +700,20 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // Khi bấm nút Đọc
+    if (btnSpeak) {
+        btnSpeak.addEventListener('click', () => {
+            if (!selectedText) return;
+            speakText(selectedText);
+        });
+    }
+
     // Khi bấm nút Dịch
     if (btnTranslate) {
         btnTranslate.addEventListener('click', () => {
             if (!selectedText) return;
             
-            btnTranslate.classList.add('d-none');
+            tooltipButtons.classList.add('d-none');
             resultBox.classList.remove('d-none');
             loading.classList.remove('d-none');
             content.innerHTML = "";
