@@ -1,5 +1,6 @@
 package com.thuong.vocabulary.controller;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.thuong.vocabulary.dto.luyende.ChamDiemQ79Request;
 import com.thuong.vocabulary.dto.luyende.DeThiQ79DTO;
@@ -57,6 +58,7 @@ public class LuyenDeController {
     public LuyenDeController(GeminiService geminiService) {
         this.geminiService = geminiService;
         this.objectMapper = new ObjectMapper();
+        this.objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
 
     private TaiKhoan layTaiKhoan(HttpSession session) {

@@ -1,5 +1,6 @@
 package com.thuong.vocabulary.dto.luyende;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -9,12 +10,14 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class DeThiQ79DTO {
 
     private String tieuDe;
     private String loaiNoiDung; // "IMAGE" | "TEXT"
     private String anhUrl;
     private String vanBanThongTin;
+    private String tomTatNoiDung;
     private String tinhHuong;
 
     private String cauHoi1;
