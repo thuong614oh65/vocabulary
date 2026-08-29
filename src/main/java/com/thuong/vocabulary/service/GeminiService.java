@@ -881,7 +881,7 @@ public class GeminiService {
                       "thoiGianNoiUocTinh": 13,
                       "diem": 3,
                       "trangThai": "DUNG",
-                      "danhGiaThongTin": "Đủ thông tin và chính xác 100%",
+                      "danhGiaThongTin": "Đủ thông tin và chính xác 100%%",
                       "danhGiaThoiGian": "~13 giây - Vừa vặn tốc độ nói cho 15s",
                       "nhanXetChiTiet": "Nhận xét ngữ pháp giới từ bằng tiếng Việt",
                       "cauTraLoiMau": "Sure, the conference will begin at 9:00 a.m. at Wayne Arena.",
