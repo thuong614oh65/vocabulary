@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Luyện Đề TOEIC Speaking Q7-9 (Respond using Info)</title>
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- CSS riêng -->
+    <link rel="stylesheet" th:href="@{/css/luyen-de.css(v=1)}">
+</head>
+<body>
+
+    <!-- Header Navigation -->
+    <header class="exam-header py-3">
+        <div class="container d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center gap-3">
+                <a href="/" class="back-btn">
+                    <span>←</span> Trang chủ
+                </a>
+                <h1 class="h5 mb-0 fw-bold text-dark d-flex align-items-center gap-2">
+                    <span>📊</span> Luyện Đề TOEIC Speaking (Q7-9)
+                </h1>
+            </div>
+            <div class="d-flex align-items-center gap-2" th:if="${session.taiKhoan != null}">
+                <span class="badge bg-light text-dark border px-3 py-2 rounded-pill fw-semibold">
+                    👤 <span th:text="${session.taiKhoan.hoTen != null && !session.taiKhoan.hoTen.isBlank() ? session.taiKhoan.hoTen : session.taiKhoan.tenDangNhap}">Học viên</span>
+                </span>
+            </div>
+        </div>
+    </header>
+
+    <main class="container my-4">
+
+        <!-- ==============================================================
+             KHU VỰC CHỌN CHẾ ĐỘ TẠO ĐỀ (3 LỰA CHỌN)
+             ============================================================== -->
+        <section id="modeSelectionSection" class="mode-tabs-container">
+            <div class="text-center mb-4">
+                <h2 class="h4 fw-bold text-slate-800">Chọn phương thức tạo đề thi TOEIC Speaking (Q7-9)</h2>
+                <p class="text-muted small">Mô phỏng bài thi: Đọc mẫu thông tin & trả lời 3 câu hỏi (Câu 1, 2: 15s • Câu 3: 30s) có AI chấm điểm thông minh</p>
+            </div>
+
+            <!-- 3 Tabs Navigation -->
+            <ul class="nav nav-pills nav-justified mb-4 gap-2" id="createExamTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="tab-sample-btn" data-bs-toggle="pill" data-bs-target="#tab-sample" type="button" role="tab">
+                        <span>🌟</span> 15 Đề Mẫu Có Sẵn & AI Tạo
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="tab-upload-btn" data-bs-toggle="pill" data-bs-target="#tab-upload" type="button" role="tab">
+                        <span>🖼️</span> Tự Tải Ảnh Đề Bài
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="tab-text-btn" data-bs-toggle="pill" data-bs-target="#tab-text" type="button" role="tab">
+                        <span>📝</span> Tự Nhập Văn Bản / Bảng
+                    </button>
+                </li>
+            </ul>
+
+            <!-- Tab Content -->
+            <div class="tab-content" id="createExamTabContent">
+
+                <!-- TAB 1: 15 ĐỀ MẪU TỪ đề thi.docx & AI TỰ SINH -->
+                <div class="tab-pane fade show active" id="tab-sample" role="tabpanel">
+                    <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+                        <span class="fw-bold text-slate-700">Bộ 15 đề thi mẫu thực tế (Trích xuất từ tài liệu Tiếng Anh Nâng Cao 2):</span>
+                        <button class="btn btn-primary btn-sm px-3 rounded-pill fw-bold" id="btnAiAutoGenerate">
+                            ✨ AI Tự Tạo Đề Hoàn Toàn Mới
+                        </button>
+                    </div>
+
+                    <div class="sample-tests-grid">
+                        <div th:each="de : ${dsDeMau}" class="sample-test-card" th:attr="data-id=${de.id}">
+                            <div class="thumb-wrapper">
+                                <span class="badge-id" th:text="'Đề #' + ${de.id}">Đề #1</span>
+                                <img th:src="@{${de.anhUrl}}" th:alt="${de.tenEn}">
+                            </div>
+                            <div class="card-body-content">
+                                <div>
+                                    <div class="title-en" th:text="${de.tenEn}">Annual Human Resources Conference</div>
+                                    <div class="title-vi" th:text="${de.tenVi}">Hội nghị Nhân sự Thường niên</div>
+                                </div>
+                                <button class="btn btn-outline-primary btn-sm w-100 rounded-pill fw-semibold btn-select-sample" th:attr="data-id=${de.id}">
+                                    Luyện đề này →
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB 2: TỰ TẢI ẢNH LÊN -->
+                <div class="tab-pane fade" id="tab-upload" role="tabpanel">
+                    <div class="upload-dropzone" id="uploadDropzone">
+                        <div class="icon-box">📷</div>
+                        <h5 class="fw-bold mb-1">Kéo thả ảnh đề thi vào đây hoặc bấm để chọn</h5>
+                        <p class="text-muted small mb-3">Hỗ trợ PNG, JPG, JPEG, WEBP (Ảnh lịch trình, hóa đơn, CV, chương trình hội nghị...)</p>
+                        <input type="file" id="examImageInput" accept="image/*" class="d-none">
+                        <button class="btn btn-primary px-4 py-2 rounded-pill fw-semibold" onclick="document.getElementById('examImageInput').click()">
+                            Chọn ảnh từ thiết bị
+                        </button>
+                    </div>
+
+                    <div id="imagePreviewContainer" class="mt-4 text-center d-none">
+                        <h6 class="fw-bold mb-2 text-slate-700">Xem trước ảnh đã chọn:</h6>
+                        <img id="imagePreview" src="" alt="Preview" class="img-fluid rounded-3 border mb-3" style="max-height: 320px;">
+                        <div>
+                            <button id="btnSubmitUpload" class="btn btn-success px-4 py-2 rounded-pill fw-bold">
+                                🚀 Phân tích ảnh & Bắt đầu luyện đề
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB 3: TỰ NHẬP VĂN BẢN -->
+                <div class="tab-pane fade" id="tab-text" role="tabpanel">
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between align-items-center mb-2 flex-wrap gap-2">
+                            <label class="form-label fw-bold mb-0">Nhập hoặc dán nội dung thông tin / lịch trình:</label>
+                            <div class="btn-group btn-group-sm">
+                                <button type="button" class="btn btn-outline-secondary btn-template" data-type="hoi-nghi">Mẫu: Hội nghị</button>
+                                <button type="button" class="btn btn-outline-secondary btn-template" data-type="tour">Mẫu: Lịch Tour</button>
+                                <button type="button" class="btn btn-outline-secondary btn-template" data-type="cv">Mẫu: CV Ứng viên</button>
+                            </div>
+                        </div>
+                        <textarea id="customTextInput" class="form-control" rows="8" placeholder="Dán bảng thời gian, địa điểm, sự kiện, giá tiền, người phụ trách tại đây..."></textarea>
+                    </div>
+                    <div class="text-end">
+                        <button id="btnSubmitText" class="btn btn-primary px-4 py-2 rounded-pill fw-bold">
+                            🪄 Tạo đề thi & Bắt đầu làm bài →
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ==============================================================
+             KHU VỰC LÀM BÀI (PRACTICE ARENA)
+             ============================================================== -->
+        <section id="practiceArena" class="practice-container">
+
+            <div class="row g-4">
+                <!-- CỘT TRÁI: BẢNG THÔNG TIN & BỘ ĐẾM THỜI GIAN ĐỌC ĐỀ -->
+                <div class="col-lg-6">
+                    <div class="info-sheet-card">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h3 class="h6 fw-bold mb-0 text-slate-800" id="examTitleDisplay">Mẫu thông tin (Information Sheet)</h3>
+                            <div class="d-flex gap-2">
+                                <button class="btn btn-sm btn-outline-secondary rounded-pill" id="btnChangeExam">Đổi đề khác</button>
+                            </div>
+                        </div>
+
+                        <!-- 45s Preparation Timer -->
+                        <div class="d-flex justify-content-between align-items-center bg-light p-2 px-3 rounded-pill mb-3 border">
+                            <span class="small fw-semibold text-muted">⏱️ Thời gian đọc đề chuẩn:</span>
+                            <span class="timer-badge" id="prepTimer">45 giây</span>
+                            <button class="btn btn-sm btn-dark rounded-pill px-3 py-1" id="btnStartPrepTimer">Bắt đầu đếm</button>
+                        </div>
+
+                        <!-- Info Display (Image or HTML Table) -->
+                        <div id="infoDisplayArea" class="text-center">
+                            <img id="examImageDisplay" src="" alt="Info Sheet" class="info-sheet-img d-none">
+                            <div id="examTextDisplay" class="text-start p-3 bg-light rounded-3 border d-none"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CỘT PHẢI: TÌNH HUỐNG & 3 CÂU HỎI -->
+                <div class="col-lg-6">
+
+                    <!-- Scenario Card -->
+                    <div class="scenario-card">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <span class="badge bg-primary px-3 py-1 rounded-pill fw-semibold">📞 Tình huống cuộc gọi (Caller Scenario)</span>
+                            <button class="audio-btn" id="btnPlayScenario" title="Nghe giọng đọc người gọi">🔊</button>
+                        </div>
+                        <p class="mb-0 fw-semibold text-slate-800" id="scenarioText">Đang tải tình huống...</p>
+                    </div>
+
+                    <!-- Question 1 (15s) -->
+                    <div class="question-box">
+                        <div class="question-header">
+                            <span class="q-badge">Câu 1 (15 giây • ~20-35 từ)</span>
+                            <button class="audio-btn btn-play-q" data-target="q1" title="Nghe câu hỏi 1">🔊</button>
+                        </div>
+                        <div class="question-text" id="q1Text">Loading question 1...</div>
+                        <textarea class="answer-textarea" id="ans1Input" placeholder="Nhập câu trả lời của bạn cho câu 1 bằng tiếng Anh..."></textarea>
+                        <div class="live-meter">
+                            <span class="text-muted"><span id="wordCount1">0</span> từ • <span id="timeEst1">0</span>s nói ước tính</span>
+                            <span class="meter-status" id="meterStatus1">Chưa nhập</span>
+                        </div>
+                    </div>
+
+                    <!-- Question 2 (15s) -->
+                    <div class="question-box">
+                        <div class="question-header">
+                            <span class="q-badge">Câu 2 (15 giây • ~20-35 từ)</span>
+                            <button class="audio-btn btn-play-q" data-target="q2" title="Nghe câu hỏi 2">🔊</button>
+                        </div>
+                        <div class="question-text" id="q2Text">Loading question 2...</div>
+                        <textarea class="answer-textarea" id="ans2Input" placeholder="Nhập câu trả lời của bạn cho câu 2 bằng tiếng Anh (đính chính thông tin)..."></textarea>
+                        <div class="live-meter">
+                            <span class="text-muted"><span id="wordCount2">0</span> từ • <span id="timeEst2">0</span>s nói ước tính</span>
+                            <span class="meter-status" id="meterStatus2">Chưa nhập</span>
+                        </div>
+                    </div>
+
+                    <!-- Question 3 (30s) -->
+                    <div class="question-box">
+                        <div class="question-header">
+                            <span class="q-badge">Câu 3 (30 giây • ~45-75 từ)</span>
+                            <button class="audio-btn btn-play-q" data-target="q3" title="Nghe câu hỏi 3">🔊</button>
+                        </div>
+                        <div class="question-text" id="q3Text">Loading question 3...</div>
+                        <textarea class="answer-textarea" id="ans3Input" placeholder="Nhập câu trả lời tổng hợp đầy đủ cho câu 3 (dùng liên từ First, Second...)..."></textarea>
+                        <div class="live-meter">
+                            <span class="text-muted"><span id="wordCount3">0</span> từ • <span id="timeEst3">0</span>s nói ước tính</span>
+                            <span class="meter-status" id="meterStatus3">Chưa nhập</span>
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="text-end mb-4">
+                        <button id="btnSubmitAnswers" class="btn btn-success btn-lg px-5 py-3 rounded-pill fw-bold shadow-lg w-100">
+                            ✨ Nộp bài & Chấm điểm bằng AI
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+
+        </section>
+
+        <!-- ==============================================================
+             KHU VỰC HIỂN THỊ KẾT QUẢ CHẤM ĐIỂM (RESULTS)
+             ============================================================== -->
+        <section id="resultSection" class="result-section">
+
+            <!-- Card Tổng Điểm -->
+            <div class="result-card-total">
+                <div class="row align-items-center text-center text-md-start">
+                    <div class="col-md-3 text-center mb-3 mb-md-0">
+                        <div class="score-circle">
+                            <span class="score-num" id="totalScoreNum">8</span>
+                            <span class="score-max">/ 9 Điểm</span>
+                        </div>
+                    </div>
+                    <div class="col-md-9">
+                        <span class="badge bg-warning text-dark px-3 py-1 rounded-pill fw-bold mb-2" id="xepLoaiBadge">XUẤT SẮC</span>
+                        <h3 class="h4 fw-bold text-white mb-2">Kết quả đánh giá bài làm</h3>
+                        <p class="text-slate-200 mb-0" id="nhanXetTongQuanText">Đang tải nhận xét tổng quan...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chi tiết từng câu -->
+            <div id="questionResultsContainer">
+                <!-- Sẽ được render tự động bằng JS -->
+            </div>
+
+            <div class="text-center my-4">
+                <button class="btn btn-primary px-5 py-3 rounded-pill fw-bold shadow" onclick="location.reload()">
+                    🔄 Làm Đề Khác
+                </button>
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="spinner-custom"></div>
+        <h5 class="fw-bold mb-2" id="loadingTitle">Gemini AI đang xử lý...</h5>
+        <p class="small text-slate-300 mb-0" id="loadingSubtitle">Vui lòng chờ trong giây lát</p>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- JS riêng -->
+    <script th:src="@{/js/luyen-de.js(v=1)}"></script>
+</body>
+</html>

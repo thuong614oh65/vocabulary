@@ -643,4 +643,289 @@ public class GeminiService {
         }
         return null;
     }
+
+    // =====================================================
+    // 8. TẠO ĐỀ THI TOEIC SPEAKING Q7-9 TỪ HÌNH ẢNH (MULTIMODAL)
+    // =====================================================
+    public String taoDeQ79TuHinhAnh(byte[] fileBytes, String contentType) throws Exception {
+        if (clients.isEmpty()) {
+            throw new IllegalStateException("Hệ thống chưa được cấu hình GEMINI_API_KEY.");
+        }
+
+        String mimeType = "image/jpeg";
+        if (contentType != null && !contentType.isBlank() && !contentType.equals("application/octet-stream")) {
+            mimeType = contentType.split(";")[0].trim().toLowerCase();
+        }
+
+        String prompt = """
+                Bạn là chuyên gia ra đề thi TOEIC Speaking (Question 7-9: Respond to Questions using Information Provided).
+                Hãy phân tích kỹ lưỡng bức ảnh chứa bảng thông tin / lịch trình / tài liệu đính kèm.
+                
+                YÊU CẦU:
+                1. Đọc và trích xuất toàn bộ dữ liệu văn bản từ ảnh thành dạng tóm tắt cấu trúc bảng/văn bản rõ ràng.
+                2. Đặt tiêu đề đề thi phù hợp bằng tiếng Anh và tiếng Việt.
+                3. Tạo tình huống người gọi (Caller Scenario) bằng tiếng Anh chuẩn giao tiếp tự nhiên kèm phụ đề tiếng Việt ngắn.
+                   Ví dụ: "Hello, I'm calling to ask for some details about the upcoming event. Could you please answer a few questions?"
+                4. Tạo 3 câu hỏi chuẩn cấu trúc đề thi TOEIC Speaking:
+                   - Câu 1 (15 giây): Hỏi về thông tin cơ bản / thời gian bắt đầu / địa điểm / sự kiện đầu tiên.
+                   - Câu 2 (15 giây): Hỏi xác nhận/đính chính thông tin (người gọi có thông tin sai hoặc hỏi về mục bị hủy/hoãn để thí sinh sửa lại).
+                   - Câu 3 (30 giây): Hỏi tổng hợp chi tiết về một chủ đề/người/buổi diễn (yêu cầu liệt kê đầy đủ 2-3 mục chi tiết).
+                5. Cung cấp câu trả lời mẫu chuẩn văn phong nói tự nhiên (Spoken English) đạt điểm tối đa cho cả 3 câu.
+                
+                YÊU CẦU TRẢ VỀ DUY NHẤT JSON hợp lệ (không markdown hay giải thích ngoài JSON):
+                {
+                  "tieuDe": "Tiêu đề đề thi",
+                  "tomTatNoiDung": "Nội dung tóm tắt chi tiết của bảng thông tin trong ảnh",
+                  "tinhHuong": "Caller scenario in English (kèm dịch tiếng Việt)",
+                  "cauHoi1": "Question 1 (15s limit)",
+                  "goiYCau1": "Model spoken answer for Question 1 (~20-30 words)",
+                  "cauHoi2": "Question 2 (15s limit)",
+                  "goiYCau2": "Model spoken answer for Question 2 (~20-30 words)",
+                  "cauHoi3": "Question 3 (30s limit)",
+                  "goiYCau3": "Model spoken answer for Question 3 (~50-70 words)"
+                }
+                """;
+
+        Part filePart = Part.fromBytes(fileBytes, mimeType);
+        Part promptPart = Part.fromText(prompt);
+
+        Content content = Content.builder()
+                .parts(List.of(filePart, promptPart))
+                .build();
+
+        int tongSoClient = clients.size();
+        String[] models = new String[]{MODEL_FLASH, MODEL_FLASH_LITE};
+        Exception lastImgEx = null;
+
+        for (String modelName : models) {
+            for (int attempt = 0; attempt < tongSoClient; attempt++) {
+                int index = keyIndex.getAndUpdate(i -> (i + 1) % tongSoClient);
+                Client currentClient = clients.get(index);
+
+                try {
+                    GenerateContentResponse response = currentClient.models.generateContent(
+                            modelName,
+                            content,
+                            null
+                    );
+
+                    String resultText = response.text();
+                    if (resultText != null && !resultText.isBlank()) {
+                        resultText = resultText.trim();
+                        if (resultText.startsWith("```json")) {
+                            resultText = resultText.substring(7);
+                        } else if (resultText.startsWith("```")) {
+                            resultText = resultText.substring(3);
+                        }
+                        if (resultText.endsWith("```")) {
+                            resultText = resultText.substring(0, resultText.length() - 3);
+                        }
+                        return resultText.trim();
+                    }
+                } catch (Exception e) {
+                    lastImgEx = e;
+                    System.err.printf("[GeminiService] taoDeQ79TuHinhAnh - Key #%d model '%s' lỗi: %s%n",
+                            index + 1, modelName, e.getMessage());
+                }
+            }
+        }
+
+        throw lastImgEx != null ? lastImgEx : new RuntimeException("Không thể nhận diện hình ảnh qua Gemini AI.");
+    }
+
+    // =====================================================
+    // 9. TẠO ĐỀ THI TOEIC SPEAKING Q7-9 TỪ VĂN BẢN
+    // =====================================================
+    public String taoDeQ79TuVanBan(String vanBan) throws Exception {
+        String prompt = """
+                Bạn là chuyên gia ra đề thi TOEIC Speaking (Question 7-9: Respond to Questions using Information Provided).
+                Hãy phân tích đoạn văn bản / bảng thông tin dưới đây để tạo ra một đề thi TOEIC Q7-9 hoàn chỉnh.
+
+                VĂN BẢN THÔNG TIN ĐỀ BÀI:
+                %s
+
+                YÊU CẦU:
+                1. Tạo tiêu đề phù hợp cho đề thi.
+                2. Tạo tình huống người gọi (Caller Scenario) chuẩn văn phong giao tiếp công sở tiếng Anh.
+                3. Tạo 3 câu hỏi:
+                   - Câu 1 (15s): Hỏi thông tin cơ bản / địa điểm / thời gian bắt đầu.
+                   - Câu 2 (15s): Hỏi xác nhận/đính chính (sửa lại thông tin sai của người gọi).
+                   - Câu 3 (30s): Hỏi tổng hợp 2-3 mục chi tiết cùng chủ đề.
+                4. Cung cấp câu trả lời mẫu chuẩn văn phong nói (Spoken English) đạt điểm tối đa.
+
+                YÊU CẦU TRẢ VỀ DUY NHẤT JSON (không markdown hay chữ ngoài JSON):
+                {
+                  "tieuDe": "Tiêu đề đề thi",
+                  "tinhHuong": "Caller scenario in English (kèm phụ đề tiếng Việt)",
+                  "cauHoi1": "Question 1 (15s limit)",
+                  "goiYCau1": "Model spoken answer for Question 1 (~20-30 words)",
+                  "cauHoi2": "Question 2 (15s limit)",
+                  "goiYCau2": "Model spoken answer for Question 2 (~20-30 words)",
+                  "cauHoi3": "Question 3 (30s limit)",
+                  "goiYCau3": "Model spoken answer for Question 3 (~50-70 words)"
+                }
+                """.formatted(vanBan);
+
+        String res = goiGeminiAnToan(prompt, new String[]{MODEL_FLASH_LITE, MODEL_FLASH});
+        if (res != null) {
+            res = res.trim();
+            if (res.startsWith("```json")) res = res.substring(7);
+            else if (res.startsWith("```")) res = res.substring(3);
+            if (res.endsWith("```")) res = res.substring(0, res.length() - 3);
+            return res.trim();
+        }
+        return "{}";
+    }
+
+    // =====================================================
+    // 10. AI TỰ SINH ĐỀ TOEIC Q7-9 MỚI (AUTO GENERATED)
+    // =====================================================
+    public String taoDeQ79TuDong() throws Exception {
+        String prompt = """
+                Bạn là chuyên gia ra đề thi TOEIC Speaking (Question 7-9: Respond to Questions using Information Provided).
+                Hãy tự động sáng tạo một bảng thông tin / lịch trình hoàn toàn mới theo chủ đề kinh doanh / sự kiện / hội nghị / du lịch / tuyển dụng.
+                
+                YÊU CẦU:
+                1. Bảng thông tin được trình bày đẹp, rõ ràng bằng định dạng HTML table Bootstrap (thẻ <div class='table-responsive'><table class='table table-bordered table-striped'>...</table></div>) với đầy đủ ngày tháng, giờ giấc, người phụ trách, địa điểm, phí hoặc ghi chú thay đổi (postponed / cancelled).
+                2. Tạo tình huống người gọi (Caller Scenario).
+                3. Tạo 3 câu hỏi chuẩn TOEIC (Câu 1 15s, Câu 2 15s sửa thông tin sai, Câu 3 30s liệt kê 2-3 mục).
+                4. Có câu trả lời mẫu chuẩn nói cho cả 3 câu.
+
+                YÊU CẦU TRẢ VỀ DUY NHẤT JSON hợp lệ:
+                {
+                  "tieuDe": "Tiêu đề đề thi",
+                  "vanBanThongTin": "<div class='table-responsive'><table class='table table-bordered table-striped align-middle'>...</table></div>",
+                  "tinhHuong": "Caller scenario in English",
+                  "cauHoi1": "Question 1 (15s)",
+                  "goiYCau1": "Model spoken answer 1 (~20-30 words)",
+                  "cauHoi2": "Question 2 (15s)",
+                  "goiYCau2": "Model spoken answer 2 (~20-30 words)",
+                  "cauHoi3": "Question 3 (30s)",
+                  "goiYCau3": "Model spoken answer 3 (~50-70 words)"
+                }
+                """;
+
+        String res = goiGeminiAnToan(prompt, new String[]{MODEL_FLASH_LITE, MODEL_FLASH});
+        if (res != null) {
+            res = res.trim();
+            if (res.startsWith("```json")) res = res.substring(7);
+            else if (res.startsWith("```")) res = res.substring(3);
+            if (res.endsWith("```")) res = res.substring(0, res.length() - 3);
+            return res.trim();
+        }
+        return "{}";
+    }
+
+    // =====================================================
+    // 11. CHẤM ĐIỂM ĐỀ TOEIC Q7-9 THEO CHUẨN THÔNG TIN & TỐC ĐỘ NÓI (15s-15s-30s)
+    // =====================================================
+    public String chamDiemDeQ79(
+            String tieuDe, String thongTin, String tinhHuong,
+            String q1, String a1, String q2, String a2, String q3, String a3) {
+
+        String prompt = """
+                You are an authoritative TOEIC Speaking Examiner checking Questions 7-9 (Respond to Questions using Provided Information).
+                The candidate submitted written text to simulate spoken responses.
+                
+                CONTEXT & INFORMATION SHEET:
+                - Title: %s
+                - Information Details: %s
+                - Caller Scenario: %s
+
+                CANDIDATE'S RESPONSES:
+                - Question 1 (15 seconds limit, ideal 20-35 words):
+                  Question: %s
+                  Candidate's Answer: %s
+
+                - Question 2 (15 seconds limit, ideal 20-35 words):
+                  Question: %s
+                  Candidate's Answer: %s
+
+                - Question 3 (30 seconds limit, ideal 45-75 words):
+                  Question: %s
+                  Candidate's Answer: %s
+
+                STRICT EVALUATION CRITERIA:
+                1. INFORMATION COMPLETENESS & ACCURACY (Đầy đủ & Chính xác):
+                   - Must be based 100%% on the provided document.
+                   - Must not leave out key details (such as all sessions asked in Q3).
+                   - MUST NOT hallucinate or invent facts not in the table.
+                2. REALISTIC SPEAKING TIME & Word Count (Tốc độ nói thực tế ~130 wpm = ~2.2 words/sec):
+                   - Question 1 & 2 (15s target):
+                     * 20-35 words (~ 10-15s speaking): Vừa vặn tốc độ nói, đạt điểm cao.
+                     * < 12 words (~ 5s): Quá ngắn, thiếu lịch sự hoặc thiếu thông tin.
+                     * > 40 words (> 18s): Quá dài, Nguy cơ bị ngắt lời trong thi thực tế!
+                   - Question 3 (30s target):
+                     * 45-75 words (~ 22-28s speaking): Vừa vặn trọn vẹn cho 30s.
+                     * < 30 words: Quá ngắn, chưa đủ chi tiết hoặc thiếu liên từ (Sure, First, Second...).
+                     * > 85 words: Quá dài, chắc chắn bị hệ thống ngắt lời trước khi nói xong.
+                3. GRAMMAR & SPOKEN DISCOURSE MARKERS:
+                   - Correct prepositions (at, on, in, from... to...).
+                   - Polite spoken openers (Sure, let me check...; Actually...; First of all...).
+
+                SCORING: Each question 0-3 points (TOEIC standard). Total Score: 0-9.
+
+                RETURN ONLY VALID JSON formatted as:
+                {
+                  "tongDiem": 8,
+                  "xepLoai": "Xuất sắc",
+                  "nhanXetTongQuan": "Nhận xét tổng quan về bài làm bằng tiếng Việt",
+                  "danhSachCauHoi": [
+                    {
+                      "soThuTu": 1,
+                      "thoiGianQuyDinh": 15,
+                      "soTu": 28,
+                      "thoiGianNoiUocTinh": 13,
+                      "diem": 3,
+                      "trangThai": "DUNG",
+                      "danhGiaThongTin": "Đủ thông tin và chính xác 100%",
+                      "danhGiaThoiGian": "~13 giây - Vừa vặn tốc độ nói cho 15s",
+                      "nhanXetChiTiet": "Nhận xét ngữ pháp giới từ bằng tiếng Việt",
+                      "cauTraLoiMau": "Sure, the conference will begin at 9:00 a.m. at Wayne Arena.",
+                      "dichTiengVietMau": "Chắc chắn rồi, hội nghị sẽ bắt đầu lúc 9 giờ sáng tại Wayne Arena."
+                    },
+                    {
+                      "soThuTu": 2,
+                      "thoiGianQuyDinh": 15,
+                      "soTu": 25,
+                      "thoiGianNoiUocTinh": 12,
+                      "diem": 3,
+                      "trangThai": "DUNG",
+                      "danhGiaThongTin": "Đính chính thông tin chính xác",
+                      "danhGiaThoiGian": "~12 giây - Vừa vặn tốc độ nói",
+                      "nhanXetChiTiet": "Nhận xét",
+                      "cauTraLoiMau": "Actually, that's not correct because it has been postponed.",
+                      "dichTiengVietMau": "Thực ra, thông tin đó chưa đúng vì buổi đó đã bị hoãn lại."
+                    },
+                    {
+                      "soThuTu": 3,
+                      "thoiGianQuyDinh": 30,
+                      "soTu": 55,
+                      "thoiGianNoiUocTinh": 25,
+                      "diem": 3,
+                      "trangThai": "DUNG",
+                      "danhGiaThongTin": "Liệt kê đầy đủ các mục và chính xác",
+                      "danhGiaThoiGian": "~25 giây - Cực kỳ lý tưởng cho 30s",
+                      "nhanXetChiTiet": "Nhận xét",
+                      "cauTraLoiMau": "Certainly, there are two sessions scheduled. First... Second...",
+                      "dichTiengVietMau": "Dạ vâng, có 2 buổi được lên lịch. Đầu tiên... Tiếp theo..."
+                    }
+                  ]
+                }
+                """.formatted(tieuDe, thongTin, tinhHuong, q1, a1, q2, a2, q3, a3);
+
+        try {
+            String res = goiGeminiAnToan(prompt, new String[]{MODEL_FLASH, MODEL_FLASH_LITE});
+            if (res != null) {
+                res = res.trim();
+                if (res.startsWith("```json")) res = res.substring(7);
+                else if (res.startsWith("```")) res = res.substring(3);
+                if (res.endsWith("```")) res = res.substring(0, res.length() - 3);
+                return res.trim();
+            }
+        } catch (Exception e) {
+            System.err.println("[GeminiService] chamDiemDeQ79 error: " + e.getMessage());
+        }
+        return null;
+    }
 }

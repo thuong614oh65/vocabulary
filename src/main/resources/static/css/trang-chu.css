@@ -257,7 +257,16 @@ body {
     box-shadow: 0 10px 24px rgba(168, 85, 247, 0.38);
 }
 
-/* 11. Đăng xuất (Red) */
+/* 11. Luyện đề TOEIC Q7-9 (Indigo - Violet Gradient) */
+.nut-luyen-de {
+    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+    box-shadow: 0 6px 18px rgba(79, 70, 229, 0.28);
+}
+.nut-luyen-de:hover {
+    box-shadow: 0 10px 24px rgba(79, 70, 229, 0.38);
+}
+
+/* 12. Đăng xuất (Red) */
 .nut-dang-xuat {
     background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
     box-shadow: 0 6px 18px rgba(239, 68, 68, 0.25);
