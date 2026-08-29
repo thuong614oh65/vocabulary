@@ -265,7 +265,7 @@ function loadExamIntoPractice(data) {
         
         // Hiển thị chữ trích xuất từ ảnh
         if (data.tomTatNoiDung || data.vanBanThongTin) {
-            textSummary.textContent = (data.tomTatNoiDung || data.vanBanThongTin);
+            textSummary.innerHTML = (data.tomTatNoiDung || data.vanBanThongTin);
             textSummary.classList.remove('d-none');
         } else {
             textSummary.classList.add('d-none');
