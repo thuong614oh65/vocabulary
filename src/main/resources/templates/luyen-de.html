@@ -164,11 +164,25 @@
 
                         <!-- Info Display (Image or HTML Table) -->
                         <div id="infoDisplayArea" class="text-center">
-                            <img id="examImageDisplay" src="" alt="Info Sheet" class="info-sheet-img d-none">
+                            <img id="examImageDisplay" src="" alt="Info Sheet" class="info-sheet-img d-none mb-3">
+                            <!-- Div hiển thị văn bản trích xuất từ ảnh (bằng chữ) để người dùng có thể bôi đen -->
+                            <div id="examTextSummary" class="text-start p-3 bg-light rounded-3 border d-none" style="white-space: pre-wrap; font-size: 15px; color: #334155; border-left: 4px solid #4f46e5 !important;"></div>
+                            
                             <div id="examTextDisplay" class="text-start p-3 bg-light rounded-3 border d-none"></div>
                         </div>
                     </div>
                 </div>
+
+    <!-- Popup Tra Từ (Bôi đen dịch nghĩa) -->
+    <div id="translateTooltip" class="translate-tooltip d-none">
+        <button id="btnTranslateTooltip" class="btn btn-sm btn-primary rounded-pill shadow-sm py-1 px-3">
+            <span style="font-size: 13px;">🔍 Dịch</span>
+        </button>
+        <div id="translateResultBox" class="translate-result-box d-none mt-2 p-2 bg-white rounded-3 shadow border text-start" style="width: 250px; font-size: 14px;">
+            <div id="translateLoading" class="text-center text-muted small d-none">Đang dịch...</div>
+            <div id="translateContent" class="text-slate-800"></div>
+        </div>
+    </div>
 
                 <!-- CỘT PHẢI: TÌNH HUỐNG & 3 CÂU HỎI -->
                 <div class="col-lg-6">

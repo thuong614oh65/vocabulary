@@ -423,3 +423,25 @@ body {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
 }
+
+/* =========================================================
+   TOOLTIP BÔI ĐEN DỊCH NGHĨA
+   ========================================================= */
+.translate-tooltip {
+    position: absolute;
+    z-index: 1050;
+    transition: opacity 0.2s;
+}
+
+.translate-result-box {
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    border: 1px solid #e2e8f0;
+    max-height: 250px;
+    overflow-y: auto;
+}
+.translate-result-box p {
+    margin-bottom: 0.5rem;
+}
+.translate-result-box p:last-child {
+    margin-bottom: 0;
+}

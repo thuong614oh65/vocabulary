@@ -256,13 +256,23 @@ function loadExamIntoPractice(data) {
     // Hiển thị Mẫu thông tin (Ảnh hoặc Text)
     const imgDisplay = document.getElementById('examImageDisplay');
     const textDisplay = document.getElementById('examTextDisplay');
+    const textSummary = document.getElementById('examTextSummary');
 
     if (data.loaiNoiDung === 'IMAGE' && data.anhUrl) {
         imgDisplay.src = data.anhUrl;
         imgDisplay.classList.remove('d-none');
         textDisplay.classList.add('d-none');
+        
+        // Hiển thị chữ trích xuất từ ảnh
+        if (data.tomTatNoiDung || data.vanBanThongTin) {
+            textSummary.textContent = (data.tomTatNoiDung || data.vanBanThongTin);
+            textSummary.classList.remove('d-none');
+        } else {
+            textSummary.classList.add('d-none');
+        }
     } else {
         imgDisplay.classList.add('d-none');
+        textSummary.classList.add('d-none');
         textDisplay.innerHTML = data.vanBanThongTin || '<p>Không có văn bản.</p>';
         textDisplay.classList.remove('d-none');
     }
@@ -588,3 +598,98 @@ function showLoading(title, subtitle) {
 function hideLoading() {
     document.getElementById('loadingOverlay').style.display = 'none';
 }
+
+// -------------------------------------------------------------
+// XỬ LÝ BÔI ĐEN DỊCH NGHĨA (TOOLTIP TRANSLATION)
+// -------------------------------------------------------------
+document.addEventListener('DOMContentLoaded', () => {
+    const tooltip = document.getElementById('translateTooltip');
+    const btnTranslate = document.getElementById('btnTranslateTooltip');
+    const resultBox = document.getElementById('translateResultBox');
+    const loading = document.getElementById('translateLoading');
+    const content = document.getElementById('translateContent');
+    let selectedText = "";
+
+    // Lắng nghe sự kiện bôi đen (mouseup)
+    document.addEventListener('mouseup', (e) => {
+        if (!tooltip) return;
+        // Nếu click vào bên trong tooltip thì không làm gì cả
+        if (tooltip.contains(e.target)) return;
+
+        // Bỏ qua nếu đang click vào các input, textarea để tránh xung đột
+        if (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'INPUT') {
+            tooltip.classList.add('d-none');
+            resultBox.classList.add('d-none');
+            selectedText = "";
+            return;
+        }
+
+        // Lấy chữ được bôi đen
+        let text = window.getSelection().toString().trim();
+        if (text.length > 0 && text.length < 500) { // Giới hạn không dịch đoạn quá dài
+            selectedText = text;
+            
+            // Tính toán vị trí hiển thị tooltip (ngay dưới đoạn bôi đen)
+            const range = window.getSelection().getRangeAt(0);
+            const rect = range.getBoundingClientRect();
+            
+            // Căn tooltip nằm ngay dưới văn bản được bôi đen
+            tooltip.style.left = `${Math.max(10, rect.left + window.scrollX + (rect.width/2) - 30)}px`;
+            tooltip.style.top = `${rect.bottom + window.scrollY + 10}px`;
+            
+            // Reset trạng thái tooltip
+            resultBox.classList.add('d-none');
+            btnTranslate.classList.remove('d-none');
+            tooltip.classList.remove('d-none');
+        } else {
+            // Ẩn tooltip nếu click ra ngoài hoặc không có text
+            tooltip.classList.add('d-none');
+            resultBox.classList.add('d-none');
+            selectedText = "";
+        }
+    });
+
+    // Khi bấm nút Dịch
+    if (btnTranslate) {
+        btnTranslate.addEventListener('click', () => {
+            if (!selectedText) return;
+            
+            btnTranslate.classList.add('d-none');
+            resultBox.classList.remove('d-none');
+            loading.classList.remove('d-none');
+            content.innerHTML = "";
+
+            fetch('/api/tra-tu/dich', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    text: selectedText,
+                    mode: 'AUTO'
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                loading.classList.add('d-none');
+                if (data.thanhCong && data.banDich) {
+                    // Hiển thị kết quả dịch
+                    let html = `<div class="fw-bold text-primary mb-1">${data.tuGoc || selectedText}</div>`;
+                    if (data.phienAm) html += `<div class="text-muted small mb-1">${data.phienAm}</div>`;
+                    html += `<div class="fw-semibold">${data.banDich}</div>`;
+                    
+                    if (data.giaiThich) {
+                        html += `<div class="mt-2 text-muted small" style="white-space: pre-line;">${data.giaiThich}</div>`;
+                    }
+                    content.innerHTML = html;
+                } else {
+                    content.innerHTML = `<div class="text-danger">${data.thongBaoLoi || 'Không thể dịch đoạn văn này.'}</div>`;
+                }
+            })
+            .catch(err => {
+                loading.classList.add('d-none');
+                content.innerHTML = `<div class="text-danger">Lỗi kết nối.</div>`;
+            });
+        });
+    }
+});
