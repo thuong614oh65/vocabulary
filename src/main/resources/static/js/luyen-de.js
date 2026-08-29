@@ -426,16 +426,65 @@ function initAudioButtons() {
     });
 }
 
+let currentAudioObj = null;
+
 function speakText(text) {
-    if (!('speechSynthesis' in window)) {
-        alert('Trình duyệt của bạn không hỗ trợ Text-to-Speech.');
-        return;
+    if (currentAudioObj) {
+        currentAudioObj.pause();
+        if (currentAudioObj.src && currentAudioObj.src.startsWith("blob:")) {
+            URL.revokeObjectURL(currentAudioObj.src);
+        }
+        currentAudioObj = null;
     }
-    window.speechSynthesis.cancel();
+    
+    // Dừng giọng đọc fallback nếu đang chạy
+    if (window.speechSynthesis) {
+        window.speechSynthesis.cancel();
+    }
+
     const cleanText = text.replace(/\(.*?\)/g, '').trim();
-    const utterance = new SpeechSynthesisUtterance(cleanText);
+
+    fetch("/audio/tts", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            text: cleanText,
+            rate: "1.0"
+        })
+    })
+    .then(res => {
+        if (!res.ok) throw new Error("API TTS thất bại");
+        return res.blob();
+    })
+    .then(blob => {
+        const audioUrl = URL.createObjectURL(blob);
+        currentAudioObj = new Audio(audioUrl);
+        currentAudioObj.onended = () => {
+            URL.revokeObjectURL(audioUrl);
+            currentAudioObj = null;
+        };
+        currentAudioObj.onerror = () => {
+            URL.revokeObjectURL(audioUrl);
+            fallbackSpeech(cleanText);
+        };
+        currentAudioObj.play().catch(err => {
+            URL.revokeObjectURL(audioUrl);
+            fallbackSpeech(cleanText);
+        });
+    })
+    .catch(err => {
+        console.warn("Lỗi tải âm thanh từ server, dùng giọng trình duyệt thay thế:", err);
+        fallbackSpeech(cleanText);
+    });
+}
+
+function fallbackSpeech(text) {
+    if (!('speechSynthesis' in window)) return;
+    const utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = 'en-US';
-    utterance.rate = 0.95; // Tốc độ tự nhiên bản xứ
+    utterance.rate = 0.95;
     window.speechSynthesis.speak(utterance);
 }
 
