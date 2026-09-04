@@ -3,12 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nghe điền câu (Dictation)</title>
+    <title>Nghe và viết lại nghĩa (Listen & Translate)</title>
 
     <!-- Bootstrap 5 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- CSS riêng -->
-    <link rel="stylesheet" th:href="@{/css/nghe-dien.css}">
+    <!-- CSS dùng chung và CSS riêng -->
+    <link rel="stylesheet" th:href="@{/css/nghe-dien.css(v=2)}">
+    <link rel="stylesheet" th:href="@{/css/nghe-viet-nghia.css(v=1)}">
 </head>
 <body>
 
@@ -21,10 +22,10 @@
              ===================================================== -->
         <div class="mode-switch-wrapper mb-3 text-center">
             <div class="btn-group mode-toggle-group shadow-sm" role="group">
-                <a href="/nghe-dien" class="btn btn-primary mode-tab-btn active">
+                <a href="/nghe-dien" class="btn btn-outline-primary mode-tab-btn">
                     🎧 Nghe chép tiếng Anh
                 </a>
-                <a href="/nghe-viet-nghia" class="btn btn-outline-primary mode-tab-btn">
+                <a href="/nghe-viet-nghia" class="btn btn-primary mode-tab-btn active">
                     ✍️ Nghe dịch ra nghĩa
                 </a>
             </div>
@@ -34,19 +35,19 @@
              TIÊU ĐỀ
              ===================================================== -->
         <div class="header-section text-center">
-            <div class="header-icon">🎧</div>
-            <h1>NGHE ĐIỀN CÂU</h1>
-            <p class="subtitle">Luyện tai nghe và kỹ năng chép chính tả tiếng Anh bằng AI</p>
+            <div class="header-icon">✍️</div>
+            <h1>NGHE VÀ VIẾT LẠI NGHĨA</h1>
+            <p class="subtitle">Luyện tai nghe tiếng Anh và phản xạ dịch sang nghĩa tiếng Việt</p>
         </div>
 
         <!-- =====================================================
              KHUNG CHỌN NGUỒN TỪ & TẠO BÀI
              ===================================================== -->
         <div class="card-box mb-4">
-            <form th:action="@{/nghe-dien/tao}" method="post" id="formTaoBaiNghe">
+            <form th:action="@{/nghe-viet-nghia/tao}" method="post" id="formTaoBaiNghe">
                 <div class="row align-items-center g-3">
                     <!-- Chọn bộ từ vựng -->
-                    <div class="col-lg-4 col-md-6 col-12">
+                    <div class="col-lg-3 col-md-6 col-12">
                         <label for="boId" class="form-label fw-bold text-secondary">
                             📚 Chọn bộ từ vựng:
                         </label>
@@ -60,37 +61,52 @@
                         </select>
                     </div>
 
-                    <!-- Chọn cấp độ -->
-                    <div class="col-lg-4 col-md-6 col-12">
+                    <!-- Chọn hình thức luyện -->
+                    <div class="col-lg-3 col-md-6 col-12">
+                        <label for="hinhThuc" class="form-label fw-bold text-secondary">
+                            🎯 Hình thức luyện:
+                        </label>
+                        <select name="hinhThuc" id="hinhThuc" class="form-select select-bo" onchange="doiHinhThucLuyen()">
+                            <option value="CAU" th:selected="${hinhThucChon == null || hinhThucChon == 'CAU'}">
+                                💬 Câu ngữ cảnh (AI)
+                            </option>
+                            <option value="TU" th:selected="${hinhThucChon == 'TU'}">
+                                🔤 Từ vựng trong bộ
+                            </option>
+                        </select>
+                    </div>
+
+                    <!-- Chọn cấp độ (cho câu ngữ cảnh) -->
+                    <div class="col-lg-3 col-md-6 col-12" id="khungCapDo">
                         <label for="capDo" class="form-label fw-bold text-secondary">
-                            🎯 Chọn cấp độ nghe:
+                            📶 Cấp độ câu:
                         </label>
                         <select name="capDo" id="capDo" class="form-select select-bo select-cap-do">
                             <option value="1" th:selected="${capDoChon == null || capDoChon == 1}">
-                                🌱 Cấp 1: Cơ bản (1 CN + 1 ĐT + 1 Tân ngữ)
+                                🌱 Cấp 1: Câu đơn cơ bản
                             </option>
                             <option value="2" th:selected="${capDoChon == 2}">
-                                🚀 Cấp 2: Nâng cao (Câu ghép, câu phức)
+                                🚀 Cấp 2: Câu ghép, nâng cao
                             </option>
                         </select>
                     </div>
 
                     <!-- Số lượng câu -->
-                    <div class="col-lg-2 col-md-6 col-6">
+                    <div class="col-lg-1 col-md-3 col-6">
                         <label for="soCau" class="form-label fw-bold text-secondary">
                             🔢 Số câu:
                         </label>
                         <select name="soCau" id="soCau" class="form-select select-bo">
-                            <option value="10" th:selected="${soCauChon == 10}">10 câu</option>
-                            <option value="15" th:selected="${soCauChon == null || soCauChon == 15}">15 câu</option>
-                            <option value="20" th:selected="${soCauChon == 20}">20 câu</option>
+                            <option value="10" th:selected="${soCauChon == 10}">10</option>
+                            <option value="15" th:selected="${soCauChon == null || soCauChon == 15}">15</option>
+                            <option value="20" th:selected="${soCauChon == 20}">20</option>
                         </select>
                     </div>
 
                     <!-- Nút tạo bài & Trang chủ -->
-                    <div class="col-lg-2 col-md-6 col-6 d-flex gap-2 align-self-end">
+                    <div class="col-lg-2 col-md-3 col-6 d-flex gap-2 align-self-end">
                         <button type="submit" class="btn btn-primary btn-tao-bai w-100" id="btnTaoBai">
-                            ✨ Tạo bài
+                            ✨ Bắt đầu
                         </button>
                         <a href="/" class="btn btn-outline-secondary btn-quay-ve" title="Về trang chủ">
                             🏠
@@ -98,19 +114,17 @@
                     </div>
                 </div>
 
-                <!-- Chú thích cấp độ nhỏ bên dưới -->
+                <!-- Chú thích hỗ trợ -->
                 <div class="level-desc-note mt-3">
-                    <span class="fw-bold text-primary">💡 Phân cấp độ:</span> 
-                    <strong>Cấp 1:</strong> Câu đơn giản (1 Chủ ngữ + 1 Động từ + 1 Tân ngữ/Trạng từ, 3-6 từ) dễ nghe cho người mới. 
-                    <span class="d-none d-md-inline">|</span> 
-                    <strong>Cấp 2:</strong> Câu dài nâng cao (câu ghép, câu phức, mệnh đề quan hệ, 8-16 từ) luyện phản xạ chuyên sâu.
+                    <span class="fw-bold text-primary">💡 Cách học:</span> 
+                    Nghe phát âm tiếng Anh (không nhìn thấy chữ) ➔ Gõ nghĩa tiếng Việt vào ô trả lời ➔ Nhấn <strong>Enter</strong> để kiểm tra và sang câu tiếp.
                 </div>
             </form>
 
             <!-- Loading Spinner khi bấm tạo bài -->
             <div id="loadingBox" class="loading-state mt-3" style="display: none;">
                 <div class="spinner-border text-primary spinner-border-sm" role="status"></div>
-                <span class="ms-2 fw-semibold text-primary">🤖 AI đang tạo các câu luyện nghe chứa từ vựng của bạn, vui lòng đợi giây lát...</span>
+                <span class="ms-2 fw-semibold text-primary">🤖 Đang chuẩn bị bài luyện nghe và dịch nghĩa, vui lòng đợi giây lát...</span>
             </div>
         </div>
 
@@ -120,21 +134,23 @@
         <div class="alert alert-danger shadow-sm rounded-3" th:if="${loi}" th:text="${loi}"></div>
 
         <!-- =====================================================
-             KHU VỰC BÀI TẬP CÁC CÂU NGHE ĐIỀN
+             KHU VỰC BÀI TẬP CÁC CÂU NGHE VÀ VIẾT NGHĨA
              ===================================================== -->
         <div class="card-box exercise-box" id="exerciseBox" th:if="${rawCauNgheDien != null}">
 
-            <!-- Hidden data từ AI -->
+            <!-- Hidden data từ Server / AI -->
             <div id="dataRawCauNgheDien" style="display: none;" th:text="${rawCauNgheDien}"></div>
+            <div id="dataHinhThucChon" style="display: none;" th:text="${hinhThucChon}"></div>
 
             <!-- Header danh sách câu -->
             <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2 pb-2 border-bottom">
                 <div class="d-flex align-items-center gap-2 flex-wrap">
                     <h4 class="exercise-title mb-0">
-                        📝 Nghe và gõ lại câu tiếng Anh:
+                        ✍️ Nghe tiếng Anh và viết lại nghĩa tiếng Việt:
                     </h4>
-                    <span th:if="${capDoChon == null || capDoChon == 1}" class="badge-level badge-level-1">🌱 Cấp 1: Cơ bản</span>
-                    <span th:if="${capDoChon == 2}" class="badge-level badge-level-2">🚀 Cấp 2: Nâng cao</span>
+                    <span th:if="${hinhThucChon == 'TU'}" class="badge-level badge-level-1">🔤 Từ vựng trong bộ</span>
+                    <span th:if="${hinhThucChon != 'TU' && (capDoChon == null || capDoChon == 1)}" class="badge-level badge-level-1">🌱 Cấp 1: Cơ bản</span>
+                    <span th:if="${hinhThucChon != 'TU' && capDoChon == 2}" class="badge-level badge-level-2">🚀 Cấp 2: Nâng cao</span>
                 </div>
                 <div class="badge-count bg-light text-dark px-3 py-2 rounded-pill border">
                     Tổng số câu: <span id="tongSoCauText" class="fw-bold text-primary">15</span>
@@ -175,8 +191,26 @@
 <!-- Bootstrap 5 Bundle JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
 
-<!-- JS riêng cho tính năng nghe điền -->
-<script th:src="@{/js/nghe-dien.js(v=4)}"></script>
+<!-- JS riêng cho tính năng nghe và viết lại nghĩa -->
+<script th:src="@{/js/nghe-viet-nghia.js(v=1)}"></script>
+
+<script>
+function doiHinhThucLuyen() {
+    const sel = document.getElementById("hinhThuc");
+    const khungCapDo = document.getElementById("khungCapDo");
+    if (!sel || !khungCapDo) return;
+    if (sel.value === "TU") {
+        khungCapDo.style.opacity = "0.4";
+        khungCapDo.style.pointerEvents = "none";
+    } else {
+        khungCapDo.style.opacity = "1";
+        khungCapDo.style.pointerEvents = "auto";
+    }
+}
+document.addEventListener("DOMContentLoaded", function() {
+    doiHinhThucLuyen();
+});
+</script>
 
 </body>
 </html>

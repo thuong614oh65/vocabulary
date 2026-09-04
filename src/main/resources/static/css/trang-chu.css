@@ -230,6 +230,15 @@ body {
     box-shadow: 0 10px 24px rgba(139, 92, 246, 0.38);
 }
 
+/* 7b. Nghe dịch nghĩa (Coral / Orange) */
+.nut-nghe-viet-nghia {
+    background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+    box-shadow: 0 6px 18px rgba(249, 115, 22, 0.28);
+}
+.nut-nghe-viet-nghia:hover {
+    box-shadow: 0 10px 24px rgba(249, 115, 22, 0.38);
+}
+
 /* 8. Luyện nói (Rose / Crimson) */
 .nut-luyen-noi {
     background: linear-gradient(135deg, #f43f5e 0%, #e11d48 100%);
@@ -264,6 +273,15 @@ body {
 }
 .nut-luyen-de:hover {
     box-shadow: 0 10px 24px rgba(79, 70, 229, 0.38);
+}
+
+/* 11b. TOEIC Part 2 (Cyan - Blue Gradient) */
+.nut-toeic-part2 {
+    background: linear-gradient(135deg, #0284c7 0%, #2563eb 100%);
+    box-shadow: 0 6px 18px rgba(2, 132, 199, 0.28);
+}
+.nut-toeic-part2:hover {
+    box-shadow: 0 10px 24px rgba(2, 132, 199, 0.38);
 }
 
 /* 12. Đăng xuất (Red) */

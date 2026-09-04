@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Luyện Nghe TOEIC Part 2 - Ẩn Đề &amp; Ẩn Đáp Án</title>
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- CSS riêng -->
+    <link rel="stylesheet" th:href="@{/css/toeic-part2.css(v=1)}">
+</head>
+<body>
+
+    <!-- Header Navigation -->
+    <header class="part2-header py-3">
+        <div class="container d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center gap-3">
+                <a href="/" class="back-btn">
+                    <span>←</span> Trang chủ
+                </a>
+                <h1 class="h5 mb-0 fw-bold text-dark d-flex align-items-center gap-2">
+                    <span class="header-icon">🎧</span> TOEIC Part 2 (Question - Response)
+                </h1>
+            </div>
+            <div class="d-flex align-items-center gap-2" th:if="${session.taiKhoan != null}">
+                <span class="badge bg-light text-dark border px-3 py-2 rounded-pill fw-semibold">
+                    👤 <span th:text="${session.taiKhoan.hoTen != null && !session.taiKhoan.hoTen.isBlank() ? session.taiKhoan.hoTen : session.taiKhoan.tenDangNhap}">Học viên</span>
+                </span>
+            </div>
+        </div>
+    </header>
+
+    <main class="container my-4">
+
+        <!-- ==============================================================
+             CHỌN CHẾ ĐỘ: ĐỀ CÓ SẴN (TEST 1) HOẶC AI TẠO ĐỀ MỚI
+             ============================================================== -->
+        <section class="mode-selection-box mb-4">
+            <div class="row align-items-center">
+                <div class="col-lg-6 mb-3 mb-lg-0">
+                    <div class="mode-tabs d-inline-flex p-1 bg-white rounded-pill shadow-sm border">
+                        <button type="button" class="btn mode-tab-btn active" id="btnModeGoc" data-mode="GOC">
+                            📚 Đề có sẵn (Test 1 - 25 câu)
+                        </button>
+                        <button type="button" class="btn mode-tab-btn" id="btnModeAi" data-mode="AI">
+                            🤖 AI Gemini tạo đề mới
+                        </button>
+                    </div>
+                </div>
+                <div class="col-lg-6 text-lg-end" id="aiConfigBox" style="display: none;">
+                    <div class="d-inline-flex align-items-center gap-2 bg-white p-2 rounded-3 shadow-sm border">
+                        <label for="selectSoCauAi" class="fw-semibold small text-secondary mb-0">Số câu:</label>
+                        <select class="form-select form-select-sm w-auto" id="selectSoCauAi">
+                            <option value="5" selected>5 câu</option>
+                            <option value="10">10 câu</option>
+                            <option value="15">15 câu</option>
+                            <option value="20">20 câu</option>
+                        </select>
+                        <button type="button" class="btn btn-sm btn-primary rounded-pill px-3 fw-semibold" id="btnTaoDeAi">
+                            ✨ Tạo đề bằng AI
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Loading Box khi gọi AI hoặc tải dữ liệu -->
+        <div id="loadingOverlay" class="loading-overlay" style="display: none;">
+            <div class="loading-card text-center p-4 bg-white rounded-4 shadow">
+                <div class="spinner-border text-primary mb-3" style="width: 3rem; height: 3rem;" role="status">
+                    <span class="visually-hidden">Đang tải...</span>
+                </div>
+                <h5 class="fw-bold mb-1" id="loadingTitle">Đang xử lý...</h5>
+                <p class="text-muted small mb-0" id="loadingDesc">Hệ thống đang tải dữ liệu âm thanh và câu hỏi...</p>
+            </div>
+        </div>
+
+        <!-- ==============================================================
+             VÙNG LUYỆN TẬP (PRACTICE ARENA)
+             ============================================================== -->
+        <section id="practiceArea" class="practice-container">
+            <!-- Thanh trạng thái & điều khiển nhanh -->
+            <div class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2 bg-white p-3 rounded-4 shadow-sm border">
+                <div class="d-flex align-items-center gap-3">
+                    <span class="badge bg-primary fs-6 px-3 py-2 rounded-pill fw-bold" id="badgeCauSo">
+                        Câu 07 / 31
+                    </span>
+                    <span class="score-summary text-secondary small fw-semibold" id="scoreSummary">
+                        ✅ Đúng: <b class="text-success" id="countDung">0</b> &nbsp;|&nbsp; 
+                        ❌ Sai: <b class="text-danger" id="countSai">0</b> &nbsp;|&nbsp; 
+                        ⏳ Còn lại: <b class="text-secondary" id="countConLai">25</b>
+                    </span>
+                </div>
+
+                <div class="d-flex align-items-center gap-2">
+                    <span class="small text-muted fw-semibold">Tốc độ:</span>
+                    <div class="btn-group btn-group-sm" role="group" id="speedGroup">
+                        <button type="button" class="btn btn-outline-secondary speed-btn" data-rate="-15%">0.8x</button>
+                        <button type="button" class="btn btn-outline-secondary speed-btn active" data-rate="+0%">1.0x</button>
+                        <button type="button" class="btn btn-outline-secondary speed-btn" data-rate="+15%">1.2x</button>
+                    </div>
+                    <button type="button" class="btn btn-outline-primary btn-sm rounded-pill px-3" id="btnBangTongKet" data-bs-toggle="modal" data-bs-target="#modalTongKet">
+                        📊 Bảng điểm
+                    </button>
+                </div>
+            </div>
+
+            <!-- CARD CÂU HỎI CHÍNH -->
+            <div class="card border-0 shadow-sm rounded-4 question-main-card mb-4">
+                <div class="card-body p-4">
+
+                    <!-- Trạng thái audio & thanh âm thanh -->
+                    <div class="audio-control-banner p-3 rounded-3 mb-4 text-center">
+                        <div class="d-flex justify-content-center align-items-center gap-2 mb-2" id="audioWaveContainer">
+                            <span class="audio-wave-bar"></span>
+                            <span class="audio-wave-bar"></span>
+                            <span class="audio-wave-bar"></span>
+                            <span class="audio-wave-bar"></span>
+                            <span class="audio-wave-bar"></span>
+                        </div>
+                        <div class="audio-status-text fw-bold" id="audioStatusText">
+                            🎧 Bấm nút "Phát toàn bộ" để bắt đầu nghe Câu hỏi và các Lựa chọn (A, B, C)
+                        </div>
+                        <div class="small text-muted mt-1">
+                            (Âm thanh chuẩn Edge Neural TTS được tải trực tiếp từ server)
+                        </div>
+                    </div>
+
+                    <!-- Nút bấm phát âm thanh chính -->
+                    <div class="d-flex flex-wrap justify-content-center align-items-center gap-2 mb-4">
+                        <button type="button" class="btn btn-lg btn-play-all fw-bold px-4 py-2 rounded-pill shadow-sm" id="btnPhatToanBo">
+                            <span id="playIcon">▶️</span> <span id="playAllText">Phát toàn bộ (Đề ➔ A ➔ B ➔ C)</span>
+                        </button>
+                        <button type="button" class="btn btn-outline-secondary btn-sm rounded-pill px-3" id="btnNgheDe" title="Chỉ nghe câu hỏi">
+                            🔊 Nghe lại đề
+                        </button>
+                        <button type="button" class="btn btn-outline-secondary btn-sm rounded-pill px-3" id="btnNgheA" title="Chỉ nghe đáp án A">
+                            🔊 Nghe A
+                        </button>
+                        <button type="button" class="btn btn-outline-secondary btn-sm rounded-pill px-3" id="btnNgheB" title="Chỉ nghe đáp án B">
+                            🔊 Nghe B
+                        </button>
+                        <button type="button" class="btn btn-outline-secondary btn-sm rounded-pill px-3" id="btnNgheC" title="Chỉ nghe đáp án C">
+                            🔊 Nghe C
+                        </button>
+                    </div>
+
+                    <!-- KHU VỰC ĐỀ BÀI (CÂU HỎI) -->
+                    <div class="question-display-box p-3 rounded-3 mb-4" id="questionBox">
+                        <!-- Khi ẩn đề -->
+                        <div class="question-hidden-view text-center py-2" id="questionHiddenView">
+                            <div class="text-secondary fw-semibold">
+                                🔒 <b>Nội dung đề bài đang được ẩn</b>
+                            </div>
+                            <div class="small text-muted">
+                                Hãy lắng nghe âm thanh và chọn đáp án bên dưới. Sau khi bấm "Chấm điểm", đề bài và bản dịch sẽ hiển thị!
+                            </div>
+                        </div>
+
+                        <!-- Khi đã chấm điểm (hiển thị đề) -->
+                        <div class="question-revealed-view" id="questionRevealedView" style="display: none;">
+                            <div class="d-flex align-items-center gap-2 mb-1">
+                                <span class="badge bg-dark rounded-pill px-2 py-1 small">Đề bài</span>
+                                <span class="fw-bold text-dark fs-5" id="revealedQuestionEn">Where is the nearest pharmacy?</span>
+                            </div>
+                            <div class="text-muted fst-italic ms-1" id="revealedQuestionVi">
+                                ➔ Dịch nghĩa: Nhà thuốc gần nhất ở đâu?
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- KHU VỰC CÁC ĐÁP ÁN (A), (B), (C) -->
+                    <div class="choices-container d-flex flex-column gap-3 mb-4">
+                        <!-- Lựa chọn A -->
+                        <div class="choice-card p-3 rounded-3 border" data-choice="A" id="cardChoiceA">
+                            <div class="d-flex align-items-center justify-content-between">
+                                <div class="d-flex align-items-center gap-3 flex-grow-1">
+                                    <div class="choice-badge rounded-circle fw-bold text-center" id="badgeA">A</div>
+                                    <div class="choice-content flex-grow-1">
+                                        <!-- Khi ẩn -->
+                                        <div class="choice-text-hidden text-muted fw-semibold" id="choiceAHidden">
+                                            Đáp án (A) - <i>Đang ẩn văn bản</i>
+                                        </div>
+                                        <!-- Khi mở khóa -->
+                                        <div class="choice-text-revealed" id="choiceARevealed" style="display: none;">
+                                            <div class="fw-bold text-dark" id="choiceAEn">She grew up on a farm.</div>
+                                            <div class="small text-muted" id="choiceAVi">Cô ấy đã lớn lên ở một trang trại.</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="choice-action-box d-flex align-items-center gap-2">
+                                    <button type="button" class="btn btn-sm btn-light border rounded-pill btn-listen-single" data-target="A" title="Nghe lại đáp án A">
+                                        🔊
+                                    </button>
+                                    <span class="choice-check-icon" id="iconResultA"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Lựa chọn B -->
+                        <div class="choice-card p-3 rounded-3 border" data-choice="B" id="cardChoiceB">
+                            <div class="d-flex align-items-center justify-content-between">
+                                <div class="d-flex align-items-center gap-3 flex-grow-1">
+                                    <div class="choice-badge rounded-circle fw-bold text-center" id="badgeB">B</div>
+                                    <div class="choice-content flex-grow-1">
+                                        <!-- Khi ẩn -->
+                                        <div class="choice-text-hidden text-muted fw-semibold" id="choiceBHidden">
+                                            Đáp án (B) - <i>Đang ẩn văn bản</i>
+                                        </div>
+                                        <!-- Khi mở khóa -->
+                                        <div class="choice-text-revealed" id="choiceBRevealed" style="display: none;">
+                                            <div class="fw-bold text-dark" id="choiceBEn">Across the street.</div>
+                                            <div class="small text-muted" id="choiceBVi">Ở bên kia đường.</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="choice-action-box d-flex align-items-center gap-2">
+                                    <button type="button" class="btn btn-sm btn-light border rounded-pill btn-listen-single" data-target="B" title="Nghe lại đáp án B">
+                                        🔊
+                                    </button>
+                                    <span class="choice-check-icon" id="iconResultB"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Lựa chọn C -->
+                        <div class="choice-card p-3 rounded-3 border" data-choice="C" id="cardChoiceC">
+                            <div class="d-flex align-items-center justify-content-between">
+                                <div class="d-flex align-items-center gap-3 flex-grow-1">
+                                    <div class="choice-badge rounded-circle fw-bold text-center" id="badgeC">C</div>
+                                    <div class="choice-content flex-grow-1">
+                                        <!-- Khi ẩn -->
+                                        <div class="choice-text-hidden text-muted fw-semibold" id="choiceCHidden">
+                                            Đáp án (C) - <i>Đang ẩn văn bản</i>
+                                        </div>
+                                        <!-- Khi mở khóa -->
+                                        <div class="choice-text-revealed" id="choiceCRevealed" style="display: none;">
+                                            <div class="fw-bold text-dark" id="choiceCEn">Just some cold medicine.</div>
+                                            <div class="small text-muted" id="choiceCVi">Chỉ là một ít thuốc cảm thôi.</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="choice-action-box d-flex align-items-center gap-2">
+                                    <button type="button" class="btn btn-sm btn-light border rounded-pill btn-listen-single" data-target="C" title="Nghe lại đáp án C">
+                                        🔊
+                                    </button>
+                                    <span class="choice-check-icon" id="iconResultC"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- NÚT CHẤM ĐIỂM -->
+                    <div class="d-flex justify-content-center align-items-center gap-3 mb-4">
+                        <button type="button" class="btn btn-primary btn-lg rounded-pill px-5 fw-bold shadow-sm" id="btnChamDiem" disabled>
+                            ✅ Chấm điểm &amp; Mở khóa đáp án
+                        </button>
+                        <button type="button" class="btn btn-outline-secondary rounded-pill px-4" id="btnLamLaiCau" style="display: none;">
+                            🔄 Làm lại câu này
+                        </button>
+                    </div>
+
+                    <!-- HỘP MẸO GIẢI & BẪY TOEIC (HIỂN THỊ SAU KHI CHẤM) -->
+                    <div class="tips-box p-4 rounded-4" id="tipsBox" style="display: none;">
+                        <div class="d-flex align-items-center gap-2 mb-2">
+                            <span class="tips-icon fs-4">💡</span>
+                            <h5 class="fw-bold mb-0 text-amber-900">Mẹo giải &amp; Phân tích bẫy đề thi TOEIC:</h5>
+                        </div>
+                        <div class="tips-content text-dark" id="tipsContent">
+                            <!-- Nội dung mẹo giải chi tiết -->
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Footer điều hướng câu trước / sau -->
+                <div class="card-footer bg-light px-4 py-3 d-flex justify-content-between align-items-center border-0 rounded-bottom-4">
+                    <button type="button" class="btn btn-outline-secondary rounded-pill px-4 fw-semibold" id="btnCauTruoc" disabled>
+                        ⬅️ Câu trước
+                    </button>
+                    <div class="d-flex gap-1 overflow-x-auto py-1 px-2 question-pills-bar" id="questionPillsBar">
+                        <!-- Danh sách nút số câu -->
+                    </div>
+                    <button type="button" class="btn btn-primary rounded-pill px-4 fw-semibold" id="btnCauTiep">
+                        Câu tiếp ➡️
+                    </button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ==============================================================
+         MODAL BẢNG ĐIỂM TỔNG KẾT
+         ============================================================== -->
+    <div class="modal fade" id="modalTongKet" tabindex="-1" aria-labelledby="modalTongKetLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content border-0 shadow-lg rounded-4">
+                <div class="modal-header border-0 pb-0">
+                    <h5 class="modal-title fw-bold" id="modalTongKetLabel">📊 Bảng Điểm Tổng Kết TOEIC Part 2</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+                </div>
+                <div class="modal-body p-4 text-center">
+                    <div class="score-circle mx-auto mb-3 d-flex flex-column align-items-center justify-content-center">
+                        <span class="score-num fw-bold fs-1 text-primary" id="modalScoreText">0/25</span>
+                        <span class="score-percent text-muted small" id="modalScorePercent">0%</span>
+                    </div>
+                    <h5 class="fw-bold mb-2" id="modalScoreComment">Hãy hoàn thành các câu hỏi để nhận đánh giá!</h5>
+                    <p class="text-muted small mb-4" id="modalScoreDetail">Nhấn vào từng câu dưới đây để xem lại câu hỏi, đáp án và mẹo giải chi tiết.</p>
+
+                    <div class="d-flex flex-wrap justify-content-center gap-2 mb-4" id="modalPillsGrid">
+                        <!-- Các pill câu hỏi -->
+                    </div>
+
+                    <div class="d-flex justify-content-center gap-3">
+                        <button type="button" class="btn btn-secondary rounded-pill px-4" data-bs-dismiss="modal">
+                            Đóng
+                        </button>
+                        <button type="button" class="btn btn-success rounded-pill px-4" id="btnLamLaiToanBo">
+                            🔄 Luyện lại từ đầu
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- JS riêng cho TOEIC Part 2 -->
+    <script th:src="@{/js/toeic-part2.js(v=1)}"></script>
+</body>
+</html>

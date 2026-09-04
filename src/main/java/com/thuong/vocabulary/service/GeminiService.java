@@ -931,4 +931,62 @@ public class GeminiService {
         }
         return null;
     }
+
+    // =====================================================
+    // 16. TẠO BỘ ĐỀ TOEIC LISTENING PART 2 (QUESTION - RESPONSE)
+    // =====================================================
+    public String taoBoDeToeicPart2(int soCau) {
+        int count = Math.max(3, Math.min(soCau, 25));
+        String prompt = """
+                Bạn là chuyên gia khảo thí TOEIC ETS chuyên thiết kế đề thi TOEIC Listening Part 2 (Question - Response).
+                Hãy tạo một bộ gồm %d câu hỏi luyện nghe TOEIC Part 2 hoàn toàn mới, đa dạng và thực tế theo format chuẩn đề thi thật.
+
+                QUY TẮC THIẾT KẾ ĐỀ:
+                1. Đa dạng các loại câu hỏi:
+                   - Câu hỏi Wh- (Where, When, Who, Why, What, Which, How)
+                   - Câu hỏi Yes/No & Câu hỏi lựa chọn (A or B)
+                   - Câu hỏi đuôi (Tag questions)
+                   - Lời mời / đề nghị / gợi ý (Would you like..., Should we..., Let's...)
+                   - Câu trần thuật (Statements)
+                   - Câu trả lời gián tiếp hoặc câu hỏi ngược (Indirect responses / Counter-questions)
+                2. Mỗi câu hỏi gồm:
+                   - cauSo: Số thứ tự câu (1, 2, 3...)
+                   - cauHoi: Câu hỏi tiếng Anh
+                   - cauHoiVi: Bản dịch tiếng Việt tự nhiên của câu hỏi
+                   - dapAnA, dapAnB, dapAnC: 3 lựa chọn bằng tiếng Anh
+                   - dapAnAVi, dapAnBVi, dapAnCVi: Bản dịch tiếng Việt của 3 lựa chọn
+                   - dapAnDung: "A", "B", hoặc "C" (phân bổ ngẫu nhiên đều giữa A, B, C)
+                   - meo: Phân tích mẹo giải & bẫy TOEIC (chỉ rõ vì sao câu này đúng, chỉ điểm các bẫy quen thuộc như từ đồng âm, lặp từ, bẫy cùng trường nghĩa, bẫy thì, bẫy trả lời Yes/No cho Wh-question...).
+                3. ĐỊNH DẠNG TRẢ VỀ: Chỉ trả về duy nhất một mảng JSON (JSON array), không có bất kỳ văn bản giải thích nào khác ngoài JSON:
+                [
+                  {
+                    "cauSo": 1,
+                    "cauHoi": "Where did you leave the signed contract?",
+                    "cauHoiVi": "Bạn đã để bản hợp đồng đã ký ở đâu?",
+                    "dapAnA": "In the top drawer of my desk.",
+                    "dapAnAVi": "Trong ngăn kéo trên cùng của bàn làm việc của tôi.",
+                    "dapAnB": "No, I haven't signed it yet.",
+                    "dapAnBVi": "Chưa, tôi vẫn chưa ký nó.",
+                    "dapAnC": "About fifteen pages long.",
+                    "dapAnCVi": "Dài khoảng mười lăm trang.",
+                    "dapAnDung": "A",
+                    "meo": "Câu hỏi Where hỏi vị trí -> Chọn giới từ chỉ nơi chốn 'In the top drawer'. Bẫy: Loại ngay câu B vì trả lời Yes/No cho câu hỏi Where; câu C trả lời cho độ dài/số lượng."
+                  }
+                ]
+                """.formatted(count);
+
+        try {
+            String res = goiGeminiAnToan(prompt, new String[]{MODEL_FLASH_LITE, MODEL_FLASH});
+            if (res != null) {
+                res = res.trim();
+                if (res.startsWith("```json")) res = res.substring(7);
+                else if (res.startsWith("```")) res = res.substring(3);
+                if (res.endsWith("```")) res = res.substring(0, res.length() - 3);
+                return res.trim();
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Lỗi tạo đề TOEIC Part 2 bằng AI: " + e.getMessage(), e);
+        }
+        return "[]";
+    }
 }

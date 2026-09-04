@@ -412,3 +412,45 @@ body {
         justify-content: flex-start;
     }
 }
+
+/* =========================================================
+   MODE SWITCH TABS (NGHE CHÉP TIẾNG ANH / NGHE DỊCH NGHĨA)
+   ========================================================= */
+.mode-switch-wrapper {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 25px;
+}
+
+.mode-toggle-group {
+    background: #ffffff;
+    padding: 5px;
+    border-radius: 40px;
+    border: 1px solid #e2e8f0;
+}
+
+.mode-tab-btn {
+    border-radius: 30px !important;
+    padding: 8px 24px;
+    font-weight: 600;
+    font-size: 15px;
+    transition: all 0.25s ease;
+    border: none !important;
+    text-decoration: none;
+}
+
+.mode-tab-btn.btn-outline-primary {
+    color: #475569;
+    background: transparent;
+}
+
+.mode-tab-btn.btn-outline-primary:hover {
+    color: #1e40af;
+    background: #f1f5f9;
+}
+
+.mode-tab-btn.active {
+    background: linear-gradient(135deg, #0ea5e9 0%, #2563eb 100%) !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 12px rgba(14, 165, 233, 0.35);
+}
