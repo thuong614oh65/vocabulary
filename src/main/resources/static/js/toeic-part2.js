@@ -1,11 +1,13 @@
 // =========================================================
 // XỬ LÝ TRANG LUYỆN NGHE TOEIC PART 2 (ẨN ĐỀ & ẨN ĐÁP ÁN)
-// Chơi ngẫu nhiên (Random shuffle) & Tải âm thanh từ Server (/audio/tts)
+// Xáo trộn ngẫu nhiên cả câu hỏi và các lựa chọn A, B, C
+// Tải âm thanh chuẩn từ Server (/audio/tts)
 // =========================================================
 
 document.addEventListener("DOMContentLoaded", function () {
 
     // --- State ---
+    let deGocRaw = []; // Dữ liệu thô ban đầu để xáo trộn mới
     let danhSachCau = [];
     let cauHienTaiIndex = 0;
     let trangThaiCacCau = []; // { selected: null, graded: false, isCorrect: false }
@@ -95,7 +97,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const btnLamLaiToanBo = document.getElementById("btnLamLaiToanBo");
 
     // =========================================================
-    // HÀM TRỘN NGẪU NHIÊN MẢNG (FISHER-YATES SHUFFLE)
+    // HÀM TRỘN NGẪU NHIÊN CẢ CÂU HỎI VÀ CÁC ĐÁP ÁN A, B, C
     // =========================================================
     function tronNgauNhien(arr) {
         const copy = [...arr];
@@ -106,6 +108,45 @@ document.addEventListener("DOMContentLoaded", function () {
             copy[j] = temp;
         }
         return copy;
+    }
+
+    function tronDapAnCuaCau(cauGoc) {
+        const list = [
+            { en: cauGoc.dapAnA, vi: cauGoc.dapAnAVi || "", dung: (cauGoc.dapAnDung === 'A') },
+            { en: cauGoc.dapAnB, vi: cauGoc.dapAnBVi || "", dung: (cauGoc.dapAnDung === 'B') },
+            { en: cauGoc.dapAnC, vi: cauGoc.dapAnCVi || "", dung: (cauGoc.dapAnDung === 'C') }
+        ];
+
+        // Xáo trộn 3 lựa chọn
+        for (let i = list.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            const temp = list[i];
+            list[i] = list[j];
+            list[j] = temp;
+        }
+
+        let newDapAnDung = 'A';
+        if (list[0].dung) newDapAnDung = 'A';
+        else if (list[1].dung) newDapAnDung = 'B';
+        else if (list[2].dung) newDapAnDung = 'C';
+
+        return {
+            ...cauGoc,
+            dapAnA: list[0].en,
+            dapAnAVi: list[0].vi,
+            dapAnB: list[1].en,
+            dapAnBVi: list[1].vi,
+            dapAnC: list[2].en,
+            dapAnCVi: list[2].vi,
+            dapAnDung: newDapAnDung
+        };
+    }
+
+    function xaoTronToanBoDe(danhSach) {
+        // 1. Trộn thứ tự các câu hỏi
+        const dsTron = tronNgauNhien(danhSach);
+        // 2. Trộn luôn cả 3 đáp án A, B, C của từng câu hỏi
+        return dsTron.map(cau => tronDapAnCuaCau(cau));
     }
 
     // =========================================================
@@ -142,16 +183,16 @@ document.addEventListener("DOMContentLoaded", function () {
             taoDeBangAi();
         });
 
-        // Nút Trộn câu ngẫu nhiên
+        // Nút Trộn câu & đáp án ngẫu nhiên
         if (btnTronCau) {
             btnTronCau.addEventListener("click", () => {
-                if (danhSachCau.length > 0) {
+                if (deGocRaw.length > 0) {
                     dungTatCaAudio();
-                    danhSachCau = tronNgauNhien(danhSachCau);
+                    danhSachCau = xaoTronToanBoDe(deGocRaw);
                     khoiTaoDanhSachTrangThai();
                     cauHienTaiIndex = 0;
                     hienThiCauHienTai();
-                    setAudioStatus("🔀 Đã xáo trộn ngẫu nhiên thứ tự các câu hỏi!", "ready");
+                    setAudioStatus("🔀 Đã xáo trộn ngẫu nhiên cả câu hỏi và các đáp án A, B, C!", "ready");
                 }
             });
         }
@@ -283,7 +324,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     // =========================================================
-    // 2. TẢI DỮ LIỆU ĐỀ GỐC & TẠO ĐỀ AI (TỰ ĐỘNG XÁO TRỘN RANDOM)
+    // 2. TẢI DỮ LIỆU ĐỀ GỐC & TẠO ĐỀ AI (TỰ ĐỘNG XÁO TRỘN RANDOM CẢ ĐÁP ÁN)
     // =========================================================
     function showLoading(title, desc) {
         loadingTitle.textContent = title || "Đang tải dữ liệu...";
@@ -306,8 +347,9 @@ document.addEventListener("DOMContentLoaded", function () {
             .then(data => {
                 hideLoading();
                 if (Array.isArray(data) && data.length > 0) {
-                    // Xáo trộn ngẫu nhiên toàn bộ câu hỏi
-                    danhSachCau = tronNgauNhien(data);
+                    deGocRaw = data;
+                    // Xáo trộn ngẫu nhiên cả câu hỏi và các đáp án A, B, C
+                    danhSachCau = xaoTronToanBoDe(deGocRaw);
                     khoiTaoDanhSachTrangThai();
                     cauHienTaiIndex = 0;
                     hienThiCauHienTai();
@@ -341,8 +383,9 @@ document.addEventListener("DOMContentLoaded", function () {
             hideLoading();
             btnTaoDeAi.disabled = false;
             if (Array.isArray(data) && data.length > 0) {
-                // Xáo trộn ngẫu nhiên
-                danhSachCau = tronNgauNhien(data);
+                deGocRaw = data;
+                // Xáo trộn ngẫu nhiên cả câu hỏi và các đáp án A, B, C
+                danhSachCau = xaoTronToanBoDe(deGocRaw);
                 khoiTaoDanhSachTrangThai();
                 cauHienTaiIndex = 0;
                 hienThiCauHienTai();
@@ -387,7 +430,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const state = layTrangThaiHienTai();
         if (!cau || !state) return;
 
-        // Cập nhật số thứ tự câu hiển thị từ 1 đến tổng số câu (thay vì 7 đến 31)
+        // Cập nhật số thứ tự câu hiển thị từ 1 đến tổng số câu
         const displayNum = cauHienTaiIndex + 1;
         badgeCauSo.textContent = `Câu ${displayNum < 10 ? '0' + displayNum : displayNum} / ${danhSachCau.length}`;
 
@@ -409,7 +452,19 @@ document.addEventListener("DOMContentLoaded", function () {
         choiceCEn.textContent = cau.dapAnC;
         choiceCVi.textContent = cau.dapAnCVi || "";
 
-        tipsContent.textContent = cau.meo || "Không có mẹo giải cho câu này.";
+        // Hiển thị đáp án đúng nổi bật ở đầu mẹo giải
+        const dapAnDung = (cau.dapAnDung || "").toUpperCase().trim();
+        let noiDungDapAnDung = "";
+        if (dapAnDung === 'A') noiDungDapAnDung = `${cau.dapAnA} (${cau.dapAnAVi || ''})`;
+        else if (dapAnDung === 'B') noiDungDapAnDung = `${cau.dapAnB} (${cau.dapAnBVi || ''})`;
+        else if (dapAnDung === 'C') noiDungDapAnDung = `${cau.dapAnC} (${cau.dapAnCVi || ''})`;
+
+        tipsContent.innerHTML = `
+            <div class="mb-2 p-2 rounded-3 bg-white border border-warning-subtle text-dark fw-bold">
+                🎯 Đáp án đúng: <span class="badge bg-success fs-6">${dapAnDung}</span> - ${noiDungDapAnDung}
+            </div>
+            <div>${cau.meo || "Không có mẹo giải cho câu này."}</div>
+        `;
 
         // Xóa class trạng thái cũ trên cards
         choiceCards.forEach(c => {
@@ -436,7 +491,6 @@ document.addEventListener("DOMContentLoaded", function () {
             choiceCRevealed.style.display = "block";
 
             // Tô màu đáp án đúng và lựa chọn của người dùng
-            const dapAnDung = (cau.dapAnDung || "").toUpperCase().trim();
             const selectedCard = document.getElementById("cardChoice" + state.selected);
             const correctCard = document.getElementById("cardChoice" + dapAnDung);
 
@@ -548,11 +602,11 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function lamLaiToanBo() {
-        danhSachCau = tronNgauNhien(danhSachCau);
+        danhSachCau = xaoTronToanBoDe(deGocRaw.length > 0 ? deGocRaw : danhSachCau);
         khoiTaoDanhSachTrangThai();
         cauHienTaiIndex = 0;
         hienThiCauHienTai();
-        setAudioStatus("🔀 Đã làm mới và xáo trộn ngẫu nhiên đề thi!", "ready");
+        setAudioStatus("🔀 Đã làm mới và xáo trộn ngẫu nhiên toàn bộ câu hỏi & đáp án!", "ready");
     }
 
     function chuyenSangCau(index) {
