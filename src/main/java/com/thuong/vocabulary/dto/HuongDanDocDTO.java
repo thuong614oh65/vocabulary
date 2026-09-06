@@ -10,6 +10,7 @@ public class HuongDanDocDTO {
     private List<String> amTiet;
     private List<String> amTietIpa;
     private List<String> amTietBoi;
+    private List<String> amTietDoc; // Văn bản phát âm chuẩn cho từng âm tiết (ví dụ: ["you", "sidge"])
     private Integer amNhanIndex;
     private String phienAmTiengViet;
     private String trongAm;
@@ -24,12 +25,19 @@ public class HuongDanDocDTO {
     public HuongDanDocDTO(String tu, String phienAm, String nghia, List<String> amTiet, List<String> amTietIpa,
                           List<String> amTietBoi, Integer amNhanIndex, String phienAmTiengViet, String trongAm,
                           String khauHinh, String amDuoi, String loiThuongGap, String meoGhiNho) {
+        this(tu, phienAm, nghia, amTiet, amTietIpa, amTietBoi, null, amNhanIndex, phienAmTiengViet, trongAm, khauHinh, amDuoi, loiThuongGap, meoGhiNho);
+    }
+
+    public HuongDanDocDTO(String tu, String phienAm, String nghia, List<String> amTiet, List<String> amTietIpa,
+                          List<String> amTietBoi, List<String> amTietDoc, Integer amNhanIndex, String phienAmTiengViet,
+                          String trongAm, String khauHinh, String amDuoi, String loiThuongGap, String meoGhiNho) {
         this.tu = tu;
         this.phienAm = phienAm;
         this.nghia = nghia;
         this.amTiet = amTiet;
         this.amTietIpa = amTietIpa;
         this.amTietBoi = amTietBoi;
+        this.amTietDoc = amTietDoc;
         this.amNhanIndex = amNhanIndex;
         this.phienAmTiengViet = phienAmTiengViet;
         this.trongAm = trongAm;
@@ -85,6 +93,14 @@ public class HuongDanDocDTO {
 
     public void setAmTietBoi(List<String> amTietBoi) {
         this.amTietBoi = amTietBoi;
+    }
+
+    public List<String> getAmTietDoc() {
+        return amTietDoc;
+    }
+
+    public void setAmTietDoc(List<String> amTietDoc) {
+        this.amTietDoc = amTietDoc;
     }
 
     public Integer getAmNhanIndex() {

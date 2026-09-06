@@ -85,7 +85,7 @@
                 audioDangPhatToanCuc.pause();
                 audioDangPhatToanCuc.currentTime = 0;
             } catch (e) {}
-            audioDangPhatToanCuc = null;
+                audioDangPhatToanCuc = null;
         }
 
         // 3. Dừng audio nội bộ của modal
@@ -223,15 +223,19 @@
             const amTiet = data.amTiet || [data.tu];
             const amTietIpa = data.amTietIpa || [];
             const amTietBoi = data.amTietBoi || [];
+            const amTietDoc = data.amTietDoc || [];
             const amNhan = typeof data.amNhanIndex === "number" ? data.amNhanIndex : -1;
 
-            amTiet.forEach(function (syllable, idx) {
+            amTiet.forEach(function (rawSyllable, idx) {
+                // Làm sạch: chỉ hiển thị phần tiếng Anh sạch trên đầu thẻ
+                const syllable = rawSyllable.replace(/\s*\([^)]*\)/g, "").trim();
                 const chip = document.createElement("div");
                 chip.className = "hd-syllable-chip" + (idx === amNhan ? " stressed" : "");
                 chip.title = "Bấm để nghe âm tiết: " + syllable;
 
                 let ipaText = amTietIpa[idx] ? "/" + amTietIpa[idx] + "/" : "";
                 let boiText = amTietBoi[idx] || "";
+                let docText = (amTietDoc && amTietDoc[idx]) ? amTietDoc[idx] : syllable;
 
                 chip.innerHTML = 
                     '<span class="syllable-stress-tag">⭐ Trọng âm</span>' +
@@ -242,7 +246,7 @@
                 chip.addEventListener("click", function () {
                     // Dừng ngay mọi âm thanh khác trước khi đọc âm tiết này
                     dungAudioHuongDan();
-                    docAmTiet(syllable);
+                    docAmTiet(syllable, docText);
                 });
 
                 chipContainer.appendChild(chip);
@@ -349,16 +353,17 @@
     }
 
     // =========================================================
-    // 7. ĐỌC TỪNG ÂM TIẾT
+    // 7. ĐỌC TỪNG ÂM TIẾT CHUẨN XÁC THEO TỪ CHÍNH
     // =========================================================
-    function docAmTiet(amTiet) {
-        if (!amTiet || !window.speechSynthesis) return;
+    function docAmTiet(syllable, docText) {
+        if (!window.speechSynthesis) return;
         
         dungAudioHuongDan();
         
-        const utterance = new SpeechSynthesisUtterance(amTiet);
+        const toSpeak = docText || syllable;
+        const utterance = new SpeechSynthesisUtterance(toSpeak);
         utterance.lang = "en-US";
-        utterance.rate = 0.75;
+        utterance.rate = 0.8;
         window.speechSynthesis.speak(utterance);
     }
 
@@ -411,7 +416,7 @@
     };
 
     // =========================================================
-    // 9. ĐỌC TÁCH ÂM TIẾT TUẦN TỰ
+    // 9. ĐỌC TÁCH TỪNG ÂM TIẾT RỒI ĐỌC CẢ TỪ HOÀN CHỈNH
     // =========================================================
     window.docTachAmHuongDan = function (btnEl) {
         if (!duLieuHienTai || !duLieuHienTai.tu) return;
@@ -424,27 +429,29 @@
         const amTietList = duLieuHienTai.amTiet && duLieuHienTai.amTiet.length > 0 
             ? duLieuHienTai.amTiet 
             : [duLieuHienTai.tu];
+        const amTietDocList = duLieuHienTai.amTietDoc || [];
 
         let idx = 0;
         function docAmTiep() {
             if (idx >= amTietList.length) {
-                // Sau khi đọc hết các âm tiết -> đọc lại cả từ
+                // Sau khi đọc xong các âm tiết -> đọc hoàn chỉnh lại cả từ theo phát âm chuẩn!
                 const t = setTimeout(function () {
                     phatAudioTu(duLieuHienTai.tu, 0.9, function () {
                         if (btnEl) btnEl.classList.remove("playing");
                     });
-                }, 400);
+                }, 500);
                 hdTimeoutList.push(t);
                 return;
             }
 
-            const syllable = amTietList[idx];
+            const syllable = amTietList[idx].replace(/\s*\([^)]*\)/g, "").trim();
+            const speakText = (amTietDocList[idx]) ? amTietDocList[idx] : syllable;
             idx++;
 
             if (window.speechSynthesis) {
-                const utterance = new SpeechSynthesisUtterance(syllable);
+                const utterance = new SpeechSynthesisUtterance(speakText);
                 utterance.lang = "en-US";
-                utterance.rate = 0.7;
+                utterance.rate = 0.75;
                 utterance.onend = function () {
                     const t = setTimeout(docAmTiep, 450);
                     hdTimeoutList.push(t);
@@ -561,6 +568,7 @@
             amTiet: [tu],
             amTietIpa: [phienAm || ""],
             amTietBoi: [tu],
+            amTietDoc: [tu],
             amNhanIndex: 0,
             phienAmTiengViet: tu,
             trongAm: "Nhấn âm 1",
