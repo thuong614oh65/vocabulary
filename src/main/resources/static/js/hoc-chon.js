@@ -117,6 +117,12 @@ function dungTatCaAmThanh() {
 
     }
 
+    if (typeof window.dungAudioHuongDan === "function") {
+        try {
+            window.dungAudioHuongDan();
+        } catch (e) {}
+    }
+
 }
 
 
@@ -318,6 +324,15 @@ function docTu(tu) {
 
 window.docTu =
     docTu;
+
+window.dungTatCaAmThanh =
+    dungTatCaAmThanh;
+
+window.huyDocHocChon =
+    function () {
+        soLanDoc++;
+        dungTatCaAmThanh();
+    };
 
 // =========================================================
 // ĐÁNH VẦN BẰNG FILE MP3

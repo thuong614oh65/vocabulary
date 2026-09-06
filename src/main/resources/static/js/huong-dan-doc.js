@@ -1,6 +1,7 @@
-﻿/**
+/**
  * HƯỚNG DẪN CÁCH ĐỌC CHUẨN (GOOGLE DỊCH & ELSA SPEAK STYLE)
- * Độc lập, an toàn tuyệt đối, không can thiệp code cũ.
+ * Quản lý âm thanh tập trung: Đảm bảo toàn trang CHỈ CÓ 1 ÂM THANH DUY NHẤT.
+ * Bật bất kỳ âm thanh nào mới sẽ lập tức ngắt âm thanh cũ đang phát.
  */
 (function () {
     let hdAudioHienTai = null;
@@ -10,19 +11,84 @@
     let recognition = null;
     let dangThuAm = false;
 
-    // ---------------------------------------------------------
-    // DỪNG TẤT CẢ ÂM THANH TRONG MODAL & TOÀN TRANG
-    // ---------------------------------------------------------
-    function dungAudioHuongDan() {
-        // Dừng âm thanh của trang chính (nếu có)
-        if (typeof window.dungTatCaAmThanh === "function") {
-            try { window.dungTatCaAmThanh(); } catch (e) {}
-        }
-        if (typeof window.soLanDoc !== "undefined") {
-            window.soLanDoc++;
+    // =========================================================
+    // 1. BỘ ĐIỀU PHỐI ÂM THANH TOÀN TRANG (MASTER AUDIO CONTROLLER)
+    // Bắt và quản lý mọi âm thanh HTML5 Audio và SpeechSynthesis
+    // =========================================================
+    let audioDangPhatToanCuc = null;
+
+    // Hook HTMLMediaElement.prototype.play (bắt tất cả new Audio().play() trên toàn trang)
+    const playGoc = HTMLMediaElement.prototype.play;
+    HTMLMediaElement.prototype.play = function () {
+        // 1. Dừng SpeechSynthesis nếu đang phát
+        if (window.speechSynthesis && (window.speechSynthesis.speaking || window.speechSynthesis.pending)) {
+            try { window.speechSynthesis.cancel(); } catch (e) {}
         }
 
-        // Dừng audio nội bộ của modal
+        // 2. Dừng bất kỳ Audio nào khác đang phát trước đó
+        if (audioDangPhatToanCuc && audioDangPhatToanCuc !== this) {
+            try {
+                audioDangPhatToanCuc.pause();
+                audioDangPhatToanCuc.currentTime = 0;
+            } catch (e) {}
+        }
+
+        // 3. Đánh dấu audio hiện tại
+        audioDangPhatToanCuc = this;
+
+        const self = this;
+        const xoaAudio = function () {
+            if (audioDangPhatToanCuc === self) {
+                audioDangPhatToanCuc = null;
+            }
+        };
+        this.addEventListener("ended", xoaAudio, { once: true });
+        this.addEventListener("pause", xoaAudio, { once: true });
+
+        return playGoc.apply(this, arguments);
+    };
+
+    // Hook window.speechSynthesis.speak (bắt tất cả giọng đọc trình duyệt)
+    if (window.speechSynthesis) {
+        const speakGoc = window.speechSynthesis.speak.bind(window.speechSynthesis);
+        window.speechSynthesis.speak = function (utterance) {
+            // 1. Dừng bất kỳ Audio nào đang phát
+            if (audioDangPhatToanCuc) {
+                try {
+                    audioDangPhatToanCuc.pause();
+                    audioDangPhatToanCuc.currentTime = 0;
+                } catch (e) {}
+                audioDangPhatToanCuc = null;
+            }
+
+            // 2. Dừng lượt SpeechSynthesis trước đó
+            try { window.speechSynthesis.cancel(); } catch (e) {}
+
+            return speakGoc(utterance);
+        };
+    }
+
+    // =========================================================
+    // 2. DỪNG TẤT CẢ ÂM THANH TOÀN BỘ TRANG VÀ MODAL
+    // =========================================================
+    function dungAudioHuongDan() {
+        // 1. Hủy lượt đọc & đánh vần bên hoc-chon.js (nếu có)
+        if (typeof window.huyDocHocChon === "function") {
+            try { window.huyDocHocChon(); } catch (e) {}
+        } else if (typeof window.dungTatCaAmThanh === "function") {
+            try { window.dungTatCaAmThanh(); } catch (e) {}
+        }
+
+        // 2. Dừng audio toàn cục
+        if (audioDangPhatToanCuc) {
+            try {
+                audioDangPhatToanCuc.pause();
+                audioDangPhatToanCuc.currentTime = 0;
+            } catch (e) {}
+            audioDangPhatToanCuc = null;
+        }
+
+        // 3. Dừng audio nội bộ của modal
         if (hdAudioHienTai) {
             try {
                 hdAudioHienTai.pause();
@@ -31,24 +97,27 @@
             hdAudioHienTai = null;
         }
 
-        // Dừng SpeechSynthesis
+        // 4. Dừng SpeechSynthesis
         if (window.speechSynthesis) {
             try { window.speechSynthesis.cancel(); } catch (e) {}
         }
 
-        // Xóa các timeout đang chờ (cho đánh vần / tách âm)
+        // 5. Xóa các timeout đang chờ (cho đánh vần / tách âm)
         hdTimeoutList.forEach(function (t) { clearTimeout(t); });
         hdTimeoutList = [];
 
-        // Gỡ class playing ở các nút
+        // 6. Gỡ class playing ở các nút
         document.querySelectorAll(".btn-hd-audio").forEach(function (btn) {
             btn.classList.remove("playing");
         });
     }
 
-    // ---------------------------------------------------------
-    // MỞ MODAL HƯỚNG DẪN ĐỌC
-    // ---------------------------------------------------------
+    // Đưa ra global để hoc-chon.js có thể gọi ngắt khi cần
+    window.dungAudioHuongDan = dungAudioHuongDan;
+
+    // =========================================================
+    // 3. MỞ MODAL HƯỚNG DẪN ĐỌC
+    // =========================================================
     window.moHuongDanDoc = function (btnElement, tu, phienAm, nghia) {
         if (!tu) return;
 
@@ -57,6 +126,7 @@
             hangDangChon = btnElement.closest("tr");
         }
 
+        // Dừng mọi âm thanh đang phát trước đó
         dungAudioHuongDan();
 
         const modal = document.getElementById("modalHuongDanDoc");
@@ -100,9 +170,9 @@
             });
     };
 
-    // ---------------------------------------------------------
-    // ĐÓNG MODAL
-    // ---------------------------------------------------------
+    // =========================================================
+    // 4. ĐÓNG MODAL
+    // =========================================================
     window.dongHuongDanDoc = function (tiepTucHoc) {
         dungAudioHuongDan();
 
@@ -131,9 +201,9 @@
         }
     };
 
-    // ---------------------------------------------------------
-    // RENDER NỘI DUNG VÀO MODAL
-    // ---------------------------------------------------------
+    // =========================================================
+    // 5. RENDER NỘI DUNG VÀO MODAL
+    // =========================================================
     function hienThiDuLieuModal(data) {
         // Từ chính & Nghĩa
         const elTu = document.getElementById("hdTuChinh");
@@ -170,6 +240,7 @@
                     (ipaText ? '<span class="syllable-ipa">' + ipaText + '</span>' : '');
 
                 chip.addEventListener("click", function () {
+                    // Dừng ngay mọi âm thanh khác trước khi đọc âm tiết này
                     dungAudioHuongDan();
                     docAmTiet(syllable);
                 });
@@ -212,11 +283,13 @@
         }
     }
 
-    // ---------------------------------------------------------
-    // PHÁT AUDIO (CHUẨN 1.0x HOẶC CHẬM 0.6x)
-    // ---------------------------------------------------------
+    // =========================================================
+    // 6. PHÁT AUDIO (CHUẨN 1.0x HOẶC CHẬM 0.6x)
+    // =========================================================
     window.phatAudioHuongDan = function (tocDo, btnEl) {
         if (!duLieuHienTai || !duLieuHienTai.tu) return;
+        
+        // Dừng tất cả âm thanh đang phát trước đó
         dungAudioHuongDan();
 
         if (btnEl) btnEl.classList.add("playing");
@@ -275,22 +348,27 @@
         }
     }
 
-    // ---------------------------------------------------------
-    // ĐỌC TỪNG ÂM TIẾT
-    // ---------------------------------------------------------
+    // =========================================================
+    // 7. ĐỌC TỪNG ÂM TIẾT
+    // =========================================================
     function docAmTiet(amTiet) {
         if (!amTiet || !window.speechSynthesis) return;
+        
+        dungAudioHuongDan();
+        
         const utterance = new SpeechSynthesisUtterance(amTiet);
         utterance.lang = "en-US";
         utterance.rate = 0.75;
         window.speechSynthesis.speak(utterance);
     }
 
-    // ---------------------------------------------------------
-    // ĐÁNH VẦN TỪNG CHỮ CÁI (SPELLING)
-    // ---------------------------------------------------------
+    // =========================================================
+    // 8. ĐÁNH VẦN TỪNG CHỮ CÁI (SPELLING)
+    // =========================================================
     window.danhVanHuongDan = function (btnEl) {
         if (!duLieuHienTai || !duLieuHienTai.tu) return;
+        
+        // Dừng tất cả âm thanh trước đó
         dungAudioHuongDan();
 
         if (btnEl) btnEl.classList.add("playing");
@@ -332,11 +410,13 @@
         docChuTiep();
     };
 
-    // ---------------------------------------------------------
-    // ĐỌC TÁCH ÂM TIẾT TUẦN TỰ
-    // ---------------------------------------------------------
+    // =========================================================
+    // 9. ĐỌC TÁCH ÂM TIẾT TUẦN TỰ
+    // =========================================================
     window.docTachAmHuongDan = function (btnEl) {
         if (!duLieuHienTai || !duLieuHienTai.tu) return;
+        
+        // Dừng tất cả âm thanh trước đó
         dungAudioHuongDan();
 
         if (btnEl) btnEl.classList.add("playing");
@@ -383,9 +463,9 @@
         docAmTiep();
     };
 
-    // ---------------------------------------------------------
-    // LUYỆN NÓI / NHẬN DIỆN GIỌNG NÓI (WEB SPEECH API)
-    // ---------------------------------------------------------
+    // =========================================================
+    // 10. LUYỆN NÓI / NHẬN DIỆN GIỌNG NÓI (WEB SPEECH API)
+    // =========================================================
     window.batDauLuyenDoc = function () {
         const micBtn = document.getElementById("btnMicPractice");
         const micResult = document.getElementById("hdSpeechResult");
@@ -397,6 +477,7 @@
             return;
         }
 
+        // Tắt toàn bộ âm thanh khi người dùng chuẩn bị phát âm
         dungAudioHuongDan();
 
         if (dangThuAm && recognition) {
@@ -469,9 +550,9 @@
         }
     };
 
-    // ---------------------------------------------------------
-    // DỮ LIỆU DỰ PHÒNG CHUẨN HÓA TIẾNG VIỆT
-    // ---------------------------------------------------------
+    // =========================================================
+    // 11. DỮ LIỆU DỰ PHÒNG CHUẨN HÓA TIẾNG VIỆT
+    // =========================================================
     function taoDuLieuDuPhong(tu, phienAm, nghia) {
         return {
             tu: tu,
@@ -490,9 +571,9 @@
         };
     }
 
-    // ---------------------------------------------------------
-    // SỰ KIỆN PHÍM & CLICK NGOÀI MODAL
-    // ---------------------------------------------------------
+    // =========================================================
+    // 12. SỰ KIỆN PHÍM & CLICK NGOÀI MODAL
+    // =========================================================
     document.addEventListener("DOMContentLoaded", function () {
         const modal = document.getElementById("modalHuongDanDoc");
         if (!modal) return;
