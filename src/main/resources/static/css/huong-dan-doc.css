@@ -1,0 +1,509 @@
+﻿/* =========================================================
+   HƯỚNG DẪN CÁCH ĐỌC CHUẨN (GOOGLE DỊCH & ELSA SPEAK STYLE)
+   ========================================================= */
+
+/* Nút mở modal bên cạnh nút Đọc trong bảng học */
+.btn-huong-dan-doc {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    margin-left: 8px;
+    padding: 3px 10px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #0284c7;
+    background-color: #f0f9ff;
+    border: 1px solid #7dd3fc;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.btn-huong-dan-doc:hover {
+    background-color: #0284c7;
+    color: #ffffff;
+    border-color: #0284c7;
+    box-shadow: 0 2px 6px rgba(2, 132, 199, 0.25);
+    transform: translateY(-1px);
+}
+
+.btn-huong-dan-doc:active {
+    transform: translateY(0);
+}
+
+/* Modal Overlay */
+.modal-hd-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(15, 23, 42, 0.65);
+    backdrop-filter: blur(4px);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 99999;
+    padding: 16px;
+    box-sizing: border-box;
+    animation: hdFadeIn 0.2s ease-out;
+}
+
+.modal-hd-overlay.show {
+    display: flex;
+}
+
+@keyframes hdFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Modal Box */
+.modal-hd-container {
+    background: #ffffff;
+    width: 100%;
+    max-width: 620px;
+    max-height: 90vh;
+    border-radius: 18px;
+    box-shadow: 0 20px 45px rgba(0, 0, 0, 0.22);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    animation: hdScaleUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes hdScaleUp {
+    from { transform: scale(0.92); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+/* Modal Header */
+.modal-hd-header {
+    background: linear-gradient(135deg, #0284c7, #2563eb);
+    color: white;
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.modal-hd-title {
+    margin: 0;
+    font-size: 1.15rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.modal-hd-close {
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: white;
+    font-size: 1.25rem;
+    line-height: 1;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s ease;
+}
+
+.modal-hd-close:hover {
+    background: rgba(255, 255, 255, 0.35);
+}
+
+/* Modal Body */
+.modal-hd-body {
+    padding: 20px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* Loading State */
+.modal-hd-loading {
+    text-align: center;
+    padding: 40px 10px;
+    color: #64748b;
+}
+
+.modal-hd-spinner {
+    display: inline-block;
+    width: 38px;
+    height: 38px;
+    border: 4px solid #e2e8f0;
+    border-top: 4px solid #0284c7;
+    border-radius: 50%;
+    animation: hdSpin 0.8s linear infinite;
+    margin-bottom: 12px;
+}
+
+@keyframes hdSpin {
+    to { transform: rotate(360deg); }
+}
+
+/* Header Word Display */
+.hd-word-hero {
+    text-align: center;
+    background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+    padding: 16px;
+    border-radius: 14px;
+    border: 1px solid #e2e8f0;
+}
+
+.hd-word-hero .hd-word {
+    font-size: 2.2rem;
+    font-weight: 800;
+    color: #0f172a;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+}
+
+.hd-word-hero .hd-phonetic-ipa {
+    font-family: 'Consolas', 'Lucida Console', monospace;
+    font-size: 1.15rem;
+    color: #64748b;
+    font-weight: 600;
+}
+
+.hd-word-hero .hd-vietnamese-respell {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #fef08a;
+    color: #854d0e;
+    font-size: 1.1rem;
+    font-weight: 800;
+    padding: 4px 14px;
+    border-radius: 20px;
+    margin-top: 8px;
+    border: 1px solid #fde047;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.hd-word-hero .hd-meaning {
+    margin-top: 6px;
+    font-size: 0.95rem;
+    color: #475569;
+    font-style: italic;
+}
+
+/* Speed Audio Buttons */
+.hd-audio-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+}
+
+.btn-hd-audio {
+    flex: 1 1 calc(50% - 8px);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 10px 14px;
+    font-size: 0.92rem;
+    font-weight: 600;
+    border-radius: 10px;
+    border: 1px solid #cbd5e1;
+    background: #ffffff;
+    color: #334155;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+
+.btn-hd-audio:hover {
+    border-color: #0284c7;
+    color: #0284c7;
+    background: #f0f9ff;
+    transform: translateY(-1px);
+}
+
+.btn-hd-audio.btn-primary-audio {
+    background: #0284c7;
+    color: #ffffff;
+    border-color: #0284c7;
+}
+
+.btn-hd-audio.btn-primary-audio:hover {
+    background: #0369a1;
+}
+
+.btn-hd-audio.playing {
+    animation: hdAudioPulse 1s infinite alternate;
+}
+
+@keyframes hdAudioPulse {
+    from { box-shadow: 0 0 0 0 rgba(2, 132, 199, 0.4); }
+    to { box-shadow: 0 0 0 8px rgba(2, 132, 199, 0); }
+}
+
+/* Syllables Breakdown */
+.hd-syllables-box {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 14px 16px;
+}
+
+.hd-section-title {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #475569;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.hd-syllable-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+}
+
+.hd-syllable-chip {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 8px 14px;
+    border-radius: 10px;
+    border: 2px solid #e2e8f0;
+    background: #f8fafc;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+    user-select: none;
+}
+
+.hd-syllable-chip:hover {
+    border-color: #0284c7;
+    background: #f0f9ff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(2, 132, 199, 0.15);
+}
+
+.hd-syllable-chip.stressed {
+    border-color: #f59e0b;
+    background: #fffbeb;
+}
+
+.hd-syllable-chip.stressed .syllable-stress-tag {
+    display: block;
+}
+
+.syllable-stress-tag {
+    display: none;
+    position: absolute;
+    top: -8px;
+    right: -6px;
+    background: #f59e0b;
+    color: #ffffff;
+    font-size: 0.65rem;
+    font-weight: 800;
+    padding: 1px 5px;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+}
+
+.syllable-en {
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: #1e293b;
+}
+
+.syllable-vn {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #0284c7;
+    margin-top: 2px;
+}
+
+.syllable-ipa {
+    font-size: 0.75rem;
+    color: #64748b;
+    font-family: monospace;
+}
+
+.hd-syllable-hint {
+    font-size: 0.78rem;
+    color: #94a3b8;
+    text-align: center;
+    margin-top: 6px;
+    margin-bottom: 0;
+}
+
+/* Pronunciation Tips Cards */
+.hd-tips-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.hd-tip-card {
+    padding: 12px 14px;
+    border-radius: 10px;
+    font-size: 0.88rem;
+    line-height: 1.45;
+    border-left: 4px solid #cbd5e1;
+    background: #f8fafc;
+}
+
+.hd-tip-card.mouth {
+    border-left-color: #3b82f6;
+    background: #eff6ff;
+    color: #1e40af;
+}
+
+.hd-tip-card.ending {
+    border-left-color: #10b981;
+    background: #f0fdf4;
+    color: #065f46;
+}
+
+.hd-tip-card.warning {
+    border-left-color: #f59e0b;
+    background: #fffbeb;
+    color: #92400e;
+}
+
+.hd-tip-title {
+    font-weight: 700;
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Speech Practice Section */
+.hd-speech-box {
+    background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+    border: 1px solid #86efac;
+    border-radius: 12px;
+    padding: 14px;
+    text-align: center;
+}
+
+.btn-mic-practice {
+    background: #16a34a;
+    color: #ffffff;
+    border: none;
+    font-size: 0.95rem;
+    font-weight: 700;
+    padding: 10px 20px;
+    border-radius: 25px;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(22, 163, 74, 0.25);
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-mic-practice:hover {
+    background: #15803d;
+    transform: translateY(-1px);
+}
+
+.btn-mic-practice.listening {
+    background: #dc2626;
+    animation: hdMicPulse 1s infinite;
+}
+
+@keyframes hdMicPulse {
+    0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.6); }
+    70% { transform: scale(1.05); box-shadow: 0 0 0 12px rgba(220, 38, 38, 0); }
+    100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(220, 38, 38, 0); }
+}
+
+.hd-speech-result {
+    margin-top: 10px;
+    font-size: 0.9rem;
+    min-height: 24px;
+    font-weight: 600;
+}
+
+/* Modal Footer */
+.modal-hd-footer {
+    padding: 14px 20px;
+    background: #f8fafc;
+    border-top: 1px solid #e2e8f0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.btn-hd-back-study {
+    background: #2563eb;
+    color: #ffffff;
+    border: none;
+    padding: 10px 20px;
+    font-size: 0.95rem;
+    font-weight: 700;
+    border-radius: 10px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.25);
+}
+
+.btn-hd-back-study:hover {
+    background: #1d4ed8;
+    transform: translateY(-1px);
+}
+
+.btn-hd-close-secondary {
+    background: transparent;
+    color: #64748b;
+    border: 1px solid #cbd5e1;
+    padding: 9px 16px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.btn-hd-close-secondary:hover {
+    background: #e2e8f0;
+    color: #1e293b;
+}
+
+/* Responsive adjustments */
+@media (max-width: 576px) {
+    .modal-hd-container {
+        max-height: 95vh;
+        border-radius: 14px;
+    }
+    .modal-hd-body {
+        padding: 14px;
+        gap: 12px;
+    }
+    .btn-hd-audio {
+        flex: 1 1 100%;
+    }
+    .hd-word-hero .hd-word {
+        font-size: 1.8rem;
+    }
+    .modal-hd-footer {
+        flex-direction: column;
+        gap: 8px;
+    }
+    .btn-hd-back-study, .btn-hd-close-secondary {
+        width: 100%;
+        justify-content: center;
+    }
+}

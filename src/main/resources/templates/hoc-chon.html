@@ -20,6 +20,10 @@
             rel="stylesheet"
             th:href="@{/css/hoc-chon.css(v=7)}">
 
+    <link
+            rel="stylesheet"
+            th:href="@{/css/huong-dan-doc.css}">
+
 </head>
 
 
@@ -100,6 +104,14 @@
 
                         </button>
 
+                        <button
+                                type="button"
+                                class="btn-huong-dan-doc"
+                                th:attr="onclick=|moHuongDanDoc(this, '${tu.tiengAnh}', '${tu.phienAm}', '${tu.tiengViet}')|"
+                                title="Xem hướng dẫn cách đọc chuẩn">
+                            🗣️ Hướng dẫn đọc
+                        </button>
+
 
                     </div>
 
@@ -178,7 +190,104 @@
         th:src="@{/js/hoc-chon.js(v=7)}">
 </script>
 
+<!-- Modal Hướng Dẫn Cách Đọc Chuẩn (Google Dịch & ELSA Speak Style) -->
+<div id="modalHuongDanDoc" class="modal-hd-overlay">
+    <div class="modal-hd-container">
+        <div class="modal-hd-header">
+            <h5 class="modal-hd-title">🗣️ Hướng dẫn cách đọc chuẩn</h5>
+            <button type="button" class="modal-hd-close" onclick="dongHuongDanDoc(false)" title="Đóng">&times;</button>
+        </div>
+
+        <div class="modal-hd-body">
+            <!-- Trạng thái đang tải -->
+            <div id="hdLoadingBox" class="modal-hd-loading">
+                <div class="modal-hd-spinner"></div>
+                <div>Đang phân tích phát âm chuẩn...</div>
+            </div>
+
+            <!-- Nội dung chính -->
+            <div id="hdContentBox" style="display: none; flex-direction: column; gap: 16px;">
+                <!-- Thẻ từ chính -->
+                <div class="hd-word-hero">
+                    <div class="hd-word" id="hdTuChinh">hello</div>
+                    <div>
+                        <span class="hd-phonetic-ipa" id="hdPhienAmIpa">/həˈloʊ/</span>
+                    </div>
+                    <div>
+                        <span class="hd-vietnamese-respell" id="hdPhienAmTiengViet">🇻🇳 Hê - lô</span>
+                    </div>
+                    <div class="hd-meaning" id="hdNghia">(xin chào)</div>
+                </div>
+
+                <!-- Thanh nút nghe phát âm đa tốc độ -->
+                <div class="hd-audio-bar">
+                    <button type="button" class="btn-hd-audio btn-primary-audio" onclick="phatAudioHuongDan(1.0, this)" title="Nghe với tốc độ người bản xứ bình thường">
+                        🔊 Chuẩn (1.0x)
+                    </button>
+                    <button type="button" class="btn-hd-audio" onclick="phatAudioHuongDan(0.6, this)" title="Nghe chậm rõ từng âm như Google Dịch">
+                        🐢 Chậm (0.6x)
+                    </button>
+                    <button type="button" class="btn-hd-audio" onclick="docTachAmHuongDan(this)" title="Đọc từng âm tiết rồi đọc cả từ">
+                        🎶 Tách âm tiết
+                    </button>
+                    <button type="button" class="btn-hd-audio" onclick="danhVanHuongDan(this)" title="Đánh vần từng chữ cái tiếng Anh">
+                        🔡 Đánh vần
+                    </button>
+                </div>
+
+                <!-- Tách âm tiết tương tác -->
+                <div class="hd-syllables-box">
+                    <div class="hd-section-title">
+                        <span>🎯</span> Các âm tiết (Bấm từng âm để nghe):
+                    </div>
+                    <div class="hd-syllable-chips" id="hdSyllableChips">
+                        <!-- Dynamic syllable chips -->
+                    </div>
+                    <p class="hd-syllable-hint">💡 Nhấp chuột vào từng âm tiết ở trên để luyện nghe riêng âm đó</p>
+                </div>
+
+                <!-- Luyện phát âm qua Micro -->
+                <div class="hd-speech-box">
+                    <button type="button" id="btnMicPractice" class="btn-mic-practice" onclick="batDauLuyenDoc()">
+                        🎙️ Bấm để thử phát âm
+                    </button>
+                    <div id="hdSpeechResult" class="hd-speech-result"></div>
+                </div>
+
+                <!-- Mẹo khẩu hình & Lỗi thường gặp -->
+                <div class="hd-tips-grid">
+                    <div class="hd-tip-card mouth">
+                        <div class="hd-tip-title">👄 Khẩu hình & vị trí lưỡi:</div>
+                        <div id="hdTipKhauHinh">Mở miệng vừa phải, thả lỏng môi...</div>
+                    </div>
+
+                    <div class="hd-tip-card ending" id="hdCardAmDuoi" style="display: none;">
+                        <div class="hd-tip-title">🔔 Chú ý âm đuôi (Ending sound):</div>
+                        <div id="hdTipAmDuoi">...</div>
+                    </div>
+
+                    <div class="hd-tip-card warning">
+                        <div class="hd-tip-title">⚠️ Lỗi người Việt hay gặp:</div>
+                        <div id="hdTipLoi">...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chân modal -->
+        <div class="modal-hd-footer">
+            <button type="button" class="btn-hd-close-secondary" onclick="dongHuongDanDoc(false)">
+                Đóng
+            </button>
+            <button type="button" class="btn-hd-back-study" onclick="dongHuongDanDoc(true)" title="Đóng modal và con trỏ tự động quay lại ô nhập để học tiếp">
+                ← Quay lại tiếp tục học tiếp
+            </button>
+        </div>
+    </div>
+</div>
+
+<script th:src="@{/js/huong-dan-doc.js}"></script>
 
 </body>
 
-</html>
+</html>
