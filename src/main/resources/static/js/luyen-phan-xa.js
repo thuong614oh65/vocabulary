@@ -24,6 +24,29 @@
     let danhSachTuNghen = []; // Lưu các từ trả lời sai hoặc quá 2 giây
 
     let audioHienTai = null;
+    let dangThiDau = false; // Cờ kiểm soát: chỉ chạy logic trận khi người dùng thực sự đang thi đấu
+    let nextQuestionTimeout = null; // Timeout chuyển câu hỏi để có thể dọn dẹp triệt để khi rời trận
+
+    // Dừng sạch sẽ 100% mọi tiến trình, âm thanh, đồng hồ của trận đấu
+    function dungToanBoTranDau() {
+        dangThiDau = false;
+        dangXuLyDapAn = false;
+
+        dungDongHo();
+
+        if (nextQuestionTimeout) {
+            clearTimeout(nextQuestionTimeout);
+            nextQuestionTimeout = null;
+        }
+
+        if (audioHienTai) {
+            try {
+                audioHienTai.pause();
+                audioHienTai.currentTime = 0;
+            } catch (e) {}
+            audioHienTai = null;
+        }
+    }
 
     // =========================================================
     // 2. TẠO ÂM THANH HIỆU ỨNG BẰNG WEB AUDIO API (KHÔNG CẦN FILE MP3 NGOÀI)
@@ -44,6 +67,7 @@
 
     // Âm thanh Ding (khi đúng)
     function playSoundDing(isSuperFast) {
+        if (!dangThiDau) return;
         try {
             const ctx = getAudioContext();
             if (!ctx) return;
@@ -69,6 +93,7 @@
     // Âm thanh Buzz (khi sai / hết giờ)
     // Âm thanh thông báo khi sai hoặc hết giờ: Dùng sóng Sine trầm ấm, dịu tai (không chói gắt, không xì hơi)
     function playSoundBuzz() {
+        if (!dangThiDau) return;
         try {
             const ctx = getAudioContext();
             if (!ctx) return;
@@ -94,6 +119,7 @@
     // 3. KHỞI TẠO VÀ CHỌN CẤU HÌNH
     // =========================================================
     window.chonCheDo = function (cheDo, btnEl) {
+        dungToanBoTranDau(); // Dập tắt trận đấu cũ ngay lập tức nếu đang dở dang
         cheDoHienTai = cheDo;
         document.querySelectorAll("#groupCheDo .btn-mode").forEach(function (b) {
             b.classList.remove("active");
@@ -118,6 +144,7 @@
     };
 
     window.doiBoTuPhanXa = function () {
+        dungToanBoTranDau(); // Dập tắt trận cũ ngay lập tức
         taiDuLieuVaChuanBi(false);
     };
 
@@ -189,6 +216,12 @@
     }
 
     function quayVeLobby() {
+        dungToanBoTranDau();
+
+        comboStreak = 0;
+        diemSo = 0;
+        capNhatDiemSo();
+
         const elLobby = document.getElementById("arenaLobby");
         const elStage = document.getElementById("arenaStage");
         const elResult = document.getElementById("arenaResult");
@@ -207,6 +240,8 @@
     // 5. BẮT ĐẦU VÒNG ĐẤU PHẢN XẠ
     // =========================================================
     window.batDauTranDau = function () {
+        dungToanBoTranDau();
+
         if (!danhSachCauHoi || danhSachCauHoi.length === 0) {
             taiDuLieuVaChuanBi(true);
             return;
@@ -214,6 +249,9 @@
 
         // Khởi động AudioContext khi người dùng tương tác
         getAudioContext();
+
+        // Bật cờ trận đấu
+        dangThiDau = true;
 
         // Reset trạng thái
         cauHienTaiIdx = 0;
@@ -243,6 +281,8 @@
     // 6. RENDER CÂU HỎI VÀ KÍCH HOẠT ĐỒNG HỒ NĂNG LƯỢNG
     // =========================================================
     function hienThiCauHoi(index) {
+        if (!dangThiDau) return;
+
         if (index >= danhSachCauHoi.length) {
             ketThucTranDau();
             return;
@@ -511,6 +551,8 @@
     // 8. ĐỒNG HỒ NĂNG LƯỢNG ĐẾM NGƯỢC (SMOOTH TIMER)
     // =========================================================
     function khoiDongDongHoNangLuong() {
+        if (!dangThiDau) return;
+
         if (timerFrameId) {
             cancelAnimationFrame(timerFrameId);
             timerFrameId = null;
@@ -522,6 +564,11 @@
         thoiGianBatDauCau = performance.now();
 
         function capNhatFrame(now) {
+            if (!dangThiDau) {
+                timerFrameId = null;
+                return;
+            }
+
             const elapsed = now - thoiGianBatDauCau;
             const remaining = Math.max(0, durationMs - elapsed);
             const percent = (remaining / durationMs) * 100;
@@ -556,7 +603,7 @@
     // 9. XỬ LÝ CHỌN ĐÁP ÁN
     // =========================================================
     window.chonDapAn = function (selectedIdx) {
-        if (dangXuLyDapAn || cauHienTaiIdx >= danhSachCauHoi.length) return;
+        if (!dangThiDau || dangXuLyDapAn || cauHienTaiIdx >= danhSachCauHoi.length) return;
         dangXuLyDapAn = true;
         dungDongHo();
 
@@ -582,7 +629,7 @@
     };
 
     window.chonDapAnTF = function (userChonDung) {
-        if (dangXuLyDapAn || cauHienTaiIdx >= danhSachCauHoi.length) return;
+        if (!dangThiDau || dangXuLyDapAn || cauHienTaiIdx >= danhSachCauHoi.length) return;
         dangXuLyDapAn = true;
         dungDongHo();
 
@@ -599,7 +646,7 @@
     };
 
     function xuLyHetGio() {
-        if (dangXuLyDapAn || cauHienTaiIdx >= danhSachCauHoi.length) return;
+        if (!dangThiDau || dangXuLyDapAn || cauHienTaiIdx >= danhSachCauHoi.length) return;
         dangXuLyDapAn = true;
 
         const latencyMs = Math.round(thoiGianGioiHan * 1000);
@@ -639,12 +686,17 @@
 
         guiKetQuaVeServer(q.id, false);
 
-        setTimeout(function () {
-            hienThiCauHoi(cauHienTaiIdx + 1);
+        if (nextQuestionTimeout) clearTimeout(nextQuestionTimeout);
+        nextQuestionTimeout = setTimeout(function () {
+            if (dangThiDau) {
+                hienThiCauHoi(cauHienTaiIdx + 1);
+            }
         }, 900);
     }
 
     function xuLyKetQuaTraLoi(isCorrect, latencyMs, q, clickedBtn, correctBtn) {
+        if (!dangThiDau) return;
+
         if (isCorrect) {
             if (clickedBtn) clickedBtn.classList.add("correct");
 
@@ -694,8 +746,11 @@
         capNhatDiemSo();
 
         // Chờ 800ms để người học nhìn nhận đáp án rồi tự động chuyển câu tiếp
-        setTimeout(function () {
-            hienThiCauHoi(cauHienTaiIdx + 1);
+        if (nextQuestionTimeout) clearTimeout(nextQuestionTimeout);
+        nextQuestionTimeout = setTimeout(function () {
+            if (dangThiDau) {
+                hienThiCauHoi(cauHienTaiIdx + 1);
+            }
         }, 800);
     }
 
@@ -750,14 +805,18 @@
     // =========================================================
     function phatAmThanhTu(tu, audioUrl) {
         if (audioHienTai) {
-            try { audioHienTai.pause(); } catch (e) {}
+            try { audioHienTai.pause(); audioHienTai.currentTime = 0; } catch (e) {}
+            audioHienTai = null;
         }
+        if (!dangThiDau) return;
+
         const audio = new Audio(audioUrl);
         audioHienTai = audio;
 
         const p = audio.play();
         if (p !== undefined) {
             p.catch(function () {
+                if (!dangThiDau) return;
                 // Fallback stream nếu file mp3 chưa có
                 const streamAudio = new Audio("/audio/tts?text=" + encodeURIComponent(tu) + "&rate=+0%");
                 audioHienTai = streamAudio;
@@ -767,7 +826,7 @@
     }
 
     window.phatLaiAudio = function () {
-        if (cauHienTaiIdx < danhSachCauHoi.length) {
+        if (dangThiDau && cauHienTaiIdx < danhSachCauHoi.length) {
             const q = danhSachCauHoi[cauHienTaiIdx];
             phatAmThanhTu(q.tiengAnh, q.audioUrl);
         }
@@ -777,7 +836,7 @@
     // 11. KẾT THÚC TRẬN ĐẤU & TỔNG KẾT
     // =========================================================
     function ketThucTranDau() {
-        dungDongHo();
+        dungToanBoTranDau();
 
         const elStage = document.getElementById("arenaStage");
         const elResult = document.getElementById("arenaResult");
@@ -875,7 +934,7 @@
 
         // Nếu đang trong trận đấu
         const elStage = document.getElementById("arenaStage");
-        if (!elStage || elStage.style.display === "none") return;
+        if (!dangThiDau || !elStage || elStage.style.display === "none") return;
 
         if (cheDoHienTai === "DUNG_SAI") {
             if (e.key === "ArrowLeft") {
