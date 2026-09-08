@@ -17,6 +17,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import com.thuong.vocabulary.repository.TuVungRepository;
+import com.thuong.vocabulary.service.AudioService;
+
 @Controller
 public class HomeController {
 
@@ -24,17 +27,23 @@ public class HomeController {
     private final TuVungService tuVungService;
     private final HocService hocService;
     private final com.thuong.vocabulary.repository.BoTuVungRepository boTuVungRepository;
+    private final TuVungRepository tuVungRepository;
+    private final AudioService audioService;
 
     public HomeController(
             DanhSachTuService danhSachTuService,
             TuVungService tuVungService,
             HocService hocService,
-            com.thuong.vocabulary.repository.BoTuVungRepository boTuVungRepository
+            com.thuong.vocabulary.repository.BoTuVungRepository boTuVungRepository,
+            TuVungRepository tuVungRepository,
+            AudioService audioService
     ) {
         this.danhSachTuService = danhSachTuService;
         this.tuVungService = tuVungService;
         this.hocService = hocService;
         this.boTuVungRepository = boTuVungRepository;
+        this.tuVungRepository = tuVungRepository;
+        this.audioService = audioService;
     }
 
 
@@ -287,6 +296,57 @@ public class HomeController {
                         );
 
                 break;
+
+            // -------------------------------------------------
+            // THEO CHỦ ĐỀ (LƯU BỘ TỪ MỚI VÀO CSDL)
+            // -------------------------------------------------
+
+            case "THEO_CHU_DE":
+                if (hocDTO.getChuDeTuJson() != null && !hocDTO.getChuDeTuJson().isBlank()) {
+                    List<TuVungDTO> dsTuMoi = parseJsonTuVung(hocDTO.getChuDeTuJson());
+                    if (dsTuMoi != null && !dsTuMoi.isEmpty()) {
+                        String tenChuDe = (hocDTO.getTenChuDe() != null && !hocDTO.getTenChuDe().isBlank())
+                                ? hocDTO.getTenChuDe().trim()
+                                : "Chủ đề mới";
+
+                        // Đảm bảo tạo mới một Bộ từ vào CSDL (tự động thêm số nếu trùng tên bộ)
+                        String tenBoTao = tenChuDe;
+                        int count = 2;
+                        while (boTuVungRepository.existsByTenBoAndTaiKhoanId(tenBoTao, taiKhoanId)) {
+                            tenBoTao = tenChuDe + " (" + count + ")";
+                            count++;
+                        }
+
+                        com.thuong.vocabulary.entity.BoTuVung boMoi = new com.thuong.vocabulary.entity.BoTuVung();
+                        boMoi.setTenBo(tenBoTao);
+                        boMoi.setNgayTao(java.time.LocalDateTime.now());
+                        boMoi.setTaiKhoan(taiKhoan);
+                        boMoi = boTuVungRepository.save(boMoi);
+
+                        // Lưu 10 từ vào bộ mới này trong CSDL
+                        for (TuVungDTO dto : dsTuMoi) {
+                            if (dto.getTiengAnh() != null && !dto.getTiengAnh().isBlank()) {
+                                TuVung tv = new TuVung();
+                                tv.setTiengAnh(dto.getTiengAnh().trim());
+                                tv.setTiengViet(dto.getTiengViet() != null ? dto.getTiengViet().trim() : "");
+                                tv.setPhienAm(dto.getPhienAm() != null ? dto.getPhienAm().trim() : "");
+                                tv.setViDu(dto.getViDu() != null ? dto.getViDu().trim() : "");
+                                tv.setBoTuVung(boMoi);
+                                tuVungRepository.save(tv);
+
+                                // Tạo file audio phát âm
+                                try {
+                                    audioService.taoAudio(dto.getTiengAnh().trim());
+                                } catch (Exception ignored) {}
+                            }
+                        }
+
+                        // Lấy danh sách từ vừa lưu từ DB để đưa vào vòng học
+                        dsHoc = tuVungRepository.findAllByBoTuVungIdAndBoTuVungTaiKhoanId(boMoi.getId(), taiKhoanId);
+                        hocDTO.setBoId(boMoi.getId());
+                    }
+                }
+                break;
         }
 
 
@@ -517,5 +577,18 @@ public class HomeController {
                 id,
                 taiKhoanId
         );
+    }
+
+    private List<TuVungDTO> parseJsonTuVung(String json) {
+        try {
+            com.fasterxml.jackson.databind.ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper();
+            return mapper.readValue(
+                    json,
+                    new com.fasterxml.jackson.core.type.TypeReference<List<TuVungDTO>>() {}
+            );
+        } catch (Exception e) {
+            System.err.println("[HomeController] Lỗi parse JSON từ vựng chủ đề: " + e.getMessage());
+            return new ArrayList<>();
+        }
     }
 }

@@ -58,20 +58,21 @@ form {
    ========================================================= */
 
 .form-check {
-    padding: 13px 18px 13px 44px;
+    padding: 13px 18px 13px 44px !important;
     margin-bottom: 9px;
     border: 1.5px solid #e5e7eb;
     border-radius: 12px;
     background: #fafafa;
     transition: all 0.2s ease;
-    cursor: pointer;
+    cursor: pointer !important;
     user-select: none;
     position: relative;
+    width: 100%;
 }
 
 .form-check:hover {
-    background: #f0fdf4;
-    border-color: #86efac;
+    background: #f0fdf4 !important;
+    border-color: #86efac !important;
     transform: translateY(-1px);
     box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
 }
@@ -82,19 +83,19 @@ form {
 
 .form-check.active-check,
 .form-check:has(.form-check-input:checked) {
-    background: #f0fdf4;
-    border-color: #198754;
-    box-shadow: 0 0 0 1px #198754, 0 4px 12px rgba(25, 135, 84, 0.14);
+    background: #f0fdf4 !important;
+    border-color: #198754 !important;
+    box-shadow: 0 0 0 1px #198754, 0 4px 12px rgba(25, 135, 84, 0.14) !important;
 }
 
 .form-check.active-check .form-check-label,
 .form-check:has(.form-check-input:checked) .form-check-label {
-    color: #15803d;
-    font-weight: 700;
+    color: #15803d !important;
+    font-weight: 700 !important;
 }
 
 .form-check-input {
-    cursor: pointer;
+    cursor: pointer !important;
     width: 18px;
     height: 18px;
     margin-top: 0.15rem;
@@ -102,11 +103,39 @@ form {
     accent-color: #198754;
 }
 
+/* Đảm bảo click vào bất cứ phần nào trên thanh cũng truyền vào .form-check */
 .form-check-label {
-    cursor: pointer;
+    cursor: pointer !important;
     font-weight: 500;
     transition: color 0.15s ease;
     user-select: none;
+    pointer-events: none; /* Click xuyên qua vào thanh */
+}
+
+/* Các ô nhập số bên trong thanh vẫn nhập liệu tự nhiên */
+.form-check input[type="number"],
+.form-check input[type="text"] {
+    pointer-events: auto !important;
+    cursor: text !important;
+}
+
+.form-check input[type="number"]:disabled {
+    pointer-events: none !important;
+    cursor: pointer !important;
+}
+
+.chip-chude {
+    cursor: pointer;
+    transition: all 0.15s ease;
+    font-size: 0.85rem;
+    padding: 4px 12px;
+}
+
+.chip-chude:hover {
+    background-color: #0284c7 !important;
+    color: #ffffff !important;
+    border-color: #0284c7 !important;
+    transform: translateY(-1px);
 }
 
 

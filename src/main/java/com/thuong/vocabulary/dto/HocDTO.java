@@ -63,4 +63,24 @@ public class HocDTO {
     public void setDenTu(Integer denTu) {
         this.denTu = denTu;
     }
+
+    private String tenChuDe;
+
+    private String chuDeTuJson;
+
+    public String getTenChuDe() {
+        return tenChuDe;
+    }
+
+    public void setTenChuDe(String tenChuDe) {
+        this.tenChuDe = tenChuDe;
+    }
+
+    public String getChuDeTuJson() {
+        return chuDeTuJson;
+    }
+
+    public void setChuDeTuJson(String chuDeTuJson) {
+        this.chuDeTuJson = chuDeTuJson;
+    }
 }

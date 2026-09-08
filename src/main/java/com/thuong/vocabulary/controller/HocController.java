@@ -11,6 +11,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import com.thuong.vocabulary.service.AudioService;
+import com.thuong.vocabulary.repository.TuVungRepository;
+import com.thuong.vocabulary.service.GeminiService;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,16 +27,69 @@ public class HocController {
 
     private final AudioService audioService;
 
+    private final GeminiService geminiService;
+
+    private final TuVungRepository tuVungRepository;
+
     public HocController(
             BoTuVungService boTuVungService,
             HocService hocService,
             LuuTuVungService luuTuVungService,
-            AudioService audioService
+            AudioService audioService,
+            GeminiService geminiService,
+            TuVungRepository tuVungRepository
     ) {
         this.boTuVungService = boTuVungService;
         this.hocService = hocService;
         this.luuTuVungService = luuTuVungService;
         this.audioService = audioService;
+        this.geminiService = geminiService;
+        this.tuVungRepository = tuVungRepository;
+    }
+
+    // =====================================================
+    // API ĐỀ XUẤT 10 TỪ MỚI THEO CHỦ ĐỀ (CHƯA CÓ TRONG CSDL)
+    // =====================================================
+    @GetMapping("/api/hoc/de-xuat-chu-de")
+    @ResponseBody
+    public org.springframework.http.ResponseEntity<?> deXuatTuTheoChuDe(
+            @RequestParam("chuDe") String chuDe,
+            @RequestParam(value = "loaiTru", required = false) List<String> loaiTru,
+            HttpSession session
+    ) {
+        TaiKhoan taiKhoan = (TaiKhoan) session.getAttribute("taiKhoan");
+        if (taiKhoan == null) {
+            return org.springframework.http.ResponseEntity.status(401).body("Chưa đăng nhập");
+        }
+        if (chuDe == null || chuDe.trim().isEmpty()) {
+            return org.springframework.http.ResponseEntity.badRequest().body("Vui lòng nhập tên chủ đề");
+        }
+
+        Long taiKhoanId = taiKhoan.getId();
+        List<String> tuDaCo = tuVungRepository.findAllTiengAnhByTaiKhoanId(taiKhoanId);
+        if (tuDaCo == null) tuDaCo = new ArrayList<>();
+        if (loaiTru != null) {
+            for (String w : loaiTru) {
+                if (w != null && !w.isBlank()) tuDaCo.add(w.trim().toLowerCase());
+            }
+        }
+
+        List<TuVungDTO> ketQua = geminiService.deXuatTuTheoChuDe(chuDe.trim(), tuDaCo);
+
+        // Lọc kỹ lại 1 lần nữa qua CSDL để cam kết 100% không trùng từ nào của user
+        List<TuVungDTO> ketQuaChuan = new ArrayList<>();
+        for (TuVungDTO dto : ketQua) {
+            if (dto.getTiengAnh() != null && !dto.getTiengAnh().isBlank()) {
+                String word = dto.getTiengAnh().trim();
+                boolean exists = tuVungRepository.existsByTiengAnhIgnoreCaseAndBoTuVungTaiKhoanId(word, taiKhoanId);
+                if (!exists) {
+                    ketQuaChuan.add(dto);
+                }
+            }
+            if (ketQuaChuan.size() == 10) break;
+        }
+
+        return org.springframework.http.ResponseEntity.ok(ketQuaChuan);
     }
 
 

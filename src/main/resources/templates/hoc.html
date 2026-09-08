@@ -8,8 +8,8 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css"
           rel="stylesheet">
 
-    <link rel="stylesheet" th:href="@{/css/hoc.css(v=3)}">
-    <link rel="stylesheet" th:href="@{/css/huong-dan-doc.css(v=2)}">
+    <link rel="stylesheet" th:href="@{/css/hoc.css(v=6)}">
+    <link rel="stylesheet" th:href="@{/css/huong-dan-doc.css(v=6)}">
 
 </head>
 
@@ -27,7 +27,7 @@
             th:object="${hocDTO}">
 
         <!-- Ngẫu nhiên -->
-        <div class="form-check">
+        <div class="form-check" onclick="chonRadioTheoThanh(this, 'ngauNhien', event)">
             <input id="ngauNhien"
                    class="form-check-input"
                    type="radio"
@@ -40,7 +40,7 @@
         </div>
 
         <!-- Từ sai -->
-        <div class="form-check">
+        <div class="form-check" onclick="chonRadioTheoThanh(this, 'tuSai', event)">
             <input id="tuSai"
                    class="form-check-input"
                    type="radio"
@@ -53,7 +53,7 @@
         </div>
 
         <!-- Theo bộ -->
-        <div class="form-check">
+        <div class="form-check" onclick="chonRadioTheoThanh(this, 'theoBo', event)">
             <input id="theoBo"
                    class="form-check-input"
                    type="radio"
@@ -88,7 +88,7 @@
                 📚 Chọn phạm vi học trong bộ:
             </div>
             
-            <div class="form-check mb-2">
+            <div class="form-check mb-2" onclick="chonRadioTheoThanh(this, 'phamViTatCa', event)">
                 <input class="form-check-input"
                        type="radio"
                        name="phamViBo"
@@ -101,7 +101,8 @@
                 </label>
             </div>
 
-            <div class="form-check d-flex flex-wrap align-items-center gap-2">
+            <div class="form-check d-flex flex-wrap align-items-center gap-2"
+                 onclick="chonRadioTheoThanh(this, 'phamViTuDen', event)">
                 <input class="form-check-input"
                        type="radio"
                        name="phamViBo"
@@ -120,7 +121,9 @@
                            class="form-control form-control-sm text-center fw-bold"
                            style="width: 75px;"
                            min="1"
-                           th:value="${hocDTO.tuTu != null ? hocDTO.tuTu : 1}">
+                           th:value="${hocDTO.tuTu != null ? hocDTO.tuTu : 1}"
+                           onfocus="chonRadioTheoThanh(this.closest('.form-check'), 'phamViTuDen', event)"
+                           onclick="chonRadioTheoThanh(this.closest('.form-check'), 'phamViTuDen', event)">
                     <span>đến số</span>
                     <input type="number"
                            id="denTu"
@@ -128,13 +131,15 @@
                            class="form-control form-control-sm text-center fw-bold"
                            style="width: 75px;"
                            min="1"
-                           th:value="${hocDTO.denTu != null ? hocDTO.denTu : (dsTheoBo != null and !dsTheoBo.isEmpty() ? dsTheoBo.size() : 10)}">
+                           th:value="${hocDTO.denTu != null ? hocDTO.denTu : (dsTheoBo != null and !dsTheoBo.isEmpty() ? dsTheoBo.size() : 10)}"
+                           onfocus="chonRadioTheoThanh(this.closest('.form-check'), 'phamViTuDen', event)"
+                           onclick="chonRadioTheoThanh(this.closest('.form-check'), 'phamViTuDen', event)">
                 </div>
             </div>
         </div>
 
         <!-- Chọn từng từ -->
-        <div class="form-check mt-3">
+        <div class="form-check mt-3" onclick="chonRadioTheoThanh(this, 'chonTu', event)">
 
             <input id="chonTu"
                    class="form-check-input"
@@ -146,6 +151,115 @@
                 Chọn từng từ
             </label>
 
+        </div>
+
+        <!-- Theo chủ đề (AI đề xuất 10 từ mới chưa có trong CSDL) -->
+        <div class="form-check mt-3" onclick="chonRadioTheoThanh(this, 'theoChuDe', event)">
+            <input id="theoChuDe"
+                   class="form-check-input"
+                   type="radio"
+                   th:field="*{kieuHoc}"
+                   value="THEO_CHU_DE">
+
+            <label class="form-check-label" for="theoChuDe">
+                💡 Theo chủ đề (AI đề xuất 10 từ mới chưa có trong CSDL)
+            </label>
+        </div>
+
+        <!-- Khung nhập chủ đề và danh sách từ gợi ý -->
+        <div id="khungTheoChuDe" class="mt-3 p-3 rounded-3 border bg-light shadow-sm" style="display: none;">
+            <div class="fw-bold mb-2 text-primary d-flex align-items-center gap-2">
+                <span>🌟 Nhập chủ đề bạn muốn học (AI sẽ tìm 10 từ mới toanh chưa có trong kho từ của bạn):</span>
+            </div>
+
+            <!-- Gợi ý các chủ đề phổ biến -->
+            <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
+                <span class="text-secondary small fw-bold">Gợi ý nhanh:</span>
+                <span class="badge bg-white text-dark border chip-chude" onclick="chonGoiYChuDe('Du lịch & Khám phá')">✈️ Du lịch & Khám phá</span>
+                <span class="badge bg-white text-dark border chip-chude" onclick="chonGoiYChuDe('Công nghệ thông tin')">💻 Công nghệ thông tin</span>
+                <span class="badge bg-white text-dark border chip-chude" onclick="chonGoiYChuDe('Ẩm thực & Nhà hàng')">🍜 Ẩm thực & Nhà hàng</span>
+                <span class="badge bg-white text-dark border chip-chude" onclick="chonGoiYChuDe('Kinh doanh & Khởi nghiệp')">💼 Kinh doanh & Khởi nghiệp</span>
+                <span class="badge bg-white text-dark border chip-chude" onclick="chonGoiYChuDe('Sức khỏe & Y tế')">🏥 Sức khỏe & Y tế</span>
+                <span class="badge bg-white text-dark border chip-chude" onclick="chonGoiYChuDe('Giao tiếp hàng ngày')">💬 Giao tiếp hàng ngày</span>
+                <span class="badge bg-white text-dark border chip-chude" onclick="chonGoiYChuDe('Môi trường & Thiên nhiên')">🌿 Môi trường & Thiên nhiên</span>
+                <span class="badge bg-white text-dark border chip-chude" onclick="chonGoiYChuDe('Thời trang & Đời sống')">👗 Thời trang & Đời sống</span>
+            </div>
+
+            <div class="input-group mb-3">
+                <input type="text"
+                       id="tenChuDeInput"
+                       name="tenChuDe"
+                       th:field="*{tenChuDe}"
+                       class="form-control form-control-lg"
+                       placeholder="Ví dụ: Du lịch, Bệnh viện, Mua sắm, Sân bay, Khách sạn..."
+                       onkeydown="if(event.key==='Enter'){event.preventDefault(); deXuatTuMoiTheoChuDe(false);}">
+                <button type="button"
+                        id="btnDeXuatChuDe"
+                        class="btn btn-primary px-4 fw-bold"
+                        onclick="deXuatTuMoiTheoChuDe(false)">
+                    🔍 Đề xuất 10 từ mới
+                </button>
+            </div>
+
+            <!-- Spinner loading -->
+            <div id="spinChuDe" class="text-center py-4 my-2" style="display: none;">
+                <div class="spinner-border text-primary" role="status" style="width: 2.5rem; height: 2.5rem;">
+                    <span class="visually-hidden">Đang tải...</span>
+                </div>
+                <div class="mt-2 fw-bold text-primary" id="spinChuDeText">
+                    🤖 AI Gemini đang quét và chọn lọc 10 từ mới chưa có trong CSDL...
+                </div>
+            </div>
+
+            <!-- Thông báo lỗi / trạng thái -->
+            <div id="thongBaoChuDe" class="alert alert-warning py-2 mb-3" style="display: none;"></div>
+
+            <!-- Dữ liệu JSON ẩn gửi lên server khi submit form -->
+            <input type="hidden" id="chuDeTuJson" name="chuDeTuJson" th:field="*{chuDeTuJson}">
+
+            <!-- Bảng danh sách 10 từ được đề xuất -->
+            <div id="khungBangChuDe" style="display: none;">
+                <div class="d-flex justify-content-between align-items-center mb-2 flex-wrap gap-2">
+                    <div class="fw-bold text-success">
+                        ✅ Đã tìm thấy 10 từ mới cho chủ đề "<span id="lblTenChuDeHienTai"></span>":
+                    </div>
+                    <div class="d-flex gap-2">
+                        <button type="button"
+                                class="btn btn-sm btn-outline-secondary"
+                                onclick="deXuatTuMoiTheoChuDe(true)"
+                                title="Đề xuất 10 từ khác cũng thuộc chủ đề này">
+                            🔄 Đổi 10 từ khác
+                        </button>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover align-middle bg-white shadow-sm mb-3">
+                        <thead class="table-success">
+                        <tr>
+                            <th class="text-center" style="width: 50px;">STT</th>
+                            <th>Tiếng Anh</th>
+                            <th>Phiên âm</th>
+                            <th>Nghĩa tiếng Việt</th>
+                            <th>Ví dụ</th>
+                            <th class="text-center" style="width: 60px;">Đọc</th>
+                        </tr>
+                        </thead>
+                        <tbody id="tbodyTuChuDe">
+                        <!-- Sẽ được render động bởi JS -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="d-flex justify-content-end align-items-center gap-2 mt-2">
+                    <span class="text-muted small">Bấm bắt đầu học sẽ tự động lưu 10 từ này thành 1 bộ từ mới trong tài khoản của bạn.</span>
+                    <button type="button"
+                            class="btn btn-success px-4 py-2 fw-bold shadow"
+                            onclick="batDauHocBoChuDe()">
+                        🚀 Bắt đầu học bộ này
+                    </button>
+                </div>
+            </div>
         </div>
 
         <div class="mt-4 d-flex gap-2 flex-wrap align-items-center btn-action-group">
@@ -329,7 +443,39 @@
 
 </div>
 
-<script th:src="@{/js/hoc.js(v=3)}"></script>
-<script th:src="@{/js/huong-dan-doc.js(v=2)}"></script>
+<script>
+function chonRadioTheoThanh(barEl, radioId, evt) {
+    if (!radioId) return;
+    if (evt && evt.target) {
+        var tag = evt.target.tagName;
+        if (tag === 'BUTTON' || tag === 'SELECT') return;
+    }
+    var radio = document.getElementById(radioId);
+    if (!radio) return;
+
+    if (!radio.checked) {
+        radio.checked = true;
+        try {
+            radio.dispatchEvent(new Event('change', { bubbles: true }));
+        } catch (e) {
+            if (typeof radio.onchange === 'function') radio.onchange();
+        }
+    }
+
+    if (typeof capNhatActiveBar === 'function') capNhatActiveBar();
+    if (typeof capNhat === 'function') capNhat();
+    if (typeof capNhatPhamViBo === 'function') capNhatPhamViBo();
+
+    if (radioId === 'phamViTuDen' && (!evt || !evt.target || evt.target.tagName !== 'INPUT')) {
+        var tuTu = document.getElementById('tuTu');
+        if (tuTu) {
+            setTimeout(function () { tuTu.focus(); }, 50);
+        }
+    }
+}
+window.chonRadioTheoThanh = chonRadioTheoThanh;
+</script>
+<script th:src="@{/js/hoc.js(v=6)}"></script>
+<script th:src="@{/js/huong-dan-doc.js(v=6)}"></script>
 </body>
 </html>

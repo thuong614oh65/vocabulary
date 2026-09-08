@@ -20,6 +20,9 @@ public interface TuVungRepository extends JpaRepository<TuVung, Long> {
             Long taiKhoanId
     );
 
+    @Query("SELECT LOWER(TRIM(t.tiengAnh)) FROM TuVung t WHERE t.boTuVung.taiKhoan.id = :taiKhoanId")
+    List<String> findAllTiengAnhByTaiKhoanId(@Param("taiKhoanId") Long taiKhoanId);
+
 
     // =========================================================
     // LẤY TẤT CẢ TỪ CỦA MỘT TÀI KHOẢN

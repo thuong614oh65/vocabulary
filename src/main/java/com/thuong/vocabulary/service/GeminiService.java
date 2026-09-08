@@ -1008,4 +1008,210 @@ public class GeminiService {
         }
         return "";
     }
+
+    // =====================================================
+    // ĐỀ XUẤT 10 TỪ VỰNG THEO CHỦ ĐỀ (KHÔNG TRÙNG VỚI CSDL)
+    // =====================================================
+    public List<com.thuong.vocabulary.dto.TuVungDTO> deXuatTuTheoChuDe(String chuDe, List<String> tuDaCo) {
+        String loaiTruStr = "";
+        if (tuDaCo != null && !tuDaCo.isEmpty()) {
+            List<String> subList = tuDaCo.size() > 250 ? tuDaCo.subList(0, 250) : tuDaCo;
+            loaiTruStr = String.join(", ", subList);
+        }
+
+        String prompt = String.format("""
+            Ban la mot giao vien tieng Anh ban xu chuyen nghiep.
+            Nguoi hoc muon hoc dung 10 tu vung tieng Anh theo chu de: "%s".
+
+            QUY TAC BAT BUOC:
+            1. SO LUONG: Dung 10 tu hoac cum tu tieng Anh thuc te, thong dung va hay nhat thuoc chu de tren.
+            2. TUYET DOI KHONG TRUNG: Khong duoc trung (khong phan biet chu hoa, chu thuong) voi bat ky tu nao trong danh sach sau day:
+            [%s]
+            3. DINH DANG: Chi tra ve DUY NHAT mot mang JSON hop le gom 10 phan tu, khong kem bat ky giai thich nao khac ngoai JSON.
+            Moi phan tu JSON gom 4 truong:
+            [
+              {
+                "tiengAnh": "destination",
+                "phienAm": "/ˌdes.tɪˈneɪ.ʃən/",
+                "tiengViet": "điểm đến",
+                "viDu": "Paris is a popular tourist destination."
+              }
+            ]
+            """, chuDe, loaiTruStr);
+
+        try {
+            String res = goiGeminiAnToan(prompt, new String[]{MODEL_FLASH_LITE, MODEL_FLASH});
+            if (res != null) {
+                res = res.trim();
+                if (res.startsWith("```json")) res = res.substring(7);
+                else if (res.startsWith("```")) res = res.substring(3);
+                if (res.endsWith("```")) res = res.substring(0, res.length() - 3);
+                res = res.trim();
+
+                int start = res.indexOf("[");
+                int end = res.lastIndexOf("]");
+                if (start >= 0 && end > start) {
+                    res = res.substring(start, end + 1);
+                    com.fasterxml.jackson.databind.ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper();
+                    List<com.thuong.vocabulary.dto.TuVungDTO> list = mapper.readValue(
+                            res,
+                            new com.fasterxml.jackson.core.type.TypeReference<List<com.thuong.vocabulary.dto.TuVungDTO>>() {}
+                    );
+                    if (list != null && !list.isEmpty()) {
+                        return list;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("[GeminiService] Loi de xuat tu bang Gemini: " + e.getMessage());
+        }
+
+        // Fallback du phong
+        return taoTuDuPhongTheoChuDe(chuDe, tuDaCo);
+    }
+
+    private List<com.thuong.vocabulary.dto.TuVungDTO> taoTuDuPhongTheoChuDe(String chuDe, List<String> tuDaCo) {
+        Set<String> setDaCo = new HashSet<>();
+        if (tuDaCo != null) {
+            for (String s : tuDaCo) {
+                if (s != null) setDaCo.add(s.trim().toLowerCase());
+            }
+        }
+
+        // Kho từ vựng phong phú dự phòng theo các chủ đề phổ biến
+        List<com.thuong.vocabulary.dto.TuVungDTO> khoTu = new ArrayList<>();
+        String cdLower = chuDe != null ? chuDe.toLowerCase() : "";
+
+        if (cdLower.contains("du lịch") || cdLower.contains("travel") || cdLower.contains("tour") || cdLower.contains("khám phá")) {
+            khoTu.add(taoTu("destination", "/ˌdes.tɪˈneɪ.ʃən/", "điểm đến", "Da Nang is a famous destination."));
+            khoTu.add(taoTu("itinerary", "/aɪˈtɪn.ər.ər.i/", "lịch trình chuyến đi", "I planned our travel itinerary."));
+            khoTu.add(taoTu("sightseeing", "/ˈsaɪtˌsiː.ɪŋ/", "ngắm cảnh, tham quan", "We went sightseeing in Paris."));
+            khoTu.add(taoTu("accommodation", "/əˌkɑː.məˈdeɪ.ʃən/", "chỗ ở, nơi lưu trú", "Hotel accommodation was great."));
+            khoTu.add(taoTu("souvenir", "/ˌsuː.vəˈnɪr/", "quà lưu niệm", "I bought souvenirs for my family."));
+            khoTu.add(taoTu("breathtaking", "/ˈbreθˌteɪ.kɪŋ/", "ngoạn mục, đẹp đến ngạt thở", "The mountain view is breathtaking."));
+            khoTu.add(taoTu("expedition", "/ˌek.spəˈdɪʃ.ən/", "cuộc thám hiểm", "They joined an expedition to the jungle."));
+            khoTu.add(taoTu("luggage", "/ˈlʌɡ.ɪdʒ/", "hành lý", "Don't leave your luggage unattended."));
+            khoTu.add(taoTu("departure", "/dɪˈpɑːr.tʃɚ/", "sự khởi hành", "The departure time is 8 AM."));
+            khoTu.add(taoTu("wanderlust", "/ˈwɑːn.dɚ.lʌst/", "niềm đam mê du lịch", "She is filled with wanderlust."));
+            khoTu.add(taoTu("backpacking", "/ˈbæk.pæk.ɪŋ/", "du lịch bụi, đi phượt", "He loves backpacking through Asia."));
+            khoTu.add(taoTu("hospitality", "/ˌhɑː.spɪˈtæl.ə.t̬i/", "lòng hiếu khách", "Vietnamese hospitality is amazing."));
+            khoTu.add(taoTu("resort", "/rɪˈzɔːrt/", "khu nghỉ dưỡng cao cấp", "We stayed at a beach resort."));
+            khoTu.add(taoTu("scenery", "/ˈsiː.nɚ.i/", "phong cảnh thiên nhiên", "The mountain scenery was spectacular."));
+            khoTu.add(taoTu("monument", "/ˈmɑːn.jə.mənt/", "đài kỷ niệm, di tích", "They visited historic monuments."));
+            khoTu.add(taoTu("excursion", "/ɪkˈskɝː.ʒən/", "chuyến dã ngoại, du ngoạn", "We took an excursion to the island."));
+            khoTu.add(taoTu("cruise", "/kruːz/", "chuyến du thuyền trên biển", "They enjoyed a luxury cruise in Ha Long Bay."));
+            khoTu.add(taoTu("landscape", "/ˈlænd.skeɪp/", "cảnh quan phong cảnh", "The rural landscape was peaceful."));
+            khoTu.add(taoTu("attraction", "/əˈtræk.ʃən/", "điểm thu hút du khách", "The Eiffel Tower is a top tourist attraction."));
+            khoTu.add(taoTu("heritage", "/ˈher.ɪ.t̬ɪdʒ/", "di sản văn hóa", "Hoi An is a world cultural heritage site."));
+        } else if (cdLower.contains("công nghệ") || cdLower.contains("tech") || cdLower.contains("ai") || cdLower.contains("it") || cdLower.contains("máy tính")) {
+            khoTu.add(taoTu("algorithm", "/ˈæl.ɡə.rɪ.ðəm/", "thuật toán", "The search algorithm is very fast."));
+            khoTu.add(taoTu("cybersecurity", "/ˌsaɪ.bɚ.səˈkjʊr.ə.t̬i/", "an ninh mạng", "Cybersecurity is crucial for banks."));
+            khoTu.add(taoTu("automation", "/ˌɑː.t̬əˈmeɪ.ʃən/", "tự động hóa", "Automation increases productivity."));
+            khoTu.add(taoTu("database", "/ˈdeɪ.t̬ə.beɪs/", "cơ sở dữ liệu", "Data is stored in the database."));
+            khoTu.add(taoTu("artificial intelligence", "/ˌɑːr.t̬əˈfɪʃ.əl ɪnˈtel.ə.dʒəns/", "trí tuệ nhân tạo", "AI is changing the world."));
+            khoTu.add(taoTu("encryption", "/ɪnˈkrɪp.ʃən/", "mã hóa dữ liệu", "End-to-end encryption protects privacy."));
+            khoTu.add(taoTu("cloud computing", "/ˌklaʊd kəmˈpjuː.t̬ɪŋ/", "điện toán đám mây", "We store files on cloud computing."));
+            khoTu.add(taoTu("interface", "/ˈɪn.t̬ɚ.feɪs/", "giao diện người dùng", "The user interface is intuitive."));
+            khoTu.add(taoTu("software", "/ˈsɑːft.wer/", "phần mềm", "He writes software applications."));
+            khoTu.add(taoTu("breakthrough", "/ˈbreɪk.θruː/", "đột phá công nghệ", "A breakthrough in quantum computing."));
+            khoTu.add(taoTu("framework", "/ˈfreɪm.wɝːk/", "bộ khung phát triển", "Spring Boot is a popular framework."));
+            khoTu.add(taoTu("bandwidth", "/ˈbænd.wɪtθ/", "băng thông mạng", "High bandwidth allows faster downloads."));
+            khoTu.add(taoTu("deployment", "/dɪˈplɔɪ.mənt/", "sự triển khai hệ thống", "Automated deployment saves time."));
+            khoTu.add(taoTu("scalability", "/ˌskeɪ.ləˈbɪl.ə.t̬i/", "khả năng mở rộng hệ thống", "Cloud servers offer great scalability."));
+            khoTu.add(taoTu("virtualization", "/ˌvɝː.tʃu.ə.laɪˈzeɪ.ʃən/", "công nghệ ảo hóa", "Virtualization optimizes server hardware."));
+            khoTu.add(taoTu("repository", "/rɪˈpɑː.zə.tɔːr.i/", "kho lưu trữ mã nguồn", "Code is hosted in a GitHub repository."));
+            khoTu.add(taoTu("compiler", "/kəmˈpaɪ.lɚ/", "trình biên dịch mã nguồn", "The compiler converts code to machine language."));
+            khoTu.add(taoTu("firewall", "/ˈfaɪr.wɑːl/", "bức tường lửa bảo mật", "The firewall blocks unauthorized network access."));
+        } else if (cdLower.contains("ẩm thực") || cdLower.contains("ăn") || cdLower.contains("nấu") || cdLower.contains("food") || cdLower.contains("restaurant") || cdLower.contains("nhà hàng")) {
+            khoTu.add(taoTu("ingredient", "/ɪnˈɡriː.di.ənt/", "nguyên liệu nấu ăn", "Fresh ingredients make good food."));
+            khoTu.add(taoTu("cuisine", "/kwɪˈziːn/", "nền ẩm thực", "Vietnamese cuisine is world-famous."));
+            khoTu.add(taoTu("delicious", "/dɪˈlɪʃ.əs/", "ngon miệng", "This pho soup is delicious."));
+            khoTu.add(taoTu("beverage", "/ˈbev.ɚ.ɪdʒ/", "đồ uống, thức uống", "Hot beverages are served here."));
+            khoTu.add(taoTu("appetizer", "/ˈæp.ə.taɪ.zɚ/", "món khai vị", "We ordered spring rolls as an appetizer."));
+            khoTu.add(taoTu("flavorful", "/ˈfleɪ.vɚ.fəl/", "đậm đà hương vị", "The curry is very flavorful."));
+            khoTu.add(taoTu("recipe", "/ˈres.ə.pi/", "công thức nấu ăn", "She shared her secret cake recipe."));
+            khoTu.add(taoTu("gourmet", "/ˈɡʊr.meɪ/", "ẩm thực cao cấp", "A gourmet meal prepared by the chef."));
+            khoTu.add(taoTu("nutrition", "/nuːˈtrɪʃ.ən/", "dinh dưỡng", "Vegetables provide good nutrition."));
+            khoTu.add(taoTu("seasoning", "/ˈsiː.zən.ɪŋ/", "gia vị nêm nếm", "Add some seasoning to taste."));
+            khoTu.add(taoTu("savory", "/ˈseɪ.vɚ.i/", "món mặn, vị thơm ngon", "I prefer savory food over sweet desserts."));
+            khoTu.add(taoTu("culinary", "/ˈkʌl.ə.ner.i/", "thuộc về nấu nướng, ẩm thực", "He has great culinary skills."));
+            khoTu.add(taoTu("condiment", "/ˈkɑːn.də.mənt/", "gia vị ăn kèm (nước sốt, tương)", "Mustard and ketchup are condiments."));
+            khoTu.add(taoTu("delicacy", "/ˈdel.ə.kə.si/", "món đặc sản quý", "Truffle is an expensive delicacy."));
+            khoTu.add(taoTu("crispy", "/ˈkrɪs.pi/", "giòn rụm", "The fried chicken is crispy and golden."));
+            khoTu.add(taoTu("refreshing", "/rɪˈfreʃ.ɪŋ/", "tươi mát, sảng khoái", "Lemon juice is very refreshing on hot days."));
+            khoTu.add(taoTu("buffet", "/bəˈfeɪ/", "tiệc tự chọn món", "The restaurant offers a seafood buffet."));
+        } else if (cdLower.contains("kinh doanh") || cdLower.contains("business") || cdLower.contains("khởi nghiệp") || cdLower.contains("marketing") || cdLower.contains("tài chính")) {
+            khoTu.add(taoTu("entrepreneur", "/ˌɑːn.trə.prəˈnɝː/", "doanh nhân, người khởi nghiệp", "She is a successful entrepreneur."));
+            khoTu.add(taoTu("investment", "/ɪnˈvest.mənt/", "sự đầu tư", "Real estate is a good investment."));
+            khoTu.add(taoTu("revenue", "/ˈrev.ə.nuː/", "doanh thu", "Company revenue grew this quarter."));
+            khoTu.add(taoTu("profitability", "/ˌprɑː.fɪ.t̬əˈbɪl.ə.t̬i/", "khả năng sinh lời", "We need to improve profitability."));
+            khoTu.add(taoTu("strategy", "/ˈstræt̬.ə.dʒi/", "chiến lược", "Our marketing strategy is effective."));
+            khoTu.add(taoTu("partnership", "/ˈpɑːrt.nɚ.ʃɪp/", "mối quan hệ hợp tác", "They signed a strategic partnership."));
+            khoTu.add(taoTu("negotiation", "/nəˌɡoʊ.ʃiˈeɪ.ʃən/", "cuộc đàm phán, thương lượng", "The contract is under negotiation."));
+            khoTu.add(taoTu("market share", "/ˈmɑːr.kɪt ʃer/", "thị phần", "The brand dominates the market share."));
+            khoTu.add(taoTu("collaboration", "/kəˌlæb.əˈreɪ.ʃən/", "sự cộng tác làm việc", "Team collaboration drives success."));
+            khoTu.add(taoTu("turnover", "/ˈtɝːnˌoʊ.vɚ/", "doanh số luân chuyển", "Annual turnover reached 10 million."));
+            khoTu.add(taoTu("milestone", "/ˈmaɪl.stoʊn/", "cột mốc quan trọng", "Reaching 1000 users was a big milestone."));
+            khoTu.add(taoTu("sponsorship", "/ˈspɑːn.sɚ.ʃɪp/", "sự tài trợ", "The sports event received major sponsorship."));
+            khoTu.add(taoTu("stakeholder", "/ˈsteɪkˌhoʊl.dɚ/", "bên liên quan, cổ đông", "We must protect stakeholder interests."));
+            khoTu.add(taoTu("acquisition", "/ˌæk.wəˈzɪʃ.ən/", "sự sáp nhập, mua lại công ty", "The tech acquisition expanded their market."));
+            khoTu.add(taoTu("venture", "/ˈven.tʃɚ/", "dự án kinh doanh mạo hiểm", "They started a joint venture in Asia."));
+            khoTu.add(taoTu("dividend", "/ˈdɪv.ə.dend/", "cổ tức chi trả", "Stockholders receive annual dividends."));
+        } else if (cdLower.contains("sức khỏe") || cdLower.contains("y tế") || cdLower.contains("health") || cdLower.contains("bệnh")) {
+            khoTu.add(taoTu("symptom", "/ˈsɪmp.təm/", "triệu chứng bệnh", "Fever is a common symptom of flu."));
+            khoTu.add(taoTu("prescription", "/prɪˈskrɪp.ʃən/", "đơn thuốc, toa thuốc", "The doctor gave me a prescription."));
+            khoTu.add(taoTu("immunity", "/ɪˈmjuː.nə.t̬i/", "khả năng miễn dịch", "Vaccines help build immunity."));
+            khoTu.add(taoTu("prevention", "/prɪˈven.ʃən/", "sự phòng ngừa bệnh", "Prevention is better than cure."));
+            khoTu.add(taoTu("diagnosis", "/ˌdaɪ.əɡˈnoʊ.sɪs/", "sự chẩn đoán bệnh", "Early diagnosis saves lives."));
+            khoTu.add(taoTu("recovery", "/rɪˈkʌv.ɚ.i/", "sự hồi phục sức khỏe", "Wishing you a speedy recovery."));
+            khoTu.add(taoTu("vitality", "/vaɪˈtæl.ə.t̬i/", "sức sống, sinh lực dồi dào", "Exercise brings vitality and energy."));
+            khoTu.add(taoTu("rehabilitation", "/ˌriː.həˌbɪl.əˈteɪ.ʃən/", "sự phục hồi chức năng", "He is doing physical rehabilitation."));
+            khoTu.add(taoTu("wellness", "/ˈwel.nəs/", "sức khỏe toàn diện", "Yoga promotes physical wellness."));
+            khoTu.add(taoTu("treatment", "/ˈtriːt.mənt/", "phương pháp điều trị", "She responded well to the treatment."));
+            khoTu.add(taoTu("hygiene", "/ˈhaɪ.dʒiːn/", "vệ sinh phòng bệnh", "Personal hygiene prevents infections."));
+            khoTu.add(taoTu("checkup", "/ˈtʃek.ʌp/", "cuộc khám sức khỏe tổng quát", "Go for a regular health checkup."));
+            khoTu.add(taoTu("therapy", "/ˈθer.ə.pi/", "liệu pháp điều trị", "Physical therapy relieved the pain."));
+            khoTu.add(taoTu("supplement", "/ˈsʌp.lə.mənt/", "thực phẩm bổ sung vi chất", "Vitamin C is a dietary supplement."));
+            khoTu.add(taoTu("metabolism", "/məˈtæb.əl.ɪ.zəm/", "quá trình trao đổi chất", "Exercise speeds up your metabolism."));
+            khoTu.add(taoTu("physician", "/fɪˈzɪʃ.ən/", "bác sĩ điều trị", "Consult your personal physician for advice."));
+        } else {
+            // Mặc định: Các từ vựng cao cấp, thông dụng đa chủ đề
+            khoTu.add(taoTu("perspective", "/pɚˈspek.tɪv/", "góc nhìn, quan điểm", "Travel gives you a new perspective."));
+            khoTu.add(taoTu("perseverance", "/ˌpɝː.səˈvɪr.əns/", "sự kiên trì, bền bỉ", "Success requires perseverance."));
+            khoTu.add(taoTu("inspiration", "/ˌɪn.spəˈreɪ.ʃən/", "nguồn cảm hứng", "Nature is my biggest inspiration."));
+            khoTu.add(taoTu("enthusiasm", "/ɪnˈθuː.zi.æz.əm/", "sự nhiệt huyết, hào hứng", "He works with great enthusiasm."));
+            khoTu.add(taoTu("achievement", "/əˈtʃiːv.mənt/", "thành tựu đạt được", "Winning the contest was an achievement."));
+            khoTu.add(taoTu("confidence", "/ˈkɑːn.fə.dəns/", "sự tự tin", "Speak with confidence and clarity."));
+            khoTu.add(taoTu("opportunity", "/ˌɑː.pɚˈtuː.nə.t̬i/", "cơ hội tốt", "Seize every learning opportunity."));
+            khoTu.add(taoTu("creativity", "/ˌkriː.eɪˈtɪv.ə.t̬i/", "sức sáng tạo", "Art encourages imagination and creativity."));
+            khoTu.add(taoTu("knowledge", "/ˈnɑː.lɪdʒ/", "tri thức, kiến thức", "Knowledge is power."));
+            khoTu.add(taoTu("communication", "/kəˌmjuː.nəˈkeɪ.ʃən/", "sự giao tiếp, truyền đạt", "Good communication avoids misunderstanding."));
+            khoTu.add(taoTu("determination", "/dɪˌtɝː.mɪˈneɪ.ʃən/", "sự quyết tâm cao độ", "Her determination helped her win."));
+            khoTu.add(taoTu("flexibility", "/ˌflek.səˈbɪl.ə.t̬i/", "tính linh hoạt, uyển chuyển", "Flexibility is important in a fast world."));
+            khoTu.add(taoTu("resilience", "/rɪˈzɪl.jəns/", "sức bật, khả năng phục hồi", "Emotional resilience overcomes challenges."));
+            khoTu.add(taoTu("curiosity", "/ˌkjʊr.iˈɑː.sə.t̬i/", "lòng hiếu kỳ ham học hỏi", "Children are born with curiosity."));
+            khoTu.add(taoTu("mindset", "/ˈmaɪnd.set/", "tư duy định hướng", "A growth mindset leads to success."));
+            khoTu.add(taoTu("authenticity", "/ˌɑː.θenˈtɪs.ə.t̬i/", "tính chân thực, nguyên bản", "People value honesty and authenticity."));
+        }
+
+        List<com.thuong.vocabulary.dto.TuVungDTO> ketQua = new ArrayList<>();
+        for (com.thuong.vocabulary.dto.TuVungDTO dto : khoTu) {
+            String w = dto.getTiengAnh().toLowerCase().trim();
+            if (!setDaCo.contains(w)) {
+                ketQua.add(dto);
+            }
+            if (ketQua.size() == 10) break;
+        }
+
+        return ketQua;
+    }
+
+    private com.thuong.vocabulary.dto.TuVungDTO taoTu(String tiengAnh, String phienAm, String tiengViet, String viDu) {
+        com.thuong.vocabulary.dto.TuVungDTO dto = new com.thuong.vocabulary.dto.TuVungDTO();
+        dto.setTiengAnh(tiengAnh);
+        dto.setPhienAm(phienAm);
+        dto.setTiengViet(tiengViet);
+        dto.setViDu(viDu);
+        return dto;
+    }
 }
