@@ -117,16 +117,35 @@ public class LuyenPhanXaController {
                 dsTuGoc = new ArrayList<>(dsDangHoc);
             }
         } else if ("TU_SAI".equalsIgnoreCase(kieuHoc)) {
-            dsTuGoc = hocService.layTuSai(taiKhoanId);
+            List<TuVung> dsSai = hocService.layTuSai(taiKhoanId);
+            if (dsSai != null) {
+                // Giới hạn tối đa 25 từ hay sai nhất để vừa sức luyện tập
+                if (dsSai.size() > 25) {
+                    dsSai = new ArrayList<>(dsSai.subList(0, 25));
+                }
+                dsTuGoc = dsSai;
+            }
         } else if ("NGAU_NHIEN".equalsIgnoreCase(kieuHoc)) {
-            dsTuGoc = hocService.layNgauNhien(taiKhoanId);
+            List<TuVung> dsNgauNhien = hocService.layNgauNhien(taiKhoanId);
+            if (dsNgauNhien != null) {
+                // Giới hạn tối đa 25 từ ngẫu nhiên
+                if (dsNgauNhien.size() > 25) {
+                    dsNgauNhien = new ArrayList<>(dsNgauNhien.subList(0, 25));
+                }
+                dsTuGoc = dsNgauNhien;
+            }
         } else if (boId != null) {
             dsTuGoc = hocService.layTheoBo(boId, taiKhoanId);
         }
 
         // Fallback nếu danh sách rỗng
         if (dsTuGoc.isEmpty()) {
-            dsTuGoc = hocService.layTatCa(taiKhoanId);
+            List<TuVung> tatCa = hocService.layTatCa(taiKhoanId);
+            if (tatCa.size() > 25) {
+                Collections.shuffle(tatCa);
+                tatCa = new ArrayList<>(tatCa.subList(0, 25));
+            }
+            dsTuGoc = tatCa;
         }
 
         if (dsTuGoc.isEmpty()) {

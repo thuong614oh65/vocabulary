@@ -59,8 +59,8 @@
                             th:text="${bo.tenBo + ' (' + bo.soLuongTu + ' từ)'}"
                             th:selected="${bo.id == boIdChon && kieuHoc != 'DANG_HOC'}">
                     </option>
-                    <option value="TU_SAI" th:selected="${kieuHoc == 'TU_SAI'}">⚠️ Các từ hay làm sai</option>
-                    <option value="NGAU_NHIEN" th:selected="${kieuHoc == 'NGAU_NHIEN'}">🎲 Ngẫu nhiên 15 từ</option>
+                    <option value="TU_SAI" th:selected="${kieuHoc == 'TU_SAI'}">⚠️ Các từ hay làm sai (tối đa 25 từ)</option>
+                    <option value="NGAU_NHIEN" th:selected="${kieuHoc == 'NGAU_NHIEN'}">🎲 Ngẫu nhiên 25 từ</option>
                 </select>
             </div>
 
