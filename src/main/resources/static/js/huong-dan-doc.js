@@ -116,12 +116,85 @@
     window.dungAudioHuongDan = dungAudioHuongDan;
 
     // =========================================================
-    // 3. MỞ MODAL HƯỚNG DẪN ĐỌC
+    // 3. TỰ ĐỘNG KHỞI TẠO VÀ MỞ MODAL HƯỚNG DẪN ĐỌC
     // =========================================================
+    function ensureModalExists() {
+        let modal = document.getElementById("modalHuongDanDoc");
+        if (!modal) {
+            const modalDiv = document.createElement("div");
+            modalDiv.id = "modalHuongDanDoc";
+            modalDiv.className = "modal-hd-overlay";
+            modalDiv.innerHTML =
+                '<div class="modal-hd-container">' +
+                    '<div class="modal-hd-header">' +
+                        '<h5 class="modal-hd-title">🗣️ Hướng dẫn cách đọc chuẩn</h5>' +
+                        '<button type="button" class="modal-hd-close" onclick="dongHuongDanDoc(false)" title="Đóng">&times;</button>' +
+                    '</div>' +
+                    '<div class="modal-hd-body">' +
+                        '<div id="hdLoadingBox" class="modal-hd-loading">' +
+                            '<div class="modal-hd-spinner"></div>' +
+                            '<div>Đang phân tích phát âm chuẩn...</div>' +
+                        '</div>' +
+                        '<div id="hdContentBox" style="display: none; flex-direction: column; gap: 16px;">' +
+                            '<div class="hd-word-hero">' +
+                                '<div class="hd-word" id="hdTuChinh">...</div>' +
+                                '<div><span class="hd-phonetic-ipa" id="hdPhienAmIpa"></span></div>' +
+                                '<div><span class="hd-vietnamese-respell" id="hdPhienAmTiengViet"></span></div>' +
+                                '<div class="hd-meaning" id="hdNghia"></div>' +
+                            '</div>' +
+                            '<div class="hd-audio-bar">' +
+                                '<button type="button" class="btn-hd-audio btn-primary-audio" onclick="phatAudioHuongDan(1.0, this)" title="Nghe với tốc độ người bản xứ bình thường">🔊 Chuẩn (1.0x)</button>' +
+                                '<button type="button" class="btn-hd-audio" onclick="phatAudioHuongDan(0.6, this)" title="Nghe chậm rõ từng âm như Google Dịch">🐢 Chậm (0.6x)</button>' +
+                                '<button type="button" class="btn-hd-audio" onclick="docTachAmHuongDan(this)" title="Đọc từng âm tiết rồi đọc cả từ">🎶 Tách âm tiết</button>' +
+                                '<button type="button" class="btn-hd-audio" onclick="danhVanHuongDan(this)" title="Đánh vần từng chữ cái tiếng Anh">🔡 Đánh vần</button>' +
+                            '</div>' +
+                            '<div class="hd-syllables-box">' +
+                                '<div class="hd-section-title"><span>🎯</span> Các âm tiết (Bấm từng âm để nghe):</div>' +
+                                '<div class="hd-syllable-chips" id="hdSyllableChips"></div>' +
+                                '<p class="hd-syllable-hint">💡 Nhấp chuột vào từng âm tiết ở trên để luyện nghe riêng âm đó</p>' +
+                            '</div>' +
+                            '<div class="hd-speech-box">' +
+                                '<button type="button" id="btnMicPractice" class="btn-mic-practice" onclick="batDauLuyenDoc()">🎙️ Bấm để thử phát âm</button>' +
+                                '<div id="hdSpeechResult" class="hd-speech-result"></div>' +
+                            '</div>' +
+                            '<div class="hd-tips-grid">' +
+                                '<div class="hd-tip-card mouth">' +
+                                    '<div class="hd-tip-title">👄 Khẩu hình & vị trí lưỡi:</div>' +
+                                    '<div id="hdTipKhauHinh">Mở miệng vừa phải, thả lỏng môi...</div>' +
+                                '</div>' +
+                                '<div class="hd-tip-card ending" id="hdCardAmDuoi" style="display: none;">' +
+                                    '<div class="hd-tip-title">🔔 Chú ý âm đuôi (Ending sound):</div>' +
+                                    '<div id="hdTipAmDuoi">...</div>' +
+                                '</div>' +
+                                '<div class="hd-tip-card warning">' +
+                                    '<div class="hd-tip-title">⚠️ Lỗi người Việt hay gặp:</div>' +
+                                    '<div id="hdTipLoi">...</div>' +
+                                '</div>' +
+                            '</div>' +
+                        '</div>' +
+                    '</div>' +
+                    '<div class="modal-hd-footer">' +
+                        '<button type="button" class="btn-hd-close-secondary" onclick="dongHuongDanDoc(false)">Đóng</button>' +
+                        '<button type="button" class="btn-hd-back-study" id="btnHdBackStudy" onclick="dongHuongDanDoc(true)" title="Đóng modal và con trỏ tự động quay lại ô nhập để học tiếp">← Quay lại tiếp tục học tiếp</button>' +
+                    '</div>' +
+                '</div>';
+            document.body.appendChild(modalDiv);
+            modal = modalDiv;
+
+            modal.addEventListener("click", function (e) {
+                if (e.target === modal) {
+                    dongHuongDanDoc(false);
+                }
+            });
+        }
+        return modal;
+    }
+
     window.moHuongDanDoc = function (btnElement, tu, phienAm, nghia) {
         if (!tu) return;
 
         // Lưu dòng bảng hiện tại để khi đóng modal có thể tự focus ô nhập
+        hangDangChon = null;
         if (btnElement) {
             hangDangChon = btnElement.closest("tr");
         }
@@ -129,11 +202,17 @@
         // Dừng mọi âm thanh đang phát trước đó
         dungAudioHuongDan();
 
-        const modal = document.getElementById("modalHuongDanDoc");
+        const modal = ensureModalExists();
         const loadingBox = document.getElementById("hdLoadingBox");
         const contentBox = document.getElementById("hdContentBox");
 
         if (!modal) return;
+
+        // Ẩn nút "Quay lại tiếp tục học" nếu không có ô nhập câu trả lời trên trang
+        const btnBack = document.getElementById("btnHdBackStudy");
+        if (btnBack) {
+            btnBack.style.display = (hangDangChon && hangDangChon.querySelector(".cau-tra-loi")) ? "inline-flex" : "none";
+        }
 
         modal.classList.add("show");
         if (loadingBox) loadingBox.style.display = "block";
@@ -582,22 +661,10 @@
     // =========================================================
     // 12. SỰ KIỆN PHÍM & CLICK NGOÀI MODAL
     // =========================================================
-    document.addEventListener("DOMContentLoaded", function () {
+    document.addEventListener("keydown", function (e) {
         const modal = document.getElementById("modalHuongDanDoc");
-        if (!modal) return;
-
-        // Click vào nền mờ để đóng modal
-        modal.addEventListener("click", function (e) {
-            if (e.target === modal) {
-                dongHuongDanDoc(false);
-            }
-        });
-
-        // Nhấn phím ESC để đóng modal
-        document.addEventListener("keydown", function (e) {
-            if (e.key === "Escape" && modal.classList.contains("show")) {
-                dongHuongDanDoc(false);
-            }
-        });
+        if (e.key === "Escape" && modal && modal.classList.contains("show")) {
+            dongHuongDanDoc(false);
+        }
     });
 })();

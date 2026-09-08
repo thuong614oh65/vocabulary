@@ -9,6 +9,7 @@
           rel="stylesheet">
 
     <link rel="stylesheet" th:href="@{/css/hoc.css(v=3)}">
+    <link rel="stylesheet" th:href="@{/css/huong-dan-doc.css(v=2)}">
 
 </head>
 
@@ -33,7 +34,7 @@
                    th:field="*{kieuHoc}"
                    value="NGAU_NHIEN">
 
-            <label class="form-check-label">
+            <label class="form-check-label" for="ngauNhien">
                 Ngẫu nhiên
             </label>
         </div>
@@ -46,7 +47,7 @@
                    th:field="*{kieuHoc}"
                    value="TU_SAI">
 
-            <label class="form-check-label">
+            <label class="form-check-label" for="tuSai">
                 Từ sai
             </label>
         </div>
@@ -59,7 +60,7 @@
                    th:field="*{kieuHoc}"
                    value="THEO_BO">
 
-            <label class="form-check-label">
+            <label class="form-check-label" for="theoBo">
                 Theo bộ
             </label>
         </div>
@@ -141,7 +142,7 @@
                    th:field="*{kieuHoc}"
                    value="CHON_TUNG_TU">
 
-            <label class="form-check-label">
+            <label class="form-check-label" for="chonTu">
                 Chọn từng từ
             </label>
 
@@ -208,7 +209,17 @@
 
                 <td class="text-center fw-bold text-secondary" th:text="${st.index + 1}"></td>
 
-                <td th:text="${tu.tiengAnh}"></td>
+                <td>
+                    <div class="tu-don-wrap">
+                        <span class="tu-don-text" th:text="${tu.tiengAnh}"></span>
+                        <button type="button"
+                                class="btn-hd-icon"
+                                th:attr="onclick=|moHuongDanDoc(this, '${tu.tiengAnh}', '${tu.phienAm}', '${tu.tiengViet}')|"
+                                title="Xem hướng dẫn cách đọc chuẩn">
+                            🗣️
+                        </button>
+                    </div>
+                </td>
 
                 <td th:text="${tu.tiengViet}"></td>
 
@@ -268,7 +279,17 @@
                         th:text="${tu.boTuVung.tenBo}">
                 </td>
 
-                <td th:text="${tu.tiengAnh}"></td>
+                <td>
+                    <div class="tu-don-wrap">
+                        <span class="tu-don-text" th:text="${tu.tiengAnh}"></span>
+                        <button type="button"
+                                class="btn-hd-icon"
+                                th:attr="onclick=|moHuongDanDoc(this, '${tu.tiengAnh}', '${tu.phienAm}', '${tu.tiengViet}')|"
+                                title="Xem hướng dẫn cách đọc chuẩn">
+                            🗣️
+                        </button>
+                    </div>
+                </td>
 
                 <td th:text="${tu.tiengViet}"></td>
 
@@ -308,8 +329,7 @@
 
 </div>
 
-<script
-        th:src="@{/js/hoc.js(v=3)}">
-</script>
+<script th:src="@{/js/hoc.js(v=3)}"></script>
+<script th:src="@{/js/huong-dan-doc.js(v=2)}"></script>
 </body>
 </html>

@@ -18,6 +18,17 @@ const phamViTuDen = document.getElementById("phamViTuDen");
 const tuTu = document.getElementById("tuTu");
 const denTu = document.getElementById("denTu");
 
+function capNhatActiveBar() {
+    document.querySelectorAll(".form-check").forEach(function (bar) {
+        const radio = bar.querySelector('input[type="radio"]');
+        if (radio && radio.checked) {
+            bar.classList.add("active-check");
+        } else if (radio) {
+            bar.classList.remove("active-check");
+        }
+    });
+}
+
 function capNhat() {
     if (!ngauNhien || !tuSai || !theoBo || !chonTu) {
         return;
@@ -35,6 +46,7 @@ function capNhat() {
     bangTatCa.style.display = chonTu.checked ? "block" : "none";
 
     capNhatPhamViBo();
+    capNhatActiveBar();
 }
 
 function capNhatPhamViBo() {
@@ -42,7 +54,29 @@ function capNhatPhamViBo() {
     const isTuDen = phamViTuDen.checked;
     tuTu.disabled = !isTuDen;
     denTu.disabled = !isTuDen;
+    capNhatActiveBar();
 }
+
+// Cho phép click vào bất kỳ vị trí nào trên thanh (.form-check) để tích chọn
+document.querySelectorAll(".form-check").forEach(function (bar) {
+    bar.addEventListener("click", function (e) {
+        // Nếu click vào ô nhập số, nút bấm hoặc select -> để hoạt động tự nhiên
+        if (e.target.tagName === "INPUT" && e.target.type !== "radio") {
+            return;
+        }
+        if (e.target.tagName === "BUTTON" || e.target.tagName === "SELECT") {
+            return;
+        }
+        const radio = bar.querySelector('input[type="radio"]');
+        if (radio) {
+            if (!radio.checked) {
+                radio.checked = true;
+                radio.dispatchEvent(new Event("change", { bubbles: true }));
+            }
+            capNhatActiveBar();
+        }
+    });
+});
 
 if (tuTu) {
     tuTu.addEventListener("focus", function () {
@@ -50,6 +84,9 @@ if (tuTu) {
             phamViTuDen.checked = true;
             capNhatPhamViBo();
         }
+    });
+    tuTu.addEventListener("click", function (e) {
+        e.stopPropagation();
     });
 }
 
@@ -59,6 +96,9 @@ if (denTu) {
             phamViTuDen.checked = true;
             capNhatPhamViBo();
         }
+    });
+    denTu.addEventListener("click", function (e) {
+        e.stopPropagation();
     });
 }
 
@@ -76,6 +116,14 @@ if (theoBo) {
 
 if (chonTu) {
     chonTu.onchange = capNhat;
+}
+
+if (phamViTatCa) {
+    phamViTatCa.onchange = capNhatPhamViBo;
+}
+
+if (phamViTuDen) {
+    phamViTuDen.onchange = capNhatPhamViBo;
 }
 
 capNhat();

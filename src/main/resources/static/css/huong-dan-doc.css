@@ -1,8 +1,8 @@
-﻿/* =========================================================
+/* =========================================================
    HƯỚNG DẪN CÁCH ĐỌC CHUẨN (GOOGLE DỊCH & ELSA SPEAK STYLE)
    ========================================================= */
 
-/* Nút mở modal bên cạnh nút Đọc trong bảng học */
+/* Nút mở modal bên cạnh nút Đọc trong bảng học (legacy) */
 .btn-huong-dan-doc {
     display: inline-flex;
     align-items: center;
@@ -30,6 +30,101 @@
 
 .btn-huong-dan-doc:active {
     transform: translateY(0);
+}
+
+/* =========================================================
+   NÚT HƯỚNG DẪN ĐỌC DẠNG ICON KHI DI CHUỘT VÀO TỪ ĐƠN
+   ========================================================= */
+
+/* Khung bao từ đơn tiếng Anh */
+.tu-don-wrap {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    position: relative;
+    max-width: 100%;
+}
+
+.tu-don-text {
+    font-weight: 600;
+}
+
+/* Nút icon hướng dẫn đọc dạng icon thui */
+.btn-hd-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    min-width: 28px;
+    min-height: 28px;
+    padding: 0;
+    font-size: 15px;
+    line-height: 1;
+    color: #0284c7;
+    background: #f0f9ff;
+    border: 1px solid #bae6fd;
+    border-radius: 50%;
+    cursor: pointer;
+    opacity: 0;
+    visibility: hidden;
+    transform: scale(0.8);
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    vertical-align: middle;
+    flex-shrink: 0;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+    user-select: none;
+}
+
+/* Khi di chuột vào từ đơn hoặc dòng/thẻ chứa từ: hiện icon mượt mà */
+.tu-don-wrap:hover .btn-hd-icon,
+tr:hover .tu-don-wrap .btn-hd-icon,
+.hang-tu:hover .tu-don-wrap .btn-hd-icon,
+.the-tu-vung:hover .btn-hd-icon,
+.btn-hd-icon:focus,
+.btn-hd-icon:focus-visible {
+    opacity: 1;
+    visibility: visible;
+    transform: scale(1);
+}
+
+/* Hover trực tiếp vào nút icon */
+.btn-hd-icon:hover {
+    background: #0284c7;
+    color: #ffffff;
+    border-color: #0284c7;
+    transform: scale(1.15) !important;
+    box-shadow: 0 3px 10px rgba(2, 132, 199, 0.35);
+}
+
+.btn-hd-icon:active {
+    transform: scale(0.95) !important;
+}
+
+/* Biến thể nổi bật hơn cho trang học riêng (hoc-chon.html) */
+.btn-hd-icon.btn-hd-icon-prominent {
+    width: 34px;
+    height: 34px;
+    min-width: 34px;
+    min-height: 34px;
+    font-size: 18px;
+    opacity: 0.9;
+    visibility: visible;
+    background: #e0f2fe;
+    border-color: #7dd3fc;
+}
+
+.btn-hd-icon.btn-hd-icon-prominent:hover {
+    opacity: 1;
+}
+
+/* Trên thiết bị cảm ứng (không có chuột hover): luôn hiện để chạm được */
+@media (hover: none) {
+    .btn-hd-icon {
+        opacity: 0.8;
+        visibility: visible;
+        transform: scale(1);
+    }
 }
 
 /* Modal Overlay */

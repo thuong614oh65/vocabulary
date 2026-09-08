@@ -77,41 +77,37 @@
                 <div class="tu-hover">
 
 
-                    <span
-                            th:text="${tu.tiengAnh}">
-                    </span>
-
+                    <div class="tu-don-wrap">
+                        <span class="tu-don-text"
+                              th:text="${tu.tiengAnh}">
+                        </span>
+                        <button type="button"
+                                class="btn-hd-icon"
+                                th:attr="onclick=|moHuongDanDoc(this, '${tu.tiengAnh}', '${tu.phienAm}', '${tu.tiengViet}')|"
+                                title="Xem hướng dẫn cách đọc chuẩn">
+                            🗣️
+                        </button>
+                    </div>
 
                     <div class="thong-tin-tu">
 
-
                         <p>
-
                             Phiên âm:
-
-                            <span
-                                    th:text="${tu.phienAm}">
+                            <span th:text="${tu.phienAm}">
                             </span>
-
                         </p>
 
-
-                        <button
-                                type="button"
+                        <button type="button"
                                 th:attr="onclick=|docTu('${tu.tiengAnh}')|">
-
                             🔊 Đọc
-
                         </button>
 
-                        <button
-                                type="button"
-                                class="btn-huong-dan-doc"
+                        <button type="button"
+                                class="btn-hd-icon btn-hd-icon-prominent"
                                 th:attr="onclick=|moHuongDanDoc(this, '${tu.tiengAnh}', '${tu.phienAm}', '${tu.tiengViet}')|"
                                 title="Xem hướng dẫn cách đọc chuẩn">
-                            🗣️ Hướng dẫn đọc
+                            🗣️
                         </button>
-
 
                     </div>
 

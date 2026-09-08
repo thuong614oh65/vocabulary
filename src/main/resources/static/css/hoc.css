@@ -58,26 +58,55 @@ form {
    ========================================================= */
 
 .form-check {
-    padding: 12px 15px 12px 40px;
-    margin-bottom: 8px;
-    border: 1px solid #e5e7eb;
-    border-radius: 10px;
+    padding: 13px 18px 13px 44px;
+    margin-bottom: 9px;
+    border: 1.5px solid #e5e7eb;
+    border-radius: 12px;
     background: #fafafa;
     transition: all 0.2s ease;
+    cursor: pointer;
+    user-select: none;
+    position: relative;
 }
 
 .form-check:hover {
     background: #f0fdf4;
     border-color: #86efac;
+    transform: translateY(-1px);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+}
+
+.form-check:active {
+    transform: translateY(0);
+}
+
+.form-check.active-check,
+.form-check:has(.form-check-input:checked) {
+    background: #f0fdf4;
+    border-color: #198754;
+    box-shadow: 0 0 0 1px #198754, 0 4px 12px rgba(25, 135, 84, 0.14);
+}
+
+.form-check.active-check .form-check-label,
+.form-check:has(.form-check-input:checked) .form-check-label {
+    color: #15803d;
+    font-weight: 700;
 }
 
 .form-check-input {
     cursor: pointer;
+    width: 18px;
+    height: 18px;
+    margin-top: 0.15rem;
+    margin-left: -28px;
+    accent-color: #198754;
 }
 
 .form-check-label {
     cursor: pointer;
     font-weight: 500;
+    transition: color 0.15s ease;
+    user-select: none;
 }
 
 

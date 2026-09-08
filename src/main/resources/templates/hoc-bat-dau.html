@@ -12,6 +12,8 @@
 
     <link rel="stylesheet"
           th:href="@{/css/bat-dau-hoc.css}">
+    <link rel="stylesheet"
+          th:href="@{/css/huong-dan-doc.css(v=2)}">
 </head>
 
 
@@ -81,7 +83,16 @@
                 <tr th:each="tu:${dsHoc}">
 
 
-                    <td th:text="${tu.tiengAnh}">
+                    <td>
+                        <div class="tu-don-wrap">
+                            <span class="tu-don-text" th:text="${tu.tiengAnh}"></span>
+                            <button type="button"
+                                    class="btn-hd-icon"
+                                    th:attr="onclick=|moHuongDanDoc(this, '${tu.tiengAnh}', '${tu.phienAm}', '${tu.tiengViet}')|"
+                                    title="Xem hướng dẫn cách đọc chuẩn">
+                                🗣️
+                            </button>
+                        </div>
                     </td>
 
 
@@ -150,6 +161,7 @@
 
 
 <script th:src="@{/js/hoc.js}"></script>
+<script th:src="@{/js/huong-dan-doc.js(v=2)}"></script>
 
 
 </body>

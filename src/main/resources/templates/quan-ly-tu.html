@@ -10,6 +10,7 @@
     
     <!-- CSS riêng -->
     <link rel="stylesheet" th:href="@{/css/quan-ly-tu.css}">
+    <link rel="stylesheet" th:href="@{/css/huong-dan-doc.css(v=2)}">
 </head>
 <body>
 
@@ -162,7 +163,15 @@
                     </td>
                     
                     <td>
-                        <div class="word-english" th:text="${tu.tiengAnh}">Hello</div>
+                        <div class="tu-don-wrap">
+                            <span class="word-english" th:text="${tu.tiengAnh}">Hello</span>
+                            <button type="button"
+                                    class="btn-hd-icon"
+                                    th:attr="onclick=|moHuongDanDoc(this, '${tu.tiengAnh}', '${tu.phienAm}', '${tu.tiengViet}')|"
+                                    title="Xem hướng dẫn cách đọc chuẩn">
+                                🗣️
+                            </button>
+                        </div>
                     </td>
                     
                     <td>
@@ -396,6 +405,7 @@
 
 <!-- JS riêng -->
 <script th:src="@{/js/quan-ly-tu.js(v=5)}"></script>
+<script th:src="@{/js/huong-dan-doc.js(v=2)}"></script>
 
 </body>
 </html>
