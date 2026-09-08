@@ -562,17 +562,173 @@ body {
     transform: scale(1.1);
 }
 
-/* Vùng Đúng / Sai */
-.target-tf-box {
-    margin-top: 10px;
-    font-size: 1.15rem;
-    color: #e2e8f0;
+/* =========================================================
+   KHUNG ĐỐI CHIẾU ĐÚNG / SAI CHIA ĐÔI (SPLIT TRUE / FALSE)
+   ========================================================= */
+.target-tf-split-box {
+    width: 100%;
+    max-width: 760px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    padding: 10px 0;
 }
 
-.tf-meaning-bold {
+.tf-card {
+    flex: 1;
+    background: #1e293b;
+    border: 2px solid #334155;
+    border-radius: 18px;
+    padding: 18px 16px;
+    min-height: 160px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.4);
+    transition: all 0.25s ease;
+}
+
+.tf-card-eng {
+    border-color: rgba(56, 189, 248, 0.45);
+    background: linear-gradient(145deg, #1e293b, #0f172a);
+}
+
+.tf-card-vie {
+    border-color: rgba(245, 158, 11, 0.45);
+    background: linear-gradient(145deg, #1e293b, #0f172a);
+}
+
+.tf-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 8px;
+}
+
+.tf-card-vie .tf-card-header {
+    justify-content: center;
+}
+
+.tf-card-badge-eng {
+    font-size: 0.75rem;
     font-weight: 800;
+    letter-spacing: 0.8px;
+    color: #38bdf8;
+    background: rgba(56, 189, 248, 0.15);
+    padding: 3px 12px;
+    border-radius: 20px;
+    border: 1px solid rgba(56, 189, 248, 0.3);
+}
+
+.tf-card-badge-vie {
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0.8px;
     color: #fbbf24;
-    font-size: 1.3rem;
+    background: rgba(245, 158, 11, 0.15);
+    padding: 3px 12px;
+    border-radius: 20px;
+    border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+.tf-card-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    width: 100%;
+    flex: 1;
+}
+
+.tf-word-text {
+    font-size: 2.2rem;
+    font-weight: 900;
+    color: #ffffff;
+    letter-spacing: 0.5px;
+    line-height: 1.2;
+    word-break: break-word;
+}
+
+.tf-ipa-text {
+    font-family: 'Consolas', monospace;
+    font-size: 1.15rem;
+    color: #94a3b8;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.tf-meaning-text {
+    font-size: 2.1rem;
+    font-weight: 900;
+    color: #fbbf24;
+    letter-spacing: 0.3px;
+    line-height: 1.25;
+    word-break: break-word;
+}
+
+/* Biểu tượng liên kết ở giữa */
+.tf-connector {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    flex-shrink: 0;
+}
+
+.tf-connector-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: #0f172a;
+    border: 2px solid #475569;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.25rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+}
+
+.tf-connector-label {
+    font-size: 0.72rem;
+    font-weight: 800;
+    color: var(--px-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Responsive khi xem trên điện thoại */
+@media (max-width: 576px) {
+    .target-tf-split-box {
+        gap: 8px;
+    }
+    .tf-card {
+        padding: 12px 8px;
+        min-height: 130px;
+        border-radius: 14px;
+    }
+    .tf-word-text {
+        font-size: 1.45rem;
+    }
+    .tf-meaning-text {
+        font-size: 1.4rem;
+    }
+    .tf-ipa-text {
+        font-size: 0.95rem;
+    }
+    .tf-connector-icon {
+        width: 34px;
+        height: 34px;
+        font-size: 1rem;
+    }
+    .tf-connector-label {
+        display: none;
+    }
 }
 
 /* =========================================================

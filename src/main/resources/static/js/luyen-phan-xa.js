@@ -324,16 +324,17 @@
             if (grid4) grid4.style.display = "none";
             if (gridTF) gridTF.style.display = "grid";
 
-            // Hiển thị chữ tiếng Anh + nghĩa đề xuất
-            if (boxWord) {
-                boxWord.style.display = "flex";
-                document.getElementById("lblTargetWord").textContent = q.tiengAnh;
-                document.getElementById("lblTargetIpa").textContent = q.phienAm || "";
-            }
+            // Hiển thị khung đối chiếu Đúng / Sai chia đôi 2 bên cực kỳ trực quan
             if (boxTF) {
-                boxTF.style.display = "block";
-                document.getElementById("lblTfMeaning").textContent = q.luaChon[0] || "";
+                boxTF.style.display = "flex";
+                const elWord = document.getElementById("lblTfWord");
+                const elIpa = document.getElementById("lblTfIpa");
+                const elMeaning = document.getElementById("lblTfMeaning");
+                if (elWord) elWord.textContent = q.tiengAnh;
+                if (elIpa) elIpa.textContent = q.phienAm || "";
+                if (elMeaning) elMeaning.textContent = q.luaChon[0] || "";
             }
+            phatAmThanhTu(q.tiengAnh, q.audioUrl);
         } else {
             if (gridTF) gridTF.style.display = "none";
             if (grid4) grid4.style.display = "grid";

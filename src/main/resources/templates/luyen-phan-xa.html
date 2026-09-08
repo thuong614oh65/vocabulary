@@ -10,7 +10,7 @@
     <link rel="icon" type="image/x-icon" th:href="@{/favicon.ico}">
 
     <!-- CSS riêng cho Đấu trường phản xạ -->
-    <link rel="stylesheet" th:href="@{/css/luyen-phan-xa.css(v=6)}">
+    <link rel="stylesheet" th:href="@{/css/luyen-phan-xa.css(v=7)}">
 </head>
 <body>
 
@@ -177,17 +177,42 @@
                     <div class="audio-hint-text">Đang phát âm thanh... Bấm để nghe lại (Space)</div>
                 </div>
 
-                <!-- 3. Vùng hiển thị Chữ tiếng Anh (Cho chế độ Nhìn từ / Đúng Sai) -->
+                <!-- 3. Vùng hiển thị Chữ tiếng Anh (Cho chế độ Nhìn từ) -->
                 <div id="boxTargetWord" class="target-word-box" style="display: none;">
                     <div id="lblTargetWord" class="target-word-text">annual</div>
                     <div id="lblTargetIpa" class="target-ipa-text">/ˈæn.ju.əl/</div>
                     <button type="button" class="btn-mini-audio" onclick="phatLaiAudio()" title="Nghe phát âm">🔊</button>
                 </div>
 
-                <!-- 4. Câu hỏi phụ cho chế độ Đúng / Sai -->
-                <div id="boxTargetTrueFalse" class="target-tf-box" style="display: none;">
-                    <span class="tf-question">Nghĩa là:</span>
-                    <span id="lblTfMeaning" class="tf-meaning-bold">Hàng năm</span>
+                <!-- 4. Khung đối chiếu Đúng / Sai (Chia đôi 2 bên cực kỳ trực quan, nảy số ngay) -->
+                <div id="boxTargetTrueFalse" class="target-tf-split-box" style="display: none;">
+                    <!-- Cột bên trái: Tiếng Anh -->
+                    <div class="tf-card tf-card-eng">
+                        <div class="tf-card-header">
+                            <span class="tf-card-badge-eng">🇬🇧 TIẾNG ANH</span>
+                            <button type="button" class="btn-mini-audio" onclick="phatLaiAudio()" title="Nghe phát âm (Space)">🔊</button>
+                        </div>
+                        <div class="tf-card-body">
+                            <div id="lblTfWord" class="tf-word-text">annual</div>
+                            <div id="lblTfIpa" class="tf-ipa-text">/ˈæn.ju.əl/</div>
+                        </div>
+                    </div>
+
+                    <!-- Cầu nối đối chiếu ở giữa -->
+                    <div class="tf-connector">
+                        <div class="tf-connector-icon">⚡</div>
+                        <div class="tf-connector-label">nghĩa là?</div>
+                    </div>
+
+                    <!-- Cột bên phải: Nghĩa tiếng Việt -->
+                    <div class="tf-card tf-card-vie">
+                        <div class="tf-card-header">
+                            <span class="tf-card-badge-vie">🇻🇳 NGHĨA TIẾNG VIỆT</span>
+                        </div>
+                        <div class="tf-card-body">
+                            <div id="lblTfMeaning" class="tf-meaning-text">Hàng năm</div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -296,6 +321,6 @@
 </div>
 
 <!-- Âm thanh hiệu ứng & Logic phản xạ -->
-<script th:src="@{/js/luyen-phan-xa.js(v=6)}"></script>
+<script th:src="@{/js/luyen-phan-xa.js(v=7)}"></script>
 </body>
 </html>
