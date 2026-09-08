@@ -200,6 +200,13 @@ public class PhienAmServiceImpl implements PhienAmService {
         if (clean.isEmpty()) {
             return "";
         }
+        // Chuẩn hóa ký tự Arpabet / CMU sang IPA chuẩn quốc tế (Oxford / Cambridge)
+        clean = clean.replace("ʌɫ", "əl")
+                .replace("əɫ", "əl")
+                .replace("ɫ", "l")
+                .replace("'", "ˈ")
+                .replace("g", "ɡ");
+
         return "/" + clean + "/";
     }
 }

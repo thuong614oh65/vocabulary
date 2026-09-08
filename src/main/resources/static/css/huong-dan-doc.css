@@ -364,16 +364,18 @@ tr:hover .tu-don-wrap .btn-hd-icon,
 .hd-syllable-chips {
     display: flex;
     flex-wrap: wrap;
-    gap: 10px;
+    gap: 14px;
     justify-content: center;
+    padding-top: 10px;
 }
 
 .hd-syllable-chip {
     display: inline-flex;
     flex-direction: column;
     align-items: center;
-    padding: 8px 14px;
-    border-radius: 10px;
+    padding: 12px 18px 8px 18px;
+    min-width: 72px;
+    border-radius: 12px;
     border: 2px solid #e2e8f0;
     background: #f8fafc;
     cursor: pointer;
@@ -386,12 +388,20 @@ tr:hover .tu-don-wrap .btn-hd-icon,
     border-color: #0284c7;
     background: #f0f9ff;
     transform: translateY(-2px);
-    box-shadow: 0 4px 10px rgba(2, 132, 199, 0.15);
+    box-shadow: 0 4px 12px rgba(2, 132, 199, 0.15);
 }
 
 .hd-syllable-chip.stressed {
     border-color: #f59e0b;
-    background: #fffbeb;
+    background: #fffdf5;
+    box-shadow: 0 2px 8px rgba(245, 158, 11, 0.15);
+}
+
+.hd-syllable-chip.active-playing {
+    border-color: #0284c7 !important;
+    background: #e0f2fe !important;
+    transform: scale(1.08) translateY(-3px) !important;
+    box-shadow: 0 6px 16px rgba(2, 132, 199, 0.35) !important;
 }
 
 .hd-syllable-chip.stressed .syllable-stress-tag {
@@ -401,34 +411,40 @@ tr:hover .tu-don-wrap .btn-hd-icon,
 .syllable-stress-tag {
     display: none;
     position: absolute;
-    top: -8px;
-    right: -6px;
-    background: #f59e0b;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(135deg, #f59e0b, #d97706);
     color: #ffffff;
-    font-size: 0.65rem;
+    font-size: 0.62rem;
     font-weight: 800;
-    padding: 1px 5px;
-    border-radius: 8px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+    padding: 2px 8px;
+    border-radius: 20px;
+    white-space: nowrap;
+    box-shadow: 0 2px 5px rgba(217, 119, 6, 0.35);
+    z-index: 2;
 }
 
 .syllable-en {
-    font-size: 1.15rem;
+    font-size: 1.25rem;
     font-weight: 800;
-    color: #1e293b;
-}
-
-.syllable-vn {
-    font-size: 0.85rem;
-    font-weight: 700;
-    color: #0284c7;
+    color: #0f172a;
+    line-height: 1.2;
     margin-top: 2px;
 }
 
+.syllable-vn {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #0284c7;
+    margin-top: 4px;
+}
+
 .syllable-ipa {
-    font-size: 0.75rem;
+    font-size: 0.78rem;
     color: #64748b;
-    font-family: monospace;
+    font-family: 'SF Mono', Consolas, Monaco, monospace;
+    margin-top: 2px;
 }
 
 .hd-syllable-hint {

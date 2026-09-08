@@ -383,11 +383,15 @@
     };
 
     function phatAudioTu(tu, tocDo, onEnd) {
+        const isSlow = tocDo && tocDo < 0.9;
         const tenFile = tu.toLowerCase().replace(/\s+/g, "-") + ".mp3";
-        const urlMp3 = "/audio/tu-vung/" + encodeURIComponent(tenFile);
 
-        const audio = new Audio(urlMp3);
-        audio.playbackRate = tocDo || 1.0;
+        // Với tốc độ chậm (0.6x), dùng trực tiếp Edge Neural TTS với rate=-28% để âm thanh tự nhiên, tròn vành rõ chữ mà KHÔNG bị méo tiếng như HTML5 playbackRate!
+        const urlPhat = isSlow
+            ? "/audio/tts?text=" + encodeURIComponent(tu) + "&rate=-28%"
+            : "/audio/tu-vung/" + encodeURIComponent(tenFile);
+
+        const audio = new Audio(urlPhat);
         hdAudioHienTai = audio;
 
         let daChuyenFallback = false;
@@ -396,10 +400,35 @@
             if (daChuyenFallback) return;
             daChuyenFallback = true;
 
+            // Nếu đọc chuẩn từ file thất bại, thử phát trực tiếp qua /audio/tts stream trước khi dùng Web Speech API
+            if (!isSlow) {
+                const streamUrl = "/audio/tts?text=" + encodeURIComponent(tu) + "&rate=+0%";
+                const streamAudio = new Audio(streamUrl);
+                hdAudioHienTai = streamAudio;
+                streamAudio.onended = function () {
+                    hdAudioHienTai = null;
+                    if (onEnd) onEnd();
+                };
+                streamAudio.onerror = function () {
+                    fallbackBrowserSpeech();
+                };
+                const p = streamAudio.play();
+                if (p !== undefined) {
+                    p.catch(function () {
+                        fallbackBrowserSpeech();
+                    });
+                }
+                return;
+            }
+
+            fallbackBrowserSpeech();
+        }
+
+        function fallbackBrowserSpeech() {
             if (window.speechSynthesis) {
                 const utterance = new SpeechSynthesisUtterance(tu);
                 utterance.lang = "en-US";
-                utterance.rate = tocDo || 1.0;
+                utterance.rate = isSlow ? 0.65 : 1.0;
                 utterance.onend = function () {
                     if (onEnd) onEnd();
                 };
@@ -418,32 +447,66 @@
         };
 
         audio.onerror = function () {
-            console.warn("[HuongDanDoc] Không tải được mp3, chuyển sang Web Speech API:", urlMp3);
+            console.warn("[HuongDanDoc] Audio error -> Chuyển TTS dự phòng:", urlPhat);
             fallbackTTS();
         };
 
         const playPromise = audio.play();
         if (playPromise !== undefined) {
             playPromise.catch(function (err) {
-                console.warn("[HuongDanDoc] Audio play error:", err);
+                console.warn("[HuongDanDoc] Play error -> Chuyển TTS dự phòng:", err);
                 fallbackTTS();
             });
         }
     }
 
     // =========================================================
-    // 7. ĐỌC TỪNG ÂM TIẾT CHUẨN XÁC THEO TỪ CHÍNH
+    // 7. ĐỌC TỪNG ÂM TIẾT CHUẨN XÁC THEO TỪ CHÍNH (NEURAL TTS)
     // =========================================================
-    function docAmTiet(syllable, docText) {
-        if (!window.speechSynthesis) return;
-        
+    function docAmTiet(syllable, docText, onEnd) {
         dungAudioHuongDan();
-        
+
         const toSpeak = docText || syllable;
-        const utterance = new SpeechSynthesisUtterance(toSpeak);
-        utterance.lang = "en-US";
-        utterance.rate = 0.8;
-        window.speechSynthesis.speak(utterance);
+        // Ưu tiên phát qua Microsoft Edge Neural TTS cho âm chuẩn xác và tự nhiên
+        const ttsUrl = "/audio/tts?text=" + encodeURIComponent(toSpeak) + "&rate=-10%";
+        const audio = new Audio(ttsUrl);
+        hdAudioHienTai = audio;
+
+        let fallbackDone = false;
+        function doFallback() {
+            if (fallbackDone) return;
+            fallbackDone = true;
+            if (window.speechSynthesis) {
+                const utterance = new SpeechSynthesisUtterance(toSpeak);
+                utterance.lang = "en-US";
+                utterance.rate = 0.8;
+                utterance.onend = function () {
+                    if (onEnd) onEnd();
+                };
+                utterance.onerror = function () {
+                    if (onEnd) onEnd();
+                };
+                window.speechSynthesis.speak(utterance);
+            } else {
+                if (onEnd) onEnd();
+            }
+        }
+
+        audio.onended = function () {
+            hdAudioHienTai = null;
+            if (onEnd) onEnd();
+        };
+
+        audio.onerror = function () {
+            doFallback();
+        };
+
+        const p = audio.play();
+        if (p !== undefined) {
+            p.catch(function () {
+                doFallback();
+            });
+        }
     }
 
     // =========================================================
@@ -451,7 +514,7 @@
     // =========================================================
     window.danhVanHuongDan = function (btnEl) {
         if (!duLieuHienTai || !duLieuHienTai.tu) return;
-        
+
         // Dừng tất cả âm thanh trước đó
         dungAudioHuongDan();
 
@@ -466,7 +529,13 @@
         let idx = 0;
         function docChuTiep() {
             if (idx >= letters.length) {
-                if (btnEl) btnEl.classList.remove("playing");
+                // Đánh vần xong -> đọc lại cả từ hoàn chỉnh!
+                const t = setTimeout(function () {
+                    phatAudioTu(duLieuHienTai.tu, 1.0, function () {
+                        if (btnEl) btnEl.classList.remove("playing");
+                    });
+                }, 400);
+                hdTimeoutList.push(t);
                 return;
             }
             const char = letters[idx];
@@ -499,7 +568,7 @@
     // =========================================================
     window.docTachAmHuongDan = function (btnEl) {
         if (!duLieuHienTai || !duLieuHienTai.tu) return;
-        
+
         // Dừng tất cả âm thanh trước đó
         dungAudioHuongDan();
 
@@ -510,12 +579,16 @@
             : [duLieuHienTai.tu];
         const amTietDocList = duLieuHienTai.amTietDoc || [];
 
+        const chips = document.querySelectorAll(".hd-syllable-chip");
+
         let idx = 0;
         function docAmTiep() {
             if (idx >= amTietList.length) {
+                chips.forEach(function (c) { c.classList.remove("active-playing"); });
+
                 // Sau khi đọc xong các âm tiết -> đọc hoàn chỉnh lại cả từ theo phát âm chuẩn!
                 const t = setTimeout(function () {
-                    phatAudioTu(duLieuHienTai.tu, 0.9, function () {
+                    phatAudioTu(duLieuHienTai.tu, 1.0, function () {
                         if (btnEl) btnEl.classList.remove("playing");
                     });
                 }, 500);
@@ -523,27 +596,21 @@
                 return;
             }
 
-            const syllable = amTietList[idx].replace(/\s*\([^)]*\)/g, "").trim();
-            const speakText = (amTietDocList[idx]) ? amTietDocList[idx] : syllable;
+            const currentIdx = idx;
+            const syllable = amTietList[currentIdx].replace(/\s*\([^)]*\)/g, "").trim();
+            const speakText = (amTietDocList[currentIdx]) ? amTietDocList[currentIdx] : syllable;
             idx++;
 
-            if (window.speechSynthesis) {
-                const utterance = new SpeechSynthesisUtterance(speakText);
-                utterance.lang = "en-US";
-                utterance.rate = 0.75;
-                utterance.onend = function () {
-                    const t = setTimeout(docAmTiep, 450);
-                    hdTimeoutList.push(t);
-                };
-                utterance.onerror = function () {
-                    const t = setTimeout(docAmTiep, 450);
-                    hdTimeoutList.push(t);
-                };
-                window.speechSynthesis.speak(utterance);
-            } else {
-                const t = setTimeout(docAmTiep, 600);
+            // Highlight trực quan âm tiết đang được phát
+            chips.forEach(function (c, i) {
+                if (i === currentIdx) c.classList.add("active-playing");
+                else c.classList.remove("active-playing");
+            });
+
+            docAmTiet(syllable, speakText, function () {
+                const t = setTimeout(docAmTiep, 450);
                 hdTimeoutList.push(t);
-            }
+            });
         }
 
         docAmTiep();
