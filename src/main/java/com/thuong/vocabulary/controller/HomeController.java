@@ -169,6 +169,7 @@ public class HomeController {
     @PostMapping("/hoc")
     public String batDauHoc(
             @ModelAttribute HocDTO hocDTO,
+            @RequestParam(value = "action", required = false) String action,
             Model model,
             HttpSession session
     ) {
@@ -353,6 +354,14 @@ public class HomeController {
                 dsHoc
         );
 
+        session.setAttribute(
+                "tuDangHoc",
+                dsHoc
+        );
+
+        if ("phan-xa".equalsIgnoreCase(action)) {
+            return "redirect:/luyen-phan-xa?kieuHoc=DANG_HOC";
+        }
 
         return "hoc-bat-dau";
     }

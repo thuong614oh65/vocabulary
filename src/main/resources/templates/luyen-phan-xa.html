@@ -87,14 +87,14 @@
             <div class="col-12 col-md-3">
                 <label class="px-label">⏱️ Tốc độ đếm ngược:</label>
                 <div class="px-speed-group">
-                    <button type="button" class="btn-speed active" data-speed="2.0" onclick="chonTocDo(2.0, this)" title="Ép não nảy số bản năng trong 2 giây">
-                        ⚡ 2.0s
+                    <button type="button" class="btn-speed" data-speed="3.5" onclick="chonTocDo(3.5, this)" title="Tốc độ thử thách">
+                        ⚡ 3.5s
                     </button>
-                    <button type="button" class="btn-speed" data-speed="3.5" onclick="chonTocDo(3.5, this)" title="Tốc độ tiêu chuẩn">
-                        ⏱️ 3.5s
+                    <button type="button" class="btn-speed active" data-speed="5.0" onclick="chonTocDo(5.0, this)" title="Tốc độ tiêu chuẩn, đủ thời gian nhìn ảnh và di chuột">
+                        ⏱️ 5.0s
                     </button>
-                    <button type="button" class="btn-speed" data-speed="5.0" onclick="chonTocDo(5.0, this)" title="Tốc độ khởi động">
-                        🐢 5.0s
+                    <button type="button" class="btn-speed" data-speed="8.0" onclick="chonTocDo(8.0, this)" title="Tốc độ thong thả">
+                        🐢 8.0s
                     </button>
                 </div>
             </div>
@@ -118,7 +118,7 @@
             <h2 class="lobby-title">SẴN SÀNG NẢY SỐ TỨC THÌ?</h2>
             <p class="lobby-desc">
                 Hình ảnh hoặc âm thanh sẽ xuất hiện chớp nhoáng. Hãy bấm đáp án đúng trong vòng 
-                <span id="lblTocDoChon" class="badge-speed-highlight">2.0 giây</span>. 
+                <span id="lblTocDoChon" class="badge-speed-highlight">5.0 giây</span>. 
                 <br>Dùng phím <kbd>1</kbd> <kbd>2</kbd> <kbd>3</kbd> <kbd>4</kbd> hoặc chạm tay cực nhạy!
             </p>
             <button type="button" class="btn-start-reflex" onclick="batDauTranDau()">
@@ -133,7 +133,7 @@
             <div class="px-progress-bar-wrap">
                 <div class="d-flex justify-content-between align-items-center mb-1">
                     <span class="badge-cau-hoi">Câu <b id="lblIndexHienTai">1</b> / <span id="lblTongSoCau">10</span></span>
-                    <span id="lblDongHoMs" class="badge-timer-ms">2.0s</span>
+                    <span id="lblDongHoMs" class="badge-timer-ms">5.0s</span>
                 </div>
                 <div class="energy-timer-track">
                     <div id="energyTimerBar" class="energy-timer-fill"></div>

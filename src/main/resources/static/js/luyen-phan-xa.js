@@ -7,9 +7,8 @@
     // =========================================================
     // 1. STATE TOÀN CỤC
     // =========================================================
-    let danhSachCauHoi = [];
     let cauHienTaiIdx = 0;
-    let thoiGianGioiHan = 2.0; // Mặc định 2 giây
+    let thoiGianGioiHan = 5.0; // Mặc định 5.0 giây (đủ thong thả nhìn ảnh, đọc từ và di chuột)
     let cheDoHienTai = "HINH_ANH"; // HINH_ANH, NGHE, NHIN_TU, DUNG_SAI
 
     let comboStreak = 0;
@@ -68,6 +67,7 @@
     }
 
     // Âm thanh Buzz (khi sai / hết giờ)
+    // Âm thanh thông báo khi sai hoặc hết giờ: Dùng sóng Sine trầm ấm, dịu tai (không chói gắt, không xì hơi)
     function playSoundBuzz() {
         try {
             const ctx = getAudioContext();
@@ -75,18 +75,18 @@
             const osc = ctx.createOscillator();
             const gain = ctx.createGain();
 
-            osc.type = "sawtooth";
-            osc.frequency.setValueAtTime(150, ctx.currentTime);
-            osc.frequency.linearRampToValueAtTime(100, ctx.currentTime + 0.25);
+            osc.type = "sine"; // Sóng hình sin tròn trịa, êm ái
+            osc.frequency.setValueAtTime(350, ctx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(220, ctx.currentTime + 0.22);
 
-            gain.gain.setValueAtTime(0.18, ctx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.25);
+            gain.gain.setValueAtTime(0.12, ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.24);
 
             osc.connect(gain);
             gain.connect(ctx.destination);
 
             osc.start();
-            osc.stop(ctx.currentTime + 0.25);
+            osc.stop(ctx.currentTime + 0.24);
         } catch (e) {}
     }
 
