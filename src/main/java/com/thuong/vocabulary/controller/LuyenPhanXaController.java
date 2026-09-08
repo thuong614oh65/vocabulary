@@ -175,9 +175,7 @@ public class LuyenPhanXaController {
             String tenFileMp3 = tuAnh.toLowerCase().replace(" ", "-") + ".mp3";
             String audioUrl = "/audio/tu-vung/" + URLEncoder.encode(tenFileMp3, StandardCharsets.UTF_8);
 
-            // Tạo link ảnh thông minh chất lượng cao theo từ khóa tiếng Anh
-            String encodedTu = URLEncoder.encode(tuAnh, StandardCharsets.UTF_8);
-            String hinhAnhUrl = "https://image.pollinations.ai/prompt/" + encodedTu + "%20high%20quality%20realistic%20photo%20isolated%20white%20background?width=500&height=350&nologo=true";
+            String hinhAnhUrl = "";
 
             PhanXaCauHoiDTO dto = new PhanXaCauHoiDTO();
             dto.setId(tv.getId());
