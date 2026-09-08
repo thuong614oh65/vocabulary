@@ -251,12 +251,17 @@
                     </table>
                 </div>
 
-                <div class="d-flex justify-content-end align-items-center gap-2 mt-2">
-                    <span class="text-muted small">Bấm bắt đầu học sẽ tự động lưu 10 từ này thành 1 bộ từ mới trong tài khoản của bạn.</span>
+                <div class="d-flex justify-content-end align-items-center gap-2 mt-2 flex-wrap">
+                    <span class="text-muted small">Tự động lưu 10 từ này thành bộ mới:</span>
                     <button type="button"
-                            class="btn btn-success px-4 py-2 fw-bold shadow"
-                            onclick="batDauHocBoChuDe()">
-                        🚀 Bắt đầu học bộ này
+                            class="btn btn-success px-4 py-2 fw-bold shadow-sm"
+                            onclick="batDauHocBoChuDe('hoc')">
+                        📖 Học
+                    </button>
+                    <button type="button"
+                            class="btn btn-warning px-4 py-2 fw-bold shadow-sm text-dark"
+                            onclick="batDauHocBoChuDe('phan-xa')">
+                        ⚡ Luyện phản xạ
                     </button>
                 </div>
             </div>
@@ -468,7 +473,7 @@ function chonRadioTheoThanh(barEl, radioId, evt) {
 }
 window.chonRadioTheoThanh = chonRadioTheoThanh;
 </script>
-<script th:src="@{/js/hoc.js(v=6)}"></script>
+<script th:src="@{/js/hoc.js(v=7)}"></script>
 <script th:src="@{/js/huong-dan-doc.js(v=6)}"></script>
 </body>
 </html>

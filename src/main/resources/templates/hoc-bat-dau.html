@@ -11,7 +11,7 @@
     <link rel="icon" type="image/x-icon" th:href="@{/favicon.ico}">
 
     <link rel="stylesheet"
-          th:href="@{/css/bat-dau-hoc.css}">
+          th:href="@{/css/bat-dau-hoc.css(v=2)}">
     <link rel="stylesheet"
           th:href="@{/css/huong-dan-doc.css(v=2)}">
 </head>
@@ -22,7 +22,7 @@
 <div class="container mt-5">
 
 
-    <h2 class="text-center">
+    <h2 class="text-center" th:text="${cheDoHoc == 'PHAN_XA' ? '⚡ BẮT ĐẦU LUYỆN PHẢN XẠ' : 'BẮT ĐẦU HỌC'}">
         BẮT ĐẦU HỌC
     </h2>
 
@@ -45,7 +45,9 @@
 
 
             <h4 class="mt-4">
-                Các từ sẽ học
+                <span th:if="${cheDoHoc == 'PHAN_XA'}">Các từ sẽ luyện phản xạ</span>
+                <span th:unless="${cheDoHoc == 'PHAN_XA'}">Các từ sẽ học</span>
+                <span th:if="${dsHoc != null}" th:text="'(' + ${dsHoc.size()} + ' từ)'" class="text-muted fs-6 fw-normal"></span>
             </h4>
 
 
@@ -129,16 +131,23 @@
 
 
             <div class="d-flex flex-wrap gap-3 mt-4 align-items-center">
-                <form th:action="@{/bat-dau-hoc}" method="post" class="m-0">
+                <!-- Chỉ hiện nút Bắt đầu học khi chọn Học -->
+                <form th:if="${cheDoHoc != 'PHAN_XA'}" th:action="@{/bat-dau-hoc}" method="post" class="m-0">
                     <input type="hidden" name="kieuHoc" th:value="${hocDTO.kieuHoc}">
                     <button type="submit" class="btn btn-success px-4 py-2 fw-bold shadow-sm">
                         📖 Bắt đầu học
                     </button>
                 </form>
 
-                <a href="/luyen-phan-xa?kieuHoc=DANG_HOC"
+                <!-- Chỉ hiện nút Luyện phản xạ khi chọn Luyện phản xạ -->
+                <a th:if="${cheDoHoc == 'PHAN_XA'}"
+                   href="/luyen-phan-xa?kieuHoc=DANG_HOC"
                    class="btn btn-warning px-4 py-2 fw-bold text-dark shadow-sm">
-                    ⚡ Luyện phản xạ các từ này
+                    ⚡ Luyện phản xạ
+                </a>
+
+                <a href="/hoc" class="btn btn-outline-secondary px-3 py-2">
+                    ← Chọn lại
                 </a>
             </div>
 

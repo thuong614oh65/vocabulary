@@ -331,10 +331,10 @@ async function deXuatTuMoiTheoChuDe(doiTuKhac) {
 }
 window.deXuatTuMoiTheoChuDe = deXuatTuMoiTheoChuDe;
 
-function batDauHocBoChuDe() {
+function batDauHocBoChuDe(actionType) {
     const jsonInput = document.getElementById("chuDeTuJson");
     if (!jsonInput || !jsonInput.value || jsonInput.value.trim() === "" || jsonInput.value.trim() === "[]") {
-        alert("Vui lòng nhập chủ đề và bấm 'Đề xuất 10 từ mới' trước khi bắt đầu học!");
+        alert("Vui lòng nhập chủ đề và bấm 'Đề xuất 10 từ mới' trước khi bắt đầu!");
         const input = document.getElementById("tenChuDeInput");
         if (input) input.focus();
         return;
@@ -344,6 +344,14 @@ function batDauHocBoChuDe() {
 
     const form = document.querySelector("form");
     if (form) {
+        let inputAction = form.querySelector('input[name="action"]');
+        if (!inputAction) {
+            inputAction = document.createElement("input");
+            inputAction.type = "hidden";
+            inputAction.name = "action";
+            form.appendChild(inputAction);
+        }
+        inputAction.value = (actionType === 'phan-xa') ? 'phan-xa' : 'hoc';
         form.submit();
     }
 }

@@ -211,6 +211,10 @@ public class HomeController {
                                 taiKhoanId
                         );
 
+                if (dsHoc != null && dsHoc.size() > 25) {
+                    dsHoc = new ArrayList<>(dsHoc.subList(0, 25));
+                }
+
                 break;
 
 
@@ -272,6 +276,10 @@ public class HomeController {
                         hocService.layTuSai(
                                 taiKhoanId
                         );
+
+                if (dsHoc != null && dsHoc.size() > 25) {
+                    dsHoc = new ArrayList<>(dsHoc.subList(0, 25));
+                }
 
                 break;
 
@@ -359,9 +367,10 @@ public class HomeController {
                 dsHoc
         );
 
-        if ("phan-xa".equalsIgnoreCase(action)) {
-            return "redirect:/luyen-phan-xa?kieuHoc=DANG_HOC";
-        }
+        boolean laPhanXa = "phan-xa".equalsIgnoreCase(action);
+        String cheDoHoc = laPhanXa ? "PHAN_XA" : "HOC";
+        model.addAttribute("cheDoHoc", cheDoHoc);
+        session.setAttribute("cheDoHoc", cheDoHoc);
 
         return "hoc-bat-dau";
     }
