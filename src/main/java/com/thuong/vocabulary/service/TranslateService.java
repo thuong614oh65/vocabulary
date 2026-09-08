@@ -10,4 +10,6 @@ public interface TranslateService {
 
     String dichVietSangAnh(String text);
 
+    java.util.Map<String, String> dichHangLoat(java.util.List<String> danhSach);
+
 }

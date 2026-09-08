@@ -206,4 +206,25 @@ document.addEventListener("DOMContentLoaded", function () {
         }, 3000);
     });
 
+    // =========================================================
+    // XỬ LÝ SUBMIT TRA HÀNG LOẠT SIÊU TỐC
+    // =========================================================
+    const formTraHangLoat = document.querySelector('form[action$="/tra-hang-loat"]');
+    if (formTraHangLoat) {
+        formTraHangLoat.addEventListener("submit", function (e) {
+            const textarea = document.getElementById("noiDung");
+            if (!textarea || !textarea.value.trim()) {
+                e.preventDefault();
+                hienThongBao("Vui lòng nhập ít nhất một từ vựng trước khi tra!", "danger");
+                if (textarea) textarea.focus();
+                return false;
+            }
+            const btn = document.getElementById("btnTraHangLoat") || formTraHangLoat.querySelector('button[type="submit"]');
+            if (btn) {
+                btn.disabled = true;
+                btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span> ⚡ Đang tra cứu siêu tốc...';
+            }
+        });
+    }
+
 });

@@ -124,31 +124,8 @@ public class HomeController {
                         themTuDTO.getNoiDung()
                 );
 
-        List<TuVungDTO> ketQua =
-                new ArrayList<>();
-
-        List<String> loi =
-                new ArrayList<>();
-
-
-        for (String tu : danhSach) {
-
-            try {
-
-                TuVungDTO dto =
-                        tuVungService.traTu(tu);
-
-                if (dto != null) {
-                    ketQua.add(dto);
-                } else {
-                    loi.add(tu);
-                }
-
-            } catch (Exception e) {
-
-                loi.add(tu);
-            }
-        }
+        List<String> loi = new ArrayList<>();
+        List<TuVungDTO> ketQua = tuVungService.traTuHangLoat(danhSach, loi);
 
 
         model.addAttribute(

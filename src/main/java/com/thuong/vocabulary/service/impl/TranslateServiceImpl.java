@@ -18,6 +18,9 @@ public class TranslateServiceImpl implements TranslateService {
 
     private final HttpClient httpClient;
     private final ObjectMapper objectMapper;
+    // Cache nhanh trong bộ nhớ (0ms)
+    private final java.util.Map<String, String> cache = new java.util.concurrent.ConcurrentHashMap<>();
+    private final java.util.concurrent.ExecutorService translateExecutor = java.util.concurrent.Executors.newVirtualThreadPerTaskExecutor();
 
     public TranslateServiceImpl() {
         this.httpClient = HttpClient.newBuilder()
@@ -40,32 +43,121 @@ public class TranslateServiceImpl implements TranslateService {
         String tuChuanHoa = text.trim();
         String sl = (fromLang == null || fromLang.isBlank()) ? "auto" : fromLang.trim().toLowerCase();
         String tl = (toLang == null || toLang.isBlank()) ? "vi" : toLang.trim().toLowerCase();
+        String cacheKey = sl + "->" + tl + ":" + tuChuanHoa.toLowerCase();
+
+        if (cache.containsKey(cacheKey)) {
+            return cache.get(cacheKey);
+        }
 
         // 1. Tầng 1: Google Clients5 (Chrome Extension - cực kỳ nhanh, không bị 429)
         String nghia1 = dichQuaGoogleClients5(tuChuanHoa, sl, tl);
         if (nghia1 != null && !nghia1.isBlank()) {
-            return chuanHoaDauCau(nghia1);
+            String res = chuanHoaDauCau(nghia1);
+            cache.put(cacheKey, res);
+            return res;
         }
 
         // 2. Tầng 2: Google Mobile Web (Chính xác, ổn định)
         String nghia2 = dichQuaGoogleMobile(tuChuanHoa, sl, tl);
         if (nghia2 != null && !nghia2.isBlank()) {
-            return chuanHoaDauCau(nghia2);
+            String res = chuanHoaDauCau(nghia2);
+            cache.put(cacheKey, res);
+            return res;
         }
 
         // 3. Tầng 3: Google GTX
         String nghia3 = dichQuaGoogleGTX(tuChuanHoa, sl, tl);
         if (nghia3 != null && !nghia3.isBlank()) {
-            return chuanHoaDauCau(nghia3);
+            String res = chuanHoaDauCau(nghia3);
+            cache.put(cacheKey, res);
+            return res;
         }
 
         // 4. Tầng 4: MyMemory API (Dự phòng cuối cùng)
         String nghia4 = dichQuaMyMemory(tuChuanHoa, sl, tl);
         if (nghia4 != null && !nghia4.isBlank()) {
-            return chuanHoaDauCau(nghia4);
+            String res = chuanHoaDauCau(nghia4);
+            cache.put(cacheKey, res);
+            return res;
         }
 
         return "";
+    }
+
+    @Override
+    public java.util.Map<String, String> dichHangLoat(java.util.List<String> danhSach) {
+        java.util.Map<String, String> ketQua = new java.util.concurrent.ConcurrentHashMap<>();
+        if (danhSach == null || danhSach.isEmpty()) {
+            return ketQua;
+        }
+
+        // Lọc danh sách từ cần dịch (loại bỏ rỗng và lấy những từ chưa có trong cache)
+        java.util.List<String> canDich = new java.util.ArrayList<>();
+        for (String w : danhSach) {
+            if (w != null && !w.isBlank()) {
+                String clean = w.trim();
+                String key = "en->vi:" + clean.toLowerCase();
+                if (cache.containsKey(key)) {
+                    ketQua.put(clean.toLowerCase(), cache.get(key));
+                } else {
+                    canDich.add(clean);
+                }
+            }
+        }
+
+        if (canDich.isEmpty()) {
+            return ketQua;
+        }
+
+        // Chia nhỏ thành các đợt (batch) tối đa 35 từ/lần gửi để dịch siêu tốc cùng lúc
+        int batchSize = 35;
+        java.util.List<java.util.List<String>> batches = new java.util.ArrayList<>();
+        for (int i = 0; i < canDich.size(); i += batchSize) {
+            batches.add(canDich.subList(i, Math.min(i + batchSize, canDich.size())));
+        }
+
+        java.util.List<java.util.concurrent.CompletableFuture<Void>> futures = new java.util.ArrayList<>();
+
+        for (java.util.List<String> batch : batches) {
+            futures.add(java.util.concurrent.CompletableFuture.runAsync(() -> {
+                // Thử dịch hàng loạt gộp các từ bằng dấu xuống dòng \n
+                String gopText = String.join("\n", batch);
+                String dichGop = dich(gopText, "en", "vi");
+
+                boolean tachThanhCong = false;
+                if (dichGop != null && !dichGop.isBlank()) {
+                    String[] lines = dichGop.split("\\R");
+                    if (lines.length == batch.size()) {
+                        for (int k = 0; k < batch.size(); k++) {
+                            String tuK = batch.get(k).toLowerCase();
+                            String nghiaK = lines[k].trim();
+                            ketQua.put(tuK, nghiaK);
+                            cache.put("en->vi:" + tuK, nghiaK);
+                        }
+                        tachThanhCong = true;
+                    }
+                }
+
+                // Nếu dịch gộp không khớp số dòng, fallback dịch song song từng từ trong batch
+                if (!tachThanhCong) {
+                    java.util.List<java.util.concurrent.CompletableFuture<Void>> subFutures = new java.util.ArrayList<>();
+                    for (String w : batch) {
+                        subFutures.add(java.util.concurrent.CompletableFuture.runAsync(() -> {
+                            String nghia = dich(w, "en", "vi");
+                            if (nghia != null && !nghia.isBlank()) {
+                                ketQua.put(w.toLowerCase(), nghia);
+                                cache.put("en->vi:" + w.toLowerCase(), nghia);
+                            }
+                        }, translateExecutor));
+                    }
+                    java.util.concurrent.CompletableFuture.allOf(subFutures.toArray(new java.util.concurrent.CompletableFuture[0])).join();
+                }
+            }, translateExecutor));
+        }
+
+        java.util.concurrent.CompletableFuture.allOf(futures.toArray(new java.util.concurrent.CompletableFuture[0])).join();
+
+        return ketQua;
     }
 
     @Override

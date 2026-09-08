@@ -20,6 +20,8 @@ public class PhienAmServiceImpl implements PhienAmService {
     private final DictionaryService dictionaryService;
     private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper;
+    // Bộ nhớ cache nhanh phiên âm IPA
+    private final java.util.Map<String, String> ipaCache = new java.util.concurrent.ConcurrentHashMap<>();
 
     public PhienAmServiceImpl(
             DictionaryService dictionaryService,
@@ -37,36 +39,48 @@ public class PhienAmServiceImpl implements PhienAmService {
         }
 
         String tuChuanHoa = tu.trim();
+        String tuLower = tuChuanHoa.toLowerCase();
+
+        if (ipaCache.containsKey(tuLower)) {
+            return ipaCache.get(tuLower);
+        }
+
+        String ketQua = "";
 
         // 1. Tầng 1: Free Dictionary API (cho từ đơn không có khoảng trắng)
         if (!tuChuanHoa.contains(" ")) {
             String ipaFreeDict = layTuFreeDictionary(tuChuanHoa);
             if (ipaFreeDict != null && !ipaFreeDict.isBlank()) {
-                return chuanHoaIpa(ipaFreeDict);
+                ketQua = chuanHoaIpa(ipaFreeDict);
             }
         }
 
         // 2. Tầng 2: Datamuse API (chuyên gia ngữ âm từ vựng & cụm từ)
-        String ipaDatamuse = layTuDatamuse(tuChuanHoa);
-        if (ipaDatamuse != null && !ipaDatamuse.isBlank()) {
-            return chuanHoaIpa(ipaDatamuse);
+        if (ketQua.isEmpty()) {
+            String ipaDatamuse = layTuDatamuse(tuChuanHoa);
+            if (ipaDatamuse != null && !ipaDatamuse.isBlank()) {
+                ketQua = chuanHoaIpa(ipaDatamuse);
+            }
         }
 
         // 3. Tầng 3: Với cụm từ nhiều chữ hoặc có dấu gạch ngang, tách từng từ và ghép IPA
-        if (tuChuanHoa.contains(" ") || tuChuanHoa.contains("-")) {
+        if (ketQua.isEmpty() && (tuChuanHoa.contains(" ") || tuChuanHoa.contains("-"))) {
             String ipaGhep = ghepPhienAmTungTu(tuChuanHoa);
             if (ipaGhep != null && !ipaGhep.isBlank()) {
-                return chuanHoaIpa(ipaGhep);
+                ketQua = chuanHoaIpa(ipaGhep);
             }
         }
 
         // 4. Fallback cuối cùng
-        String fallbackIpa = layTuFreeDictionary(tuChuanHoa);
-        if (fallbackIpa != null && !fallbackIpa.isBlank()) {
-            return chuanHoaIpa(fallbackIpa);
+        if (ketQua.isEmpty()) {
+            String fallbackIpa = layTuFreeDictionary(tuChuanHoa);
+            if (fallbackIpa != null && !fallbackIpa.isBlank()) {
+                ketQua = chuanHoaIpa(fallbackIpa);
+            }
         }
 
-        return "";
+        ipaCache.put(tuLower, ketQua);
+        return ketQua;
     }
 
     private String layTuFreeDictionary(String tu) {
