@@ -8,10 +8,13 @@ import com.thuong.vocabulary.repository.BoTuVungRepository;
 import com.thuong.vocabulary.repository.TuVungRepository;
 import com.thuong.vocabulary.service.LuuTuVungService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class LuuTuVungServiceImpl implements LuuTuVungService {
@@ -38,6 +41,7 @@ public class LuuTuVungServiceImpl implements LuuTuVungService {
     }
 
     @Override
+    @Transactional
     public String luuBo(
             List<TuVungDTO> danhSach,
             TaiKhoan taiKhoan,
@@ -65,16 +69,24 @@ public class LuuTuVungServiceImpl implements LuuTuVungService {
 
         Long taiKhoanId = taiKhoan.getId();
 
+        // 1 lần truy vấn duy nhất lấy toàn bộ từ tiếng Anh đã có của tài khoản
+        Set<String> tuDaCoTrongDb = new HashSet<>();
+        List<String> dbWords = tuRepo.findAllTiengAnhByTaiKhoanId(taiKhoanId);
+        if (dbWords != null) {
+            for (String w : dbWords) {
+                if (w != null) {
+                    tuDaCoTrongDb.add(w.trim().toLowerCase());
+                }
+            }
+        }
 
-        List<String> daCo = new ArrayList<>();
-
+        Set<String> daCoTrongDanhSach = new HashSet<>();
         List<String> trung = new ArrayList<>();
-
         List<TuVungDTO> dsLuu = new ArrayList<>();
 
 
         // =====================================================
-        // KIỂM TRA TỪ TRÙNG
+        // KIỂM TRA TỪ TRÙNG SIÊU TỐC TRONG BỘ NHỚ (O(1))
         // =====================================================
 
         for (TuVungDTO dto : danhSach) {
@@ -94,35 +106,15 @@ public class LuuTuVungServiceImpl implements LuuTuVungService {
 
 
             // -------------------------------------------------
-            // Trùng trong danh sách đang nhập
+            // Trùng trong danh sách đang nhập hoặc database
             // -------------------------------------------------
 
-            if (daCo.contains(tu)) {
-
+            if (daCoTrongDanhSach.contains(tu) || tuDaCoTrongDb.contains(tu)) {
                 trung.add(tu);
-
                 continue;
             }
 
-
-            // -------------------------------------------------
-            // Trùng trong database
-            // CHỈ kiểm tra trong tài khoản hiện tại
-            // -------------------------------------------------
-
-            if (tuRepo.existsByTiengAnhIgnoreCaseAndBoTuVungTaiKhoanId(
-                    tu,
-                    taiKhoanId
-            )) {
-
-                trung.add(tu);
-
-                continue;
-            }
-
-
-            daCo.add(tu);
-
+            daCoTrongDanhSach.add(tu);
             dsLuu.add(dto);
         }
 
@@ -175,39 +167,42 @@ public class LuuTuVungServiceImpl implements LuuTuVungService {
             bo.setTenBo("Bộ " + soThuTu);
             bo.setNgayTao(LocalDateTime.now());
             bo.setTaiKhoan(taiKhoan);
-            boRepo.save(bo);
+            bo = boRepo.save(bo);
         }
 
 
         // =====================================================
-        // LƯU CÁC TỪ
+        // LƯU TOÀN BỘ CÁC TỪ TRONG 1 BATCH DUY NHẤT (saveAll)
         // =====================================================
 
+        List<TuVung> danhSachEntity = new ArrayList<>(dsLuu.size());
         for (TuVungDTO dto : dsLuu) {
 
             TuVung tu = new TuVung();
 
             tu.setTiengAnh(
-                    dto.getTiengAnh()
+                    dto.getTiengAnh().trim()
             );
 
             tu.setTiengViet(
-                    dto.getTiengViet()
+                    dto.getTiengViet() != null ? dto.getTiengViet().trim() : ""
             );
 
             tu.setPhienAm(
-                    dto.getPhienAm()
+                    dto.getPhienAm() != null ? dto.getPhienAm().trim() : ""
             );
 
             tu.setViDu(
-                    dto.getViDu()
+                    dto.getViDu() != null ? dto.getViDu().trim() : ""
             );
 
             // Gắn từ vào bộ
             tu.setBoTuVung(bo);
 
-            tuRepo.save(tu);
+            danhSachEntity.add(tu);
         }
+
+        tuRepo.saveAll(danhSachEntity);
 
 
         // =====================================================

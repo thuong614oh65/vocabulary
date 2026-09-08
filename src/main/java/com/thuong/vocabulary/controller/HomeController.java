@@ -300,7 +300,9 @@ public class HomeController {
                         boMoi.setTaiKhoan(taiKhoan);
                         boMoi = boTuVungRepository.save(boMoi);
 
-                        // Lưu 10 từ vào bộ mới này trong CSDL
+                        // Lưu 10 từ vào bộ mới này trong CSDL dạng batch
+                        List<TuVung> dsEntity = new ArrayList<>();
+                        List<String> dsTuCanTaoAudio = new ArrayList<>();
                         for (TuVungDTO dto : dsTuMoi) {
                             if (dto.getTiengAnh() != null && !dto.getTiengAnh().isBlank()) {
                                 TuVung tv = new TuVung();
@@ -309,13 +311,21 @@ public class HomeController {
                                 tv.setPhienAm(dto.getPhienAm() != null ? dto.getPhienAm().trim() : "");
                                 tv.setViDu(dto.getViDu() != null ? dto.getViDu().trim() : "");
                                 tv.setBoTuVung(boMoi);
-                                tuVungRepository.save(tv);
-
-                                // Tạo file audio phát âm
-                                try {
-                                    audioService.taoAudio(dto.getTiengAnh().trim());
-                                } catch (Exception ignored) {}
+                                dsEntity.add(tv);
+                                dsTuCanTaoAudio.add(dto.getTiengAnh().trim());
                             }
+                        }
+                        tuVungRepository.saveAll(dsEntity);
+
+                        // Tạo file audio phát âm chạy ngầm trong Virtual Thread
+                        if (!dsTuCanTaoAudio.isEmpty()) {
+                            Thread.startVirtualThread(() -> {
+                                for (String tu : dsTuCanTaoAudio) {
+                                    try {
+                                        audioService.taoAudio(tu);
+                                    } catch (Exception ignored) {}
+                                }
+                            });
                         }
 
                         // Lấy danh sách từ vừa lưu từ DB để đưa vào vòng học

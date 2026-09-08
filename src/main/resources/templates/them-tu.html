@@ -210,6 +210,7 @@
             <div class="mt-3">
                 <button
                         type="submit"
+                        id="btnLuuBo"
                         class="btn btn-success px-4 py-2 fw-bold shadow-sm">
                     💾 Lưu tất cả vào bộ từ
                 </button>
@@ -238,6 +239,21 @@
             inputTenBo.classList.remove('bg-secondary-subtle');
         }
     }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const formLuuBo = document.querySelector('form[action="/luu-bo"]');
+        if (formLuuBo) {
+            formLuuBo.addEventListener('submit', function () {
+                const btn = document.getElementById('btnLuuBo');
+                if (btn) {
+                    setTimeout(() => {
+                        btn.disabled = true;
+                        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span> ⚡ Đang lưu bộ từ...';
+                    }, 10);
+                }
+            });
+        }
+    });
 </script>
 
 </body>

@@ -309,45 +309,31 @@ public class HocController {
 
 
 // =====================================================
-// TẠO AUDIO CHO CÁC TỪ VỪA LƯU
+// TẠO AUDIO CHẠY NGẦM BẰNG VIRTUAL THREAD (KHÔNG LÀM CHỜ/TREO GIAO DIỆN)
 // =====================================================
 
-        List<String> loiAudio = new ArrayList<>();
-
-
+        List<String> dsTuCanTaoAudio = new ArrayList<>();
         for (TuVungDTO dto : danhSach) {
-
-            try {
-
-                audioService.taoAudio(
-                        dto.getTiengAnh()
-                );
-
-            } catch (Exception e) {
-
-                loiAudio.add(
-                        dto.getTiengAnh()
-                );
-
-                e.printStackTrace();
+            if (dto != null && dto.getTiengAnh() != null && !dto.getTiengAnh().isBlank()) {
+                dsTuCanTaoAudio.add(dto.getTiengAnh().trim());
             }
         }
 
-
-// =====================================================
-// THÔNG BÁO
-// =====================================================
-
-        if (!loiAudio.isEmpty()) {
-
-            thongBao +=
-                    " | Không tạo được audio: "
-                            + String.join(
-                            ", ",
-                            loiAudio
-                    );
+        if (!dsTuCanTaoAudio.isEmpty()) {
+            Thread.startVirtualThread(() -> {
+                for (String tu : dsTuCanTaoAudio) {
+                    try {
+                        audioService.taoAudio(tu);
+                    } catch (Exception ignored) {
+                    }
+                }
+            });
         }
 
+
+// =====================================================
+// THÔNG BÁO VÀ CHUYỂN HƯỚNG TỨC THÌ
+// =====================================================
 
         session.setAttribute(
                 "thongBao",
