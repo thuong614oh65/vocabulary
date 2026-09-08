@@ -10,7 +10,7 @@
     <link rel="icon" type="image/x-icon" th:href="@{/favicon.ico}">
 
     <!-- CSS riêng cho Đấu trường phản xạ -->
-    <link rel="stylesheet" th:href="@{/css/luyen-phan-xa.css(v=5)}">
+    <link rel="stylesheet" th:href="@{/css/luyen-phan-xa.css(v=6)}">
 </head>
 <body>
 
@@ -134,7 +134,7 @@
                 <div class="d-flex justify-content-between align-items-center mb-1">
                     <span class="badge-cau-hoi">Câu <b id="lblIndexHienTai">1</b> / <span id="lblTongSoCau">10</span></span>
                     <div class="d-flex align-items-center gap-2">
-                        <button type="button" class="btn-stop-round" onclick="quayVeLobby()" title="Dừng lượt này và hiển thị lại thanh chọn chế độ khác">🛑 Dừng / Đổi chế độ</button>
+                        <button type="button" class="btn-stop-round" onclick="yeuCauDungTran()" title="Dừng lượt này và hiển thị lại thanh chọn chế độ khác">🛑 Dừng / Đổi chế độ</button>
                         <span id="lblDongHoMs" class="badge-timer-ms">5.0s</span>
                     </div>
                 </div>
@@ -280,9 +280,22 @@
 
     </main>
 
+    <!-- Modal xác nhận an toàn khi bấm Dừng trận đấu -->
+    <div id="modalConfirmStop" class="px-modal-overlay" style="display: none;">
+        <div class="px-modal-dialog">
+            <div class="px-modal-icon">⚠️</div>
+            <h4 class="px-modal-title">Dừng lượt luyện tập?</h4>
+            <p class="px-modal-desc">Bạn có chắc chắn muốn dừng lượt đấu này để đổi sang chế độ hoặc bộ từ khác không?</p>
+            <div class="px-modal-actions">
+                <button type="button" class="btn-modal-cancel" onclick="huyDungTran()">▶️ Tiếp tục chơi</button>
+                <button type="button" class="btn-modal-confirm" onclick="dongYDungTran()">🛑 Dừng & Đổi chế độ</button>
+            </div>
+        </div>
+    </div>
+
 </div>
 
 <!-- Âm thanh hiệu ứng & Logic phản xạ -->
-<script th:src="@{/js/luyen-phan-xa.js(v=5)}"></script>
+<script th:src="@{/js/luyen-phan-xa.js(v=6)}"></script>
 </body>
 </html>

@@ -25,11 +25,14 @@
 
     let audioHienTai = null;
     let dangThiDau = false; // Cờ kiểm soát: chỉ chạy logic trận khi người dùng thực sự đang thi đấu
+    let dangTamDung = false; // Cờ tạm dừng khi modal xác nhận dừng trận đang mở
+    let thoiGianConLaiKhiPause = 0; // Lưu thời gian còn lại chính xác để phục hồi khi hủy dừng
     let nextQuestionTimeout = null; // Timeout chuyển câu hỏi để có thể dọn dẹp triệt để khi rời trận
 
     // Dừng sạch sẽ 100% mọi tiến trình, âm thanh, đồng hồ của trận đấu
     function dungToanBoTranDau() {
         dangThiDau = false;
+        dangTamDung = false;
         dangXuLyDapAn = false;
 
         dungDongHo();
@@ -552,8 +555,8 @@
     // =========================================================
     // 8. ĐỒNG HỒ NĂNG LƯỢNG ĐẾM NGƯỢC (SMOOTH TIMER)
     // =========================================================
-    function khoiDongDongHoNangLuong() {
-        if (!dangThiDau) return;
+    function khoiDongDongHoNangLuong(isResume) {
+        if (!dangThiDau || dangTamDung) return;
 
         if (timerFrameId) {
             cancelAnimationFrame(timerFrameId);
@@ -563,10 +566,12 @@
         const bar = document.getElementById("energyTimerBar");
         const lblMs = document.getElementById("lblDongHoMs");
         const durationMs = thoiGianGioiHan * 1000;
-        thoiGianBatDauCau = performance.now();
+        if (!isResume) {
+            thoiGianBatDauCau = performance.now();
+        }
 
         function capNhatFrame(now) {
-            if (!dangThiDau) {
+            if (!dangThiDau || dangTamDung) {
                 timerFrameId = null;
                 return;
             }
@@ -602,10 +607,64 @@
     }
 
     // =========================================================
+    // XÁC NHẬN DỪNG TRẬN ĐẤU AN TOÀN (TRÁNH BẤM NHẦM)
+    // =========================================================
+    window.yeuCauDungTran = function () {
+        if (!dangThiDau) {
+            quayVeLobby();
+            return;
+        }
+
+        // Tạm dừng trận đấu
+        dangTamDung = true;
+
+        // Lưu lại chính xác số mili-giây còn lại tại thời điểm bấm Dừng
+        const durationMs = thoiGianGioiHan * 1000;
+        const elapsed = performance.now() - thoiGianBatDauCau;
+        thoiGianConLaiKhiPause = Math.max(100, durationMs - elapsed);
+
+        // Đóng băng đồng hồ
+        dungDongHo();
+
+        // Tạm dừng âm thanh nếu đang phát
+        if (audioHienTai) {
+            try { audioHienTai.pause(); } catch (e) {}
+        }
+
+        // Hiển thị modal xác nhận
+        const modal = document.getElementById("modalConfirmStop");
+        if (modal) modal.style.display = "flex";
+    };
+
+    window.huyDungTran = function () {
+        dangTamDung = false;
+        const modal = document.getElementById("modalConfirmStop");
+        if (modal) modal.style.display = "none";
+
+        // Khôi phục đồng hồ và âm thanh để người học tiếp tục chơi
+        if (dangThiDau) {
+            const durationMs = thoiGianGioiHan * 1000;
+            thoiGianBatDauCau = performance.now() - (durationMs - thoiGianConLaiKhiPause);
+            khoiDongDongHoNangLuong(true);
+
+            if (audioHienTai && audioHienTai.paused) {
+                try { audioHienTai.play().catch(function () {}); } catch (e) {}
+            }
+        }
+    };
+
+    window.dongYDungTran = function () {
+        dangTamDung = false;
+        const modal = document.getElementById("modalConfirmStop");
+        if (modal) modal.style.display = "none";
+        quayVeLobby();
+    };
+
+    // =========================================================
     // 9. XỬ LÝ CHỌN ĐÁP ÁN
     // =========================================================
     window.chonDapAn = function (selectedIdx) {
-        if (!dangThiDau || dangXuLyDapAn || cauHienTaiIdx >= danhSachCauHoi.length) return;
+        if (!dangThiDau || dangTamDung || dangXuLyDapAn || cauHienTaiIdx >= danhSachCauHoi.length) return;
         dangXuLyDapAn = true;
         dungDongHo();
 
@@ -631,7 +690,7 @@
     };
 
     window.chonDapAnTF = function (userChonDung) {
-        if (!dangThiDau || dangXuLyDapAn || cauHienTaiIdx >= danhSachCauHoi.length) return;
+        if (!dangThiDau || dangTamDung || dangXuLyDapAn || cauHienTaiIdx >= danhSachCauHoi.length) return;
         dangXuLyDapAn = true;
         dungDongHo();
 
@@ -917,6 +976,21 @@
     document.addEventListener("keydown", function (e) {
         // Nếu đang ở ô input nào đó thì không bắt phím tắt
         if (e.target.tagName === "INPUT" || e.target.tagName === "SELECT" || e.target.tagName === "TEXTAREA") return;
+
+        // Nếu modal xác nhận dừng trận đang mở: Escape = Hủy dừng (tiếp tục), Enter = Đồng ý dừng
+        if (dangTamDung) {
+            if (e.key === "Escape") {
+                e.preventDefault();
+                huyDungTran();
+                return;
+            }
+            if (e.key === "Enter") {
+                e.preventDefault();
+                dongYDungTran();
+                return;
+            }
+            return;
+        }
 
         // Space: Bắt đầu ván mới hoặc Nghe lại
         if (e.code === "Space") {

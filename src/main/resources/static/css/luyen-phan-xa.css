@@ -873,3 +873,105 @@ body {
 @keyframes spin {
     to { transform: rotate(360deg); }
 }
+
+/* =========================================================
+   MODAL XÁC NHẬN DỪNG TRẬN ĐẤU AN TOÀN
+   ========================================================= */
+.px-modal-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(15, 23, 42, 0.8);
+    backdrop-filter: blur(8px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    padding: 16px;
+    animation: fadeInModal 0.2s ease-out;
+}
+
+@keyframes fadeInModal {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.px-modal-dialog {
+    background: #1e293b;
+    border: 2px solid #475569;
+    border-radius: 20px;
+    padding: 28px 24px;
+    max-width: 440px;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
+    animation: modalPop 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes modalPop {
+    from { transform: scale(0.85); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+.px-modal-icon {
+    font-size: 3rem;
+    margin-bottom: 12px;
+}
+
+.px-modal-title {
+    color: #f8fafc;
+    font-size: 1.35rem;
+    font-weight: 800;
+    margin-bottom: 10px;
+}
+
+.px-modal-desc {
+    color: #94a3b8;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin-bottom: 24px;
+}
+
+.px-modal-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+}
+
+.btn-modal-cancel {
+    background: #334155;
+    color: #f1f5f9;
+    border: none;
+    font-weight: 700;
+    font-size: 0.92rem;
+    padding: 11px 18px;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    flex: 1;
+}
+
+.btn-modal-cancel:hover {
+    background: #475569;
+    color: #ffffff;
+    transform: translateY(-1px);
+}
+
+.btn-modal-confirm {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    color: #ffffff;
+    border: none;
+    font-weight: 700;
+    font-size: 0.92rem;
+    padding: 11px 18px;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    flex: 1;
+    box-shadow: 0 4px 14px rgba(239, 68, 68, 0.4);
+}
+
+.btn-modal-confirm:hover {
+    background: linear-gradient(135deg, #dc2626, #b91c1c);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 18px rgba(239, 68, 68, 0.6);
+}
