@@ -373,127 +373,70 @@ body {
     position: relative;
 }
 
-/* Huy hiệu phản xạ thần tốc nảy số */
+/* Ẩn huy hiệu nhảy giật gây rối mắt */
 .px-speed-feedback {
-    position: absolute;
-    top: -14px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: #10b981;
-    color: #ffffff;
-    padding: 4px 16px;
-    border-radius: 20px;
-    font-size: 0.85rem;
-    font-weight: 900;
-    letter-spacing: 0.5px;
-    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.5);
-    z-index: 10;
-    animation: popBounce 0.3s ease-out;
+    display: none !important;
 }
 
-.px-speed-feedback.fast {
-    background: #f59e0b;
-    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.5);
-}
-
-.px-speed-feedback.slow {
-    background: #ef4444;
-    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.5);
-}
-
-@keyframes popBounce {
-    0% { transform: translate(-50%, -10px) scale(0.6); opacity: 0; }
-    80% { transform: translate(-50%, 0) scale(1.1); opacity: 1; }
-    100% { transform: translate(-50%, 0) scale(1); opacity: 1; }
-}
-
-/* Ảnh minh họa to sắc nét */
+/* Ảnh minh họa to sắc nét, gọn gàng */
 .target-visual-box {
     width: 100%;
     display: flex;
     justify-content: center;
+    margin: 6px 0;
 }
 
 .image-wrapper {
     position: relative;
     width: 100%;
-    max-width: 480px;
-    height: 240px;
-    border-radius: 16px;
+    max-width: 460px;
+    height: 250px;
+    border-radius: 18px;
     overflow: hidden;
-    border: 2px solid var(--px-border);
-    background: radial-gradient(circle at 50% 30%, #1e293b, #0f172a);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    border: 2px solid #334155;
+    background: #0f172a;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
-/* Thẻ Visual Card hiển thị tức thời 0ms */
+/* Thẻ icon tinh giản: Chỉ 1 icon to rõ ở giữa, không có chữ thừa */
 .visual-fallback-card {
     position: absolute;
     top: 0; left: 0; right: 0; bottom: 0;
     display: flex;
-    flex-direction: column;
     justify-content: center;
     align-items: center;
-    padding: 20px;
-    background: radial-gradient(circle at 50% 35%, rgba(14, 165, 233, 0.16), rgba(15, 23, 42, 0.96));
-    transition: all 0.3s ease;
+    background: #1e293b;
     z-index: 1;
 }
 
-.visual-badge-glow {
-    position: absolute;
-    width: 140px;
-    height: 140px;
-    background: radial-gradient(circle, rgba(14, 165, 233, 0.35) 0%, transparent 70%);
-    border-radius: 50%;
-    filter: blur(24px);
-    pointer-events: none;
-    animation: glowPulse 2s infinite alternate;
-}
-
-@keyframes glowPulse {
-    0% { transform: scale(0.9); opacity: 0.5; }
-    100% { transform: scale(1.15); opacity: 0.9; }
-}
-
-.visual-icon-3d {
-    font-size: 4.8rem;
+.visual-icon-clean {
+    font-size: 5.5rem;
     line-height: 1;
-    margin-bottom: 12px;
-    filter: drop-shadow(0 6px 16px rgba(0, 0, 0, 0.6));
-    transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
-    z-index: 2;
+    filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.4));
+    user-select: none;
 }
 
-.visual-icon-3d:hover {
-    transform: scale(1.12);
+.target-img {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 2;
+    transition: opacity 0.25s ease-in-out;
 }
 
-.visual-concept-hint {
-    font-size: 1.25rem;
-    font-weight: 800;
-    color: #f8fafc;
-    text-align: center;
-    letter-spacing: 0.3px;
-    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.7);
-    margin-bottom: 8px;
-    z-index: 2;
-}
-
-.visual-theme-tag {
-    font-size: 0.75rem;
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: 1.2px;
-    color: #38bdf8;
-    background: rgba(14, 165, 233, 0.2);
-    border: 1px solid rgba(56, 189, 248, 0.4);
-    padding: 4px 14px;
-    border-radius: 20px;
-    z-index: 2;
+.img-loading-overlay {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(15, 23, 42, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 3;
 }
 
 .target-img {

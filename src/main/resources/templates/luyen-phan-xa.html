@@ -148,23 +148,20 @@
                     ⚡ 0.8s - THẦN TỐC!
                 </div>
 
-                <!-- 1. Vùng hiển thị Ảnh & Thẻ trực quan (Cho chế độ Nhìn ảnh) -->
+                <!-- 1. Vùng hiển thị Ảnh duy nhất (Tối giản, sạch sẽ, không rối mắt) -->
                 <div id="boxTargetImage" class="target-visual-box">
                     <div class="image-wrapper" id="imageWrapper">
-                        <!-- Layer 1: Thẻ khái niệm trực quan (Hiển thị ngay lập tức 0ms, không bao giờ bị đen hay lỗi ảnh) -->
+                        <!-- Biểu tượng tối giản (Chỉ hiện 1 icon duy nhất khi ảnh thật đang tải) -->
                         <div class="visual-fallback-card" id="visualFallbackCard">
-                            <div class="visual-badge-glow"></div>
-                            <div class="visual-icon-3d" id="visualIcon3d">🏢</div>
-                            <div class="visual-concept-hint" id="visualConceptHint">Khái niệm từ vựng</div>
-                            <div class="visual-theme-tag" id="visualThemeTag">VOCABULARY ARENA</div>
+                            <div class="visual-icon-clean" id="visualIcon3d">🏢</div>
                         </div>
 
-                        <!-- Layer 2: Ảnh thật chất lượng cao từ CDN (Tự động nạp đè lên mượt mà) -->
+                        <!-- Ảnh minh họa to rõ nét phủ trọn khung -->
                         <img id="imgTargetVisual" src="" alt="" class="target-img" style="display: none; opacity: 0;">
 
-                        <!-- Overlay loading nhẹ -->
+                        <!-- Overlay loading mỏng nhẹ -->
                         <div class="img-loading-overlay" id="imgLoadingOverlay" style="display: none;">
-                            <div class="spinner-border spinner-border-sm text-info" role="status"></div>
+                            <div class="spinner-border spinner-border-sm text-light" role="status"></div>
                         </div>
                     </div>
                 </div>

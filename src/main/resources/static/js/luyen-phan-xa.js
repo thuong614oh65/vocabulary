@@ -192,10 +192,12 @@
         const elLobby = document.getElementById("arenaLobby");
         const elStage = document.getElementById("arenaStage");
         const elResult = document.getElementById("arenaResult");
+        const elControls = document.querySelector(".px-controls-card");
 
         if (elLobby) elLobby.style.display = "block";
         if (elStage) elStage.style.display = "none";
         if (elResult) elResult.style.display = "none";
+        if (elControls) elControls.style.display = "block";
 
         const lblSpeed = document.getElementById("lblTocDoChon");
         if (lblSpeed) lblSpeed.textContent = thoiGianGioiHan.toFixed(1) + " giây";
@@ -227,9 +229,11 @@
         const elLobby = document.getElementById("arenaLobby");
         const elStage = document.getElementById("arenaStage");
         const elResult = document.getElementById("arenaResult");
+        const elControls = document.querySelector(".px-controls-card");
 
         if (elLobby) elLobby.style.display = "none";
         if (elResult) elResult.style.display = "none";
+        if (elControls) elControls.style.display = "none";
         if (elStage) elStage.style.display = "flex";
 
         hienThiCauHoi(0);
@@ -338,88 +342,50 @@
     // =========================================================
     const imageCache = {}; // Cache URL ảnh
 
-    // Bản đồ phân loại trực quan: Icon 3D, Chủ đề & Nhãn gợi nhớ
+    // Bản đồ phân loại trực quan: Chỉ lấy 1 icon đại diện sạch sẽ (Không chữ thừa, không tag)
     function layKhauHinhTrucQuan(tuAnh, tuViet) {
         const eng = (tuAnh || "").toLowerCase().trim();
-        const vie = (tuViet || "").toLowerCase().trim();
 
         const dict = {
-            "company": { icon: "🏢", hint: "Công ty / Doanh nghiệp", tag: "BUSINESS & OFFICE", color: "rgba(14, 165, 233, 0.25)" },
-            "firm": { icon: "🏢", hint: "Hãng / Công ty", tag: "ENTERPRISE", color: "rgba(14, 165, 233, 0.25)" },
-            "interview": { icon: "👔", hint: "Buổi phỏng vấn xin việc", tag: "CAREER & RECRUITING", color: "rgba(99, 102, 241, 0.25)" },
-            "interviewing": { icon: "👔", hint: "Đang phỏng vấn tuyển dụng", tag: "CAREER & RECRUITING", color: "rgba(99, 102, 241, 0.25)" },
-            "annual": { icon: "📅", hint: "Hàng năm / Thường niên", tag: "CALENDAR & TIME", color: "rgba(245, 158, 11, 0.25)" },
-            "yearly": { icon: "📅", hint: "Hàng năm / Định kỳ", tag: "CALENDAR", color: "rgba(245, 158, 11, 0.25)" },
-            "benefit": { icon: "🎁", hint: "Phúc lợi / Quyền lợi", tag: "HR & WELFARE", color: "rgba(16, 185, 129, 0.25)" },
-            "benefits": { icon: "🎁", hint: "Chế độ đãi ngộ & phúc lợi", tag: "HR & WELFARE", color: "rgba(16, 185, 129, 0.25)" },
-            "fee": { icon: "💳", hint: "Chi phí / Lệ phí", tag: "FINANCE & PAYMENT", color: "rgba(239, 68, 68, 0.25)" },
-            "fees": { icon: "💳", hint: "Các khoản phí dịch vụ", tag: "FINANCE & PAYMENT", color: "rgba(239, 68, 68, 0.25)" },
-            "arena": { icon: "🏟️", hint: "Nhà thi đấu / Đấu trường", tag: "SPORTS & VENUE", color: "rgba(168, 85, 247, 0.25)" },
-            "stadium": { icon: "🏟️", hint: "Sân vận động lớn", tag: "SPORTS & VENUE", color: "rgba(168, 85, 247, 0.25)" },
-            "human": { icon: "👤", hint: "Con người / Nhân loại", tag: "PEOPLE & SOCIETY", color: "rgba(236, 72, 153, 0.25)" },
-            "resources": { icon: "📦", hint: "Tài nguyên / Nguồn lực", tag: "RESOURCE MANAGEMENT", color: "rgba(20, 184, 166, 0.25)" },
-            "resource": { icon: "📦", hint: "Tài nguyên / Nguồn lực", tag: "RESOURCE", color: "rgba(20, 184, 166, 0.25)" },
-            "conference": { icon: "👥", hint: "Hội nghị / Hội thảo", tag: "MEETING & EVENT", color: "rgba(139, 92, 246, 0.25)" },
-            "meeting": { icon: "🤝", hint: "Cuộc họp / Gặp mặt", tag: "BUSINESS", color: "rgba(59, 130, 246, 0.25)" },
-            "salary": { icon: "💰", hint: "Tiền lương hàng tháng", tag: "PAYROLL & INCOME", color: "rgba(34, 197, 94, 0.25)" },
-            "wage": { icon: "💵", hint: "Tiền công / Thù lao", tag: "WAGE & FINANCE", color: "rgba(34, 197, 94, 0.25)" },
-            "contract": { icon: "📜", hint: "Hợp đồng ký kết", tag: "LEGAL & AGREEMENT", color: "rgba(249, 115, 22, 0.25)" },
-            "schedule": { icon: "⏱️", hint: "Lịch trình / Kế hoạch", tag: "PLANNING & TIME", color: "rgba(6, 182, 212, 0.25)" },
-            "employee": { icon: "🧑‍💼", hint: "Nhân viên / Người làm", tag: "STAFF & HR", color: "rgba(59, 130, 246, 0.25)" },
-            "employer": { icon: "👔", hint: "Người sử dụng lao động", tag: "LEADERSHIP", color: "rgba(99, 102, 241, 0.25)" },
-            "customer": { icon: "🛍️", hint: "Khách hàng mua sắm", tag: "RETAIL & COMMERCE", color: "rgba(234, 88, 12, 0.25)" },
-            "client": { icon: "🤝", hint: "Khách hàng / Đối tác", tag: "CLIENT RELATIONS", color: "rgba(14, 165, 233, 0.25)" },
-            "discount": { icon: "🏷️", hint: "Giảm giá / Chiết khấu", tag: "SHOPPING", color: "rgba(239, 68, 68, 0.25)" },
-            "invoice": { icon: "🧾", hint: "Hóa đơn thanh toán", tag: "ACCOUNTING", color: "rgba(100, 116, 139, 0.25)" },
-            "manager": { icon: "📋", hint: "Người quản lý", tag: "MANAGEMENT", color: "rgba(79, 70, 229, 0.25)" },
-            "report": { icon: "📊", hint: "Bản báo cáo kết quả", tag: "ANALYTICS & DATA", color: "rgba(16, 185, 129, 0.25)" },
-            "computer": { icon: "💻", hint: "Máy vi tính / Thiết bị", tag: "TECHNOLOGY", color: "rgba(14, 165, 233, 0.25)" },
-            "hotel": { icon: "🏨", hint: "Khách sạn nghỉ dưỡng", tag: "HOSPITALITY", color: "rgba(245, 158, 11, 0.25)" },
-            "flight": { icon: "✈️", hint: "Chuyến bay / Hàng không", tag: "TRAVEL & AIRLINE", color: "rgba(56, 189, 248, 0.25)" },
-            "airport": { icon: "🛫", hint: "Sân bay / Phi trường", tag: "TRANSPORTATION", color: "rgba(56, 189, 248, 0.25)" },
-            "hospital": { icon: "🏥", hint: "Bệnh viện / Y tế", tag: "HEALTHCARE", color: "rgba(239, 68, 68, 0.25)" },
-            "doctor": { icon: "🩺", hint: "Bác sĩ chữa bệnh", tag: "MEDICAL", color: "rgba(20, 184, 166, 0.25)" },
-            "restaurant": { icon: "🍽️", hint: "Nhà hàng ẩm thực", tag: "DINING", color: "rgba(249, 115, 22, 0.25)" },
-            "book": { icon: "📖", hint: "Sách / Tài liệu", tag: "READING", color: "rgba(59, 130, 246, 0.25)" },
-            "student": { icon: "🎓", hint: "Học sinh / Sinh viên", tag: "EDUCATION", color: "rgba(16, 185, 129, 0.25)" },
-            "phone": { icon: "📱", hint: "Điện thoại liên lạc", tag: "TELECOM", color: "rgba(168, 85, 247, 0.25)" },
-            "email": { icon: "✉️", hint: "Hộp thư điện tử", tag: "MESSAGING", color: "rgba(14, 165, 233, 0.25)" },
-            "budget": { icon: "🪙", hint: "Ngân sách chi tiêu", tag: "FINANCE", color: "rgba(234, 179, 8, 0.25)" },
-            "policy": { icon: "⚖️", hint: "Chính sách quy định", tag: "GOVERNANCE", color: "rgba(100, 116, 139, 0.25)" },
-            "deadline": { icon: "⏳", hint: "Hạn chót công việc", tag: "URGENT & TIME", color: "rgba(239, 68, 68, 0.25)" },
-            "project": { icon: "📁", hint: "Dự án công việc", tag: "MANAGEMENT", color: "rgba(59, 130, 246, 0.25)" }
+            "company": "🏢", "firm": "🏢", "enterprise": "🏢",
+            "interview": "👔", "interviewing": "👔",
+            "annual": "📅", "yearly": "📅",
+            "benefit": "🎁", "benefits": "🎁",
+            "fee": "💳", "fees": "💳", "cost": "💳", "price": "💳",
+            "arena": "🏟️", "stadium": "🏟️",
+            "human": "👤", "person": "👤", "people": "👥",
+            "resources": "📦", "resource": "📦",
+            "conference": "👥", "meeting": "🤝",
+            "salary": "💰", "wage": "💵", "income": "💰",
+            "contract": "📜", "agreement": "📜",
+            "schedule": "⏱️", "timetable": "⏱️",
+            "employee": "🧑‍💼", "staff": "👥", "worker": "👷",
+            "employer": "👔", "boss": "👔", "manager": "📋",
+            "customer": "🛍️", "client": "🤝",
+            "discount": "🏷️", "sale": "🏷️",
+            "invoice": "🧾", "bill": "🧾",
+            "report": "📊", "chart": "📊",
+            "computer": "💻", "laptop": "💻", "technology": "💻",
+            "hotel": "🏨", "flight": "✈️", "airport": "🛫", "travel": "✈️",
+            "hospital": "🏥", "doctor": "🩺", "medical": "🏥",
+            "restaurant": "🍽️", "food": "🍜",
+            "book": "📖", "student": "🎓", "school": "🏫",
+            "phone": "📱", "email": "✉️",
+            "budget": "🪙", "policy": "⚖️", "deadline": "⏳", "project": "📁"
         };
 
         if (dict[eng]) return dict[eng];
 
-        if (vie.includes("tiền") || vie.includes("phí") || vie.includes("giá") || vie.includes("lương")) {
-            return { icon: "💵", hint: tuViet, tag: "FINANCE & MONEY", color: "rgba(34, 197, 94, 0.25)" };
-        }
-        if (vie.includes("công ty") || vie.includes("doanh nghiệp") || vie.includes("văn phòng")) {
-            return { icon: "🏢", hint: tuViet, tag: "BUSINESS & OFFICE", color: "rgba(14, 165, 233, 0.25)" };
-        }
-        if (vie.includes("thời gian") || vie.includes("ngày") || vie.includes("năm") || vie.includes("lịch")) {
-            return { icon: "📅", hint: tuViet, tag: "TIME & SCHEDULE", color: "rgba(245, 158, 11, 0.25)" };
-        }
-        if (vie.includes("người") || vie.includes("nhân viên") || vie.includes("khách")) {
-            return { icon: "👥", hint: tuViet, tag: "PEOPLE & SOCIETY", color: "rgba(99, 102, 241, 0.25)" };
-        }
-        if (vie.includes("đi") || vie.includes("xe") || vie.includes("bay") || vie.includes("du lịch")) {
-            return { icon: "✈️", hint: tuViet, tag: "TRAVEL & TRANSIT", color: "rgba(56, 189, 248, 0.25)" };
-        }
-        if (vie.includes("sân") || vie.includes("đấu") || vie.includes("thể thao")) {
-            return { icon: "🏟️", hint: tuViet, tag: "SPORTS & VENUE", color: "rgba(168, 85, 247, 0.25)" };
-        }
-        if (vie.includes("học") || vie.includes("sách") || vie.includes("trường")) {
-            return { icon: "📚", hint: tuViet, tag: "EDUCATION", color: "rgba(16, 185, 129, 0.25)" };
-        }
+        const vie = (tuViet || "").toLowerCase().trim();
+        if (vie.includes("tiền") || vie.includes("phí") || vie.includes("giá") || vie.includes("lương")) return "💵";
+        if (vie.includes("công ty") || vie.includes("doanh nghiệp") || vie.includes("văn phòng")) return "🏢";
+        if (vie.includes("thời gian") || vie.includes("ngày") || vie.includes("năm") || vie.includes("lịch")) return "📅";
+        if (vie.includes("người") || vie.includes("nhân viên") || vie.includes("khách")) return "👥";
+        if (vie.includes("đi") || vie.includes("xe") || vie.includes("bay") || vie.includes("du lịch")) return "✈️";
+        if (vie.includes("sân") || vie.includes("đấu") || vie.includes("thể thao")) return "🏟️";
+        if (vie.includes("học") || vie.includes("sách") || vie.includes("trường")) return "📚";
 
-        return {
-            icon: "💡",
-            hint: tuViet || "Từ vựng tiếng Anh",
-            tag: "VOCABULARY ARENA",
-            color: "rgba(14, 165, 233, 0.25)"
-        };
+        return "💡";
     }
 
     // Tìm kiếm ảnh qua Wikipedia REST API & Commons (CORS origin=*)
@@ -491,25 +457,16 @@
         });
     }
 
-    // Hiển thị trực quan cho câu hỏi
+    // Hiển thị trực quan cho câu hỏi (Chỉ 1 ảnh duy nhất hoặc 1 icon duy nhất, sạch sẽ 100%)
     async function loadHinhAnh(urlCoSan, tuAnh, tuViet) {
         const img = document.getElementById("imgTargetVisual");
-        const card = document.getElementById("visualFallbackCard");
         const iconEl = document.getElementById("visualIcon3d");
-        const hintEl = document.getElementById("visualConceptHint");
-        const tagEl = document.getElementById("visualThemeTag");
         const overlay = document.getElementById("imgLoadingOverlay");
 
-        // 1. TỨC THÌ 0ms: Cập nhật thẻ Visual Card sống động
-        const concept = layKhauHinhTrucQuan(tuAnh, tuViet);
-        if (iconEl) iconEl.textContent = concept.icon;
-        if (hintEl) hintEl.textContent = concept.hint;
-        if (tagEl) tagEl.textContent = concept.tag;
-        if (card) {
-            card.style.background = `radial-gradient(circle at 50% 35%, ${concept.color}, rgba(15, 23, 42, 0.96))`;
-        }
+        // 1. Chỉ hiện 1 icon duy nhất ở giữa khi chưa có ảnh
+        if (iconEl) iconEl.textContent = layKhauHinhTrucQuan(tuAnh, tuViet);
 
-        // Ẩn ảnh cũ để tránh giật lag
+        // Ẩn ảnh cũ để không bị giật
         if (img) {
             img.style.display = "none";
             img.style.opacity = "0";
@@ -527,7 +484,7 @@
             }
         }
 
-        // 3. Phủ ảnh thật lên nếu nạp thành công
+        // 3. Phủ ảnh thật lên mượt mà
         if (finalImageUrl && img) {
             if (overlay) overlay.style.display = "flex";
 
@@ -824,9 +781,11 @@
 
         const elStage = document.getElementById("arenaStage");
         const elResult = document.getElementById("arenaResult");
+        const elControls = document.querySelector(".px-controls-card");
 
         if (elStage) elStage.style.display = "none";
         if (elResult) elResult.style.display = "block";
+        if (elControls) elControls.style.display = "block";
 
         // Tính tốc độ trung bình
         const avgSpeedSec = soCauDung > 0 ? ((tongThoiGianDung / soCauDung) / 1000).toFixed(1) : "0.0";
