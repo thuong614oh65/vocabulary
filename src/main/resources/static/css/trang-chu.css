@@ -284,6 +284,15 @@ body {
     box-shadow: 0 10px 24px rgba(2, 132, 199, 0.38);
 }
 
+/* 11c. Luyện phản xạ nhanh (Amber - Rose Flash Gradient) */
+.nut-luyen-phan-xa {
+    background: linear-gradient(135deg, #f59e0b 0%, #ea580c 50%, #e11d48 100%);
+    box-shadow: 0 6px 18px rgba(234, 88, 12, 0.35);
+}
+.nut-luyen-phan-xa:hover {
+    box-shadow: 0 10px 26px rgba(234, 88, 12, 0.5);
+}
+
 /* 12. Đăng xuất (Red) */
 .nut-dang-xuat {
     background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);

@@ -128,28 +128,19 @@
 
 
 
-            <form th:action="@{/bat-dau-hoc}"
-                  method="post">
-
-                <input type="hidden"
-                       name="kieuHoc"
-                       th:value="${hocDTO.kieuHoc}">
-
-
-                <form action="/bat-dau-hoc"
-                      method="post">
-
-
-                    <button class="btn btn-success">
-
-                        Bắt đầu học
-
+            <div class="d-flex flex-wrap gap-3 mt-4 align-items-center">
+                <form th:action="@{/bat-dau-hoc}" method="post" class="m-0">
+                    <input type="hidden" name="kieuHoc" th:value="${hocDTO.kieuHoc}">
+                    <button type="submit" class="btn btn-success px-4 py-2 fw-bold shadow-sm">
+                        📖 Bắt đầu học
                     </button>
-
-
                 </form>
 
-            </form>
+                <a href="/luyen-phan-xa?kieuHoc=DANG_HOC"
+                   class="btn btn-warning px-4 py-2 fw-bold text-dark shadow-sm">
+                    ⚡ Luyện phản xạ các từ này
+                </a>
+            </div>
 
 
         </div>

@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>⚡ Đấu Trường Phản Xạ Nhanh - Học Từ Vựng</title>
+
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="icon" type="image/x-icon" th:href="@{/favicon.ico}">
+
+    <!-- CSS riêng cho Đấu trường phản xạ -->
+    <link rel="stylesheet" th:href="@{/css/luyen-phan-xa.css(v=1)}">
+</head>
+<body>
+
+<div class="px-container">
+
+    <!-- ==========================================
+         1. THANH ĐIỀU HƯỚNG & HEADER
+         ========================================== -->
+    <header class="px-header">
+        <div class="px-header-left">
+            <a href="/" class="btn-back-home" title="Về trang chủ">← Trang chủ</a>
+            <a href="/hoc" class="btn-back-study" title="Về trang học">📖 Trang học</a>
+        </div>
+        <div class="px-header-center">
+            <h1 class="px-title">⚡ ĐẤU TRƯỜNG PHẢN XẠ NHANH</h1>
+            <p class="px-subtitle">Ép não nảy số dưới 2 giây • Xóa bỏ thói quen ngồi load nghĩa</p>
+        </div>
+        <div class="px-header-right">
+            <div class="px-stat-badge combo-badge">
+                <span class="badge-icon">🔥</span>
+                <span class="badge-label">Combo:</span>
+                <span id="txtComboStreak" class="badge-value">0</span>
+            </div>
+            <div class="px-stat-badge score-badge">
+                <span class="badge-icon">⭐</span>
+                <span class="badge-label">Điểm:</span>
+                <span id="txtDiemSo" class="badge-value">0</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- ==========================================
+         2. BẢNG CẤU HÌNH TRẬN ĐẤU (CONTROLS BAR)
+         ========================================== -->
+    <section class="px-controls-card">
+        <div class="row g-2 align-items-center">
+            <!-- Chọn Bộ từ -->
+            <div class="col-12 col-md-4">
+                <label class="px-label">📚 Bộ từ vựng:</label>
+                <select id="selBoTu" class="form-select px-select" onchange="doiBoTuPhanXa()">
+                    <option value="DANG_HOC" th:if="${soTuDangHoc != null && soTuDangHoc > 0}" th:selected="${kieuHoc == 'DANG_HOC'}">
+                        ⚡ Các từ đang học ([(${soTuDangHoc})] từ)
+                    </option>
+                    <option th:each="bo : ${dsBo}"
+                            th:value="${bo.id}"
+                            th:text="${bo.tenBo + ' (' + bo.soLuongTu + ' từ)'}"
+                            th:selected="${bo.id == boIdChon && kieuHoc != 'DANG_HOC'}">
+                    </option>
+                    <option value="TU_SAI" th:selected="${kieuHoc == 'TU_SAI'}">⚠️ Các từ hay làm sai</option>
+                    <option value="NGAU_NHIEN" th:selected="${kieuHoc == 'NGAU_NHIEN'}">🎲 Ngẫu nhiên 15 từ</option>
+                </select>
+            </div>
+
+            <!-- Chọn Chế độ phản xạ -->
+            <div class="col-12 col-md-5">
+                <label class="px-label">🎯 Chế độ luyện:</label>
+                <div class="px-mode-tabs" id="groupCheDo">
+                    <button type="button" class="btn-mode active" data-chedo="HINH_ANH" onclick="chonCheDo('HINH_ANH', this)" title="Hình ảnh to ở giữa ➔ Nhìn ảnh nảy số ngay từ tiếng Anh">
+                        🖼️ Nhìn ảnh
+                    </button>
+                    <button type="button" class="btn-mode" data-chedo="NGHE" onclick="chonCheDo('NGHE', this)" title="Nghe âm thanh ➔ Bấm ngay nghĩa trong 2 giây">
+                        🎧 Nghe âm thanh
+                    </button>
+                    <button type="button" class="btn-mode" data-chedo="NHIN_TU" onclick="chonCheDo('NHIN_TU', this)" title="Hiện chữ tiếng Anh ➔ Bấm nhanh nghĩa tiếng Việt">
+                        👁️ Nhìn từ
+                    </button>
+                    <button type="button" class="btn-mode" data-chedo="DUNG_SAI" onclick="chonCheDo('DUNG_SAI', this)" title="Hiện cặp từ - nghĩa, bấm Đúng hoặc Sai trong 2 giây">
+                        ⚖️ Đúng/Sai (2s)
+                    </button>
+                </div>
+            </div>
+
+            <!-- Chọn Tốc độ đếm ngược -->
+            <div class="col-12 col-md-3">
+                <label class="px-label">⏱️ Tốc độ đếm ngược:</label>
+                <div class="px-speed-group">
+                    <button type="button" class="btn-speed active" data-speed="2.0" onclick="chonTocDo(2.0, this)" title="Ép não nảy số bản năng trong 2 giây">
+                        ⚡ 2.0s
+                    </button>
+                    <button type="button" class="btn-speed" data-speed="3.5" onclick="chonTocDo(3.5, this)" title="Tốc độ tiêu chuẩn">
+                        ⏱️ 3.5s
+                    </button>
+                    <button type="button" class="btn-speed" data-speed="5.0" onclick="chonTocDo(5.0, this)" title="Tốc độ khởi động">
+                        🐢 5.0s
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==========================================
+         3. SÂN ĐẤU PHẢN XẠ CHÍNH (THE ARENA)
+         ========================================== -->
+    <main class="px-arena-box">
+
+        <!-- Loading spinner khi tải dữ liệu -->
+        <div id="arenaLoading" class="arena-loading" style="display: none;">
+            <div class="px-spinner"></div>
+            <p class="mt-3 fw-bold text-primary">Đang nạp bộ từ và chuẩn bị hình ảnh minh họa...</p>
+        </div>
+
+        <!-- Màn hình sẵn sàng bắt đầu (Lobby) -->
+        <div id="arenaLobby" class="arena-lobby">
+            <div class="lobby-icon">⚡</div>
+            <h2 class="lobby-title">SẴN SÀNG NẢY SỐ TỨC THÌ?</h2>
+            <p class="lobby-desc">
+                Hình ảnh hoặc âm thanh sẽ xuất hiện chớp nhoáng. Hãy bấm đáp án đúng trong vòng 
+                <span id="lblTocDoChon" class="badge-speed-highlight">2.0 giây</span>. 
+                <br>Dùng phím <kbd>1</kbd> <kbd>2</kbd> <kbd>3</kbd> <kbd>4</kbd> hoặc chạm tay cực nhạy!
+            </p>
+            <button type="button" class="btn-start-reflex" onclick="batDauTranDau()">
+                🚀 BẮT ĐẦU NGAY (SPACE)
+            </button>
+        </div>
+
+        <!-- Sân thi đấu thực tế (Playing Stage) -->
+        <div id="arenaStage" class="arena-stage" style="display: none;">
+
+            <!-- Thanh tiến trình câu & Đồng hồ năng lượng rút ngắn -->
+            <div class="px-progress-bar-wrap">
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                    <span class="badge-cau-hoi">Câu <b id="lblIndexHienTai">1</b> / <span id="lblTongSoCau">10</span></span>
+                    <span id="lblDongHoMs" class="badge-timer-ms">2.0s</span>
+                </div>
+                <div class="energy-timer-track">
+                    <div id="energyTimerBar" class="energy-timer-fill"></div>
+                </div>
+            </div>
+
+            <!-- Khung mục tiêu (Target Display: Ảnh / Âm thanh / Từ) -->
+            <div class="px-target-card">
+
+                <!-- Huy hiệu đánh giá tốc độ nảy số sau mỗi câu -->
+                <div id="pxSpeedBadge" class="px-speed-feedback" style="display: none;">
+                    ⚡ 0.8s - THẦN TỐC!
+                </div>
+
+                <!-- 1. Vùng hiển thị Ảnh (Cho chế độ Nhìn ảnh) -->
+                <div id="boxTargetImage" class="target-visual-box">
+                    <div class="image-wrapper">
+                        <img id="imgTargetVisual" src="" alt="Minh họa từ vựng" class="target-img">
+                        <div class="img-loading-overlay" id="imgLoadingOverlay">
+                            <div class="spinner-border spinner-border-sm text-light" role="status"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. Vùng hiển thị Âm thanh (Cho chế độ Nghe) -->
+                <div id="boxTargetAudio" class="target-audio-box" style="display: none;">
+                    <div class="audio-pulse-circle" onclick="phatLaiAudio()">
+                        <span class="audio-wave-icon">🔊</span>
+                    </div>
+                    <div class="audio-hint-text">Đang phát âm thanh... Bấm để nghe lại (Space)</div>
+                </div>
+
+                <!-- 3. Vùng hiển thị Chữ tiếng Anh (Cho chế độ Nhìn từ / Đúng Sai) -->
+                <div id="boxTargetWord" class="target-word-box" style="display: none;">
+                    <div id="lblTargetWord" class="target-word-text">annual</div>
+                    <div id="lblTargetIpa" class="target-ipa-text">/ˈæn.ju.əl/</div>
+                    <button type="button" class="btn-mini-audio" onclick="phatLaiAudio()" title="Nghe phát âm">🔊</button>
+                </div>
+
+                <!-- 4. Câu hỏi phụ cho chế độ Đúng / Sai -->
+                <div id="boxTargetTrueFalse" class="target-tf-box" style="display: none;">
+                    <span class="tf-question">Nghĩa là:</span>
+                    <span id="lblTfMeaning" class="tf-meaning-bold">Hàng năm</span>
+                </div>
+            </div>
+
+            <!-- Các nút bấm lựa chọn (Answers Grid) -->
+            <div id="gridAnswers4" class="px-answers-grid">
+                <button type="button" class="btn-answer" data-idx="0" onclick="chonDapAn(0)">
+                    <span class="key-badge">1</span>
+                    <span class="answer-text" id="ansText0">...</span>
+                </button>
+                <button type="button" class="btn-answer" data-idx="1" onclick="chonDapAn(1)">
+                    <span class="key-badge">2</span>
+                    <span class="answer-text" id="ansText1">...</span>
+                </button>
+                <button type="button" class="btn-answer" data-idx="2" onclick="chonDapAn(2)">
+                    <span class="key-badge">3</span>
+                    <span class="answer-text" id="ansText2">...</span>
+                </button>
+                <button type="button" class="btn-answer" data-idx="3" onclick="chonDapAn(3)">
+                    <span class="key-badge">4</span>
+                    <span class="answer-text" id="ansText3">...</span>
+                </button>
+            </div>
+
+            <!-- Các nút bấm cho chế độ Đúng / Sai -->
+            <div id="gridAnswersTF" class="px-answers-tf" style="display: none;">
+                <button type="button" class="btn-tf btn-tf-false" onclick="chonDapAnTF(false)">
+                    <span class="tf-icon">❌</span>
+                    <span class="tf-text">SAI (Phím ⬅️)</span>
+                </button>
+                <button type="button" class="btn-tf btn-tf-true" onclick="chonDapAnTF(true)">
+                    <span class="tf-icon">✅</span>
+                    <span class="tf-text">ĐÚNG (Phím ➡️)</span>
+                </button>
+            </div>
+
+        </div>
+
+        <!-- Màn hình Kết quả trận đấu (Results Screen) -->
+        <div id="arenaResult" class="arena-result" style="display: none;">
+            <div class="result-trophy">🏆</div>
+            <h2 class="result-title">HOÀN THÀNH ĐẤU TRƯỜNG PHẢN XẠ!</h2>
+            
+            <div class="result-stats-row">
+                <div class="stat-card">
+                    <div class="stat-num text-warning" id="resAvgSpeed">1.2s</div>
+                    <div class="stat-desc">Tốc độ nảy số TB</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-num text-success" id="resAccuracy">90%</div>
+                    <div class="stat-desc">Độ chính xác</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-num text-primary" id="resMaxCombo">8</div>
+                    <div class="stat-desc">Chuỗi Combo dài nhất</div>
+                </div>
+            </div>
+
+            <!-- Bảng danh sách các từ bị nghẽn (phản xạ chậm hoặc sai) -->
+            <div id="boxSlowWords" class="slow-words-container" style="display: none;">
+                <h5 class="slow-words-title">⚠️ Danh sách từ bạn còn bị nghẽn (Cần luyện thêm):</h5>
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover align-middle bg-white">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Từ tiếng Anh</th>
+                                <th>Nghĩa tiếng Việt</th>
+                                <th>Thời gian</th>
+                                <th>Nghe</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbodySlowWords">
+                            <!-- JS render vào đây -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="result-actions">
+                <button type="button" id="btnRetrySlow" class="btn-action-retry-slow" onclick="luyenLaiTuNghen()" style="display: none;">
+                    🔥 Luyện lại ngay các từ bị nghẽn
+                </button>
+                <button type="button" class="btn-action-replay" onclick="batDauTranDau()">
+                    🔄 Chơi lại ván mới
+                </button>
+                <a href="/hoc" class="btn-action-back">
+                    📖 Quay lại tiếp tục học
+                </a>
+            </div>
+        </div>
+
+    </main>
+
+</div>
+
+<!-- Âm thanh hiệu ứng & Logic phản xạ -->
+<script th:src="@{/js/luyen-phan-xa.js(v=1)}"></script>
+</body>
+</html>
