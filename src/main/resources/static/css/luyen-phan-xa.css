@@ -343,6 +343,25 @@ body {
     font-family: 'Consolas', monospace;
 }
 
+.btn-stop-round {
+    background: rgba(239, 68, 68, 0.15);
+    border: 1px solid rgba(239, 68, 68, 0.4);
+    color: #fca5a5;
+    font-size: 0.78rem;
+    font-weight: 800;
+    padding: 3px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-stop-round:hover {
+    background: rgba(239, 68, 68, 0.35);
+    color: #ffffff;
+    border-color: #ef4444;
+    transform: scale(1.03);
+}
+
 .energy-timer-track {
     width: 100%;
     height: 10px;

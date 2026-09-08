@@ -119,6 +119,7 @@
     // 3. KHỞI TẠO VÀ CHỌN CẤU HÌNH
     // =========================================================
     window.chonCheDo = function (cheDo, btnEl) {
+        const wasInGame = dangThiDau;
         dungToanBoTranDau(); // Dập tắt trận đấu cũ ngay lập tức nếu đang dở dang
         cheDoHienTai = cheDo;
         document.querySelectorAll("#groupCheDo .btn-mode").forEach(function (b) {
@@ -126,8 +127,8 @@
         });
         if (btnEl) btnEl.classList.add("active");
 
-        // Nếu đang ở màn hình Lobby, tự động tải lại dữ liệu theo chế độ mới
-        taiDuLieuVaChuanBi(false);
+        // Nếu đang trong trận mà bấm đổi chế độ, nạp dữ liệu và bắt đầu ngay chế độ mới
+        taiDuLieuVaChuanBi(wasInGame);
     };
 
     window.chonTocDo = function (tocDo, btnEl) {
@@ -144,8 +145,9 @@
     };
 
     window.doiBoTuPhanXa = function () {
+        const wasInGame = dangThiDau;
         dungToanBoTranDau(); // Dập tắt trận cũ ngay lập tức
-        taiDuLieuVaChuanBi(false);
+        taiDuLieuVaChuanBi(wasInGame);
     };
 
     // =========================================================
@@ -271,7 +273,7 @@
 
         if (elLobby) elLobby.style.display = "none";
         if (elResult) elResult.style.display = "none";
-        if (elControls) elControls.style.display = "none";
+        if (elControls) elControls.style.display = "block";
         if (elStage) elStage.style.display = "flex";
 
         hienThiCauHoi(0);
