@@ -10,7 +10,7 @@
     <link rel="icon" type="image/x-icon" th:href="@{/favicon.ico}">
 
     <!-- CSS riêng cho Đấu trường phản xạ -->
-    <link rel="stylesheet" th:href="@{/css/luyen-phan-xa.css(v=4)}">
+    <link rel="stylesheet" th:href="@{/css/luyen-phan-xa.css(v=5)}">
 </head>
 <body>
 
@@ -134,7 +134,7 @@
                 <div class="d-flex justify-content-between align-items-center mb-1">
                     <span class="badge-cau-hoi">Câu <b id="lblIndexHienTai">1</b> / <span id="lblTongSoCau">10</span></span>
                     <div class="d-flex align-items-center gap-2">
-                        <button type="button" class="btn-stop-round" onclick="quayVeLobby()" title="Dừng lượt này và quay về sảnh để đổi chế độ hoặc bộ từ">🛑 Dừng luyện</button>
+                        <button type="button" class="btn-stop-round" onclick="quayVeLobby()" title="Dừng lượt này và hiển thị lại thanh chọn chế độ khác">🛑 Dừng / Đổi chế độ</button>
                         <span id="lblDongHoMs" class="badge-timer-ms">5.0s</span>
                     </div>
                 </div>
@@ -283,6 +283,6 @@
 </div>
 
 <!-- Âm thanh hiệu ứng & Logic phản xạ -->
-<script th:src="@{/js/luyen-phan-xa.js(v=4)}"></script>
+<script th:src="@{/js/luyen-phan-xa.js(v=5)}"></script>
 </body>
 </html>

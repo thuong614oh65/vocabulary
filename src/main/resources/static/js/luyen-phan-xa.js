@@ -273,7 +273,7 @@
 
         if (elLobby) elLobby.style.display = "none";
         if (elResult) elResult.style.display = "none";
-        if (elControls) elControls.style.display = "block";
+        if (elControls) elControls.style.display = "none"; // Ẩn khi đang đấu để tập trung tối đa
         if (elStage) elStage.style.display = "flex";
 
         hienThiCauHoi(0);
