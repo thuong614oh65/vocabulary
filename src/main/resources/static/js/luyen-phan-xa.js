@@ -73,7 +73,9 @@
             }
         }
         if (audioCtx && audioCtx.state === 'suspended') {
-            audioCtx.resume();
+            try {
+                audioCtx.resume().catch(function () {});
+            } catch (e) {}
         }
         return audioCtx;
     }
@@ -321,6 +323,19 @@
         if (lblLevel) {
             lblLevel.textContent = q.capDo || (cheDoHienTai === "TOAN_DIEN" ? "🌟 Toàn diện (Dễ ➔ Khó)" : "🎯 Đấu trường phản xạ");
         }
+
+        // Các vùng hiển thị câu hỏi & nút bấm
+        const boxImg = document.getElementById("boxTargetImage");
+        const boxAudio = document.getElementById("boxTargetAudio");
+        const boxWord = document.getElementById("boxTargetWord");
+        const boxTF = document.getElementById("boxTargetTrueFalse");
+        const grid4 = document.getElementById("gridAnswers4");
+        const gridTF = document.getElementById("gridAnswersTF");
+
+        if (boxImg) boxImg.style.display = "none";
+        if (boxAudio) boxAudio.style.display = "none";
+        if (boxWord) boxWord.style.display = "none";
+        if (boxTF) boxTF.style.display = "none";
 
         const isTF = (q.loaiCauHoi === "DUNG_SAI" || q.loaiCauHoi === "DUNG_SAI_ANH_VIET" || q.loaiCauHoi === "DUNG_SAI_VIET_ANH");
 
