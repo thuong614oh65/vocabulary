@@ -55,6 +55,28 @@ body {
 .px-header-left {
     display: flex;
     gap: 8px;
+    align-items: center;
+}
+
+.btn-back-reflex {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 14px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    background: #e11d48;
+    color: #ffffff;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+}
+
+.btn-back-reflex:hover {
+    background: #be123c;
+    color: #ffffff;
+    transform: translateY(-1px);
 }
 
 .btn-back-home, .btn-back-study {
@@ -175,27 +197,27 @@ body {
 
 .px-mode-tabs {
     display: flex;
+    flex-wrap: wrap;
     background: #0f172a;
-    padding: 3px;
+    padding: 4px;
     border-radius: 10px;
     border: 1px solid var(--px-border);
-    gap: 2px;
+    gap: 4px;
 }
 
 .btn-mode {
-    flex: 1;
+    flex: 1 1 auto;
     border: none;
     background: transparent;
     color: var(--px-text-muted);
     font-size: 0.8rem;
     font-weight: 700;
-    padding: 6px 4px;
+    padding: 6px 10px;
     border-radius: 7px;
     cursor: pointer;
     transition: all 0.15s ease;
     white-space: nowrap;
-    text-overflow: ellipsis;
-    overflow: hidden;
+    text-align: center;
 }
 
 .btn-mode:hover {
@@ -315,6 +337,24 @@ body {
     transform: translateY(1px) scale(0.98);
 }
 
+.btn-lobby-back {
+    background: #334155;
+    color: #f1f5f9;
+    border: none;
+    font-size: 1.05rem;
+    font-weight: 700;
+    padding: 14px 28px;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-lobby-back:hover {
+    background: #475569;
+    color: #ffffff;
+    transform: translateY(-2px);
+}
+
 /* =========================================================
    4. SÂN ĐẤU THỰC TẾ (STAGE)
    ========================================================= */
@@ -336,11 +376,45 @@ body {
     color: var(--px-text-muted);
 }
 
+.px-level-badge {
+    background: linear-gradient(135deg, #0284c7, #6366f1);
+    color: #ffffff;
+    font-size: 0.75rem;
+    font-weight: 800;
+    padding: 3px 10px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    display: inline-flex;
+    align-items: center;
+}
+
 .badge-timer-ms {
     font-size: 1.1rem;
     font-weight: 900;
     color: #38bdf8;
     font-family: 'Consolas', monospace;
+}
+
+.btn-stage-back {
+    background: rgba(100, 116, 139, 0.2);
+    border: 1px solid rgba(148, 163, 184, 0.3);
+    color: #cbd5e1;
+    font-size: 0.78rem;
+    font-weight: 800;
+    padding: 3px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-stage-back:hover {
+    background: rgba(100, 116, 139, 0.4);
+    color: #ffffff;
+    border-color: #94a3b8;
+    transform: scale(1.03);
 }
 
 .btn-stop-round {
@@ -517,13 +591,26 @@ body {
     color: var(--px-accent);
 }
 
-/* Vùng từ tiếng Anh */
+/* Vùng từ tiếng Anh / Nghĩa tiếng Việt */
 .target-word-box {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 6px;
     padding: 15px 0;
+}
+
+.target-word-badge {
+    display: inline-block;
+    background: rgba(14, 165, 233, 0.15);
+    border: 1px solid rgba(14, 165, 233, 0.4);
+    color: #38bdf8;
+    font-size: 0.75rem;
+    font-weight: 800;
+    padding: 3px 12px;
+    border-radius: 10px;
+    margin-bottom: 4px;
+    letter-spacing: 0.5px;
 }
 
 .target-word-text {
@@ -1091,6 +1178,7 @@ body {
     display: flex;
     gap: 12px;
     justify-content: center;
+    flex-wrap: wrap;
 }
 
 .btn-modal-cancel {
@@ -1103,7 +1191,7 @@ body {
     border-radius: 12px;
     cursor: pointer;
     transition: all 0.2s ease;
-    flex: 1;
+    flex: 1 1 auto;
 }
 
 .btn-modal-cancel:hover {
@@ -1122,7 +1210,7 @@ body {
     border-radius: 12px;
     cursor: pointer;
     transition: all 0.2s ease;
-    flex: 1;
+    flex: 1 1 auto;
     box-shadow: 0 4px 14px rgba(239, 68, 68, 0.4);
 }
 
@@ -1130,4 +1218,24 @@ body {
     background: linear-gradient(135deg, #dc2626, #b91c1c);
     transform: translateY(-1px);
     box-shadow: 0 6px 18px rgba(239, 68, 68, 0.6);
+}
+
+.btn-modal-back {
+    background: #1e293b;
+    color: #94a3b8;
+    border: 1px solid #475569;
+    font-weight: 700;
+    font-size: 0.92rem;
+    padding: 11px 18px;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    flex: 1 1 100%;
+}
+
+.btn-modal-back:hover {
+    background: #334155;
+    color: #ffffff;
+    border-color: #64748b;
+    transform: translateY(-1px);
 }

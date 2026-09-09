@@ -96,7 +96,7 @@ public class LuyenPhanXaController {
     public ResponseEntity<?> layDuLieuPhanXa(
             @RequestParam(value = "boId", required = false) Long boId,
             @RequestParam(value = "kieuHoc", required = false, defaultValue = "THEO_BO") String kieuHoc,
-            @RequestParam(value = "cheDo", required = false, defaultValue = "HINH_ANH") String cheDo,
+            @RequestParam(value = "cheDo", required = false, defaultValue = "TOAN_DIEN") String cheDo,
             HttpSession session
     ) {
         TaiKhoan taiKhoan = (TaiKhoan) session.getAttribute("taiKhoan");
@@ -183,84 +183,210 @@ public class LuyenPhanXaController {
             }
         }
 
-        // Trộn ngẫu nhiên thứ tự các câu hỏi
-        List<TuVung> dsTron = new ArrayList<>(dsTuGoc);
-        Collections.shuffle(dsTron);
-
-        for (TuVung tv : dsTron) {
-            if (tv.getTiengAnh() == null || tv.getTiengAnh().isBlank()) continue;
-
-            String tuAnh = tv.getTiengAnh().trim();
-            String nghia = tv.getTiengViet() != null ? tv.getTiengViet().trim() : "";
-            String phienAm = tv.getPhienAm() != null ? tv.getPhienAm().trim() : "";
-            String tenFileMp3 = tuAnh.toLowerCase().replace(" ", "-") + ".mp3";
-            String audioUrl = "/audio/tu-vung/" + URLEncoder.encode(tenFileMp3, StandardCharsets.UTF_8);
-
-            String hinhAnhUrl = "";
-
-            PhanXaCauHoiDTO dto = new PhanXaCauHoiDTO();
-            dto.setId(tv.getId());
-            dto.setTiengAnh(tuAnh);
-            dto.setTiengViet(nghia);
-            dto.setPhienAm(phienAm);
-            dto.setAudioUrl(audioUrl);
-            dto.setHinhAnhUrl(hinhAnhUrl);
-
-            // Xử lý các chế độ chơi
-            if ("HINH_ANH".equalsIgnoreCase(cheDo)) {
-                // Nhìn ảnh chọn từ tiếng Anh
-                dto.setLoaiCauHoi("HINH_ANH_SANG_TU");
-                dto.setDapAnDung(tuAnh);
-                dto.setLuaChon(tao4LuaChon(tuAnh, khoTiengAnhUuTien, khoTiengAnhBoSung, random, false));
-            } else if ("NGHE".equalsIgnoreCase(cheDo)) {
-                // Nghe âm thanh chọn nghĩa tiếng Việt
-                dto.setLoaiCauHoi("NGHE_SANG_NGHIA");
-                dto.setDapAnDung(nghia);
-                dto.setLuaChon(tao4LuaChon(nghia, khoTiengVietUuTien, khoTiengVietBoSung, random, true));
-            } else if ("DUNG_SAI".equalsIgnoreCase(cheDo)) {
-                // Chế độ Đúng / Sai siêu tốc
-                dto.setLoaiCauHoi("DUNG_SAI");
-                boolean laDung = random.nextBoolean();
-                dto.setCauDungSaiLaDung(laDung);
-                if (laDung) {
-                    dto.setDapAnDung("DUNG");
-                    dto.setLuaChon(List.of(nghia)); // Hiện nghĩa đúng
-                } else {
-                    dto.setDapAnDung("SAI");
-                    // Ưu tiên chọn 1 nghĩa sai từ chính các từ đang học để ép phân biệt
-                    String nghiaSai = nghia;
-                    List<String> khoTronV = new ArrayList<>(khoTiengVietUuTien);
-                    Collections.shuffle(khoTronV, random);
-                    for (String k : khoTronV) {
-                        if (!k.equalsIgnoreCase(nghia)) {
-                            nghiaSai = k;
-                            break;
-                        }
-                    }
-                    // Nếu vẫn chưa tìm được nghĩa sai, lấy từ kho bổ sung
-                    if (nghiaSai.equalsIgnoreCase(nghia) && !khoTiengVietBoSung.isEmpty()) {
-                        List<String> khoTronBS = new ArrayList<>(khoTiengVietBoSung);
-                        Collections.shuffle(khoTronBS, random);
-                        for (String k : khoTronBS) {
-                            if (!k.equalsIgnoreCase(nghia)) {
-                                nghiaSai = k;
-                                break;
-                            }
-                        }
-                    }
-                    dto.setLuaChon(List.of(nghiaSai)); // Hiện nghĩa sai
+        // Xử lý các chế độ chơi
+        if ("TOAN_DIEN".equalsIgnoreCase(cheDo)) {
+            // Luyện toàn diện: Xếp theo mức độ khó dần
+            // Cấp 1: Đúng / Sai (Từ tiếng Anh ➔ Nghĩa tiếng Việt)
+            List<TuVung> c1 = new ArrayList<>(dsTuGoc);
+            Collections.shuffle(c1, random);
+            for (TuVung tv : c1) {
+                if (tv.getTiengAnh() != null && !tv.getTiengAnh().isBlank()) {
+                    danhSachCauHoi.add(taoCauHoiDungSaiAnhViet(tv, khoTiengVietUuTien, khoTiengVietBoSung, random));
                 }
-            } else {
-                // Mặc định: Nhìn từ tiếng Anh chọn nghĩa tiếng Việt
-                dto.setLoaiCauHoi("TU_SANG_NGHIA");
-                dto.setDapAnDung(nghia);
-                dto.setLuaChon(tao4LuaChon(nghia, khoTiengVietUuTien, khoTiengVietBoSung, random, true));
             }
 
-            danhSachCauHoi.add(dto);
+            // Cấp 2: Đúng / Sai (Nghĩa tiếng Việt ➔ Từ tiếng Anh)
+            List<TuVung> c2 = new ArrayList<>(dsTuGoc);
+            Collections.shuffle(c2, random);
+            for (TuVung tv : c2) {
+                if (tv.getTiengAnh() != null && !tv.getTiengAnh().isBlank()) {
+                    danhSachCauHoi.add(taoCauHoiDungSaiVietAnh(tv, khoTiengAnhUuTien, khoTiengAnhBoSung, random));
+                }
+            }
+
+            // Cấp 3: Nhìn từ tiếng Anh ➔ Chọn 4 nghĩa tiếng Việt
+            List<TuVung> c3 = new ArrayList<>(dsTuGoc);
+            Collections.shuffle(c3, random);
+            for (TuVung tv : c3) {
+                if (tv.getTiengAnh() != null && !tv.getTiengAnh().isBlank()) {
+                    danhSachCauHoi.add(taoCauHoiTuSangNghia(tv, khoTiengVietUuTien, khoTiengVietBoSung, random));
+                }
+            }
+
+            // Cấp 4: Nhìn nghĩa tiếng Việt ➔ Chọn 4 từ tiếng Anh
+            List<TuVung> c4 = new ArrayList<>(dsTuGoc);
+            Collections.shuffle(c4, random);
+            for (TuVung tv : c4) {
+                if (tv.getTiengAnh() != null && !tv.getTiengAnh().isBlank()) {
+                    danhSachCauHoi.add(taoCauHoiNghiaSangTu(tv, khoTiengAnhUuTien, khoTiengAnhBoSung, random));
+                }
+            }
+
+            // Cấp 5: Nghe âm thanh (khi số từ <= 10 để vòng luyện vừa sức)
+            if (dsTuGoc.size() <= 10) {
+                List<TuVung> c5 = new ArrayList<>(dsTuGoc);
+                Collections.shuffle(c5, random);
+                for (TuVung tv : c5) {
+                    if (tv.getTiengAnh() != null && !tv.getTiengAnh().isBlank()) {
+                        danhSachCauHoi.add(taoCauHoiNghe(tv, khoTiengVietUuTien, khoTiengVietBoSung, random));
+                    }
+                }
+            }
+        } else if ("DUNG_SAI_ANH_VIET".equalsIgnoreCase(cheDo) || "DUNG_SAI".equalsIgnoreCase(cheDo)) {
+            List<TuVung> dsTron = new ArrayList<>(dsTuGoc);
+            Collections.shuffle(dsTron, random);
+            for (TuVung tv : dsTron) {
+                if (tv.getTiengAnh() != null && !tv.getTiengAnh().isBlank()) {
+                    danhSachCauHoi.add(taoCauHoiDungSaiAnhViet(tv, khoTiengVietUuTien, khoTiengVietBoSung, random));
+                }
+            }
+        } else if ("DUNG_SAI_VIET_ANH".equalsIgnoreCase(cheDo)) {
+            List<TuVung> dsTron = new ArrayList<>(dsTuGoc);
+            Collections.shuffle(dsTron, random);
+            for (TuVung tv : dsTron) {
+                if (tv.getTiengAnh() != null && !tv.getTiengAnh().isBlank()) {
+                    danhSachCauHoi.add(taoCauHoiDungSaiVietAnh(tv, khoTiengAnhUuTien, khoTiengAnhBoSung, random));
+                }
+            }
+        } else if ("NGHIA_SANG_TU".equalsIgnoreCase(cheDo)) {
+            List<TuVung> dsTron = new ArrayList<>(dsTuGoc);
+            Collections.shuffle(dsTron, random);
+            for (TuVung tv : dsTron) {
+                if (tv.getTiengAnh() != null && !tv.getTiengAnh().isBlank()) {
+                    danhSachCauHoi.add(taoCauHoiNghiaSangTu(tv, khoTiengAnhUuTien, khoTiengAnhBoSung, random));
+                }
+            }
+        } else if ("NGHE".equalsIgnoreCase(cheDo)) {
+            List<TuVung> dsTron = new ArrayList<>(dsTuGoc);
+            Collections.shuffle(dsTron, random);
+            for (TuVung tv : dsTron) {
+                if (tv.getTiengAnh() != null && !tv.getTiengAnh().isBlank()) {
+                    danhSachCauHoi.add(taoCauHoiNghe(tv, khoTiengVietUuTien, khoTiengVietBoSung, random));
+                }
+            }
+        } else if ("HINH_ANH".equalsIgnoreCase(cheDo)) {
+            List<TuVung> dsTron = new ArrayList<>(dsTuGoc);
+            Collections.shuffle(dsTron, random);
+            for (TuVung tv : dsTron) {
+                if (tv.getTiengAnh() != null && !tv.getTiengAnh().isBlank()) {
+                    danhSachCauHoi.add(taoCauHoiHinhAnh(tv, khoTiengAnhUuTien, khoTiengAnhBoSung, random));
+                }
+            }
+        } else {
+            // Mặc định: NHIN_TU (Từ tiếng Anh ➔ 4 nghĩa tiếng Việt)
+            List<TuVung> dsTron = new ArrayList<>(dsTuGoc);
+            Collections.shuffle(dsTron, random);
+            for (TuVung tv : dsTron) {
+                if (tv.getTiengAnh() != null && !tv.getTiengAnh().isBlank()) {
+                    danhSachCauHoi.add(taoCauHoiTuSangNghia(tv, khoTiengVietUuTien, khoTiengVietBoSung, random));
+                }
+            }
         }
 
         return ResponseEntity.ok(danhSachCauHoi);
+    }
+
+    private PhanXaCauHoiDTO taoCauHoiDungSaiAnhViet(TuVung tv, List<String> kU, List<String> kB, Random r) {
+        PhanXaCauHoiDTO dto = baseDTO(tv);
+        dto.setLoaiCauHoi("DUNG_SAI_ANH_VIET");
+        dto.setCapDo("Cấp 1: Đúng / Sai (Anh ➔ Việt)");
+        dto.setTfHienThiTrai(tv.getTiengAnh());
+        boolean laDung = r.nextBoolean();
+        dto.setCauDungSaiLaDung(laDung);
+        if (laDung) {
+            dto.setDapAnDung("DUNG");
+            dto.setTfHienThiPhai(tv.getTiengViet());
+            dto.setLuaChon(List.of(tv.getTiengViet()));
+        } else {
+            dto.setDapAnDung("SAI");
+            String sai = laySai(tv.getTiengViet(), kU, kB, r, true);
+            dto.setTfHienThiPhai(sai);
+            dto.setLuaChon(List.of(sai));
+        }
+        return dto;
+    }
+
+    private PhanXaCauHoiDTO taoCauHoiDungSaiVietAnh(TuVung tv, List<String> kU, List<String> kB, Random r) {
+        PhanXaCauHoiDTO dto = baseDTO(tv);
+        dto.setLoaiCauHoi("DUNG_SAI_VIET_ANH");
+        dto.setCapDo("Cấp 2: Đúng / Sai (Việt ➔ Anh)");
+        dto.setTfHienThiTrai(tv.getTiengViet());
+        boolean laDung = r.nextBoolean();
+        dto.setCauDungSaiLaDung(laDung);
+        if (laDung) {
+            dto.setDapAnDung("DUNG");
+            dto.setTfHienThiPhai(tv.getTiengAnh());
+            dto.setLuaChon(List.of(tv.getTiengAnh()));
+        } else {
+            dto.setDapAnDung("SAI");
+            String sai = laySai(tv.getTiengAnh(), kU, kB, r, false);
+            dto.setTfHienThiPhai(sai);
+            dto.setLuaChon(List.of(sai));
+        }
+        return dto;
+    }
+
+    private PhanXaCauHoiDTO taoCauHoiTuSangNghia(TuVung tv, List<String> kU, List<String> kB, Random r) {
+        PhanXaCauHoiDTO dto = baseDTO(tv);
+        dto.setLoaiCauHoi("TU_SANG_NGHIA");
+        dto.setCapDo("Cấp 3: Nhìn từ ➔ 4 Nghĩa Việt");
+        dto.setDapAnDung(tv.getTiengViet());
+        dto.setLuaChon(tao4LuaChon(tv.getTiengViet(), kU, kB, r, true));
+        return dto;
+    }
+
+    private PhanXaCauHoiDTO taoCauHoiNghiaSangTu(TuVung tv, List<String> kU, List<String> kB, Random r) {
+        PhanXaCauHoiDTO dto = baseDTO(tv);
+        dto.setLoaiCauHoi("NGHIA_SANG_TU");
+        dto.setCapDo("Cấp 4: Nhìn nghĩa ➔ 4 Từ Anh");
+        dto.setDapAnDung(tv.getTiengAnh());
+        dto.setLuaChon(tao4LuaChon(tv.getTiengAnh(), kU, kB, r, false));
+        return dto;
+    }
+
+    private PhanXaCauHoiDTO taoCauHoiNghe(TuVung tv, List<String> kU, List<String> kB, Random r) {
+        PhanXaCauHoiDTO dto = baseDTO(tv);
+        dto.setLoaiCauHoi("NGHE_SANG_NGHIA");
+        dto.setCapDo("Cấp 5: Nghe âm thanh ➔ 4 Nghĩa Việt");
+        dto.setDapAnDung(tv.getTiengViet());
+        dto.setLuaChon(tao4LuaChon(tv.getTiengViet(), kU, kB, r, true));
+        return dto;
+    }
+
+    private PhanXaCauHoiDTO taoCauHoiHinhAnh(TuVung tv, List<String> kU, List<String> kB, Random r) {
+        PhanXaCauHoiDTO dto = baseDTO(tv);
+        dto.setLoaiCauHoi("HINH_ANH_SANG_TU");
+        dto.setCapDo("Nhìn ảnh ➔ 4 Từ Anh");
+        dto.setDapAnDung(tv.getTiengAnh());
+        dto.setLuaChon(tao4LuaChon(tv.getTiengAnh(), kU, kB, r, false));
+        return dto;
+    }
+
+    private PhanXaCauHoiDTO baseDTO(TuVung tv) {
+        PhanXaCauHoiDTO dto = new PhanXaCauHoiDTO();
+        dto.setId(tv.getId());
+        dto.setTiengAnh(tv.getTiengAnh());
+        dto.setTiengViet(tv.getTiengViet());
+        dto.setPhienAm(tv.getPhienAm());
+        dto.setAudioUrl("/audio/tu-vung/" + URLEncoder.encode(tv.getTiengAnh().toLowerCase().replace(" ", "-") + ".mp3", StandardCharsets.UTF_8));
+        return dto;
+    }
+
+    private String laySai(String dung, List<String> kU, List<String> kB, Random r, boolean isVietnamese) {
+        List<String> pool = new ArrayList<>();
+        if (kU != null) pool.addAll(kU);
+        if (kB != null) pool.addAll(kB);
+        Collections.shuffle(pool, r);
+        for (String s : pool) {
+            if (s != null && !s.equalsIgnoreCase(dung)) return s;
+        }
+        String[] fallbackVie = {"Quyển sách", "Máy tính", "Học sinh", "Du lịch", "Công việc", "Sức khỏe"};
+        String[] fallbackEng = {"Book", "Computer", "Student", "Travel", "Work", "Health"};
+        String[] fallback = isVietnamese ? fallbackVie : fallbackEng;
+        for (String f : fallback) {
+            if (!f.equalsIgnoreCase(dung)) return f;
+        }
+        return isVietnamese ? "Khác" : "Other";
     }
 
     private List<String> tao4LuaChon(String dapAnDung, List<String> khoUuTien, List<String> khoBoSung, Random random, boolean isVietnamese) {

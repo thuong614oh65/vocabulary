@@ -21,8 +21,9 @@
          ========================================== -->
     <header class="px-header">
         <div class="px-header-left">
-            <a href="/" class="btn-back-home" title="Về trang chủ">← Trang chủ</a>
-            <a href="/hoc" class="btn-back-study" title="Về trang học">📖 Trang học</a>
+            <button type="button" class="btn-back-reflex" onclick="quayLaiTrangTruoc()" title="Quay lại trang trước">← Quay lại</button>
+            <a href="/" class="btn-back-home" title="Về trang chủ">Trang chủ</a>
+            <a href="/hoc" class="btn-back-study" title="Về trang học">Trang học</a>
         </div>
         <div class="px-header-center">
             <h1 class="px-title">⚡ ĐẤU TRƯỜNG PHẢN XẠ NHANH</h1>
@@ -48,7 +49,7 @@
     <section class="px-controls-card">
         <div class="row g-2 align-items-center">
             <!-- Chọn Bộ từ -->
-            <div class="col-12 col-md-4">
+            <div class="col-12 col-md-3">
                 <label class="px-label">📚 Bộ từ vựng:</label>
                 <select id="selBoTu" class="form-select px-select" onchange="doiBoTuPhanXa()">
                     <option value="DANG_HOC" th:if="${soTuDangHoc != null && soTuDangHoc > 0}" th:selected="${kieuHoc == 'DANG_HOC'}">
@@ -65,20 +66,29 @@
             </div>
 
             <!-- Chọn Chế độ phản xạ -->
-            <div class="col-12 col-md-5">
+            <div class="col-12 col-md-6">
                 <label class="px-label">🎯 Chế độ luyện:</label>
                 <div class="px-mode-tabs" id="groupCheDo">
-                    <button type="button" class="btn-mode active" data-chedo="HINH_ANH" onclick="chonCheDo('HINH_ANH', this)" title="Hình ảnh to ở giữa ➔ Nhìn ảnh nảy số ngay từ tiếng Anh">
-                        🖼️ Nhìn ảnh
+                    <button type="button" class="btn-mode active" data-chedo="TOAN_DIEN" onclick="chonCheDo('TOAN_DIEN', this)" title="Luyện tất cả chức năng theo độ khó tăng dần">
+                        🌟 Toàn diện (Dễ ➔ Khó)
                     </button>
-                    <button type="button" class="btn-mode" data-chedo="NGHE" onclick="chonCheDo('NGHE', this)" title="Nghe âm thanh ➔ Bấm ngay nghĩa trong 2 giây">
-                        🎧 Nghe âm thanh
+                    <button type="button" class="btn-mode" data-chedo="DUNG_SAI_ANH_VIET" onclick="chonCheDo('DUNG_SAI_ANH_VIET', this)" title="Hiện từ tiếng Anh ➔ Bấm Đúng hoặc Sai">
+                        ⚖️ Đúng/Sai (Anh ➔ Việt)
+                    </button>
+                    <button type="button" class="btn-mode" data-chedo="DUNG_SAI_VIET_ANH" onclick="chonCheDo('DUNG_SAI_VIET_ANH', this)" title="Hiện nghĩa tiếng Việt ➔ Bấm Đúng hoặc Sai">
+                        🔄 Đúng/Sai (Việt ➔ Anh)
                     </button>
                     <button type="button" class="btn-mode" data-chedo="NHIN_TU" onclick="chonCheDo('NHIN_TU', this)" title="Hiện chữ tiếng Anh ➔ Bấm nhanh nghĩa tiếng Việt">
-                        👁️ Nhìn từ
+                        👁️ Từ ➔ Nghĩa (4 đáp án)
                     </button>
-                    <button type="button" class="btn-mode" data-chedo="DUNG_SAI" onclick="chonCheDo('DUNG_SAI', this)" title="Hiện cặp từ - nghĩa, bấm Đúng hoặc Sai trong 2 giây">
-                        ⚖️ Đúng/Sai (2s)
+                    <button type="button" class="btn-mode" data-chedo="NGHIA_SANG_TU" onclick="chonCheDo('NGHIA_SANG_TU', this)" title="Hiện nghĩa tiếng Việt ➔ Bấm nhanh từ tiếng Anh">
+                        🇻🇳 Nghĩa ➔ Từ (4 đáp án)
+                    </button>
+                    <button type="button" class="btn-mode" data-chedo="NGHE" onclick="chonCheDo('NGHE', this)" title="Nghe âm thanh ➔ Bấm ngay nghĩa trong 2 giây">
+                        🎧 Nghe
+                    </button>
+                    <button type="button" class="btn-mode" data-chedo="HINH_ANH" onclick="chonCheDo('HINH_ANH', this)" title="Nhìn ảnh nảy số từ tiếng Anh">
+                        🖼️ Nhìn ảnh
                     </button>
                 </div>
             </div>
@@ -117,13 +127,19 @@
             <div class="lobby-icon">⚡</div>
             <h2 class="lobby-title">SẴN SÀNG NẢY SỐ TỨC THÌ?</h2>
             <p class="lobby-desc">
-                Hình ảnh hoặc âm thanh sẽ xuất hiện chớp nhoáng. Hãy bấm đáp án đúng trong vòng 
+                Chế độ tự động luyện tập từ dễ đến khó (Đúng/Sai ➔ Trắc nghiệm ➔ Nghe). 
+                <br>Hãy bấm đáp án đúng trong vòng 
                 <span id="lblTocDoChon" class="badge-speed-highlight">5.0 giây</span>. 
-                <br>Dùng phím <kbd>1</kbd> <kbd>2</kbd> <kbd>3</kbd> <kbd>4</kbd> hoặc chạm tay cực nhạy!
+                <br>Dùng phím <kbd>1</kbd> <kbd>2</kbd> <kbd>3</kbd> <kbd>4</kbd> hoặc phím <kbd>⬅️</kbd> <kbd>➡️</kbd> cực nhạy!
             </p>
-            <button type="button" class="btn-start-reflex" onclick="batDauTranDau()">
-                🚀 BẮT ĐẦU NGAY (SPACE)
-            </button>
+            <div class="d-flex gap-3 justify-content-center flex-wrap mt-3">
+                <button type="button" class="btn-start-reflex" onclick="batDauTranDau()">
+                    🚀 BẮT ĐẦU NGAY (SPACE)
+                </button>
+                <button type="button" class="btn-lobby-back" onclick="quayLaiTrangTruoc()">
+                    ← Quay lại
+                </button>
+            </div>
         </div>
 
         <!-- Sân thi đấu thực tế (Playing Stage) -->
@@ -131,10 +147,14 @@
 
             <!-- Thanh tiến trình câu & Đồng hồ năng lượng rút ngắn -->
             <div class="px-progress-bar-wrap">
-                <div class="d-flex justify-content-between align-items-center mb-1">
-                    <span class="badge-cau-hoi">Câu <b id="lblIndexHienTai">1</b> / <span id="lblTongSoCau">10</span></span>
+                <div class="d-flex justify-content-between align-items-center mb-1 flex-wrap gap-2">
                     <div class="d-flex align-items-center gap-2">
-                        <button type="button" class="btn-stop-round" onclick="yeuCauDungTran()" title="Dừng lượt này và hiển thị lại thanh chọn chế độ khác">🛑 Dừng / Đổi chế độ</button>
+                        <span class="badge-cau-hoi">Câu <b id="lblIndexHienTai">1</b> / <span id="lblTongSoCau">10</span></span>
+                        <span id="lblLevelIndicator" class="px-level-badge">🌟 Toàn diện</span>
+                    </div>
+                    <div class="d-flex align-items-center gap-2">
+                        <button type="button" class="btn-stage-back" onclick="quayLaiTrangTruoc()" title="Quay lại trang trước">← Quay lại</button>
+                        <button type="button" class="btn-stop-round" onclick="yeuCauDungTran()" title="Dừng và tự chọn chức năng">🛑 Dừng</button>
                         <span id="lblDongHoMs" class="badge-timer-ms">5.0s</span>
                     </div>
                 </div>
@@ -177,46 +197,49 @@
                     <div class="audio-hint-text">Đang phát âm thanh... Bấm để nghe lại (Space)</div>
                 </div>
 
-                <!-- 3. Vùng hiển thị Chữ tiếng Anh (Cho chế độ Nhìn từ) -->
+                <!-- 3. Vùng hiển thị Chữ (Cho chế độ Nhìn từ / Nhìn nghĩa) -->
                 <div id="boxTargetWord" class="target-word-box" style="display: none;">
+                    <div id="lblTargetWordBadge" class="target-word-badge" style="display: none;">🇻🇳 NGHĨA TIẾNG VIỆT</div>
                     <div id="lblTargetWord" class="target-word-text">annual</div>
                     <div id="lblTargetIpa" class="target-ipa-text">/ˈæn.ju.əl/</div>
-                    <button type="button" class="btn-mini-audio" onclick="phatLaiAudio()" title="Nghe phát âm">🔊</button>
+                    <button type="button" class="btn-mini-audio" id="btnWordAudio" onclick="phatLaiAudio()" title="Nghe phát âm">🔊</button>
                 </div>
 
                 <!-- 4. Khung đối chiếu Đúng / Sai (Chia đôi 2 bên cực kỳ trực quan, nảy số ngay) -->
                 <div id="boxTargetTrueFalse" class="target-tf-split-box" style="display: none;">
-                    <!-- Cột bên trái: Tiếng Anh -->
-                    <div class="tf-card tf-card-eng">
+                    <!-- Cột bên trái -->
+                    <div class="tf-card" id="tfCardLeft">
                         <div class="tf-card-header">
-                            <span class="tf-card-badge-eng">🇬🇧 TIẾNG ANH</span>
-                            <button type="button" class="btn-mini-audio" onclick="phatLaiAudio()" title="Nghe phát âm (Space)">🔊</button>
+                            <span class="tf-card-badge-eng" id="lblTfLeftBadge">🇬🇧 TIẾNG ANH</span>
+                            <button type="button" class="btn-mini-audio" id="btnAudioLeft" onclick="phatLaiAudio()" title="Nghe phát âm (Space)">🔊</button>
                         </div>
                         <div class="tf-card-body">
-                            <div id="lblTfWord" class="tf-word-text">annual</div>
-                            <div id="lblTfIpa" class="tf-ipa-text">/ˈæn.ju.əl/</div>
+                            <div id="lblTfLeftText" class="tf-word-text">annual</div>
+                            <div id="lblTfLeftIpa" class="tf-ipa-text">/ˈæn.ju.əl/</div>
                         </div>
                     </div>
 
                     <!-- Cầu nối đối chiếu ở giữa -->
                     <div class="tf-connector">
                         <div class="tf-connector-icon">⚡</div>
-                        <div class="tf-connector-label">nghĩa là?</div>
+                        <div class="tf-connector-label" id="lblTfConnector">nghĩa là?</div>
                     </div>
 
-                    <!-- Cột bên phải: Nghĩa tiếng Việt -->
-                    <div class="tf-card tf-card-vie">
+                    <!-- Cột bên phải -->
+                    <div class="tf-card" id="tfCardRight">
                         <div class="tf-card-header">
-                            <span class="tf-card-badge-vie">🇻🇳 NGHĨA TIẾNG VIỆT</span>
+                            <span class="tf-card-badge-vie" id="lblTfRightBadge">🇻🇳 NGHĨA TIẾNG VIỆT</span>
+                            <button type="button" class="btn-mini-audio" id="btnAudioRight" onclick="phatLaiAudio()" title="Nghe phát âm (Space)" style="display: none;">🔊</button>
                         </div>
                         <div class="tf-card-body">
-                            <div id="lblTfMeaning" class="tf-meaning-text">Hàng năm</div>
+                            <div id="lblTfRightText" class="tf-meaning-text">Hàng năm</div>
+                            <div id="lblTfRightIpa" class="tf-ipa-text" style="display: none;"></div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Các nút bấm lựa chọn (Answers Grid) -->
+            <!-- Các nút bấm lựa chọn (Answers Grid 4 lựa chọn) -->
             <div id="gridAnswers4" class="px-answers-grid">
                 <button type="button" class="btn-answer" data-idx="0" onclick="chonDapAn(0)">
                     <span class="key-badge">1</span>
@@ -297,9 +320,9 @@
                 <button type="button" class="btn-action-replay" onclick="batDauTranDau()">
                     🔄 Chơi lại ván mới
                 </button>
-                <a href="/hoc" class="btn-action-back">
-                    📖 Quay lại tiếp tục học
-                </a>
+                <button type="button" class="btn-action-back" onclick="quayLaiTrangTruoc()">
+                    ← Quay lại
+                </button>
             </div>
         </div>
 
@@ -308,12 +331,13 @@
     <!-- Modal xác nhận an toàn khi bấm Dừng trận đấu -->
     <div id="modalConfirmStop" class="px-modal-overlay" style="display: none;">
         <div class="px-modal-dialog">
-            <div class="px-modal-icon">⚠️</div>
-            <h4 class="px-modal-title">Dừng lượt luyện tập?</h4>
-            <p class="px-modal-desc">Bạn có chắc chắn muốn dừng lượt đấu này để đổi sang chế độ hoặc bộ từ khác không?</p>
+            <div class="px-modal-icon">🛑</div>
+            <h4 class="px-modal-title">Tạm dừng luyện phản xạ</h4>
+            <p class="px-modal-desc">Bạn muốn tiếp tục hay dừng lại để tự chọn từng chức năng luyện tập?</p>
             <div class="px-modal-actions">
                 <button type="button" class="btn-modal-cancel" onclick="huyDungTran()">▶️ Tiếp tục chơi</button>
-                <button type="button" class="btn-modal-confirm" onclick="dongYDungTran()">🛑 Dừng & Đổi chế độ</button>
+                <button type="button" class="btn-modal-confirm" onclick="dongYDungTran()">🛑 Dừng & Tự chọn chức năng</button>
+                <button type="button" class="btn-modal-back" onclick="quayLaiTrangTruoc()">← Quay lại trang trước</button>
             </div>
         </div>
     </div>
@@ -321,6 +345,6 @@
 </div>
 
 <!-- Âm thanh hiệu ứng & Logic phản xạ -->
-<script th:src="@{/js/luyen-phan-xa.js(v=7)}"></script>
+<script th:src="@{/js/luyen-phan-xa.js(v=8)}"></script>
 </body>
 </html>

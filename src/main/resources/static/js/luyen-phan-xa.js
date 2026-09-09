@@ -9,7 +9,7 @@
     // =========================================================
     let cauHienTaiIdx = 0;
     let thoiGianGioiHan = 5.0; // Mặc định 5.0 giây (đủ thong thả nhìn ảnh, đọc từ và di chuột)
-    let cheDoHienTai = "HINH_ANH"; // HINH_ANH, NGHE, NHIN_TU, DUNG_SAI
+    let cheDoHienTai = "TOAN_DIEN"; // TOAN_DIEN, DUNG_SAI_ANH_VIET, DUNG_SAI_VIET_ANH, NHIN_TU, NGHIA_SANG_TU, NGHE, HINH_ANH
 
     let comboStreak = 0;
     let maxCombo = 0;
@@ -50,6 +50,16 @@
             audioHienTai = null;
         }
     }
+
+    // Nút quay lại trang trước an toàn
+    window.quayLaiTrangTruoc = function () {
+        dungToanBoTranDau();
+        if (window.history.length > 1) {
+            window.history.back();
+        } else {
+            window.location.href = "/hoc";
+        }
+    };
 
     // =========================================================
     // 2. TẠO ÂM THANH HIỆU ỨNG BẰNG WEB AUDIO API (KHÔNG CẦN FILE MP3 NGOÀI)
@@ -122,7 +132,6 @@
     // 3. KHỞI TẠO VÀ CHỌN CẤU HÌNH
     // =========================================================
     window.chonCheDo = function (cheDo, btnEl) {
-        const wasInGame = dangThiDau;
         dungToanBoTranDau(); // Dập tắt trận đấu cũ ngay lập tức nếu đang dở dang
         cheDoHienTai = cheDo;
         document.querySelectorAll("#groupCheDo .btn-mode").forEach(function (b) {
@@ -130,8 +139,8 @@
         });
         if (btnEl) btnEl.classList.add("active");
 
-        // Nếu đang trong trận mà bấm đổi chế độ, nạp dữ liệu và bắt đầu ngay chế độ mới
-        taiDuLieuVaChuanBi(wasInGame);
+        // Bắt đầu ngay chế độ vừa được chọn
+        taiDuLieuVaChuanBi(true);
     };
 
     window.chonTocDo = function (tocDo, btnEl) {
@@ -307,34 +316,59 @@
         if (elIdx) elIdx.textContent = (index + 1);
         if (elTotal) elTotal.textContent = danhSachCauHoi.length;
 
-        // Xử lý các vùng hiển thị mục tiêu theo chế độ
-        const boxImg = document.getElementById("boxTargetImage");
-        const boxAudio = document.getElementById("boxTargetAudio");
-        const boxWord = document.getElementById("boxTargetWord");
-        const boxTF = document.getElementById("boxTargetTrueFalse");
-        const grid4 = document.getElementById("gridAnswers4");
-        const gridTF = document.getElementById("gridAnswersTF");
+        // Cập nhật nhãn cấp độ thử thách
+        const lblLevel = document.getElementById("lblLevelIndicator");
+        if (lblLevel) {
+            lblLevel.textContent = q.capDo || (cheDoHienTai === "TOAN_DIEN" ? "🌟 Toàn diện (Dễ ➔ Khó)" : "🎯 Đấu trường phản xạ");
+        }
 
-        if (boxImg) boxImg.style.display = "none";
-        if (boxAudio) boxAudio.style.display = "none";
-        if (boxWord) boxWord.style.display = "none";
-        if (boxTF) boxTF.style.display = "none";
+        const isTF = (q.loaiCauHoi === "DUNG_SAI" || q.loaiCauHoi === "DUNG_SAI_ANH_VIET" || q.loaiCauHoi === "DUNG_SAI_VIET_ANH");
 
-        if (cheDoHienTai === "DUNG_SAI") {
+        if (isTF) {
             if (grid4) grid4.style.display = "none";
             if (gridTF) gridTF.style.display = "grid";
+            if (boxTF) boxTF.style.display = "flex";
 
-            // Hiển thị khung đối chiếu Đúng / Sai chia đôi 2 bên cực kỳ trực quan
-            if (boxTF) {
-                boxTF.style.display = "flex";
-                const elWord = document.getElementById("lblTfWord");
-                const elIpa = document.getElementById("lblTfIpa");
-                const elMeaning = document.getElementById("lblTfMeaning");
-                if (elWord) elWord.textContent = q.tiengAnh;
-                if (elIpa) elIpa.textContent = q.phienAm || "";
-                if (elMeaning) elMeaning.textContent = q.luaChon[0] || "";
+            const elLeftBadge = document.getElementById("lblTfLeftBadge");
+            const elLeftText = document.getElementById("lblTfLeftText");
+            const elLeftIpa = document.getElementById("lblTfLeftIpa");
+            const btnAudioLeft = document.getElementById("btnAudioLeft");
+            const elConnector = document.getElementById("lblTfConnector");
+            const elRightBadge = document.getElementById("lblTfRightBadge");
+            const elRightText = document.getElementById("lblTfRightText");
+            const btnAudioRight = document.getElementById("btnAudioRight");
+
+            if (q.loaiCauHoi === "DUNG_SAI_VIET_ANH") {
+                // Cột trái: Nghĩa tiếng Việt
+                if (elLeftBadge) elLeftBadge.textContent = "🇻🇳 NGHĨA TIẾNG VIỆT";
+                if (elLeftText) elLeftText.textContent = q.tiengViet;
+                if (elLeftIpa) elLeftIpa.textContent = "";
+                if (btnAudioLeft) btnAudioLeft.style.display = "none";
+
+                if (elConnector) elConnector.textContent = "tiếng Anh là?";
+
+                // Cột phải: Tiếng Anh
+                if (elRightBadge) elRightBadge.textContent = "🇬🇧 TIẾNG ANH";
+                if (elRightText) elRightText.textContent = q.luaChon[0] || q.tiengAnh;
+                if (btnAudioRight) btnAudioRight.style.display = "inline-flex";
+
+                phatAmThanhTu(q.luaChon[0] || q.tiengAnh);
+            } else {
+                // Cột trái: Tiếng Anh
+                if (elLeftBadge) elLeftBadge.textContent = "🇬🇧 TIẾNG ANH";
+                if (elLeftText) elLeftText.textContent = q.tiengAnh;
+                if (elLeftIpa) elLeftIpa.textContent = q.phienAm || "";
+                if (btnAudioLeft) btnAudioLeft.style.display = "inline-flex";
+
+                if (elConnector) elConnector.textContent = "nghĩa là?";
+
+                // Cột phải: Nghĩa tiếng Việt
+                if (elRightBadge) elRightBadge.textContent = "🇻🇳 NGHĨA TIẾNG VIỆT";
+                if (elRightText) elRightText.textContent = q.luaChon[0] || q.tiengViet;
+                if (btnAudioRight) btnAudioRight.style.display = "none";
+
+                phatAmThanhTu(q.tiengAnh, q.audioUrl);
             }
-            phatAmThanhTu(q.tiengAnh, q.audioUrl);
         } else {
             if (gridTF) gridTF.style.display = "none";
             if (grid4) grid4.style.display = "grid";
@@ -351,32 +385,48 @@
                 }
             }
 
-            if (cheDoHienTai === "HINH_ANH") {
-                // Nhìn ảnh chọn từ tiếng Anh
+            if (q.loaiCauHoi === "HINH_ANH_SANG_TU") {
                 if (boxImg) {
                     boxImg.style.display = "flex";
                     loadHinhAnh(q.hinhAnhUrl, q.tiengAnh, q.tiengViet);
                 }
-            } else if (cheDoHienTai === "NGHE") {
-                // Nghe âm thanh chọn nghĩa tiếng Việt
+                phatAmThanhTu(q.tiengAnh, q.audioUrl);
+            } else if (q.loaiCauHoi === "NGHE_SANG_NGHIA") {
                 if (boxAudio) {
                     boxAudio.style.display = "flex";
                     phatAmThanhTu(q.tiengAnh, q.audioUrl);
                 }
-            } else {
-                // Nhìn từ chọn nghĩa
+            } else if (q.loaiCauHoi === "NGHIA_SANG_TU") {
+                // Hiển thị nghĩa tiếng Việt ➔ Bấm nhanh từ tiếng Anh
                 if (boxWord) {
                     boxWord.style.display = "flex";
-                    document.getElementById("lblTargetWord").textContent = q.tiengAnh;
-                    document.getElementById("lblTargetIpa").textContent = q.phienAm || "";
+                    const badge = document.getElementById("lblTargetWordBadge");
+                    if (badge) {
+                        badge.style.display = "inline-block";
+                        badge.textContent = "🇻🇳 NGHĨA TIẾNG VIỆT:";
+                    }
+                    const elWord = document.getElementById("lblTargetWord");
+                    if (elWord) elWord.textContent = q.tiengViet;
+                    const elIpa = document.getElementById("lblTargetIpa");
+                    if (elIpa) elIpa.textContent = "Chọn từ tiếng Anh đúng bên dưới";
+                    const btnAudio = document.getElementById("btnWordAudio");
+                    if (btnAudio) btnAudio.style.display = "none";
+                }
+            } else {
+                // TU_SANG_NGHIA: Nhìn từ tiếng Anh ➔ Bấm nhanh nghĩa tiếng Việt
+                if (boxWord) {
+                    boxWord.style.display = "flex";
+                    const badge = document.getElementById("lblTargetWordBadge");
+                    if (badge) badge.style.display = "none";
+                    const elWord = document.getElementById("lblTargetWord");
+                    if (elWord) elWord.textContent = q.tiengAnh;
+                    const elIpa = document.getElementById("lblTargetIpa");
+                    if (elIpa) elIpa.textContent = q.phienAm || "";
+                    const btnAudio = document.getElementById("btnWordAudio");
+                    if (btnAudio) btnAudio.style.display = "inline-flex";
                     phatAmThanhTu(q.tiengAnh, q.audioUrl);
                 }
             }
-        }
-
-        // Tự động phát âm chuẩn ở chế độ nhìn ảnh / nhìn từ để củng cố phản xạ
-        if (cheDoHienTai === "HINH_ANH") {
-            phatAmThanhTu(q.tiengAnh, q.audioUrl);
         }
 
         // Bắt đầu đếm ngược năng lượng (Timer bar)
@@ -716,7 +766,8 @@
 
         // Tìm nút đáp án đúng để hiện cho người học biết
         let correctBtn = null;
-        if (cheDoHienTai === "DUNG_SAI") {
+        const isTF = (q.loaiCauHoi === "DUNG_SAI" || q.loaiCauHoi === "DUNG_SAI_ANH_VIET" || q.loaiCauHoi === "DUNG_SAI_VIET_ANH");
+        if (isTF) {
             correctBtn = q.cauDungSaiLaDung ? document.querySelector(".btn-tf-true") : document.querySelector(".btn-tf-false");
         } else {
             for (let i = 0; i < 4; i++) {
@@ -1013,7 +1064,10 @@
         const elStage = document.getElementById("arenaStage");
         if (!dangThiDau || !elStage || elStage.style.display === "none") return;
 
-        if (cheDoHienTai === "DUNG_SAI") {
+        const q = (danhSachCauHoi && cauHienTaiIdx < danhSachCauHoi.length) ? danhSachCauHoi[cauHienTaiIdx] : null;
+        const isTF = q && (q.loaiCauHoi === "DUNG_SAI" || q.loaiCauHoi === "DUNG_SAI_ANH_VIET" || q.loaiCauHoi === "DUNG_SAI_VIET_ANH");
+
+        if (isTF) {
             if (e.key === "ArrowLeft") {
                 e.preventDefault();
                 chonDapAnTF(false);
@@ -1039,9 +1093,9 @@
         }
     });
 
-    // Tự động tải dữ liệu ban đầu khi mở trang
+    // Tự động tải dữ liệu ban đầu khi mở trang và BẮT ĐẦU LUÔN!
     document.addEventListener("DOMContentLoaded", function () {
-        taiDuLieuVaChuanBi(false);
+        taiDuLieuVaChuanBi(true);
     });
 
 })();

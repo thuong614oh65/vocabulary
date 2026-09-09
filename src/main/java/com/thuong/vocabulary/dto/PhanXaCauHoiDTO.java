@@ -14,6 +14,9 @@ public class PhanXaCauHoiDTO {
     private List<String> luaChon;
     private String loaiCauHoi; // "HINH_ANH_SANG_TU", "NGHE_SANG_NGHIA", "TU_SANG_NGHIA", "DUNG_SAI"
     private boolean cauDungSaiLaDung; // Cho chế độ Đúng/Sai
+    private String capDo; // Cấp độ luyện tập (VD: Cấp 1: Đúng / Sai)
+    private String tfHienThiTrai; // Hiển thị bên trái khung Đúng/Sai
+    private String tfHienThiPhai; // Hiển thị bên phải khung Đúng/Sai
 
     public PhanXaCauHoiDTO() {
     }
@@ -96,5 +99,29 @@ public class PhanXaCauHoiDTO {
 
     public void setCauDungSaiLaDung(boolean cauDungSaiLaDung) {
         this.cauDungSaiLaDung = cauDungSaiLaDung;
+    }
+
+    public String getCapDo() {
+        return capDo;
+    }
+
+    public void setCapDo(String capDo) {
+        this.capDo = capDo;
+    }
+
+    public String getTfHienThiTrai() {
+        return tfHienThiTrai;
+    }
+
+    public void setTfHienThiTrai(String tfHienThiTrai) {
+        this.tfHienThiTrai = tfHienThiTrai;
+    }
+
+    public String getTfHienThiPhai() {
+        return tfHienThiPhai;
+    }
+
+    public void setTfHienThiPhai(String tfHienThiPhai) {
+        this.tfHienThiPhai = tfHienThiPhai;
     }
 }
