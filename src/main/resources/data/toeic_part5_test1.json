@@ -9,17 +9,20 @@
     "correctAnswer": "B",
     "category": "VOCAB",
     "subCategory": "Loại từ: Trạng từ (Adverb)",
+    "questionType": "LOAI_TU",
     "mindmapNode": "vocab -> loại từ -> adv",
+    "dauHieuNhanBiet": "Nhìn phía trước là Chủ ngữ (Ms. Brooker), nhìn phía sau là Động từ thường (offered). Vị trí kẹp giữa [ S + ... + V ] ➔ Dấu hiệu vàng cần TRẠNG TỪ (Adv).",
+    "lyDoChonLoaiTu": "Vì sao thiếu TRẠNG TỪ (Adv)? Vì câu đã có đầy đủ Chủ ngữ (Ms. Brooker) và Động từ vị ngữ (offered to donate...). Vị trí đứng trước động từ chính chỉ có thể là Trạng từ (Adverb) để bổ nghĩa cho động từ 'offered' (đề nghị một cách hào phóng). Tính từ chỉ bổ nghĩa cho danh từ, không bổ nghĩa cho động từ.",
     "vietnameseTranslation": "Cô Brooker đã hào phóng đề nghị quyên góp 30 chiếc máy tính văn phòng cho một trường tiểu học địa phương.",
-    "grammarBreakdown": "Cấu trúc câu: S (Ms. Brooker) + [ Adv ] + V-ed (offered) + to V (to donate) + O (thirty of the office computers...). Chỗ trống đứng giữa Chủ ngữ (Ms. Brooker) và Động từ chính (offered).",
-    "explanation": "Quy tắc vàng: Để bổ nghĩa cho một Động từ thường (offered), ta cần một Trạng từ (Adverb, thường có đuôi -ly). Do đó, 'generously' là đáp án chính xác duy nhất.",
+    "grammarBreakdown": "Cấu trúc câu: S (Ms. Brooker) + [ Adv ] + V-ed (offered) + to V (to donate) + O (thirty of the office computers...).",
+    "explanation": "Quy tắc vàng: Để bổ nghĩa cho một Động từ thường (offered), ta cần một Trạng từ (Adverb, thường có đuôi -ly). Do đó, 'generously' là đáp án chính xác.",
     "choicesAnalysis": {
-      "A": "generous (tính từ - hào phóng): Tính từ chỉ bổ nghĩa cho danh từ hoặc đứng sau to be, không bổ nghĩa cho động từ thường.",
-      "B": "generously (trạng từ - một cách hào phóng): ĐÚNG, trạng từ đứng trước động từ thường 'offered' để bổ nghĩa.",
-      "C": "generosity (danh từ - sự hào phóng): Danh từ không thể đứng kẹp giữa chủ ngữ và động từ chính như vị trí này.",
-      "D": "more generous (tính từ so sánh hơn): Không phù hợp vì câu không có cấu trúc so sánh và cũng không bổ nghĩa cho động từ."
+      "A": "generous [Tính từ - đuôi '-ous']: Tính từ chỉ bổ nghĩa cho danh từ hoặc đứng sau to be, không đứng trước động từ thường để bổ nghĩa.",
+      "B": "generously [Trạng từ - đuôi '-ly']: ĐÚNG. Trạng từ đứng trước động từ thường 'offered' để bổ nghĩa cho hành động đề nghị.",
+      "C": "generosity [Danh từ - đuôi '-ity']: Danh từ không thể đứng kẹp giữa chủ ngữ và động từ chính như vị trí này.",
+      "D": "more generous [Cụm so sánh hơn của tính từ]: Sai vì câu không có cấu trúc so sánh và tính từ không bổ nghĩa cho động từ."
     },
-    "quickTip": "💡 Mẹo 5 giây: Thấy cấu trúc S + [ ... ] + V_chính thì 99% chọn ngay TRẠNG TỪ đuôi '-ly'!"
+    "quickTip": "⚡ Mẹo 3 giây: Thấy cấu trúc S + [ ... ] + V_chính ➔ 100% chọn TRẠNG TỪ đuôi '-ly'!"
   },
   {
     "questionNumber": 102,
@@ -31,17 +34,20 @@
     "correctAnswer": "C",
     "category": "GRAMMAR",
     "subCategory": "Đại từ / Tính từ sở hữu",
+    "questionType": "CAU_TRUC",
     "mindmapNode": "gram -> đại từ sở hữu",
+    "congThuc": "Công thức: Tính từ sở hữu + Cụm danh từ: [ my / your / his / her / ITS / THEIR ] + Noun",
+    "dauHieuNhanBiet": "Nhìn ngay sau chỗ trống thấy cụm danh từ số nhiều 'work e-mail accounts'. Nhìn về trước thấy chủ ngữ số nhiều 'Employees' ➔ Dấu hiệu cần Tính từ sở hữu số nhiều 'their'.",
     "vietnameseTranslation": "Nhân viên nên nhớ đăng xuất khỏi tài khoản email công việc của họ khi ra về vào cuối ngày.",
     "grammarBreakdown": "Phía sau chỗ trống là cụm danh từ số nhiều 'work e-mail accounts'. Vị trí này cần một Tính từ sở hữu (Possessive Adjective) để bổ nghĩa cho danh từ phía sau.",
     "explanation": "Chủ ngữ của câu là 'Employees' (danh từ số nhiều chỉ người). Do đó, tính từ sở hữu tương ứng phải là 'their' (của họ). 'Its' chỉ dùng cho danh từ số ít chỉ vật/tổ chức.",
     "choicesAnalysis": {
       "A": "that (đại từ chỉ định/quan hệ): Không đứng trước cụm danh từ số nhiều 'work e-mail accounts' để chỉ sở hữu.",
       "B": "who (đại từ quan hệ): Chỉ thay thế cho người làm chủ ngữ/tân ngữ, không đứng trước danh từ để bổ nghĩa sở hữu.",
-      "C": "their (tính từ sở hữu - của họ): ĐÚNG, chỉ sự sở hữu của chủ ngữ số nhiều 'Employees'.",
-      "D": "its (tính từ sở hữu số ít - của nó): Sai vì 'Employees' là số nhiều, không dùng 'its'."
+      "C": "their (tính từ sở hữu số nhiều): ĐÚNG. Chỉ sự sở hữu của chủ ngữ số nhiều 'Employees' đối với tài khoản email của họ.",
+      "D": "its (tính từ sở hữu số ít): Sai vì 'Employees' là danh từ số nhiều, không dùng 'its'."
     },
-    "quickTip": "💡 Mẹo 5 giây: Chỗ trống đứng trước cụm danh từ [ ... + Noun ], nhìn về chủ ngữ số nhiều (Employees) ➔ Chọn ngay 'their'!"
+    "quickTip": "⚡ Mẹo 3 giây: Chỗ trống đứng trước cụm danh từ [ ... + Noun ], nhìn về chủ ngữ số nhiều (Employees) ➔ Chọn ngay 'their'!"
   },
   {
     "questionNumber": 103,
@@ -53,17 +59,20 @@
     "correctAnswer": "D",
     "category": "GRAMMAR",
     "subCategory": "Cấu trúc động từ: ask sb to do sth",
+    "questionType": "CAU_TRUC",
     "mindmapNode": "gram -> to V / verb forms",
+    "congThuc": "Công thức cố định: ask + somebody + TO V (yêu cầu/nhờ ai đó làm việc gì)",
+    "dauHieuNhanBiet": "Nhìn thấy động từ 'asked' + tân ngữ chỉ người 'his supervisor' ➔ Nhận ra ngay cấu trúc kinh điển: ask + O + TO V!",
     "vietnameseTranslation": "Ông Biden đã nhờ người giám sát của mình gia hạn thời hạn cho các báo cáo chi phí tháng này.",
     "grammarBreakdown": "Cấu trúc cố định kinh điển: ask + somebody + to do something (yêu cầu/nhờ ai đó làm việc gì).",
     "explanation": "Sau tân ngữ 'his supervisor', động từ bắt buộc phải ở dạng to-infinitive ('to extend'). Các phương án chia thì khác (extend, will extend, had extended) đều sai cấu trúc.",
     "choicesAnalysis": {
-      "A": "extend (động từ nguyên mẫu không to): Sai cấu trúc sau 'ask sb'.",
+      "A": "extend (động từ nguyên mẫu không to): Sai công thức sau 'ask sb'.",
       "B": "will extend (thì tương lai đơn): Sai vì mệnh đề không có liên từ 'that' và cấu trúc 'ask sb' không đi với thì chia trực tiếp.",
-      "C": "had extended (thì quá khứ hoàn thành): Sai cấu trúc.",
-      "D": "to extend (to + V nguyên mẫu): ĐÚNG theo cấu trúc 'ask sb to V'."
+      "C": "had extended (thì quá khứ hoàn thành): Sai cấu trúc ngữ pháp.",
+      "D": "to extend (to + V nguyên mẫu): ĐÚNG theo công thức 'ask sb to V'."
     },
-    "quickTip": "💡 Mẹo 5 giây: Nhớ bộ ba quyền lực TOEIC: ask / request / require / advise / allow + O + TO V!"
+    "quickTip": "⚡ Mẹo 3 giây: Nhớ bộ từ TOEIC đi với [ O + TO V ]: ask / request / require / advise / allow / expect + O + TO V!"
   },
   {
     "questionNumber": 104,
@@ -75,17 +84,20 @@
     "correctAnswer": "B",
     "category": "GRAMMAR",
     "subCategory": "Liên từ chỉ thời gian (Conjunction)",
+    "questionType": "CAU_TRUC",
     "mindmapNode": "gram -> liên từ chỉ thời gian",
+    "congThuc": "Công thức hòa hợp thì thời gian: When / As soon as / After + S + V(hiện tại đơn), S + will + V(nguyên mẫu)",
+    "dauHieuNhanBiet": "Nhìn thấy 2 mệnh đề: Mệnh đề 1 chia hiện tại đơn (seminar ends), Mệnh đề 2 chia tương lai đơn (will have...) ➔ Dấu hiệu cần LIÊN TỪ CHỈ THỜI GIAN 'When'.",
     "vietnameseTranslation": "Khi buổi hội thảo kinh doanh chiều nay kết thúc, ông Kane sẽ bảo nhân viên dọn dẹp hội trường.",
     "grammarBreakdown": "[ Liên từ ] + Mệnh đề 1 (S + V: business seminar ends), Mệnh đề 2 (Mr. Kane will have...). Câu có 2 mệnh đề hoàn chỉnh, cần 1 liên từ chỉ thời gian.",
     "explanation": "'When' (khi / vào lúc) là liên từ chỉ thời gian thích hợp nhất để nối mệnh đề phụ chỉ thời gian với mệnh đề chính trong tương lai. 'Who', 'Why', 'Which' không phù hợp về ngữ pháp và ngữ nghĩa.",
     "choicesAnalysis": {
-      "A": "Who (ai): Đại từ nghi vấn / quan hệ, không làm liên từ chỉ thời gian nối mệnh đề hoàn chỉnh.",
-      "B": "When (khi): ĐÚNG, tạo thành mệnh đề trạng ngữ chỉ thời gian 'When + S + V(hiện tại), S + will + V'.",
-      "C": "Why (tại sao): Không hợp nghĩa.",
+      "A": "Who (ai): Đại từ nghi vấn / quan hệ, không làm liên từ chỉ thời gian nối 2 mệnh đề.",
+      "B": "When (khi): ĐÚNG, tạo thành mệnh đề trạng ngữ chỉ thời gian theo công thức 'When + S + V(hiện tại), S + will + V'.",
+      "C": "Why (tại sao): Trạng từ nghi vấn, không phù hợp ngữ nghĩa.",
       "D": "Which (cái nào): Đại từ quan hệ / nghi vấn, không phù hợp."
     },
-    "quickTip": "💡 Mẹo 5 giây: Đầu câu đứng trước 1 mệnh đề S + V(hiện tại) và vế sau có 'will + V' ➔ 99% là 'When' hoặc 'After'!"
+    "quickTip": "⚡ Mẹo 3 giây: Đầu câu đứng trước 1 mệnh đề S + V(hiện tại) và vế sau có 'will + V' ➔ 99% chọn 'When' hoặc 'After'!"
   },
   {
     "questionNumber": 105,
@@ -97,17 +109,19 @@
     "correctAnswer": "C",
     "category": "VOCAB",
     "subCategory": "Cụm từ cố định (Collocation)",
+    "questionType": "NGHIA",
     "mindmapNode": "vocab -> cụm cố định -> nghĩa",
+    "tuKhoaNguCanh": "Cụm cố định 'in an effort to do sth' (trong nỗ lực làm gì) + mục tiêu 'boost annual revenue' (tăng doanh thu hàng năm).",
     "vietnameseTranslation": "Trong nỗ lực tăng doanh thu hàng năm, Starlight Boutique sẽ kéo dài giờ hoạt động vào cuối tuần.",
     "grammarBreakdown": "Cụm danh từ cố định: in an effort to do something = trong nỗ lực / cố gắng làm gì đó.",
-    "explanation": "Đây là câu hỏi kiểm tra cụm từ cố định (collocation) cực kỳ phổ biến trong TOEIC. 'In an effort to + V' có nghĩa là nỗ lực làm điều gì. Các từ khác không đi với cấu trúc 'in an ... to V'.",
+    "explanation": "Câu hỏi từ vựng kiểm tra cụm từ cố định (collocation): 'in an effort to + V' nghĩa là nỗ lực làm điều gì. Các từ khác không đi với cấu trúc này.",
     "choicesAnalysis": {
-      "A": "account (tài khoản / sự giải thích): Không có cụm 'in an account to V'.",
-      "B": "output (sản lượng, đầu ra): Không đi với 'in an output to V'.",
-      "C": "effort (sự nỗ lực): ĐÚNG, tạo thành cụm 'in an effort to V' = nỗ lực làm gì.",
-      "D": "amount (số lượng): Không đi với 'in an amount to V'."
+      "A": "account (danh từ): tài khoản, bản thanh toán. Không có cụm 'in an account to V'.",
+      "B": "output (danh từ): sản lượng, đầu ra. Không đi với 'in an output to V'.",
+      "C": "effort (danh từ): sự nỗ lực, cố gắng. ĐÚNG. Ghép thành cụm 'in an effort to V' = nỗ lực làm gì.",
+      "D": "amount (danh từ): số lượng, lượng. Không đi với 'in an amount to V'."
     },
-    "quickTip": "💡 Cụm tủ TOEIC: 'in an effort to V' = 'in an attempt to V' = nỗ lực/cố gắng làm gì!"
+    "quickTip": "⚡ Cụm tủ TOEIC: 'in an effort to V' = 'in an attempt to V' = nỗ lực/cố gắng làm gì!"
   },
   {
     "questionNumber": 106,
@@ -119,21 +133,24 @@
     "correctAnswer": "A",
     "category": "GRAMMAR",
     "subCategory": "Giới từ (Preposition)",
+    "questionType": "CAU_TRUC",
     "mindmapNode": "gram -> giới từ",
-    "vietnameseTranslation": "Để ứng tuyển cho vị trí thiết kế Web, hãy gửi email cho chúng tôi kèm mã vị trí tuyển dụng phù hợp ở dòng tiêu đề.",
-    "grammarBreakdown": "send us an e-mail + [ Giới từ ] + the appropriate job vacancy code... Cần giới từ mang nghĩa 'kèm theo, có chứa'.",
-    "explanation": "Giới từ 'with' ở đây mang nghĩa 'kèm theo / có chứa' (an email with the code = bức email có chứa mã tuyển dụng). 'From' (từ), 'where' (nơi), 'in' (trong) không phù hợp ngữ cảnh.",
+    "congThuc": "Cấu trúc giới từ đi kèm thông tin: send sth WITH sth (gửi cái gì CÓ KÈM THEO cái gì)",
+    "dauHieuNhanBiet": "Nhìn trước là 'send us an e-mail', nhìn sau là cụm danh từ 'the appropriate job vacancy code...' ➔ Cần giới từ 'with' mang nghĩa kèm theo / với thông tin đó.",
+    "vietnameseTranslation": "Để ứng tuyển vào vị trí thiết kế Web, hãy gửi cho chúng tôi một email có kèm mã vị trí tuyển dụng phù hợp ở dòng tiêu đề.",
+    "grammarBreakdown": "Vị trí cần một giới từ nối danh từ 'an e-mail' với thông tin đi kèm 'the appropriate job vacancy code'. 'With' mang nghĩa 'có chứa, có kèm theo'.",
+    "explanation": "'With' là giới từ chính xác nhất chỉ sự kèm theo (email có kèm mã tuyển dụng). 'Where' phải theo sau bởi một mệnh đề (S + V). 'From' và 'in' không hợp nghĩa.",
     "choicesAnalysis": {
-      "A": "with (với, kèm theo): ĐÚNG, gửi email có kèm/chứa mã tuyển dụng.",
-      "B": "from (từ): Không hợp nghĩa.",
-      "C": "where (nơi): Trạng từ quan hệ chỉ nơi chốn, không đứng trước cụm danh từ.",
-      "D": "in (trong): Thường dùng cho địa điểm hoặc thời gian, không diễn đạt ý 'gửi email kèm theo cái gì'."
+      "A": "with (giới từ - với / có kèm theo): ĐÚNG, 'e-mail with the code' = email có kèm mã tuyển dụng.",
+      "B": "from (giới từ - từ nơi nào): Sai nghĩa, không nói 'email từ mã tuyển dụng'.",
+      "C": "where (trạng từ quan hệ): Sai cấu trúc vì sau 'where' phải là một mệnh đề (S + V), trong khi ở đây là cụm danh từ.",
+      "D": "in (giới từ - trong): Không tự nhiên, mã nằm trong subject line chứ không dùng 'email in the code'."
     },
-    "quickTip": "💡 Mẹo: Khi nói 'gửi tài liệu/email có đính kèm hoặc chứa thông tin gì', ta dùng 'with + something'."
+    "quickTip": "⚡ Mẹo 3 giây: 'an email WITH something' = một email có kèm theo thông tin gì!"
   },
   {
     "questionNumber": 107,
-    "questionText": "A recent article on consumer trends claims that ------- is increasing in all areas of the electronics industry.",
+    "questionText": "The finance department is responsible for tracking company ------- and preparing quarterly budgets.",
     "choiceA": "spender",
     "choiceB": "spent",
     "choiceC": "spend",
@@ -141,21 +158,24 @@
     "correctAnswer": "D",
     "category": "VOCAB",
     "subCategory": "Loại từ: Danh từ / Danh động từ (Noun/Gerund)",
+    "questionType": "LOAI_TU",
     "mindmapNode": "vocab -> loại từ -> noun",
-    "vietnameseTranslation": "Một bài báo gần đây về xu hướng tiêu dùng khẳng định rằng chi tiêu đang tăng lên trong tất cả các lĩnh vực của ngành công nghiệp điện tử.",
-    "grammarBreakdown": "Mệnh đề sau 'that': [ Chủ ngữ (S) ] + is increasing (V) + in all areas... Chỗ trống đóng vai trò là Chủ ngữ (S) đứng trước động từ số ít 'is'.",
-    "explanation": "'Spending' là danh từ không đếm được mang nghĩa 'sự chi tiêu / việc chi tiêu', phù hợp làm chủ ngữ số ít đi với động từ 'is increasing'. 'Spender' là danh từ đếm được chỉ người (người tiêu tiền), nếu làm chủ ngữ số ít phải có mạo từ (a spender).",
+    "dauHieuNhanBiet": "Nhìn trước có động từ 'tracking' (theo dõi) + danh từ phụ 'company' (của công ty). Vị trí sau ngoại động từ [ tracking + company + ... ] ➔ Dấu hiệu vàng cần DANH TỪ (Noun) làm tân ngữ.",
+    "lyDoChonLoaiTu": "Vì sao thiếu DANH TỪ (Noun)? Vì 'tracking' là ngoại động từ chỉ hành động, bắt buộc phải có tân ngữ là Danh từ để trả lời cho câu hỏi 'theo dõi cái gì?'. 'Company spending' là cụm danh từ ghép nghĩa là 'chi tiêu của công ty'.",
+    "vietnameseTranslation": "Phòng tài chính chịu trách nhiệm theo dõi chi tiêu của công ty và chuẩn bị ngân sách hàng quý.",
+    "grammarBreakdown": "Vị trí sau 'tracking company' cần một Danh từ hoặc Danh động từ để hoàn thiện cụm danh từ ghép 'company spending' (việc chi tiêu / khoản chi tiêu của công ty) làm tân ngữ cho 'tracking'.",
+    "explanation": "'Spending' là danh từ không đếm được chỉ 'các khoản chi tiêu, sự chi tiêu'. 'Spender' là người tiêu tiền (không hợp nghĩa). 'Spend' là động từ nguyên mẫu và 'spent' là quá khứ.",
     "choicesAnalysis": {
-      "A": "spender (người chi tiêu): Danh từ đếm được số ít, bắt buộc phải có mạo từ 'a/the' nếu đứng một mình.",
-      "B": "spent (V2/V3 của spend): Không thể làm chủ ngữ.",
-      "C": "spend (động từ nguyên mẫu): Động từ không thể làm chủ ngữ.",
-      "D": "spending (danh từ không đếm được - việc chi tiêu): ĐÚNG, làm chủ ngữ số ít cho động từ 'is increasing'."
+      "A": "spender [Danh từ chỉ người]: người tiêu tiền. Không phù hợp nghĩa vì phòng tài chính theo dõi chi tiêu chứ không theo dõi người tiêu.",
+      "B": "spent [Động từ quá khứ / phân từ]: Không thể làm tân ngữ cho động từ 'tracking'.",
+      "C": "spend [Động từ nguyên mẫu]: Không đứng sau danh từ 'company' để làm tân ngữ.",
+      "D": "spending [Danh từ không đếm được - việc chi tiêu]: ĐÚNG. Tạo thành cụm danh từ 'company spending' = chi tiêu của công ty."
     },
-    "quickTip": "💡 Mẹo loại từ: Đứng trước động từ 'is' cần Danh từ. 'Spending' (chi tiêu) là từ vựng quen thuộc trong các bài báo kinh tế TOEIC!"
+    "quickTip": "⚡ Cụm tủ TOEIC: 'company spending' = 'business spending' = các khoản chi tiêu của công ty!"
   },
   {
     "questionNumber": 108,
-    "questionText": "All Bousquet Garments products, including accessories, ------- by us using priority post.",
+    "questionText": "Customer orders placed before 3:00 P.M. ------- on the same day from our regional warehouse.",
     "choiceA": "shipped",
     "choiceB": "being shipped",
     "choiceC": "are shipped",
@@ -163,21 +183,24 @@
     "correctAnswer": "C",
     "category": "GRAMMAR",
     "subCategory": "Câu bị động (Passive Voice)",
+    "questionType": "CAU_TRUC",
     "mindmapNode": "gram -> thể bị động",
-    "vietnameseTranslation": "Tất cả các sản phẩm may mặc của Bousquet, bao gồm cả phụ kiện, đều được chúng tôi vận chuyển bằng dịch vụ chuyển phát ưu tiên.",
-    "grammarBreakdown": "S (All Bousquet Garments products) + [ V chính ở dạng bị động ] + by us. Chủ ngữ là danh từ số nhiều (products) chỉ vật, bị tác động bởi 'by us' ➔ Câu bị động: are + V-ed/V3.",
-    "explanation": "Câu chưa có động từ chính chia thì. Phía sau có 'by us' (bởi chúng tôi) ➔ Thể bị động (Passive Voice). Chủ ngữ 'products' là số nhiều ➔ 'are shipped' là đáp án đúng duy nhất.",
+    "congThuc": "Công thức câu bị động thì Hiện tại đơn: S (số nhiều) + ARE + V3/ed (được/bị làm gì)",
+    "dauHieuNhanBiet": "Chủ ngữ là 'Customer orders' (các đơn hàng - vật bị động) + rút gọn mệnh đề quan hệ 'placed before 3:00 P.M.'. Toàn bộ câu CHƯA CÓ ĐỘNG TỪ CHÍNH! Nhìn chủ ngữ là vật ➔ Cần động từ chính ở thể BỊ ĐỘNG 'are shipped'.",
+    "vietnameseTranslation": "Các đơn đặt hàng của khách được đặt trước 3 giờ chiều sẽ được giao ngay trong ngày từ kho khu vực của chúng tôi.",
+    "grammarBreakdown": "Chủ ngữ chính: 'Customer orders' (số nhiều). Cụm 'placed before 3:00 P.M.' là mệnh đề phân từ rút gọn bổ nghĩa cho chủ ngữ. Chỗ trống cần ĐỘNG TỪ CHÍNH của câu chia ở thể bị động hiện tại đơn.",
+    "explanation": "Câu nói về quy trình / chính sách thường xuyên của kho hàng nên dùng thì Hiện tại đơn bị động: 'are shipped'. 'Shipped' dễ gây nhầm lẫn là quá khứ, 'being shipped' và 'shipping' thiếu to be nên không thể làm động từ chính.",
     "choicesAnalysis": {
-      "A": "shipped (V-ed chủ động): Nếu là chủ động thì sản phẩm không thể tự 'ship' được.",
-      "B": "being shipped (dạng V-ing): Không thể làm động từ chính của câu nếu không có to be đi kèm.",
-      "C": "are shipped (thì hiện tại đơn bị động số nhiều): ĐÚNG, hoàn chỉnh ngữ pháp và hợp nghĩa.",
-      "D": "shipping (V-ing): Không phải động từ vị ngữ chính."
+      "A": "shipped (V-ed quá khứ chủ động): Sai vì đơn hàng không thể tự giao hàng được, và câu nói về quy trình chung chứ không phải sự việc quá khứ.",
+      "B": "being shipped (dạng V-ing): Thiếu to be phía trước, không thể làm động từ chính của câu.",
+      "C": "are shipped (bị động hiện tại đơn - to be + V3): ĐÚNG. Đơn hàng được vận chuyển trong ngày.",
+      "D": "shipping (V-ing): Không thể làm động từ chính khi đứng một mình không có to be."
     },
-    "quickTip": "💡 Mẹo 5 giây: Thấy chủ ngữ là VẬT (products) + phía sau có 'BY + người' ➔ Chọn ngay BỊ ĐỘNG 'be + V3/ed'!"
+    "quickTip": "⚡ Mẹo 3 giây: S(vật) + [ V-ed rút gọn ] + [ Chỗ trống ] ➔ Chỗ trống bắt buộc là ĐỘNG TỪ CHÍNH BỊ ĐỘNG (be + V3)!"
   },
   {
     "questionNumber": 109,
-    "questionText": "One of the requirements for the position is a willingness to go on ------- business trips overseas.",
+    "questionText": "Dr. Morales gives ------- lectures on modern marketing strategies to universities across the country.",
     "choiceA": "frequently",
     "choiceB": "frequent",
     "choiceC": "frequency",
@@ -185,43 +208,48 @@
     "correctAnswer": "B",
     "category": "VOCAB",
     "subCategory": "Loại từ: Tính từ (Adjective)",
+    "questionType": "LOAI_TU",
     "mindmapNode": "vocab -> loại từ -> adj",
-    "vietnameseTranslation": "Một trong những yêu cầu cho vị trí này là sẵn sàng đi công tác nước ngoài thường xuyên.",
-    "grammarBreakdown": "to go on + [ Adj ] + business trips (Cụm danh từ). Chỗ trống đứng trước cụm danh từ 'business trips' để bổ nghĩa cho danh từ.",
-    "explanation": "Theo quy tắc ngữ pháp: Đứng trước Danh từ (business trips) là một Tính từ (Adjective) để bổ nghĩa. 'Frequent' (thường xuyên) là tính từ thích hợp.",
+    "dauHieuNhanBiet": "Nhìn trước có động từ 'gives' (đưa ra/thực hiện), nhìn sau có danh từ số nhiều 'lectures' (các bài giảng). Vị trí đứng trước Danh từ [ ... + Noun ] ➔ Dấu hiệu vàng cần TÍNH TỪ (Adj).",
+    "lyDoChonLoaiTu": "Vì sao thiếu TÍNH TỪ (Adj)? Vì vị trí đứng ngay trước danh từ 'lectures' có chức năng bổ nghĩa cho danh từ đó (những bài giảng như thế nào? ➔ những bài giảng thường xuyên). Trong tiếng Anh, chỉ có Tính từ mới đứng trước Danh từ để bổ nghĩa trực tiếp.",
+    "vietnameseTranslation": "Tiến sĩ Morales thường xuyên có các bài giảng về chiến lược tiếp thị hiện đại tại các trường đại học trên toàn quốc.",
+    "grammarBreakdown": "Động từ 'gives' + [ Tính từ ] + Danh từ tân ngữ 'lectures'. Cần một tính từ đứng trước danh từ để bổ nghĩa trực tiếp.",
+    "explanation": "'Frequent' là tính từ nghĩa là 'thường xuyên', bổ nghĩa cho danh từ 'lectures'. 'Frequently' là trạng từ (không bổ nghĩa cho danh từ). 'Frequency' là danh từ (tần số).",
     "choicesAnalysis": {
-      "A": "frequently (trạng từ - một cách thường xuyên): Trạng từ không đứng trực tiếp bổ nghĩa cho danh từ.",
-      "B": "frequent (tính từ - thường xuyên): ĐÚNG, tính từ bổ nghĩa cho cụm danh từ 'business trips'.",
-      "C": "frequency (danh từ - tần suất): Danh từ không đứng vị trí này.",
-      "D": "frequents (động từ chia ngôi thứ 3 số ít): Không phù hợp."
+      "A": "frequently [Trạng từ - đuôi '-ly']: Trạng từ không bổ nghĩa cho danh từ 'lectures'.",
+      "B": "frequent [Tính từ]: ĐÚNG. Tính từ đứng trước danh từ 'lectures' để bổ nghĩa (frequent lectures = các bài giảng thường xuyên).",
+      "C": "frequency [Danh từ - đuôi '-cy']: Danh từ không đứng ghép với 'lectures' ở vị trí này.",
+      "D": "frequents [Động từ chia ngôi thứ 3 số ít]: Câu đã có động từ chính 'gives', không điền thêm động từ vào đây."
     },
-    "quickTip": "💡 Vị trí kinh điển: Giới từ + [ TÍNH TỪ ] + Danh từ! Frequent business trips = những chuyến công tác thường xuyên."
+    "quickTip": "⚡ Mẹo 3 giây: Chỗ trống đứng trước danh từ [ ... + Noun ] ➔ 99% chọn TÍNH TỪ để bổ nghĩa!"
   },
   {
     "questionNumber": 110,
-    "questionText": "The MCA Art Convention gives artists a unique chance to ------- and discuss potential collaborations.",
+    "questionText": "The newly installed solar panels will ------- the building's reliance on the local electrical grid.",
     "choiceA": "eradicate",
     "choiceB": "connect",
     "choiceC": "consist",
     "choiceD": "discharge",
-    "correctAnswer": "B",
+    "correctAnswer": "A",
     "category": "VOCAB",
     "subCategory": "Nghĩa của từ (Vocabulary meaning)",
+    "questionType": "NGHIA",
     "mindmapNode": "vocab -> nghĩa",
-    "vietnameseTranslation": "Hội nghị Nghệ thuật MCA mang đến cho các nghệ sĩ cơ hội duy nhất để kết nối và thảo luận về các sự hợp tác tiềm năng.",
-    "grammarBreakdown": "a unique chance to + [ V nguyên mẫu 1 ] + and + [ V nguyên mẫu 2: discuss ]... Cần một động từ nguyên mẫu song hành với 'discuss'.",
-    "explanation": "Dựa vào ngữ cảnh: Hội nghị nghệ thuật mang đến cơ hội để các nghệ sĩ 'kết nối' (connect) và 'thảo luận' (discuss). 'Connect' (kết nối) là từ phù hợp và tích cực nhất.",
+    "tuKhoaNguCanh": "Từ khóa: 'solar panels' (tấm pin năng lượng mặt trời) + 'reliance on the electrical grid' (sự phụ thuộc vào lưới điện) ➔ Cần động từ mang nghĩa 'loại bỏ / xóa bỏ' sự phụ thuộc.",
+    "vietnameseTranslation": "Các tấm pin mặt trời mới được lắp đặt sẽ loại bỏ hoàn toàn sự phụ thuộc của tòa nhà vào lưới điện địa phương.",
+    "grammarBreakdown": "Sau trợ động từ 'will' cần một động từ nguyên mẫu có nghĩa phù hợp với tân ngữ 'the building's reliance' (sự phụ thuộc của tòa nhà).",
+    "explanation": "Câu hỏi từ vựng: 'Eradicate' nghĩa là 'loại bỏ hoàn toàn, bài trừ' (phù hợp nhất khi nói về việc loại bỏ sự phụ thuộc năng lượng). 'Connect' cần đi với 'to/with'. 'Consist' phải có 'of'.",
     "choicesAnalysis": {
-      "A": "eradicate (diệt trừ, xóa bỏ hoàn toàn): Hoàn toàn sai ngữ cảnh.",
-      "B": "connect (kết nối, liên kết): ĐÚNG ngữ nghĩa hội nghị gặp gỡ.",
-      "C": "consist (bao gồm): Thường đi với 'of' (consist of).",
-      "D": "discharge (xuất viện, phóng thích, thải ra): Sai ngữ cảnh."
+      "A": "eradicate (động từ): loại trừ, xóa bỏ hoàn toàn. ĐÚNG. Lắp pin mặt trời sẽ xóa bỏ sự phụ thuộc vào lưới điện.",
+      "B": "connect (động từ): kết nối. Thường đi với 'to/with', không hợp nghĩa 'kết nối sự phụ thuộc'.",
+      "C": "consist (động từ): bao gồm. Bắt buộc phải có 'of' (consist of), không đứng độc lập.",
+      "D": "discharge (động từ): xả, phóng điện, xuất viện. Không hợp ngữ cảnh câu."
     },
-    "quickTip": "💡 Mẹo ngữ cảnh: Đi dự hội nghị (Convention) thì các nghệ sĩ / chuyên gia sẽ 'connect' (kết nối) với nhau!"
+    "quickTip": "⚡ Từ vựng TOEIC nâng cao: 'eradicate reliance / eliminate dependency' = xóa bỏ sự phụ thuộc!"
   },
   {
     "questionNumber": 111,
-    "questionText": "Please make sure that you submit all of the requested documents to our personnel department ------- May 31.",
+    "questionText": "Please submit your completed travel reimbursement form to the accounting office ------- next Friday.",
     "choiceA": "toward",
     "choiceB": "over",
     "choiceC": "at",
@@ -229,43 +257,48 @@
     "correctAnswer": "D",
     "category": "GRAMMAR",
     "subCategory": "Giới từ chỉ thời gian: by + deadline",
+    "questionType": "CAU_TRUC",
     "mindmapNode": "gram -> giới từ chỉ thời gian",
-    "vietnameseTranslation": "Vui lòng đảm bảo rằng bạn nộp tất cả các tài liệu được yêu cầu cho bộ phận nhân sự của chúng tôi trước ngày 31 tháng 5.",
-    "grammarBreakdown": "submit documents ... [ Giới từ ] + May 31 (mốc thời gian). Cần một giới từ chỉ thời hạn chót (deadline).",
-    "explanation": "Trong tiếng Anh công sở TOEIC: 'by + mốc thời gian' = trước hoặc trễ nhất vào thời điểm đó (deadline). 'May 31' là ngày cụ thể (nếu là vào ngày thì dùng 'on', không có 'on' thì dùng 'by' chỉ hạn chót).",
+    "congThuc": "Công thức thời hạn (Deadline): BY + mốc thời gian (hạn chót vào lúc / trước lúc...)",
+    "dauHieuNhanBiet": "Nhìn trước có hành động nộp 'submit form', nhìn sau là mốc thời gian cụ thể 'next Friday' (thứ Sáu tuần tới). Nộp trước hoặc chậm nhất vào một thời điểm ➔ Dấu hiệu công thức giới từ 'BY + thời gian'.",
+    "vietnameseTranslation": "Vui lòng nộp biểu mẫu hoàn trả chi phí đi lại đã điền đầy đủ cho phòng kế toán trước thứ Sáu tới.",
+    "grammarBreakdown": "Chỗ trống cần một giới từ chỉ thời gian mang nghĩa 'trước hoặc chậm nhất vào' một thời hạn (deadline) cụ thể ('next Friday').",
+    "explanation": "'By' dùng với mốc thời gian để chỉ hạn chót (chậm nhất vào lúc). 'Toward' chỉ phương hướng hoặc khoảng thời gian mờ nhạt. 'Over' chỉ khoảng thời gian kéo dài. 'At' chỉ dùng cho giờ giấc cụ thể.",
     "choicesAnalysis": {
-      "A": "toward (về phía, hướng tới): Không dùng cho hạn nộp tài liệu.",
-      "B": "over (hơn, qua): Không đi với mốc thời gian cụ thể làm hạn chót.",
-      "C": "at (vào lúc): Dùng cho giờ giấc (at 5 PM), không đi với ngày tháng.",
-      "D": "by (trước/trễ nhất là): ĐÚNG, dùng cho hạn chót nộp tài liệu."
+      "A": "toward (về phía, hướng tới): Không dùng để chỉ thời hạn nộp văn bản cụ thể.",
+      "B": "over (trong suốt, qua): Chỉ khoảng thời gian kéo dài (ví dụ: over the weekend), không dùng cho hạn chót.",
+      "C": "at (vào lúc): Chỉ dùng cho giờ cụ thể (at 5:00 P.M.), không đi với 'next Friday'.",
+      "D": "by (trước, chậm nhất vào): ĐÚNG. Chỉ thời hạn chót nộp hồ sơ theo công thức 'by + mốc thời gian'."
     },
-    "quickTip": "💡 Quy tắc vàng TOEIC: Nộp hồ sơ/báo cáo + [ BY ] + ngày/tháng = trước hoặc muộn nhất vào ngày đó!"
+    "quickTip": "⚡ Mẹo 3 giây: Thấy động từ nộp hồ sơ 'submit / send / deliver' + mốc thời gian ➔ 99% chọn 'BY' (chậm nhất là)!"
   },
   {
     "questionNumber": 112,
-    "questionText": "The board of directors announced that it will ------- find a replacement for the outgoing CEO.",
+    "questionText": "The updated safety guidelines for the production facility are ------- important for all assembly line workers.",
     "choiceA": "usually",
     "choiceB": "extremely",
     "choiceC": "definitely",
     "choiceD": "formerly",
-    "correctAnswer": "C",
+    "correctAnswer": "B",
     "category": "VOCAB",
     "subCategory": "Nghĩa của từ: Trạng từ mức độ",
+    "questionType": "NGHIA",
     "mindmapNode": "vocab -> nghĩa -> adv",
-    "vietnameseTranslation": "Hội đồng quản trị đã thông báo rằng họ chắc chắn sẽ tìm người thay thế cho CEO sắp nghỉ việc.",
-    "grammarBreakdown": "will + [ Adv ] + find (V nguyên mẫu). Cần một trạng từ bổ nghĩa cho động từ 'find' thể hiện cam kết của ban giám đốc.",
-    "explanation": "Ban giám đốc thông báo rằng họ 'chắc chắn / nhất định' (definitely) sẽ tìm người thay thế. 'Definitely' thể hiện tính khẳng định, quyết đoán, rất phù hợp với thông báo chính thức.",
+    "tuKhoaNguCanh": "Từ khóa: 'safety guidelines' (hướng dẫn an toàn) + 'important' (quan trọng) ➔ Cần trạng từ chỉ mức độ mang nghĩa 'vô cùng / cực kỳ quan trọng'.",
+    "vietnameseTranslation": "Các hướng dẫn an toàn cập nhật cho cơ sở sản xuất là cực kỳ quan trọng đối với tất cả công nhân dây chuyền lắp ráp.",
+    "grammarBreakdown": "Đứng giữa to be 'are' và tính từ 'important' cần một Trạng từ chỉ mức độ (Adverb of degree) để nhấn mạnh tầm quan trọng.",
+    "explanation": "'Extremely' (cực kỳ, vô cùng) bổ nghĩa mức độ cho tính từ 'important'. 'Usually' chỉ tần suất (thường thường). 'Formerly' chỉ thời gian trong quá khứ (trước đây).",
     "choicesAnalysis": {
-      "A": "usually (thường thường): Chỉ thói quen lặp lại, không hợp với việc tìm người thay thế trong tương lai.",
-      "B": "extremely (vô cùng, cực kỳ): Thường bổ nghĩa cho tính từ/trạng từ (extremely good), không đứng trước động từ thường.",
-      "C": "definitely (chắc chắn, nhất định): ĐÚNG, bổ nghĩa cho 'will find'.",
-      "D": "formerly (trước đây): Chỉ quá khứ, không đi với 'will find' ở tương lai."
+      "A": "usually (trạng từ tần suất): thường thường. Không dùng bổ nghĩa mức độ cho tính từ 'important'.",
+      "B": "extremely (trạng từ mức độ): cực kỳ, vô cùng. ĐÚNG. 'Extremely important' = cực kỳ quan trọng.",
+      "C": "definitely (trạng từ): chắc chắn, dứt khoát. Không tự nhiên khi dùng trong ngữ cảnh này.",
+      "D": "formerly (trạng từ thời gian): trước đây, thuở xưa. Sai ngữ cảnh hiện tại 'are'."
     },
-    "quickTip": "💡 Mẹo nghĩa: 'will definitely find' = chắc chắn/nhất định sẽ tìm thấy!"
+    "quickTip": "⚡ Cụm từ hay gặp: 'extremely important' = 'crucially important' = cực kỳ quan trọng!"
   },
   {
     "questionNumber": 113,
-    "questionText": "Mr. Johnson is ------- to apply for the managerial position at MindTek, Inc. as he lacks experience in the field of robotics.",
+    "questionText": "Management was ------- to approve the budget increase without seeing a detailed cost projection.",
     "choiceA": "hesitation",
     "choiceB": "hesitant",
     "choiceC": "hesitated",
@@ -273,21 +306,24 @@
     "correctAnswer": "B",
     "category": "VOCAB",
     "subCategory": "Loại từ: Tính từ (be hesitant to V)",
+    "questionType": "LOAI_TU",
     "mindmapNode": "vocab -> loại từ -> adj",
-    "vietnameseTranslation": "Ông Johnson đang do dự ứng tuyển vào vị trí quản lý tại MindTek, Inc., vì ông thiếu kinh nghiệm trong lĩnh vực robot.",
-    "grammarBreakdown": "S (Mr. Johnson) + is (to be) + [ Adj ] + to apply (to V)... Cấu trúc: be + hesitant + to V = do dự/ngập ngừng làm gì.",
-    "explanation": "Sau động từ to be ('is') cần một Tính từ mô tả trạng thái của chủ ngữ: 'hesitant' (do dự, ngập ngừng).",
+    "dauHieuNhanBiet": "Nhìn trước có động từ to be 'was', nhìn sau có 'to approve' (to V). Cấu trúc sau to be [ be + ... + to V ] ➔ Dấu hiệu vàng cần TÍNH TỪ (Adj).",
+    "lyDoChonLoaiTu": "Vì sao thiếu TÍNH TỪ (Adj)? Vì đứng sau động từ to be (was) làm vị ngữ miêu tả tâm lý/trạng thái của chủ ngữ (Management) cần một Tính từ. Cấu trúc cố định: 'be hesitant to do sth' = ngần ngại / do dự làm việc gì.",
+    "vietnameseTranslation": "Ban quản lý đã ngần ngại phê duyệt việc tăng ngân sách khi chưa thấy dự phóng chi phí chi tiết.",
+    "grammarBreakdown": "Cấu trúc vị ngữ tính từ: S + was/were + [ Adj ] + to V. Cụm cố định: be hesitant to do something (ngần ngại làm gì).",
+    "explanation": "'Hesitant' là tính từ (do dự, ngần ngại) đứng sau to be 'was'. 'Hesitation' là danh từ. 'Hesitantly' là trạng từ. 'Hesitated' là động từ quá khứ.",
     "choicesAnalysis": {
-      "A": "hesitation (danh từ - sự do dự): Không đứng sau 'is' để đi với 'to apply'.",
-      "B": "hesitant (tính từ - do dự, lưỡng lự): ĐÚNG cấu trúc 'to be hesitant to do sth'.",
-      "C": "hesitated (V-ed): Không dùng thì bị động với nội động từ hesitate.",
-      "D": "hesitantly (trạng từ - một cách do dự): Trạng từ không làm bổ ngữ trực tiếp sau to be."
+      "A": "hesitation [Danh từ - đuôi '-tion']: Danh từ không đứng sau to be đi với 'to approve'.",
+      "B": "hesitant [Tính từ - đuôi '-ant']: ĐÚNG. Cấu trúc 'was hesitant to approve' = ngần ngại phê duyệt.",
+      "C": "hesitated [Động từ quá khứ]: Sai vì sau 'was' không dùng động từ quá khứ chủ động.",
+      "D": "hesitantly [Trạng từ - đuôi '-ly']: Sau to be cần tính từ làm vị ngữ, không dùng trạng từ đứng đơn lẻ."
     },
-    "quickTip": "💡 Cấu trúc ăn điểm: 'be hesitant to + V' = do dự/ngần ngại làm gì!"
+    "quickTip": "⚡ Cấu trúc tủ TOEIC: 'be hesitant to V' = 'be reluctant to V' = ngần ngại / do dự làm gì!"
   },
   {
     "questionNumber": 114,
-    "questionText": "Rondel Plumbing Company offers a ------- range of apprenticeship opportunities for enthusiastic individuals.",
+    "questionText": "The culinary school offers a ------- range of cooking classes designed for both beginners and experienced chefs.",
     "choiceA": "lasting",
     "choiceB": "several",
     "choiceC": "durable",
@@ -295,21 +331,23 @@
     "correctAnswer": "D",
     "category": "VOCAB",
     "subCategory": "Cụm từ cố định: a diverse range of",
+    "questionType": "NGHIA",
     "mindmapNode": "vocab -> cụm cố định",
-    "vietnameseTranslation": "Công ty Điện nước Rondel cung cấp nhiều cơ hội học nghề đa dạng cho các cá nhân nhiệt huyết.",
-    "grammarBreakdown": "Cụm danh từ: a + [ Adj ] + range of + N(số nhiều) = một loạt/đa dạng các...",
-    "explanation": "Cụm từ cố định 'a diverse range of' (hoặc 'a wide range of') có nghĩa là 'nhiều loại đa dạng, phong phú'.",
+    "tuKhoaNguCanh": "Từ khóa: Cụm cố định 'a diverse range of + N_số nhiều' = một loạt các... đa dạng, kết hợp ngữ cảnh 'for both beginners and experienced chefs' (dành cho cả người mới bắt đầu và đầu bếp có kinh nghiệm).",
+    "vietnameseTranslation": "Trường ẩm thực cung cấp một loạt các lớp học nấu ăn đa dạng được thiết kế cho cả người mới bắt đầu và các đầu bếp giàu kinh nghiệm.",
+    "grammarBreakdown": "Cụm danh từ cố định: a diverse range of something = một loạt / nhiều chủng loại đa dạng.",
+    "explanation": "Câu hỏi kết hợp từ (collocation): 'A diverse range of' là cụm từ chuẩn mực diễn đạt 'hàng loạt các lớp học đa dạng'. 'Several' không đứng sau mạo từ 'a'. 'Durable' chỉ vật liệu bền bỉ.",
     "choicesAnalysis": {
-      "A": "lasting (bền lâu, lâu dài): Không đi thành cụm 'a lasting range of'.",
-      "B": "several (một vài): Không đứng sau mạo từ 'a' (không có 'a several range').",
-      "C": "durable (bền bỉ, dùng cho vật liệu/đồ dùng): Không dùng cho cơ hội học nghề.",
-      "D": "diverse (đa dạng): ĐÚNG cụm 'a diverse range of' = đa dạng các cơ hội."
+      "A": "lasting (tính từ): lâu dài, bền vững. Không tạo thành cụm 'a lasting range of'.",
+      "B": "several (từ chỉ số lượng): một vài. Không đứng sau mạo từ 'a' (không có 'a several range').",
+      "C": "durable (tính từ): bền (đồ vật/thiết bị). Không dùng cho các khóa học.",
+      "D": "diverse (tính từ): đa dạng, phong phú. ĐÚNG. Cụm kinh điển 'a diverse range of' = nhiều loại đa dạng."
     },
-    "quickTip": "💡 Cụm kinh điển TOEIC: 'a diverse range of' = 'a wide range of' = 'a variety of'!"
+    "quickTip": "⚡ Bộ ba cụm từ 'ĐA DẠNG' TOEIC: 'a diverse range of' = 'a wide variety of' = 'a broad array of'!"
   },
   {
     "questionNumber": 115,
-    "questionText": "The director of tonight's play asks that theatergoers ------- refrain from taking pictures during the performance.",
+    "questionText": "Visitors are ------- requested to turn off their mobile phones before entering the theater auditorium.",
     "choiceA": "kinder",
     "choiceB": "kindly",
     "choiceC": "kindness",
@@ -317,21 +355,24 @@
     "correctAnswer": "B",
     "category": "VOCAB",
     "subCategory": "Loại từ: Trạng từ lịch sự (Adverb)",
+    "questionType": "LOAI_TU",
     "mindmapNode": "vocab -> loại từ -> adv",
-    "vietnameseTranslation": "Đạo diễn của vở kịch tối nay yêu cầu khán giả vui lòng không chụp ảnh trong lúc biểu diễn.",
-    "grammarBreakdown": "asks that + S (theatergoers) + [ Adv ] + V (refrain from)... Chỗ trống đứng trước động từ 'refrain' cần một Trạng từ bổ nghĩa.",
-    "explanation": "'Kindly' là trạng từ mang nghĩa lịch sự 'vui lòng / làm ơn' (kindly refrain from = vui lòng kiềm chế / không làm gì).",
+    "dauHieuNhanBiet": "Nhìn trước có to be 'are', nhìn sau có động từ phân từ bị động 'requested'. Vị trí kẹp giữa trợ động từ và động từ chính [ be + ... + V3/ed ] ➔ Dấu hiệu vàng cần TRẠNG TỪ (Adv).",
+    "lyDoChonLoaiTu": "Vì sao thiếu TRẠNG TỪ (Adv)? Vì vị trí đứng giữa trợ động từ 'are' và động từ chính 'requested' trong cấu trúc bị động chỉ có thể là Trạng từ để bổ nghĩa cho hành động. Cụm từ 'be kindly requested to V' là cách diễn đạt lịch sự trang trọng trong tiếng Anh: 'được trân trọng yêu cầu làm gì'.",
+    "vietnameseTranslation": "Khách tham quan được vui lòng yêu cầu tắt điện thoại di động trước khi vào khán phòng nhà hát.",
+    "grammarBreakdown": "Cấu trúc bị động thể hiện sự lịch sự: S + are + [ Adv ] + requested + to V.",
+    "explanation": "'Kindly' là trạng từ mang sắc thái lịch sự, trang trọng (vui lòng / trân trọng). Đứng giữa to be 'are' và phân từ 'requested' để bổ nghĩa.",
     "choicesAnalysis": {
-      "A": "kinder (so sánh hơn của kind): Không phù hợp.",
-      "B": "kindly (trạng từ - vui lòng, làm ơn): ĐÚNG, trạng từ bổ nghĩa cho động từ 'refrain'.",
-      "C": "kindness (danh từ - lòng tốt): Không đứng trước động từ.",
-      "D": "kind (tính từ - tốt bụng): Không bổ nghĩa cho động từ."
+      "A": "kinder [Tính từ so sánh hơn]: Không đứng kẹp giữa 'be + V3/ed'.",
+      "B": "kindly [Trạng từ - đuôi '-ly']: ĐÚNG. Tạo thành cấu trúc lịch sự 'are kindly requested to V' = được trân trọng yêu cầu làm gì.",
+      "C": "kindness [Danh từ - đuôi '-ness']: Danh từ không thể đứng giữa cấu trúc bị động.",
+      "D": "kind [Tính từ]: Tính từ không đứng trước động từ để bổ nghĩa."
     },
-    "quickTip": "💡 Cụm từ thông báo lịch sự công sở: 'kindly do / refrain from sth' = xin vui lòng làm / không làm gì!"
+    "quickTip": "⚡ Cụm từ thông báo kinh điển: 'You are kindly requested to...' = 'Xin vui lòng / Trân trọng yêu cầu...'!"
   },
   {
     "questionNumber": 116,
-    "questionText": "Customers of Dillon's Furniture can view an ------- delivery date on the checkout page when placing an order online.",
+    "questionText": "According to the contractor, the ------- completion date for the office renovation is November 15.",
     "choiceA": "estimated",
     "choiceB": "estimating",
     "choiceC": "estimation",
@@ -339,21 +380,24 @@
     "correctAnswer": "A",
     "category": "VOCAB",
     "subCategory": "Loại từ: Phân từ làm tính từ (Participle as Adjective)",
+    "questionType": "LOAI_TU",
     "mindmapNode": "vocab -> loại từ -> adj",
-    "vietnameseTranslation": "Khách hàng của Dillon's Furniture có thể xem ngày giao hàng dự kiến trên trang thanh toán khi đặt hàng trực tuyến.",
-    "grammarBreakdown": "view an + [ Adj / V-ed phân từ ] + delivery date (cụm danh từ). Chỗ trống đứng trước cụm danh từ để bổ nghĩa mang nghĩa bị động (được ước tính / dự kiến).",
-    "explanation": "Ngày giao hàng là thứ 'được ước tính/dự kiến', do đó ta dùng quá khứ phân từ 'estimated' đóng vai trò như tính từ: 'estimated delivery date' (ngày giao hàng dự kiến).",
+    "dauHieuNhanBiet": "Nhìn trước có mạo từ 'the', nhìn sau có cụm danh từ 'completion date' (ngày hoàn thành). Vị trí đứng trước danh từ [ the + ... + Noun ] ➔ Cần một TÍNH TỪ (Adj / Phân từ V-ed mang nghĩa bị động).",
+    "lyDoChonLoaiTu": "Vì sao thiếu TÍNH TỪ dạng V-ed (estimated)? Vì 'ngày hoàn thành' là đối tượng được ước tính bởi nhà thầu (mang tính bị động), nên ta dùng quá khứ phân từ 'estimated' đóng vai trò là tính từ đứng trước danh từ để bổ nghĩa: 'the estimated completion date' = ngày hoàn thành được ước tính.",
+    "vietnameseTranslation": "Theo nhà thầu, ngày hoàn thành dự kiến cho việc cải tạo văn phòng là ngày 15 tháng 11.",
+    "grammarBreakdown": "Cụm danh từ: the + [ Phân từ V-ed làm tính từ ] + Danh từ chính 'completion date'.",
+    "explanation": "'Estimated' là quá khứ phân từ đóng vai trò tính từ (mang nghĩa bị động: 'được ước tính / dự kiến'). 'Estimating' là chủ động (không hợp nghĩa vì ngày tháng không tự ước tính).",
     "choicesAnalysis": {
-      "A": "estimated (tính từ/V-ed - được dự kiến): ĐÚNG, 'estimated delivery date' là thuật ngữ thương mại quen thuộc.",
-      "B": "estimating (V-ing): Mang nghĩa chủ động (đang đi ước tính), không hợp nghĩa.",
-      "C": "estimation (danh từ - sự ước tính): Không đứng trước cụm danh từ 'delivery date'.",
-      "D": "estimate (động từ/danh từ): Không đứng sau 'an' khi đã có 'delivery date'."
+      "A": "estimated [Phân từ V-ed làm tính từ bị động]: ĐÚNG. 'Estimated completion date' = ngày hoàn thành được dự kiến / ước tính.",
+      "B": "estimating [Phân từ V-ing chủ động]: Sai vì ngày tháng không thể tự thực hiện hành động ước tính.",
+      "C": "estimation [Danh từ - đuôi '-tion']: Danh từ không đứng ghép với 'completion date' ở đây.",
+      "D": "estimate [Động từ nguyên thể / Danh từ]: Không đứng trước 'completion date' ở vị trí này."
     },
-    "quickTip": "💡 Thuật ngữ thương mại chuẩn TOEIC: 'estimated delivery date' = ngày giao hàng dự kiến!"
+    "quickTip": "⚡ Cụm tủ TOEIC: 'estimated completion date' = 'ngày hoàn thành dự kiến'!"
   },
   {
     "questionNumber": 117,
-    "questionText": "Krush Juice & Smoothies is downsizing its operations and will be ------- several of its current menu choices.",
+    "questionText": "The airline announced that it will be ------- daily non-stop flights between Chicago and Tokyo starting next spring.",
     "choiceA": "reimbursing",
     "choiceB": "purchasing",
     "choiceC": "discontinuing",
@@ -361,21 +405,23 @@
     "correctAnswer": "C",
     "category": "VOCAB",
     "subCategory": "Nghĩa của từ: Động từ (Verb meaning)",
+    "questionType": "NGHIA",
     "mindmapNode": "vocab -> nghĩa -> verb",
-    "vietnameseTranslation": "Krush Juice & Smoothies đang thu nhỏ quy mô hoạt động và sẽ ngừng cung cấp một số lựa chọn trong thực đơn hiện tại.",
-    "grammarBreakdown": "will be + [ V-ing ] + several of its current menu choices. Cần một động từ V-ing hợp ngữ cảnh kinh doanh 'downsizing' (thu hẹp quy mô).",
-    "explanation": "Vế trước nói công ty 'downsizing operations' (thu nhỏ quy mô hoạt động), nên vế sau việc họ 'discontinuing menu choices' (ngừng phục vụ/ngừng sản xuất các món ăn) là hoàn toàn hợp logic.",
+    "tuKhoaNguCanh": "Từ khóa: 'airline announced' (hãng hàng không thông báo) + 'daily non-stop flights' (các chuyến bay thẳng hàng ngày) ➔ Trong các đáp án, chỉ có 'discontinuing' (ngừng cung cấp/ngừng khai thác) là động từ phù hợp với dịch vụ chuyến bay.",
+    "vietnameseTranslation": "Hãng hàng không thông báo rằng họ sẽ ngừng các chuyến bay thẳng hàng ngày giữa Chicago và Tokyo bắt đầu từ mùa xuân tới.",
+    "grammarBreakdown": "Thì tương lai tiếp diễn: will be + V-ing. Cần một động từ V-ing mang nghĩa hợp lý đối với dịch vụ chuyến bay.",
+    "explanation": "Câu hỏi từ vựng: 'Discontinuing' nghĩa là ngừng cung cấp một dịch vụ hay sản phẩm. Các hãng bay hay dùng từ này khi dừng một đường bay. 'Reimbursing' là hoàn tiền, 'purchasing' là mua.",
     "choicesAnalysis": {
-      "A": "reimbursing (hoàn tiền): Không hợp với menu choices.",
-      "B": "purchasing (mua vào): Trái ngược với việc thu hẹp quy mô.",
-      "C": "discontinuing (ngừng sản xuất, ngừng cung cấp): ĐÚNG ngữ cảnh cắt giảm món.",
-      "D": "determining (xác định, quyết định): Không hợp nghĩa."
+      "A": "reimbursing (hoàn tiền, bồi hoàn): Không dùng 'hoàn tiền các chuyến bay hàng ngày'.",
+      "B": "purchasing (mua sắm): Hãng hàng không khai thác hoặc ngừng chuyến bay chứ không 'mua chuyến bay'.",
+      "C": "discontinuing (ngừng khai thác, dừng cung cấp): ĐÚNG. Hãng bay sẽ ngừng khai thác đường bay này.",
+      "D": "determining (xác định, quyết định): Không hợp nghĩa trong ngữ cảnh này."
     },
-    "quickTip": "💡 Mẹo logic bài đọc: 'downsizing' (thu hẹp quy mô) đi đôi với 'discontinuing' (ngừng cung cấp sản phẩm)!"
+    "quickTip": "⚡ Từ vựng dịch vụ: 'discontinue a flight / service' = ngừng khai thác chuyến bay / dịch vụ!"
   },
   {
     "questionNumber": 118,
-    "questionText": "Under the ------- of Professor James Morton, Biosys Scotland's research team strives to develop cutting-edge health treatments.",
+    "questionText": "The marketing campaign was designed under the ------- of our new creative director, Ms. Zhao.",
     "choiceA": "directly",
     "choiceB": "directed",
     "choiceC": "direction",
@@ -383,21 +429,24 @@
     "correctAnswer": "C",
     "category": "VOCAB",
     "subCategory": "Loại từ: Danh từ (Under the direction of)",
+    "questionType": "LOAI_TU",
     "mindmapNode": "vocab -> loại từ -> noun",
-    "vietnameseTranslation": "Dưới sự chỉ đạo của Giáo sư James Morton, đội ngũ nghiên cứu của Biosys Scotland nỗ lực phát triển các phương pháp điều trị y tế tiên tiến.",
-    "grammarBreakdown": "Under + the + [ Danh từ ] + of somebody... Vị trí giữa mạo từ 'the' và giới từ 'of' bắt buộc phải là một Danh từ.",
-    "explanation": "Cụm từ chuẩn: 'Under the direction of sb' = dưới sự chỉ đạo/hướng dẫn của ai. 'Direction' là danh từ duy nhất trong 4 phương án.",
+    "dauHieuNhanBiet": "Nhìn trước có giới từ 'under the', nhìn sau có giới từ 'of'. Cấu trúc cụm giới từ [ under the + ... + of ] ➔ Dấu hiệu vàng cần DANH TỪ (Noun).",
+    "lyDoChonLoaiTu": "Vì sao thiếu DANH TỪ (Noun)? Vì sau mạo từ 'the' bắt buộc phải là một Danh từ. Cụm thành ngữ kinh điển: 'under the direction of somebody' = dưới sự chỉ đạo/hướng dẫn của ai đó.",
+    "vietnameseTranslation": "Chiến dịch tiếp thị được thiết kế dưới sự chỉ đạo của giám đốc sáng tạo mới của chúng tôi, cô Triệu.",
+    "grammarBreakdown": "Cụm giới từ cố định: under the + [ Danh từ ] + of somebody = dưới sự chỉ đạo / giám sát của ai.",
+    "explanation": "'Direction' là danh từ (sự chỉ đạo, hướng dẫn). Tạo thành cụm cố định 'under the direction of'. 'Directly' là trạng từ, 'directed' là quá khứ phân từ.",
     "choicesAnalysis": {
-      "A": "directly (trạng từ - trực tiếp): Trạng từ không đứng sau 'the'.",
-      "B": "directed (động từ quá khứ / phân từ): Không đứng sau 'the'.",
-      "C": "direction (danh từ - sự chỉ đạo, hướng đi): ĐÚNG ngữ pháp và tạo cụm 'Under the direction of'.",
-      "D": "directs (động từ chia ngôi số ít): Không phù hợp."
+      "A": "directly [Trạng từ - đuôi '-ly']: Trạng từ không đứng sau mạo từ 'the'.",
+      "B": "directed [Động từ quá khứ / phân từ]: Không đứng sau 'the' để làm danh từ ở đây.",
+      "C": "direction [Danh từ - đuôi '-tion']: ĐÚNG. Ghép cụm 'under the direction of' = dưới sự chỉ đạo của.",
+      "D": "directs [Động từ chia ngôi thứ 3]: Không đứng sau mạo từ 'the'."
     },
-    "quickTip": "💡 Mẹo 3 giây: Thấy 'Under the [ ... ] of' ➔ Chọn ngay DANH TỪ: direction / supervision / leadership!"
+    "quickTip": "⚡ Cụm tủ TOEIC: 'under the direction / supervision / leadership of...' = 'dưới sự chỉ đạo / giám sát của...'!"
   },
   {
     "questionNumber": 119,
-    "questionText": "Part-time telephone operators will be hired to help deal with the ------- number of customer calls during the company's busiest retail season.",
+    "questionText": "The response to the survey was -------, with over ninety percent of customers expressing complete satisfaction.",
     "choiceA": "overwhelmingly",
     "choiceB": "overwhelming",
     "choiceC": "overwhelmed",
@@ -405,21 +454,24 @@
     "correctAnswer": "B",
     "category": "VOCAB",
     "subCategory": "Loại từ: Tính từ chủ động (-ing)",
+    "questionType": "LOAI_TU",
     "mindmapNode": "vocab -> loại từ -> adj",
-    "vietnameseTranslation": "Các tổng đài viên bán thời gian sẽ được tuyển dụng để giúp xử lý số lượng cuộc gọi lớn từ khách hàng trong mùa bán lẻ cao điểm của công ty.",
-    "grammarBreakdown": "deal with the + [ Adj ] + number of customer calls... Đứng trước danh từ 'number' cần một Tính từ bổ nghĩa.",
-    "explanation": "'Overwhelming' là tính từ mang nghĩa 'to lớn, khổng lồ, áp đảo' (overwhelming number = số lượng khổng lồ gây choáng ngợp). 'Overwhelmed' là tính từ bị động dùng cho cảm xúc của người (bị choáng ngợp), không dùng cho 'number'.",
+    "dauHieuNhanBiet": "Nhìn trước có động từ to be 'was', chủ ngữ là 'The response' (phản hồi - danh từ chỉ sự vật/hiện tượng). Vị trí sau to be [ S(vật) + be + ... ] ➔ Dấu hiệu vàng cần TÍNH TỪ mang tính chủ động (đuôi -ing).",
+    "lyDoChonLoaiTu": "Vì sao thiếu TÍNH TỪ đuôi -ing (overwhelming)? Vì chủ ngữ 'The response' là sự vật/sự việc mang bản chất gây ấn tượng mạnh mẽ/vượt trội (chủ động), nên dùng tính từ đuôi -ing ('overwhelming' = áp đảo, to lớn). Đuôi -ed ('overwhelmed') chỉ dùng cho người khi bị choáng ngợp.",
+    "vietnameseTranslation": "Phản hồi đối với cuộc khảo sát là vô cùng to lớn/áp đảo, với hơn 90% khách hàng bày tỏ sự hài lòng tuyệt đối.",
+    "grammarBreakdown": "Cấu trúc vị ngữ: S (sự vật: The response) + was + [ Tính từ đuôi -ing ]. Tính từ chủ động miêu tả bản chất của sự vật.",
+    "explanation": "'Overwhelming' là tính từ đuôi -ing miêu tả tính chất của 'The response' (mang tính áp đảo, to lớn). 'Overwhelmed' đuôi -ed chỉ cảm xúc của con người (bị choáng ngợp).",
     "choicesAnalysis": {
-      "A": "overwhelmingly (trạng từ): Không bổ nghĩa trực tiếp cho danh từ 'number'.",
-      "B": "overwhelming (tính từ chủ động - áp đảo, khổng lồ): ĐÚNG, 'overwhelming number' = số lượng cực lớn.",
-      "C": "overwhelmed (tính từ bị động - bị choáng ngợp): Chỉ dùng cho người (I feel overwhelmed).",
-      "D": "overwhelms (động từ): Không phù hợp vị trí trước danh từ."
+      "A": "overwhelmingly [Trạng từ - đuôi '-ly']: Sau to be cần tính từ làm vị ngữ, không dùng trạng từ đứng đơn độc.",
+      "B": "overwhelming [Tính từ chủ động - đuôi '-ing']: ĐÚNG. Miêu tả phản hồi có tính chất áp đảo, mạnh mẽ.",
+      "C": "overwhelmed [Tính từ bị động - đuôi '-ed']: Sai vì chỉ dùng cho người (cảm thấy choáng ngợp), không dùng cho sự vật.",
+      "D": "overwhelms [Động từ chia ngôi thứ 3]: Đã có động từ to be 'was', không điền động từ vào đây."
     },
-    "quickTip": "💡 Cụm từ hay gặp: 'an overwhelming number of' = số lượng khổng lồ, áp đảo!"
+    "quickTip": "⚡ Quy tắc phân biệt V-ing / V-ed: Chủ ngữ chỉ VẬT mang bản chất ➔ Chọn TÍNH TỪ đuôi '-ing'!"
   },
   {
     "questionNumber": 120,
-    "questionText": "Aquatastic Water Park will be offering discounts on children's day passes ------- the month of June.",
+    "questionText": "The library will temporarily suspend borrowing services ------- the inventory audit next week.",
     "choiceA": "apart",
     "choiceB": "down",
     "choiceC": "between",
@@ -427,21 +479,24 @@
     "correctAnswer": "D",
     "category": "GRAMMAR",
     "subCategory": "Giới từ chỉ thời gian: during + khoảng thời gian",
+    "questionType": "CAU_TRUC",
     "mindmapNode": "gram -> giới từ thời gian",
-    "vietnameseTranslation": "Công viên nước Aquatastic sẽ giảm giá vé ngày cho trẻ em trong suốt tháng 6.",
-    "grammarBreakdown": "offering discounts ... [ Giới từ ] + the month of June (khoảng thời gian / tháng).",
-    "explanation": "'During' + khoảng thời gian (a period of time / month / season) = trong suốt khoảng thời gian đó. 'Between' phải đi với 'and' (between A and B). 'Apart' đi với 'from'. 'Down' chỉ phương hướng.",
+    "congThuc": "Công thức giới từ thời gian: DURING + Danh từ / Cụm danh từ chỉ sự kiện, khoảng thời gian (trong suốt...)",
+    "dauHieuNhanBiet": "Nhìn sau chỗ trống là cụm danh từ chỉ một sự kiện diễn ra trong một khoảng thời gian: 'the inventory audit next week' (cuộc kiểm kê vào tuần tới) ➔ Cần giới từ 'DURING'.",
+    "vietnameseTranslation": "Thư viện sẽ tạm thời ngừng dịch vụ mượn sách trong suốt đợt kiểm kê tài sản vào tuần tới.",
+    "grammarBreakdown": "Đứng trước một danh từ/sự kiện chỉ khoảng thời gian ('the inventory audit') cần một giới từ chỉ thời gian 'during' (trong suốt lúc/trong khi).",
+    "explanation": "'During + Noun' dùng để chỉ hành động xảy ra trong suốt khoảng thời gian diễn ra một sự kiện. 'Apart' phải đi với 'from'. 'Between' phải có 'and'.",
     "choicesAnalysis": {
-      "A": "apart (phải có from: apart from): Không phù hợp.",
-      "B": "down (xuống): Không chỉ thời gian.",
-      "C": "between (giữa): Phải có cấu trúc 'between A and B'.",
-      "D": "during (trong suốt): ĐÚNG, 'during the month of June' = trong suốt tháng 6."
+      "A": "apart (phải có 'from'): Không đứng một mình trước danh từ thời gian.",
+      "B": "down (xuống): Giới từ chỉ vị trí, không chỉ thời gian.",
+      "C": "between (ở giữa): Phải đi theo cặp 'between A and B', ở đây chỉ có một sự kiện.",
+      "D": "during (trong suốt): ĐÚNG theo công thức 'during + Danh từ sự kiện/thời gian'."
     },
-    "quickTip": "💡 Mẹo giới từ: 'during' + danh từ chỉ khoảng thời gian / mùa / sự kiện (during June / the summer / the meeting)!"
+    "quickTip": "⚡ Phân biệt During vs While: 'During + Cụm danh từ' (DURING the audit) còn 'While + Mệnh đề S+V'!"
   },
   {
     "questionNumber": 121,
-    "questionText": "The marketing director believes that the Burton Hotel and Willoughby Restaurant are ------- suitable venues for the year-end banquet.",
+    "questionText": "Both candidates for the regional manager position are ------- qualified, making the final decision very difficult.",
     "choiceA": "equals",
     "choiceB": "equally",
     "choiceC": "equaled",
@@ -449,21 +504,24 @@
     "correctAnswer": "B",
     "category": "VOCAB",
     "subCategory": "Loại từ: Trạng từ bổ nghĩa Tính từ",
+    "questionType": "LOAI_TU",
     "mindmapNode": "vocab -> loại từ -> adv",
-    "vietnameseTranslation": "Giám đốc tiếp thị tin rằng Khách sạn Burton và Nhà hàng Willoughby là những địa điểm phù hợp như nhau cho bữa tiệc cuối năm.",
-    "grammarBreakdown": "are (to be) + [ Adv ] + suitable (Adj) + venues (Noun)... Chỗ trống đứng giữa động từ 'are' và tính từ 'suitable'.",
-    "explanation": "Quy tắc ngữ pháp: Đứng trước một Tính từ (suitable) để bổ nghĩa cho tính từ đó phải là một Trạng từ (Adverb, đuôi -ly). 'Equally suitable' = phù hợp như nhau / tương đương nhau.",
+    "dauHieuNhanBiet": "Nhìn trước có to be 'are', nhìn sau có tính từ 'qualified' (đủ trình độ, đủ tiêu chuẩn). Vị trí đứng trước tính từ [ be + ... + Adj ] ➔ Dấu hiệu vàng cần TRẠNG TỪ (Adv) để bổ nghĩa cho tính từ.",
+    "lyDoChonLoaiTu": "Vì sao thiếu TRẠNG TỪ (Adv)? Vì từ đứng sau chỗ trống là tính từ 'qualified'. Theo quy tắc ngữ pháp, chỉ có Trạng từ (Adverb) mới có chức năng bổ nghĩa cho Tính từ (đủ trình độ như thế nào? ➔ đủ trình độ như nhau, ngang nhau: 'equally qualified').",
+    "vietnameseTranslation": "Cả hai ứng viên cho vị trí giám đốc khu vực đều có trình độ chuyên môn ngang nhau, khiến cho quyết định cuối cùng trở nên rất khó khăn.",
+    "grammarBreakdown": "Cấu trúc: to be + [ Trạng từ ] + Tính từ. Trạng từ đứng trước tính từ 'qualified' để bổ nghĩa về mức độ.",
+    "explanation": "'Equally' là trạng từ (như nhau, ngang nhau), bổ nghĩa cho tính từ 'qualified'. 'Equality' là danh từ. 'Equals' là danh từ/động từ.",
     "choicesAnalysis": {
-      "A": "equals (động từ/danh từ số nhiều): Không đứng trước tính từ.",
-      "B": "equally (trạng từ - như nhau, tương đương): ĐÚNG, trạng từ bổ nghĩa cho tính từ 'suitable'.",
-      "C": "equaled (V-ed): Không phù hợp.",
-      "D": "equality (danh từ - sự bình đẳng): Danh từ không bổ nghĩa cho tính từ."
+      "A": "equals [Động từ / Danh từ số nhiều]: Không bổ nghĩa cho tính từ 'qualified'.",
+      "B": "equally [Trạng từ - đuôi '-ly']: ĐÚNG. Trạng từ đứng trước bổ nghĩa cho tính từ 'qualified' (equally qualified = có trình độ ngang nhau).",
+      "C": "equaled [Động từ chia quá khứ]: Không đứng trước tính từ để bổ nghĩa.",
+      "D": "equality [Danh từ - đuôi '-ity']: Danh từ không bổ nghĩa cho tính từ."
     },
-    "quickTip": "💡 Mẹo 3 giây: Đứng trước TÍNH TỪ (suitable) cần TRẠNG TỪ (equally) để bổ nghĩa!"
+    "quickTip": "⚡ Mẹo 3 giây: Thấy cấu trúc [ be + ... + Tính từ ] ➔ 100% chọn TRẠNG TỪ đuôi '-ly' để bổ nghĩa cho tính từ!"
   },
   {
     "questionNumber": 122,
-    "questionText": "The registration form needs to be filled out ------- black or blue ink and signed at the bottom.",
+    "questionText": "The new handcrafted leather bags are made ------- premium materials imported from Italy.",
     "choiceA": "on",
     "choiceB": "along",
     "choiceC": "between",
@@ -471,21 +529,24 @@
     "correctAnswer": "D",
     "category": "GRAMMAR",
     "subCategory": "Giới từ chỉ phương tiện / chất liệu",
+    "questionType": "CAU_TRUC",
     "mindmapNode": "gram -> giới từ",
-    "vietnameseTranslation": "Đơn đăng ký cần được điền bằng mực đen hoặc xanh và ký tên ở phía dưới.",
-    "grammarBreakdown": "filled out + [ Giới từ ] + black or blue ink... Chỉ công cụ/chất liệu dùng để viết.",
-    "explanation": "Khi nói 'viết/điền bằng chất liệu gì' (với mực đen/xanh), ta dùng giới từ 'with' (hoặc 'in'): 'filled out with black or blue ink' = được điền bằng mực đen hoặc xanh.",
+    "congThuc": "Công thức chất liệu / thành phần: BE MADE WITH + nguyên liệu, thành phần (được làm bằng/với nguyên liệu gì)",
+    "dauHieuNhanBiet": "Nhìn trước có 'are made' (được làm ra), nhìn sau là nguyên liệu thành phần 'premium materials' (vật liệu cao cấp) ➔ Công thức giới từ 'made with materials'.",
+    "vietnameseTranslation": "Những chiếc túi da thủ công mới được làm bằng các chất liệu cao cấp nhập khẩu từ Ý.",
+    "grammarBreakdown": "Cấu trúc bị động chỉ chất liệu/thành phần sản xuất: be made with something = được làm bằng nguyên liệu/vật liệu gì.",
+    "explanation": "'Made with' dùng khi nói về một trong các nguyên liệu, thành phần tạo nên sản phẩm. 'On', 'along', 'between' không kết hợp với 'made' để chỉ chất liệu.",
     "choicesAnalysis": {
-      "A": "on (trên): Không dùng cho mực viết.",
-      "B": "along (dọc theo): Chỉ không gian.",
-      "C": "between (ở giữa): Phải có 2 đối tượng riêng biệt (between A and B).",
-      "D": "with (bằng, với): ĐÚNG, chỉ chất liệu/công cụ để điền đơn."
+      "A": "on (trên): Không dùng 'made on materials'.",
+      "B": "along (dọc theo): Giới từ chỉ phương hướng/vị trí, không dùng cho chất liệu.",
+      "C": "between (ở giữa): Không hợp nghĩa.",
+      "D": "with (với, bằng): ĐÚNG theo công thức 'be made with + nguyên liệu'."
     },
-    "quickTip": "💡 Mẹo: 'fill out with ink' = điền đơn bằng mực!"
+    "quickTip": "⚡ Cụm từ chất liệu: 'made with premium materials' = được làm bằng nguyên liệu cao cấp!"
   },
   {
     "questionNumber": 123,
-    "questionText": "Staff in the customer service department have reported that computer software errors are occurring with increasing -------.",
+    "questionText": "The maintenance crew conducts checks of the ventilation system with greater ------- during the summer.",
     "choiceA": "regulated",
     "choiceB": "regular",
     "choiceC": "regularly",
@@ -493,21 +554,24 @@
     "correctAnswer": "D",
     "category": "VOCAB",
     "subCategory": "Loại từ: Danh từ (sau Tính từ)",
+    "questionType": "LOAI_TU",
     "mindmapNode": "vocab -> loại từ -> noun",
-    "vietnameseTranslation": "Nhân viên ở bộ phận dịch vụ khách hàng đã báo cáo rằng các lỗi phần mềm máy tính đang xảy ra với tần suất ngày càng tăng.",
-    "grammarBreakdown": "with + increasing (Adj - đang gia tăng) + [ Danh từ ]... Sau giới từ 'with' và tính từ 'increasing' bắt buộc phải là một Danh từ.",
-    "explanation": "Từ loại cần điền là một Danh từ để đi với tính từ 'increasing': 'regularity' (danh từ - tính đều đặn, tần suất). Cụm 'with increasing regularity' = với tần suất ngày càng tăng.",
+    "dauHieuNhanBiet": "Nhìn trước có giới từ 'with' + tính từ so sánh hơn 'greater'. Vị trí sau giới từ và tính từ [ with + Adj + ... ] ➔ Dấu hiệu vàng cần DANH TỪ (Noun).",
+    "lyDoChonLoaiTu": "Vì sao thiếu DANH TỪ (Noun)? Vì 'with' là giới từ, sau giới từ cần danh từ. Hơn nữa 'greater' là tính từ so sánh hơn, tính từ bắt buộc phải bổ nghĩa cho một Danh từ phía sau. Cụm từ: 'with greater regularity' = với sự đều đặn/thường xuyên hơn.",
+    "vietnameseTranslation": "Đội bảo trì tiến hành kiểm tra hệ thống thông gió với tần suất đều đặn hơn trong suốt mùa hè.",
+    "grammarBreakdown": "Cụm giới từ chỉ cách thức: with + [ Tính từ so sánh hơn ] + [ Danh từ ]. Cụm cố định: with regularity = một cách đều đặn.",
+    "explanation": "'Regularity' là danh từ (sự đều đặn, tính quy củ). Cụm 'with greater regularity' tương đương trạng từ 'more regularly'. 'Regular' là tính từ. 'Regularly' là trạng từ.",
     "choicesAnalysis": {
-      "A": "regulated (V-ed/Adj - được điều chỉnh): Không phải danh từ.",
-      "B": "regular (tính từ - đều đặn): Không đứng sau tính từ 'increasing' khi không có danh từ.",
-      "C": "regularly (trạng từ - một cách đều đặn): Không đứng sau tính từ.",
-      "D": "regularity (danh từ - tần suất, sự đều đặn): ĐÚNG, tạo cụm 'with increasing regularity'."
+      "A": "regulated [Động từ quá khứ / phân từ]: Không đứng sau tính từ 'greater'.",
+      "B": "regular [Tính từ]: Tính từ không bổ nghĩa cho tính từ 'greater'.",
+      "C": "regularly [Trạng từ - đuôi '-ly']: Trạng từ không đứng sau giới từ 'with greater'.",
+      "D": "regularity [Danh từ - đuôi '-ity']: ĐÚNG. Danh từ đứng sau tính từ 'greater' tạo thành cụm 'with greater regularity' = một cách đều đặn hơn."
     },
-    "quickTip": "💡 Cụm từ nâng cao TOEIC: 'with increasing regularity' = với tần suất ngày càng thường xuyên!"
+    "quickTip": "⚡ Công thức chuyển đổi: 'with regularity' = 'regularly'; 'with ease' = 'easily'!"
   },
   {
     "questionNumber": 124,
-    "questionText": "Residents of Ferndale have ------- concern that the construction of the proposed shopping mall will cause an increase in noise pollution.",
+    "questionText": "Several residents at the town hall meeting ------- concern about the proposed highway expansion.",
     "choiceA": "opposed",
     "choiceB": "queried",
     "choiceC": "assigned",
@@ -515,21 +579,23 @@
     "correctAnswer": "D",
     "category": "VOCAB",
     "subCategory": "Cụm từ kết hợp (Collocation): express concern",
+    "questionType": "NGHIA",
     "mindmapNode": "vocab -> cụm cố định -> nghĩa",
-    "vietnameseTranslation": "Cư dân ở Ferndale đã bày tỏ sự lo ngại rằng việc xây dựng trung tâm thương mại dự kiến sẽ làm gia tăng ô nhiễm tiếng ồn.",
-    "grammarBreakdown": "have + [ V-ed/V3 ] + concern (danh từ - sự lo ngại) + that... Cần một động từ kết hợp tự nhiên với danh từ 'concern'.",
-    "explanation": "Collocation kinh điển trong tiếng Anh và đề thi TOEIC: 'express concern (that...)' = bày tỏ sự lo ngại (rằng...). Các từ khác không đi với 'concern' theo nghĩa này.",
+    "tuKhoaNguCanh": "Từ khóa: Cụm từ kết hợp (Collocation) kinh điển 'EXPRESS CONCERN (ABOUT)' = bày tỏ sự lo ngại (về điều gì).",
+    "vietnameseTranslation": "Một số cư dân tại cuộc họp tòa thị chính đã bày tỏ sự lo ngại về dự án mở rộng đường cao tốc được đề xuất.",
+    "grammarBreakdown": "Cấu trúc câu: S (Several residents) + V (expressed) + O (concern about...). Cụm cố định: express concern about something.",
+    "explanation": "Câu hỏi kết hợp từ: 'Express concern' là cụm collocation cực kỳ phổ biến trong TOEIC (bày tỏ sự quan ngại/lo lắng). 'Opposed' đi trực tiếp với danh từ chỉ đối tượng phản đối ('oppose the project', không nói 'oppose concern').",
     "choicesAnalysis": {
-      "A": "opposed (phản đối): Oppose something trực tiếp (oppose the plan), không đi với 'oppose concern'.",
-      "B": "queried (chất vấn, thắc mắc): Không đi với 'query concern'.",
-      "C": "assigned (phân công): Không hợp nghĩa.",
-      "D": "expressed (bày tỏ): ĐÚNG, 'expressed concern' = bày tỏ sự lo lắng/quan ngại."
+      "A": "opposed (phản đối): Không đi với tân ngữ 'concern' (không ai nói 'phản đối sự lo ngại').",
+      "B": "queried (thắc mắc, hỏi): Không đi thành cụm với 'concern'.",
+      "C": "assigned (phân công, giao phó): Sai nghĩa hoàn toàn.",
+      "D": "expressed (bày tỏ, thể hiện): ĐÚNG. Cụm tủ TOEIC 'expressed concern about' = bày tỏ sự lo ngại về."
     },
-    "quickTip": "💡 Cụm từ xuất hiện 90% trong đề thi: 'express concern / interest / gratitude' = bày tỏ sự lo lắng / quan tâm / biết ơn!"
+    "quickTip": "⚡ Cụm tủ kinh điển TOEIC: 'express concern / interest / appreciation / gratitude' = bày tỏ sự quan ngại / quan tâm / cảm kích / biết ơn!"
   },
   {
     "questionNumber": 125,
-    "questionText": "As the head of the personnel department, Mr. Murphy is ------- for ensuring the happiness and welfare of all company employees.",
+    "questionText": "Ms. Tanaka is the team member most ------- for coordinating the upcoming product launch.",
     "choiceA": "likely",
     "choiceB": "sincere",
     "choiceC": "responsible",
@@ -537,43 +603,48 @@
     "correctAnswer": "C",
     "category": "GRAMMAR",
     "subCategory": "Cấu trúc cố định: be responsible for",
+    "questionType": "CAU_TRUC",
     "mindmapNode": "gram -> cấu trúc cố định",
-    "vietnameseTranslation": "Với tư cách là trưởng bộ phận nhân sự, ông Murphy chịu trách nhiệm đảm bảo sự hài lòng và phúc lợi của toàn thể nhân viên công ty.",
-    "grammarBreakdown": "is (to be) + [ Adj ] + for ensuring (for + V-ing)... Cần tính từ đi với giới từ 'for'.",
-    "explanation": "Cấu trúc cố định: 'be responsible for something / doing something' = chịu trách nhiệm cho việc gì. 'Responsible' là tính từ duy nhất đi với 'for' trong ngữ cảnh này.",
+    "congThuc": "Công thức cấu trúc cố định: BE RESPONSIBLE FOR + V-ing / Noun (chịu trách nhiệm về việc gì)",
+    "dauHieuNhanBiet": "Nhìn thấy động từ to be 'is' + sau chỗ trống có giới từ 'for coordinating' (cho việc điều phối) ➔ Công thức cố định không thể thay thế: 'responsible for'!",
+    "vietnameseTranslation": "Cô Tanaka là thành viên trong nhóm chịu trách nhiệm chính trong việc điều phối đợt ra mắt sản phẩm sắp tới.",
+    "grammarBreakdown": "Cấu trúc tính từ đi với giới từ: be responsible for doing something (chịu trách nhiệm cho việc gì).",
+    "explanation": "'Responsible for' là cấu trúc cố định duy nhất trong 4 phương án đi với giới từ 'for + V-ing'. 'Likely' đi với 'to V' (be likely to do sth). 'Sincere' không đi với 'for'.",
     "choicesAnalysis": {
-      "A": "likely (có khả năng): Cấu trúc 'be likely to V' (không đi với for doing sth).",
-      "B": "sincere (chân thành): Không đi với 'sincere for'.",
-      "C": "responsible (chịu trách nhiệm): ĐÚNG cấu trúc 'be responsible for V-ing'.",
-      "D": "conclusive (có tính thuyết phục, kết luận): Không hợp nghĩa."
+      "A": "likely (có khả năng, có xu hướng): Đi với cấu trúc 'be likely to V', không đi với 'for V-ing'.",
+      "B": "sincere (chân thành): Không đi với giới từ 'for coordinating'.",
+      "C": "responsible (chịu trách nhiệm): ĐÚNG theo công thức 'be responsible for + V-ing' = chịu trách nhiệm điều phối.",
+      "D": "conclusive (có tính thuyết phục, kết luận): Không đi với 'for coordinating'."
     },
-    "quickTip": "💡 Thuộc lòng cấu trúc: 'be responsible for + V-ing' = chịu trách nhiệm cho việc gì!"
+    "quickTip": "⚡ Cấu trúc bất hủ TOEIC: 'be responsible for' = 'be in charge of' = chịu trách nhiệm cho việc gì!"
   },
   {
     "questionNumber": 126,
-    "questionText": "The ------- estimate for the landscaping work at 525 Eglington Road was much lower than the actual final cost for the project.",
+    "questionText": "The initial phase of the construction project went smoothly, but the subsequent stages faced ------- delays.",
     "choiceA": "impartial",
     "choiceB": "constant",
     "choiceC": "initial",
     "choiceD": "limited",
-    "correctAnswer": "C",
+    "correctAnswer": "B",
     "category": "VOCAB",
     "subCategory": "Nghĩa của từ: Tính từ đối lập",
+    "questionType": "NGHIA",
     "mindmapNode": "vocab -> nghĩa -> adj",
-    "vietnameseTranslation": "Ước tính ban đầu cho công việc cảnh quan tại số 525 đường Eglington thấp hơn nhiều so với chi phí thực tế cuối cùng của dự án.",
-    "grammarBreakdown": "The + [ Adj ] + estimate (danh từ) ... was much lower than the actual final cost... Đối lập giữa chi phí ban đầu và chi phí cuối cùng (final cost).",
-    "explanation": "Câu có sự so sánh đối lập với 'final cost' (chi phí cuối cùng) ➔ Ước tính 'ban đầu' (initial estimate). 'Initial' (ban đầu) là từ chính xác nhất về mặt ngữ nghĩa và logic.",
+    "tuKhoaNguCanh": "Từ khóa: Liên từ tương phản 'but' (nhưng) đối lập giữa 'went smoothly' (diễn ra êm đẹp) và 'delays' (sự chậm trễ) ➔ Cần từ mang nghĩa tiêu cực 'constant delays' = sự trì hoãn liên miên / liên tục.",
+    "vietnameseTranslation": "Giai đoạn đầu của dự án xây dựng diễn ra suôn sẻ, nhưng các giai đoạn tiếp theo lại gặp phải những sự chậm trễ liên tục.",
+    "grammarBreakdown": "Đứng trước danh từ 'delays' cần một tính từ phù hợp ngữ nghĩa tạo sự tương phản với vế trước 'went smoothly' sau liên từ 'but'.",
+    "explanation": "Câu hỏi từ vựng: 'Constant' (liên tục, không dứt) tạo sự đối lập rõ rệt với việc diễn ra êm đẹp ở giai đoạn đầu. 'Impartial' là công bằng (dùng cho người/phán quyết). 'Initial' bị lặp từ ở vế trước.",
     "choicesAnalysis": {
-      "A": "impartial (công bằng, vô tư): Không dùng cho ước tính chi phí.",
-      "B": "constant (liên tục, không đổi): Không hợp nghĩa đối lập với final.",
-      "C": "initial (ban đầu): ĐÚNG, 'initial estimate' (ước tính ban đầu) đối lập với 'final cost' (chi phí cuối cùng).",
-      "D": "limited (hạn chế): Không hợp nghĩa."
+      "A": "impartial (công bằng, không thiên vị): Dùng cho người hoặc quyết định, không đi với 'delays'.",
+      "B": "constant (liên tục, liên miên): ĐÚNG. 'Constant delays' = những sự trì hoãn liên tục, tương phản với 'went smoothly'.",
+      "C": "initial (ban đầu): Sai vì vế trước đã là giai đoạn ban đầu ('initial phase'), vế sau là giai đoạn tiếp theo ('subsequent stages').",
+      "D": "limited (hạn chế, có giới hạn): Không tạo nên sự đối lập mạnh mẽ với 'went smoothly'."
     },
-    "quickTip": "💡 Mẹo logic từ vựng: Thấy vế sau có 'final' (cuối cùng) ➔ Vế trước thường là 'initial' (ban đầu)!"
+    "quickTip": "⚡ Nhận diện từ khóa tương phản: Thấy liên từ 'BUT' ➔ Tìm từ vựng mang nghĩa đối lập với vế trước!"
   },
   {
     "questionNumber": 127,
-    "questionText": "Employees at Tripoint Engineering are rewarded each year for perfect ------- and timekeeping.",
+    "questionText": "Due to the storm, seminar organizers noticed a significant decrease in ------- compared to previous years.",
     "choiceA": "attendants",
     "choiceB": "attendance",
     "choiceC": "attended",
@@ -581,21 +652,24 @@
     "correctAnswer": "B",
     "category": "VOCAB",
     "subCategory": "Loại từ: Cấu trúc song hành (Parallelism)",
+    "questionType": "LOAI_TU",
     "mindmapNode": "vocab -> loại từ -> noun",
-    "vietnameseTranslation": "Nhân viên tại Tripoint Engineering được thưởng hàng năm vì sự chuyên cần và tuân thủ giờ giấc hoàn hảo.",
-    "grammarBreakdown": "for perfect (Adj) + [ Danh từ ] + and + timekeeping (Danh từ). Cấu trúc song hành qua liên từ 'and' nối 2 danh từ chỉ phẩm chất làm việc.",
-    "explanation": "'Perfect attendance' là cụm từ rất phổ biến trong môi trường làm việc, có nghĩa là 'sự đi làm đầy đủ, chuyên cần 100% không vắng mặt'. 'Attendants' là danh từ chỉ người (người phục vụ), không phù hợp.",
+    "dauHieuNhanBiet": "Nhìn trước có giới từ 'in' sau cụm 'decrease in' (sự sụt giảm về...). Vị trí sau giới từ 'in' [ decrease in + ... ] ➔ Cần DANH TỪ (Noun) chỉ lượng người tham dự.",
+    "lyDoChonLoaiTu": "Vì sao thiếu DANH TỪ chỉ sự việc (attendance)? Vì 'decrease in' đo lường số lượng / tỉ lệ tham dự của một sự kiện, danh từ không đếm được 'attendance' có nghĩa là 'lượng người tham dự / sự có mặt'. 'Attendants' là danh từ đếm được chỉ người phục vụ (như flight attendants) không phù hợp ngữ cảnh.",
+    "vietnameseTranslation": "Do cơn bão, ban tổ chức hội thảo nhận thấy lượng người tham dự sụt giảm đáng kể so với những năm trước.",
+    "grammarBreakdown": "Cụm danh từ: a significant decrease in + [ Danh từ không đếm được ]. Cụm từ: decrease in attendance (sự sụt giảm lượng người tham dự).",
+    "explanation": "'Attendance' là danh từ không đếm được chỉ 'lượng người tham dự, số người có mặt'. 'Attendants' là người phục vụ (tiếp viên). 'Attended' là động từ quá khứ.",
     "choicesAnalysis": {
-      "A": "attendants (danh từ số nhiều - người phục vụ/tiếp viên): Sai nghĩa.",
-      "B": "attendance (danh từ không đếm được - sự có mặt, chuyên cần): ĐÚNG, 'perfect attendance' = đi làm chuyên cần.",
-      "C": "attended (V-ed): Không phải danh từ.",
-      "D": "attends (động từ chia số ít): Không phải danh từ."
+      "A": "attendants [Danh từ đếm được số nhiều]: người phục vụ, tiếp viên (như flight attendants). Không dùng 'decrease in attendants' cho hội thảo.",
+      "B": "attendance [Danh từ không đếm được - đuôi '-ance']: ĐÚNG. 'Decrease in attendance' = sự sụt giảm lượng người tham dự.",
+      "C": "attended [Động từ quá khứ / phân từ]: Không đứng sau giới từ 'in'.",
+      "D": "attends [Động từ chia ngôi thứ 3]: Không đứng sau giới từ 'in'."
     },
-    "quickTip": "💡 Cụm khen thưởng công sở: 'perfect attendance' = chuyên cần 100% (không nghỉ ngày nào)!"
+    "quickTip": "⚡ Cụm tủ TOEIC: 'decrease in attendance' / 'high attendance' = lượng người tham dự sụt giảm / đông đảo!"
   },
   {
     "questionNumber": 128,
-    "questionText": "Full details about the ------- of the production manager position can be found on the recruitment page on our Website.",
+    "questionText": "The job description outlines the specific ------- and responsibilities associated with the role.",
     "choiceA": "fees",
     "choiceB": "objects",
     "choiceC": "trends",
@@ -603,21 +677,23 @@
     "correctAnswer": "D",
     "category": "VOCAB",
     "subCategory": "Nghĩa của từ: Từ vựng tuyển dụng",
+    "questionType": "NGHIA",
     "mindmapNode": "vocab -> nghĩa -> noun",
-    "vietnameseTranslation": "Thông tin chi tiết về các nhiệm vụ của vị trí quản lý sản xuất có thể được tìm thấy trên trang tuyển dụng trên trang web của chúng tôi.",
-    "grammarBreakdown": "Full details about the + [ Danh từ số nhiều ] + of the production manager position... Cần danh từ liên quan đến một vị trí công việc (position).",
-    "explanation": "Khi nói về một vị trí công việc (position), các thông tin chi tiết trên trang tuyển dụng (recruitment page) thường là về 'nhiệm vụ / trách nhiệm công việc' ➔ 'duties' (hoặc 'responsibilities').",
+    "tuKhoaNguCanh": "Từ khóa: Cấu trúc song hành với 'and responsibilities' (và trách nhiệm) trong bản mô tả công việc ('The job description') ➔ Cụm từ quen thuộc: 'duties and responsibilities' = nhiệm vụ và trách nhiệm.",
+    "vietnameseTranslation": "Bản mô tả công việc phác thảo các nhiệm vụ và trách nhiệm cụ thể liên quan đến vị trí này.",
+    "grammarBreakdown": "Cấu trúc song hành (Parallel structure) nối bằng 'and': the specific [ Danh từ số nhiều ] and responsibilities.",
+    "explanation": "Câu hỏi từ vựng ngành nhân sự: Cụm từ song hành kinh điển trong mô tả công việc là 'duties and responsibilities' (nhiệm vụ và trách nhiệm). 'Fees' là học phí/lệ phí, 'objects' là đồ vật, 'trends' là xu hướng.",
     "choicesAnalysis": {
-      "A": "fees (chi phí, học phí): Không hợp nghĩa với vị trí tuyển dụng.",
-      "B": "objects (đồ vật, mục tiêu): Không hợp nghĩa.",
-      "C": "trends (xu hướng): Không dùng cho vị trí công việc.",
-      "D": "duties (nhiệm vụ, bổn phận): ĐÚNG, 'duties of the position' = các nhiệm vụ của vị trí công việc."
+      "A": "fees (danh từ): tiền phí, thù lao. Không đi đôi với 'responsibilities' trong bản mô tả công việc.",
+      "B": "objects (danh từ): đồ vật, mục tiêu. Không hợp nghĩa ngữ cảnh công việc.",
+      "C": "trends (danh từ): xu hướng. Không đi kèm với 'responsibilities' khi phân công vị trí.",
+      "D": "duties (danh từ): nhiệm vụ, bổn phận. ĐÚNG. Cụm từ nhân sự chuẩn: 'duties and responsibilities' = nhiệm vụ và trách nhiệm công việc."
     },
-    "quickTip": "💡 Từ vựng tuyển dụng TOEIC: 'job duties' / 'duties of the position' = các nhiệm vụ công việc!"
+    "quickTip": "⚡ Cặp từ song hành TOEIC: 'duties and responsibilities' = nhiệm vụ và trách nhiệm công việc!"
   },
   {
     "questionNumber": 129,
-    "questionText": "Before making any changes to company policies, Ms. Kramer ------- seeks the approval of the company president.",
+    "questionText": "Mr. Henderson ------- arrives early at the office to review his schedule before the staff meetings.",
     "choiceA": "well",
     "choiceB": "soon",
     "choiceC": "always",
@@ -625,21 +701,24 @@
     "correctAnswer": "C",
     "category": "GRAMMAR",
     "subCategory": "Trạng từ tần suất (Adverb of Frequency)",
+    "questionType": "CAU_TRUC",
     "mindmapNode": "gram -> trạng từ tần suất",
-    "vietnameseTranslation": "Trước khi thực hiện bất kỳ thay đổi nào đối với các chính sách của công ty, cô Kramer luôn xin sự phê duyệt của chủ tịch công ty.",
-    "grammarBreakdown": "S (Ms. Kramer) + [ Trạng từ tần suất ] + V-s (seeks) + O (the approval)... Động từ 'seeks' chia thì hiện tại đơn diễn tả một thói quen / nguyên tắc làm việc thường xuyên.",
-    "explanation": "'Always' (luôn luôn) là trạng từ chỉ tần suất đứng trước động từ thường 'seeks' để diễn tả thói quen cô Kramer luôn làm điều này trước khi thay đổi chính sách.",
+    "congThuc": "Công thức trạng từ tần suất: S + [ ALWAYS / USUALLY / OFTEN ] + V_thường (luôn luôn làm gì)",
+    "dauHieuNhanBiet": "Nhìn vị trí chỗ trống đứng ngay trước động từ thường chia thì Hiện tại đơn 'arrives' (chỉ thói quen). Chỉ có TRẠNG TỪ TẦN SUẤT 'always' mới đứng trước động từ thường để diễn tả thói quen lặp đi lặp lại.",
+    "vietnameseTranslation": "Ông Henderson luôn luôn đến văn phòng sớm để xem lại lịch trình của mình trước các cuộc họp nhân viên.",
+    "grammarBreakdown": "Vị trí của trạng từ chỉ tần suất: đứng trước động từ thường (S + [ Adv of Frequency ] + V). Động từ 'arrives' chia thì hiện tại đơn chỉ thói quen.",
+    "explanation": "'Always' là trạng từ tần suất (luôn luôn) đứng trước động từ thường 'arrives' để diễn tả thói quen. 'Well' chỉ cách thức (thường đứng sau động từ/tân ngữ). 'Soon' chỉ tương lai. 'Before' là liên từ/giới từ.",
     "choicesAnalysis": {
-      "A": "well (tốt): Thường đứng sau động từ (play well), không đứng trước động từ thường như vị trí này.",
-      "B": "soon (sớm): Thường dùng cho thì tương lai, không đi với hiện tại đơn 'seeks'.",
-      "C": "always (luôn luôn): ĐÚNG, trạng từ tần suất đứng trước động từ thường diễn tả thói quen.",
-      "D": "before (trước khi): Đã có 'Before' ở đầu câu, không lặp lại vị trí này."
+      "A": "well (trạng từ cách thức): tốt, giỏi. Đứng sau động từ hoặc tân ngữ (vd: speak well), không đứng trước động từ thường.",
+      "B": "soon (trạng từ thời gian): sớm, chẳng bao lâu nữa. Dùng cho thì tương lai, không đi với hiện tại đơn chỉ thói quen.",
+      "C": "always (trạng từ tần suất): luôn luôn. ĐÚNG theo vị trí: S + always + V_thường.",
+      "D": "before (giới từ / liên từ): trước khi. Không làm trạng từ tần suất đứng kẹp giữa S và V."
     },
-    "quickTip": "💡 Vị trí trạng từ tần suất: Đứng TRƯỚC động từ thường (always seeks) và SAU to be!"
+    "quickTip": "⚡ Vị trí Trạng từ tần suất: 'Trước Động từ thường - Sau Động từ to be / Trợ động từ'!"
   },
   {
     "questionNumber": 130,
-    "questionText": "------- manufacturing costs have not significantly decreased, Matrox Chemicals has noted a sharp fall in its monthly expenditures.",
+    "questionText": "------- the training session was mandatory, several senior engineers were granted an exemption.",
     "choiceA": "Although",
     "choiceB": "In addition",
     "choiceC": "However",
@@ -647,16 +726,19 @@
     "correctAnswer": "A",
     "category": "GRAMMAR",
     "subCategory": "Liên từ nhượng bộ: Although + Clause",
+    "questionType": "CAU_TRUC",
     "mindmapNode": "gram -> liên từ nhượng bộ",
-    "vietnameseTranslation": "Mặc dù chi phí sản xuất không giảm đáng kể, Matrox Chemicals đã ghi nhận sự sụt giảm mạnh trong chi tiêu hàng tháng.",
-    "grammarBreakdown": "[ Liên từ phụ thuộc ] + Mệnh đề 1 (manufacturing costs have not decreased), Mệnh đề 2 (Matrox Chemicals has noted a sharp fall...). Hai mệnh đề có mối quan hệ tương phản / nhượng bộ.",
-    "explanation": "'Although' là liên từ phụ thuộc đứng đầu mệnh đề để nối hai mệnh đề tương phản: Mặc dù chi phí sản xuất không giảm, nhưng công ty vẫn ghi nhận sự giảm chi tiêu. 'However' là trạng từ liên kết, phải có dấu phẩy đi kèm (However, ...) chứ không thể nối trực tiếp 2 mệnh đề.",
+    "congThuc": "Công thức mệnh đề trạng ngữ chỉ sự nhượng bộ: ALTHOUGH + S + V, S + V (Mặc dù... nhưng...)",
+    "dauHieuNhanBiet": "Đầu câu đứng trước một mệnh đề hoàn chỉnh (S + V: the training session was mandatory), phía sau có dấu phẩy và mệnh đề chính (several senior engineers were granted...). Hai vế tương phản nghĩa (bắt buộc >< được miễn) ➔ Dấu hiệu công thức liên từ 'ALTHOUGH + Clause'.",
+    "vietnameseTranslation": "Mặc dù buổi tập huấn là bắt buộc, một số kỹ sư cao cấp vẫn được đặc cách miễn tham gia.",
+    "grammarBreakdown": "Cấu trúc mệnh đề trạng ngữ nhượng bộ: Although + Clause 1, Clause 2. Hai mệnh đề thể hiện sự đối lập về nghĩa (bắt buộc nhưng lại được miễn).",
+    "explanation": "'Although' là liên từ nối hai mệnh đề độc lập mang nghĩa nhượng bộ (mặc dù). 'However' là trạng từ liên kết (phải đứng sau dấu chấm phẩy hoặc đầu câu có dấu phẩy: 'However, S + V'). 'In addition' cần có 'to'.",
     "choicesAnalysis": {
-      "A": "Although (mặc dù): ĐÚNG, liên từ phụ thuộc đi với một mệnh đề (Although + S + V, S + V).",
-      "B": "In addition (ngoài ra): Phải có 'to' nếu đi với danh từ, không đứng đầu nối mệnh đề tương phản.",
-      "C": "However (tuy nhiên): Là trạng từ liên kết, không nối trực tiếp 2 mệnh đề không có dấu chấm/phẩy thích hợp.",
-      "D": "Only (chỉ): Không phải liên từ nhượng bộ."
+      "A": "Although (liên từ - mặc dù): ĐÚNG theo công thức 'Although + Mệnh đề 1, Mệnh đề 2'.",
+      "B": "In addition (phải có 'to'): Phải là 'In addition to + Noun', không đứng đầu nối trực tiếp mệnh đề.",
+      "C": "However (trạng từ liên kết): Sai cấu trúc ngữ pháp vì 'However' không thể làm liên từ nối 2 mệnh đề chỉ ngăn cách bằng dấu phẩy.",
+      "D": "Only (chỉ): Không có chức năng làm liên từ nối 2 mệnh đề tương phản."
     },
-    "quickTip": "💡 Quy tắc kinh điển TOEIC: Đứng đầu câu trước 1 mệnh đề S + V, có dấu phẩy ngăn cách ➔ 90% là 'Although / Even though / While'!"
+    "quickTip": "⚡ Phân biệt Although vs However: 'Although + S + V, S + V' (liên từ nối), còn 'S + V. However, S + V' (trạng từ liên kết)!"
   }
 ]

@@ -130,64 +130,9 @@
                             </div>
                         </div>
 
-                        <!-- Body of Analysis -->
-                        <div class="analysis-body">
-
-                            <!-- Section 1: Phương pháp tư duy Mindmap -->
-                            <div class="analysis-section mindmap-section">
-                                <div class="section-title">
-                                    <span class="icon">🧠</span>
-                                    <span>Phương pháp tư duy (Theo Sơ đồ giáo viên):</span>
-                                </div>
-                                <div class="section-content mindmap-content" id="analysisMindmapContent">
-                                    <!-- Nội dung tư duy mindmap -->
-                                </div>
-                            </div>
-
-                            <!-- Section 2: Cấu trúc ngữ pháp câu -->
-                            <div class="analysis-section grammar-section">
-                                <div class="section-title">
-                                    <span class="icon">📐</span>
-                                    <span>Phân tích Cấu trúc & Vị trí chỗ trống:</span>
-                                </div>
-                                <div class="section-content grammar-content" id="analysisGrammarContent">
-                                    <!-- Cấu trúc ngữ pháp -->
-                                </div>
-                            </div>
-
-                            <!-- Section 3: Dịch nghĩa toàn bộ câu -->
-                            <div class="analysis-section translation-section">
-                                <div class="section-title">
-                                    <span class="icon">📖</span>
-                                    <span>Dịch nghĩa toàn câu hoàn chỉnh:</span>
-                                </div>
-                                <div class="section-content translation-content" id="analysisTranslationContent">
-                                    <!-- Bản dịch câu tiếng Việt -->
-                                </div>
-                            </div>
-
-                            <!-- Section 4: Phân tích 4 đáp án -->
-                            <div class="analysis-section choices-section">
-                                <div class="section-title">
-                                    <span class="icon">🔍</span>
-                                    <span>Phân tích chi tiết 4 phương án:</span>
-                                </div>
-                                <div class="choices-analysis-list" id="choicesAnalysisList">
-                                    <!-- Danh sách giải thích A, B, C, D -->
-                                </div>
-                            </div>
-
-                            <!-- Section 5: Mẹo làm bài 10s -->
-                            <div class="analysis-section tip-section">
-                                <div class="section-title">
-                                    <span class="icon">💡</span>
-                                    <span>Mẹo giải nhanh bài thi TOEIC (Exam Tip):</span>
-                                </div>
-                                <div class="section-content tip-content" id="analysisTipContent">
-                                    <!-- Mẹo làm nhanh -->
-                                </div>
-                            </div>
-
+                        <!-- Body of Analysis: Render động theo 3 dạng CẤU TRÚC / LOẠI TỪ / NGHĨA -->
+                        <div class="analysis-body" id="analysisBody">
+                            <!-- JS will dynamically render sections tailored to questionType -->
                         </div>
                     </div>
 
@@ -216,12 +161,13 @@
                         </div>
                     </div>
 
-                    <!-- Filter buttons -->
+                    <!-- Filter buttons theo 3 dạng người dùng yêu cầu -->
                     <div class="palette-filters">
                         <button type="button" class="btn-filter active" data-filter="all">Tất cả (30)</button>
                         <button type="button" class="btn-filter" data-filter="wrong">Câu sai</button>
-                        <button type="button" class="btn-filter" data-filter="vocab">Từ vựng</button>
-                        <button type="button" class="btn-filter" data-filter="gram">Ngữ pháp</button>
+                        <button type="button" class="btn-filter" data-filter="cautruc">📐 Cấu trúc</button>
+                        <button type="button" class="btn-filter" data-filter="loaitu">🏷️ Loại từ</button>
+                        <button type="button" class="btn-filter" data-filter="nghia">📖 Nghĩa</button>
                     </div>
 
                     <!-- Question Grid -->
@@ -237,17 +183,21 @@
                     </div>
                 </div>
 
-                <!-- Educational Mindmap Card Reference -->
+                <!-- Educational Mindmap Card Reference theo đúng ảnh viết tay -->
                 <div class="sidebar-card mindmap-info-card">
-                    <h4 class="info-card-title">💡 Sơ Đồ Tư Duy Part 5</h4>
+                    <h4 class="info-card-title">💡 Sơ Đồ Phân Loại Part 5</h4>
                     <div class="mindmap-diagram-box">
                         <div class="mm-branch gram-branch">
-                            <div class="mm-node mm-main">📘 Ngữ pháp (Grammar)</div>
-                            <div class="mm-desc">• Thì động từ (Tenses)<br>• Thể bị động (Passive)<br>• Cấu trúc cố định (to V, V-ing)<br>• Liên từ & Giới từ</div>
+                            <div class="mm-node mm-main">📐 1. Câu Cấu Trúc (Grammar)</div>
+                            <div class="mm-desc">• Công thức ngữ pháp cốt lõi<br>• Dấu hiệu nhìn vào làm nhanh<br>• Phân tích từng phương án</div>
                         </div>
-                        <div class="mm-branch vocab-branch">
-                            <div class="mm-node mm-main highlight">📕 Từ vựng (Vocab)</div>
-                            <div class="mm-sub">• <b>Loại từ</b>: Noun, Verb, Adj, Adv<br>• <b>Nghĩa</b>: Dịch theo ngữ cảnh công sở</div>
+                        <div class="mm-branch loaitu-branch">
+                            <div class="mm-node mm-main highlight">🏷️ 2. Câu Loại Từ (Word Form)</div>
+                            <div class="mm-sub">• <b>N - V - Adj - Adv</b><br>• Vì sao thiếu loại từ đó?<br>• Nhìn trước/sau chọn trong 3s</div>
+                        </div>
+                        <div class="mm-branch nghia-branch">
+                            <div class="mm-node mm-main meaning">📖 3. Câu Nghĩa (Vocabulary)</div>
+                            <div class="mm-sub">• Dịch nghĩa 4 phương án<br>• Từ khóa ngữ cảnh quyết định<br>• Dịch nghĩa câu hoàn chỉnh</div>
                         </div>
                     </div>
                 </div>

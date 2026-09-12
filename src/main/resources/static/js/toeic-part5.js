@@ -266,7 +266,7 @@
         });
     }
 
-    // Áp dụng bộ lọc câu hỏi
+    // Áp dụng bộ lọc câu hỏi theo 3 nhóm
     function applyFilter() {
         const btns = document.querySelectorAll(".palette-q-btn");
         btns.forEach(function (btn) {
@@ -277,10 +277,12 @@
             let visible = true;
             if (currentFilter === "wrong") {
                 visible = record && !record.isCorrect;
-            } else if (currentFilter === "vocab") {
-                visible = q.category === "VOCAB";
-            } else if (currentFilter === "gram") {
-                visible = q.category === "GRAMMAR";
+            } else if (currentFilter === "cautruc") {
+                visible = (q.questionType === "CAU_TRUC") || (q.category === "GRAMMAR");
+            } else if (currentFilter === "loaitu") {
+                visible = (q.questionType === "LOAI_TU");
+            } else if (currentFilter === "nghia") {
+                visible = (q.questionType === "NGHIA");
             }
 
             btn.style.display = visible ? "flex" : "none";
@@ -327,17 +329,29 @@
         document.getElementById("qNumberBadge").innerHTML = `CÂU ${index + 1} / ${questions.length} <span class="q-orig-tag" title="Số thứ tự câu hỏi trong đề gốc PowerPoint">(Đề gốc: #${q.originalQuestionNumber})</span>`;
         
         const catTag = document.getElementById("qCategoryTag");
-        catTag.textContent = q.category || "VOCAB";
-        catTag.className = "q-category-tag " + (q.category === "VOCAB" ? "tag-vocab" : "tag-grammar");
+        const qType = q.questionType || (q.category === "GRAMMAR" ? "CAU_TRUC" : "LOAI_TU");
+
+        if (qType === "CAU_TRUC") {
+            catTag.textContent = "📐 CẤU TRÚC";
+            catTag.className = "q-category-tag tag-cautruc";
+        } else if (qType === "LOAI_TU") {
+            catTag.textContent = "🏷️ LOẠI TỪ";
+            catTag.className = "q-category-tag tag-loaitu";
+        } else {
+            catTag.textContent = "📖 NGHĨA";
+            catTag.className = "q-category-tag tag-nghia";
+        }
 
         document.getElementById("qSubCategoryTag").textContent = q.subCategory || "";
 
         // Mindmap hint
         const mmText = document.getElementById("qMindmapText");
-        if (q.mindmapNode) {
-            mmText.innerHTML = `Hướng tư duy: <b>${escapeHtml(q.mindmapNode)}</b> ➔ ${escapeHtml(q.subCategory || "")}`;
+        if (qType === "CAU_TRUC") {
+            mmText.innerHTML = `Sơ đồ tư duy: <b>gram ➔ Cấu trúc & Công thức</b> &nbsp;|&nbsp; <em>${escapeHtml(q.subCategory || "")}</em>`;
+        } else if (qType === "LOAI_TU") {
+            mmText.innerHTML = `Sơ đồ tư duy: <b>vocab ➔ Loại từ (N, V, Adj, Adv)</b> &nbsp;|&nbsp; <em>${escapeHtml(q.subCategory || "")}</em>`;
         } else {
-            mmText.innerHTML = `Hướng tư duy: <b>${escapeHtml(q.category)}</b> ➔ ${escapeHtml(q.subCategory || "")}`;
+            mmText.innerHTML = `Sơ đồ tư duy: <b>vocab ➔ Nghĩa / Collocation</b> &nbsp;|&nbsp; <em>${escapeHtml(q.subCategory || "")}</em>`;
         }
 
         // Câu hỏi
@@ -440,13 +454,14 @@
         }
     }
 
-    // Hiển thị bảng phân tích chi tiết siêu dễ hiểu
+    // Hiển thị bảng phân tích chi tiết siêu dễ hiểu theo 3 dạng: CẤU TRÚC / LOẠI TỪ / NGHĨA
     function displayAnalysisCard(q, userChoice, isCorrect) {
         const card = document.getElementById("analysisCard");
         const banner = document.getElementById("resultBanner");
         const icon = document.getElementById("resultIcon");
         const heading = document.getElementById("resultHeading");
         const desc = document.getElementById("resultDesc");
+        const body = document.getElementById("analysisBody");
 
         card.style.display = "block";
 
@@ -462,49 +477,223 @@
             desc.innerHTML = `Bạn đã chọn <b>(${userChoice}) ${escapeHtml(getChoiceText(q, userChoice))}</b>, nhưng đáp án đúng phải là <b>(${q.correctAnswer}) ${escapeHtml(getChoiceText(q, q.correctAnswer))}</b>`;
         }
 
-        // Section 1: Tư duy Mindmap
-        const mmContent = document.getElementById("analysisMindmapContent");
-        mmContent.innerHTML = `
-            <div style="margin-bottom: 6px;"><b>Phân loại:</b> <span class="q-category-tag ${q.category === 'VOCAB' ? 'tag-vocab' : 'tag-grammar'}">${escapeHtml(q.category)}</span> &nbsp;➔&nbsp; <b>${escapeHtml(q.subCategory || '')}</b></div>
-            <div><b>Lộ trình tư duy:</b> Nhận biết từ loại 4 phương án, xác định chỗ trống đóng vai trò gì trong câu để loại trừ nhanh các phương án sai.</div>
-        `;
+        const qType = q.questionType || (q.category === "GRAMMAR" ? "CAU_TRUC" : "LOAI_TU");
 
-        // Section 2: Cấu trúc câu & Vị trí chỗ trống
-        document.getElementById("analysisGrammarContent").innerHTML = `
-            <div style="font-weight: 600; color: #0369a1; margin-bottom: 4px;">📌 Phân tích thành phần:</div>
-            <div>${escapeHtml(q.grammarBreakdown || '')}</div>
-            <div style="margin-top: 8px; padding-top: 8px; border-top: 1px dashed #bae6fd; color: #0284c7;">
-                <b>Giải thích cốt lõi:</b> ${escapeHtml(q.explanation || '')}
-            </div>
-        `;
+        // Helper render choices list
+        function renderChoicesListHtml(isLoaiTu) {
+            const choicesKeys = ["A", "B", "C", "D"];
+            let html = '<div class="choices-analysis-list">';
+            choicesKeys.forEach(function (k) {
+                const isAns = (k === q.correctAnswer);
+                let detail = (q.choicesAnalysis && q.choicesAnalysis[k]) ? q.choicesAnalysis[k] : `${getChoiceText(q, k)}`;
+                html += `
+                    <div class="choice-analysis-item ${isAns ? 'is-answer' : ''}">
+                        <span class="choice-badge">${k}</span>
+                        <div class="choice-detail">
+                            <span class="choice-tag-pill ${isAns ? 'tag-correct-choice' : 'tag-wrong-choice'}">${isAns ? '✓ ĐÚNG' : '✗ LOẠI'}</span>
+                            ${escapeHtml(detail)}
+                        </div>
+                    </div>
+                `;
+            });
+            html += '</div>';
+            return html;
+        }
 
-        // Section 3: Dịch nghĩa câu
-        document.getElementById("analysisTranslationContent").innerHTML = `
-            <div>"${escapeHtml(q.vietnameseTranslation || '')}"</div>
-        `;
+        let bodyHtml = "";
 
-        // Section 4: Phân tích 4 đáp án A, B, C, D (được sắp xếp theo đúng thứ tự xáo trộn hiện tại)
-        const listEl = document.getElementById("choicesAnalysisList");
-        listEl.innerHTML = "";
+        if (qType === "CAU_TRUC") {
+            // ==========================================
+            // DẠNG 1: CÂU CẤU TRÚC / CÔNG THỨC
+            // ==========================================
+            bodyHtml = `
+                <!-- Header Phân loại -->
+                <div class="analysis-type-header type-cautruc">
+                    <span class="type-icon">📐</span>
+                    <span class="type-name">DẠNG CÂU: CẤU TRÚC & CÔNG THỨC</span>
+                    <span class="type-sub">${escapeHtml(q.subCategory || '')}</span>
+                </div>
 
-        const choicesKeys = ["A", "B", "C", "D"];
-        choicesKeys.forEach(function (k) {
-            const item = document.createElement("div");
-            item.className = "choice-analysis-item" + (k === q.correctAnswer ? " is-answer" : "");
+                <!-- 1. Công thức / Cấu trúc ngữ pháp -->
+                <div class="analysis-section formula-section">
+                    <div class="section-title">
+                        <span class="icon">📐</span>
+                        <span>1. Cấu trúc / Công thức cốt lõi:</span>
+                    </div>
+                    <div class="formula-box">
+                        ${escapeHtml(q.congThuc || q.grammarBreakdown || '')}
+                    </div>
+                    ${q.explanation ? `<div class="formula-explain"><b>Giải thích chi tiết:</b> ${escapeHtml(q.explanation)}</div>` : ''}
+                </div>
 
-            let detail = (q.choicesAnalysis && q.choicesAnalysis[k]) ? q.choicesAnalysis[k] : `${getChoiceText(q, k)}`;
+                <!-- 2. Dấu hiệu nhìn vào để làm nhanh -->
+                <div class="analysis-section cue-section">
+                    <div class="section-title">
+                        <span class="icon">⚡</span>
+                        <span>2. Dấu hiệu nhìn vào gì để chọn nhanh chuẩn (3 giây):</span>
+                    </div>
+                    <div class="cue-box">
+                        ${escapeHtml(q.dauHieuNhanBiet || q.quickTip || 'Nhìn vào các từ khóa đứng ngay trước và ngay sau chỗ trống để nhận diện cấu trúc.')}
+                    </div>
+                </div>
 
-            item.innerHTML = `
-                <span class="choice-badge">${k}</span>
-                <div class="choice-detail">${escapeHtml(detail)}</div>
+                <!-- 3. Phân tích từng đáp án sao chọn sao ko chọn -->
+                <div class="analysis-section choices-section">
+                    <div class="section-title">
+                        <span class="icon">🔍</span>
+                        <span>3. Phân tích từng đáp án (Sao chọn / Sao KHÔNG chọn):</span>
+                    </div>
+                    ${renderChoicesListHtml(false)}
+                </div>
+
+                <!-- 4. Dịch nghĩa toàn câu hoàn chỉnh -->
+                <div class="analysis-section translation-section">
+                    <div class="section-title">
+                        <span class="icon">📖</span>
+                        <span>4. Dịch nghĩa toàn câu hoàn chỉnh:</span>
+                    </div>
+                    <div class="translation-content">
+                        "${escapeHtml(q.vietnameseTranslation || '')}"
+                    </div>
+                </div>
+
+                <!-- 5. Mẹo làm bài 5s -->
+                ${q.quickTip ? `
+                <div class="analysis-section tip-section">
+                    <div class="section-title">
+                        <span class="icon">💡</span>
+                        <span>5. Mẹo giải nhanh TOEIC (5s Exam Tip):</span>
+                    </div>
+                    <div class="tip-content">${escapeHtml(q.quickTip)}</div>
+                </div>
+                ` : ''}
             `;
-            listEl.appendChild(item);
-        });
+        } else if (qType === "LOAI_TU") {
+            // ==========================================
+            // DẠNG 2: CÂU LOẠI TỪ (N - V - Adj - Adv)
+            // ==========================================
+            bodyHtml = `
+                <!-- Header Phân loại -->
+                <div class="analysis-type-header type-loaitu">
+                    <span class="type-icon">🏷️</span>
+                    <span class="type-name">DẠNG CÂU: LOẠI TỪ (Part of Speech: N - V - Adj - Adv)</span>
+                    <span class="type-sub">${escapeHtml(q.subCategory || '')}</span>
+                </div>
 
-        // Section 5: Mẹo làm bài 10s
-        document.getElementById("analysisTipContent").innerHTML = `
-            <div>${escapeHtml(q.quickTip || 'Xem kỹ từ đứng ngay trước và ngay sau chỗ trống để quyết định từ loại cần điền.')}</div>
-        `;
+                <!-- 1. Vì sao ở đó lại thiếu loại từ đó? -->
+                <div class="analysis-section why-section">
+                    <div class="section-title">
+                        <span class="icon">❓</span>
+                        <span>1. Vì sao ở vị trí đó lại thiếu loại từ đó?</span>
+                    </div>
+                    <div class="why-box">
+                        ${escapeHtml(q.lyDoChonLoaiTu || q.explanation || '')}
+                    </div>
+                    ${q.grammarBreakdown ? `<div class="grammar-sub-box"><b>Thành phần câu:</b> ${escapeHtml(q.grammarBreakdown)}</div>` : ''}
+                </div>
+
+                <!-- 2. Dấu hiệu nhìn vào gì để làm nhanh chuẩn câu đó -->
+                <div class="analysis-section cue-section">
+                    <div class="section-title">
+                        <span class="icon">⚡</span>
+                        <span>2. Dấu hiệu nhìn vào gì để làm nhanh chuẩn (3 giây):</span>
+                    </div>
+                    <div class="cue-box">
+                        ${escapeHtml(q.dauHieuNhanBiet || 'Nhìn từ đứng ngay trước và ngay sau chỗ trống để xác định loại từ cần điền.')}
+                    </div>
+                </div>
+
+                <!-- 3. Phân loại 4 đáp án (N, V, Adj, Adv) & Lý do chọn -->
+                <div class="analysis-section choices-section">
+                    <div class="section-title">
+                        <span class="icon">🔍</span>
+                        <span>3. Phân loại 4 đáp án (N, V, Adj, Adv) & Lý do chọn:</span>
+                    </div>
+                    ${renderChoicesListHtml(true)}
+                </div>
+
+                <!-- 4. Dịch nghĩa toàn câu hoàn chỉnh -->
+                <div class="analysis-section translation-section">
+                    <div class="section-title">
+                        <span class="icon">📖</span>
+                        <span>4. Dịch nghĩa toàn câu hoàn chỉnh:</span>
+                    </div>
+                    <div class="translation-content">
+                        "${escapeHtml(q.vietnameseTranslation || '')}"
+                    </div>
+                </div>
+
+                <!-- 5. Mẹo làm bài 5s -->
+                ${q.quickTip ? `
+                <div class="analysis-section tip-section">
+                    <div class="section-title">
+                        <span class="icon">💡</span>
+                        <span>5. Mẹo giải nhanh TOEIC (5s Exam Tip):</span>
+                    </div>
+                    <div class="tip-content">${escapeHtml(q.quickTip)}</div>
+                </div>
+                ` : ''}
+            `;
+        } else {
+            // ==========================================
+            // DẠNG 3: CÂU NGHĨA (Từ vựng thuần / Collocation)
+            // (Nghĩa thì dịch thôi, ko cần giải thích nhiều)
+            // ==========================================
+            bodyHtml = `
+                <!-- Header Phân loại -->
+                <div class="analysis-type-header type-nghia">
+                    <span class="type-icon">📖</span>
+                    <span class="type-name">DẠNG CÂU: TỪ VỰNG & NGHĨA THEO NGỮ CẢNH</span>
+                    <span class="type-sub">${escapeHtml(q.subCategory || '')}</span>
+                </div>
+
+                <!-- 1. Từ khóa ngữ cảnh quyết định nghĩa -->
+                <div class="analysis-section context-section">
+                    <div class="section-title">
+                        <span class="icon">🔑</span>
+                        <span>1. Từ khóa ngữ cảnh quyết định (Context Clues):</span>
+                    </div>
+                    <div class="context-box">
+                        ${escapeHtml(q.tuKhoaNguCanh || q.explanation || 'Dựa vào mối liên hệ nghĩa giữa chỗ trống và các từ vựng xung quanh trong câu.')}
+                    </div>
+                </div>
+
+                <!-- 2. Dịch nghĩa 4 đáp án sao chọn sao ko chọn -->
+                <div class="analysis-section choices-section">
+                    <div class="section-title">
+                        <span class="icon">🔍</span>
+                        <span>2. Dịch nghĩa 4 đáp án (Sao chọn / Sao KHÔNG chọn):</span>
+                    </div>
+                    ${renderChoicesListHtml(false)}
+                </div>
+
+                <!-- 3. Dịch nghĩa toàn câu hoàn chỉnh -->
+                <div class="analysis-section translation-section">
+                    <div class="section-title">
+                        <span class="icon">📖</span>
+                        <span>3. Dịch nghĩa toàn câu hoàn chỉnh:</span>
+                    </div>
+                    <div class="translation-content">
+                        "${escapeHtml(q.vietnameseTranslation || '')}"
+                    </div>
+                </div>
+
+                <!-- 4. Cụm từ hay gặp / Mẹo nhớ -->
+                ${q.quickTip ? `
+                <div class="analysis-section tip-section">
+                    <div class="section-title">
+                        <span class="icon">💡</span>
+                        <span>4. Cụm từ hay gặp & Mẹo ghi nhớ:</span>
+                    </div>
+                    <div class="tip-content">${escapeHtml(q.quickTip)}</div>
+                </div>
+                ` : ''}
+            `;
+        }
+
+        if (body) {
+            body.innerHTML = bodyHtml;
+        }
     }
 
     function getChoiceText(q, key) {

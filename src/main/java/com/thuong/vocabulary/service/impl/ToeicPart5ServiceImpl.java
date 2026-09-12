@@ -72,6 +72,11 @@ public class ToeicPart5ServiceImpl implements ToeicPart5Service {
         ketQua.put("isCorrect", isCorrect);
         ketQua.put("category", q.getCategory());
         ketQua.put("subCategory", q.getSubCategory());
+        ketQua.put("questionType", q.getQuestionType());
+        ketQua.put("congThuc", q.getCongThuc());
+        ketQua.put("dauHieuNhanBiet", q.getDauHieuNhanBiet());
+        ketQua.put("lyDoChonLoaiTu", q.getLyDoChonLoaiTu());
+        ketQua.put("tuKhoaNguCanh", q.getTuKhoaNguCanh());
         ketQua.put("mindmapNode", q.getMindmapNode());
         ketQua.put("vietnameseTranslation", q.getVietnameseTranslation());
         ketQua.put("grammarBreakdown", q.getGrammarBreakdown());

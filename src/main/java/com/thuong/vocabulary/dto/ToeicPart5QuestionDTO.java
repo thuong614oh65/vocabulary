@@ -12,6 +12,11 @@ public class ToeicPart5QuestionDTO {
     private String correctAnswer;
     private String category;
     private String subCategory;
+    private String questionType; // "CAU_TRUC", "LOAI_TU", "NGHIA"
+    private String congThuc;
+    private String dauHieuNhanBiet;
+    private String lyDoChonLoaiTu;
+    private String tuKhoaNguCanh;
     private String mindmapNode;
     private String vietnameseTranslation;
     private String grammarBreakdown;
@@ -140,5 +145,45 @@ public class ToeicPart5QuestionDTO {
 
     public void setQuickTip(String quickTip) {
         this.quickTip = quickTip;
+    }
+
+    public String getQuestionType() {
+        return questionType;
+    }
+
+    public void setQuestionType(String questionType) {
+        this.questionType = questionType;
+    }
+
+    public String getCongThuc() {
+        return congThuc;
+    }
+
+    public void setCongThuc(String congThuc) {
+        this.congThuc = congThuc;
+    }
+
+    public String getDauHieuNhanBiet() {
+        return dauHieuNhanBiet;
+    }
+
+    public void setDauHieuNhanBiet(String dauHieuNhanBiet) {
+        this.dauHieuNhanBiet = dauHieuNhanBiet;
+    }
+
+    public String getLyDoChonLoaiTu() {
+        return lyDoChonLoaiTu;
+    }
+
+    public void setLyDoChonLoaiTu(String lyDoChonLoaiTu) {
+        this.lyDoChonLoaiTu = lyDoChonLoaiTu;
+    }
+
+    public String getTuKhoaNguCanh() {
+        return tuKhoaNguCanh;
+    }
+
+    public void setTuKhoaNguCanh(String tuKhoaNguCanh) {
+        this.tuKhoaNguCanh = tuKhoaNguCanh;
     }
 }
