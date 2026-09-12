@@ -257,6 +257,15 @@ body {
     box-shadow: 0 10px 24px rgba(20, 184, 166, 0.38);
 }
 
+/* 9b. Sơ đồ Đánh vần Mindmap (Rose / Crimson) */
+.nut-mindmap {
+    background: linear-gradient(135deg, #e11d48 0%, #be123c 100%);
+    box-shadow: 0 6px 18px rgba(225, 29, 72, 0.32);
+}
+.nut-mindmap:hover {
+    box-shadow: 0 10px 24px rgba(225, 29, 72, 0.45);
+}
+
 /* 10. Số đếm Numbers (Purple) */
 .nut-so-dem {
     background: linear-gradient(135deg, #a855f7 0%, #9333ea 100%);

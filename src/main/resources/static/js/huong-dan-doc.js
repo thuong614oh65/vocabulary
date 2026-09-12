@@ -147,6 +147,7 @@
                                 '<button type="button" class="btn-hd-audio" onclick="phatAudioHuongDan(0.6, this)" title="Nghe chậm rõ từng âm như Google Dịch">🐢 Chậm (0.6x)</button>' +
                                 '<button type="button" class="btn-hd-audio" onclick="docTachAmHuongDan(this)" title="Đọc từng âm tiết rồi đọc cả từ">🎶 Tách âm tiết</button>' +
                                 '<button type="button" class="btn-hd-audio" onclick="danhVanHuongDan(this)" title="Đánh vần từng chữ cái tiếng Anh">🔡 Đánh vần</button>' +
+                                '<button type="button" class="btn-hd-audio btn-hd-mindmap" style="background:#fef2f2; color:#dc2626; border-color:#fca5a5;" onclick="moSoDoDanhVanChoTuHienTai()" title="Xem sơ đồ tư duy quy luật đánh vần của từ này">🧠 Sơ đồ đánh vần</button>' +
                             '</div>' +
                             '<div class="hd-syllables-box">' +
                                 '<div class="hd-section-title"><span>🎯</span> Các âm tiết (Bấm từng âm để nghe):</div>' +
@@ -277,6 +278,13 @@
                     }
                 }, 100);
             }
+        }
+    };
+
+    window.moSoDoDanhVanChoTuHienTai = function () {
+        if (duLieuHienTai && duLieuHienTai.tu) {
+            dungAudioHuongDan();
+            window.open("/so-do-danh-van?tu=" + encodeURIComponent(duLieuHienTai.tu), "_blank");
         }
     };
 

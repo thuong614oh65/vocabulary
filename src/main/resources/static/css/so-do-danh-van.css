@@ -1,0 +1,868 @@
+/* =========================================================
+   SƠ ĐỒ TƯ DUY QUY LUẬT ĐÁNH VẦN TIẾNG ANH (PHONICS MINDMAP)
+   Thiết kế chuẩn sơ đồ tư duy tỏa tròn (Radial Mindmap)
+   ========================================================= */
+
+:root {
+    --sd-bg: #f8fafc;
+    --sd-card-bg: #ffffff;
+    --sd-primary-red: #dc2626;
+    --sd-accent-red: #ef4444;
+    --sd-gold: #f59e0b;
+    --sd-text-dark: #0f172a;
+    --sd-text-muted: #64748b;
+    --sd-border: #e2e8f0;
+}
+
+body {
+    background-color: var(--sd-bg);
+    color: var(--sd-text-dark);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+}
+
+.sd-page-wrapper {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* =========================================================
+   1. HEADER
+   ========================================================= */
+.sd-header {
+    background: #0f172a;
+    color: #ffffff;
+    padding: 14px 20px;
+    border-bottom: 2px solid #1e293b;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.sd-header-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.sd-header-left {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.btn-sd-back-home, .btn-sd-back-ipa, .btn-sd-back-study {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 14px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.btn-sd-back-home {
+    background: #334155;
+    color: #f1f5f9;
+}
+.btn-sd-back-home:hover {
+    background: #475569;
+    color: #ffffff;
+    transform: translateY(-1px);
+}
+
+.btn-sd-back-ipa {
+    background: #0284c7;
+    color: #ffffff;
+}
+.btn-sd-back-ipa:hover {
+    background: #0369a1;
+    color: #ffffff;
+    transform: translateY(-1px);
+}
+
+.btn-sd-back-study {
+    background: #16a34a;
+    color: #ffffff;
+}
+.btn-sd-back-study:hover {
+    background: #15803d;
+    color: #ffffff;
+    transform: translateY(-1px);
+}
+
+.sd-header-center {
+    text-align: center;
+    flex: 1;
+    min-width: 280px;
+}
+
+.sd-title {
+    font-size: 1.35rem;
+    font-weight: 900;
+    letter-spacing: 0.5px;
+    margin: 0;
+    background: linear-gradient(135deg, #38bdf8, #fbbf24);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.sd-subtitle {
+    font-size: 0.8rem;
+    color: #94a3b8;
+    margin: 2px 0 0 0;
+}
+
+.sd-header-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+/* Switch toggle tự đọc khi hover */
+.sd-toggle-wrap {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    background: #1e293b;
+    padding: 5px 12px;
+    border-radius: 20px;
+    border: 1px solid #334155;
+    transition: all 0.2s ease;
+    user-select: none;
+}
+
+.sd-toggle-wrap:hover {
+    background: #334155;
+}
+
+.sd-toggle-wrap input {
+    display: none;
+}
+
+.sd-toggle-slider {
+    position: relative;
+    width: 36px;
+    height: 20px;
+    background-color: #64748b;
+    border-radius: 20px;
+    transition: 0.3s;
+}
+
+.sd-toggle-slider:before {
+    position: absolute;
+    content: "";
+    height: 14px;
+    width: 14px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    border-radius: 50%;
+    transition: 0.3s;
+}
+
+.sd-toggle-wrap input:checked + .sd-toggle-slider {
+    background-color: #10b981;
+}
+
+.sd-toggle-wrap input:checked + .sd-toggle-slider:before {
+    transform: translateX(16px);
+}
+
+.sd-toggle-text {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: #e2e8f0;
+}
+
+/* =========================================================
+   2. TÌM KIẾM & BỘ LỌC
+   ========================================================= */
+.sd-search-filter-section {
+    background: #ffffff;
+    border-bottom: 1px solid var(--sd-border);
+    padding: 16px 0 10px 0;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+}
+
+.sd-search-bar {
+    border-radius: 30px;
+    overflow: hidden;
+    border: 2px solid #cbd5e1;
+    transition: border-color 0.2s;
+}
+
+.sd-search-bar:focus-within {
+    border-color: #0284c7;
+    box-shadow: 0 0 0 0.2rem rgba(2, 132, 199, 0.2);
+}
+
+.sd-search-bar input {
+    font-size: 0.95rem;
+    padding: 10px 14px;
+}
+
+.sd-search-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+    max-height: 280px;
+    overflow-y: auto;
+    margin-top: 4px;
+}
+
+.sd-search-item {
+    padding: 10px 16px;
+    cursor: pointer;
+    border-bottom: 1px solid #f1f5f9;
+    transition: background 0.15s;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.sd-search-item:hover {
+    background: #f0fdf4;
+}
+
+.sd-category-tabs {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding: 4px 0 8px 0;
+    scrollbar-width: thin;
+    white-space: nowrap;
+    justify-content: center;
+}
+
+.btn-sd-tab {
+    background: #f1f5f9;
+    color: #475569;
+    border: 1px solid #e2e8f0;
+    border-radius: 20px;
+    padding: 6px 14px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+
+.btn-sd-tab:hover {
+    background: #e2e8f0;
+    color: #0f172a;
+}
+
+.btn-sd-tab.active {
+    background: #0284c7;
+    color: #ffffff;
+    border-color: #0284c7;
+    box-shadow: 0 3px 10px rgba(2, 132, 199, 0.35);
+}
+
+.sd-pills-scroll {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding: 8px 0 4px 0;
+    scrollbar-width: thin;
+    white-space: nowrap;
+}
+
+.btn-sd-pill {
+    background: #ffffff;
+    color: #334155;
+    border: 1.5px solid #cbd5e1;
+    border-radius: 12px;
+    padding: 6px 14px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.btn-sd-pill:hover {
+    border-color: var(--sd-primary-red);
+    color: var(--sd-primary-red);
+    transform: translateY(-1px);
+    box-shadow: 0 3px 8px rgba(220, 38, 38, 0.15);
+}
+
+.btn-sd-pill.active {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    color: #ffffff;
+    border-color: #dc2626;
+    box-shadow: 0 4px 12px rgba(220, 38, 38, 0.35);
+}
+
+/* =========================================================
+   3. BANNER QUY TẮC
+   ========================================================= */
+.sd-rule-banner {
+    background: #ffffff;
+    border: 2px solid #e2e8f0;
+    border-radius: 18px;
+    padding: 20px 24px;
+    margin-top: 18px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.sd-rule-banner-left {
+    flex: 1;
+    min-width: 300px;
+}
+
+.sd-rule-badge {
+    display: inline-block;
+    background: #fee2e2;
+    color: #dc2626;
+    font-size: 0.78rem;
+    font-weight: 800;
+    padding: 3px 12px;
+    border-radius: 20px;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    margin-bottom: 6px;
+}
+
+.sd-rule-headline {
+    font-size: 1.6rem;
+    font-weight: 900;
+    color: #0f172a;
+    margin: 0 0 4px 0;
+}
+
+.sd-rule-desc {
+    color: #64748b;
+    font-size: 0.95rem;
+    margin: 0;
+    line-height: 1.5;
+}
+
+.sd-rule-banner-right {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.btn-sd-action {
+    padding: 10px 18px;
+    border-radius: 12px;
+    font-size: 0.9rem;
+    font-weight: 800;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.btn-sd-autoplay {
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: #ffffff;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+.btn-sd-autoplay:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(16, 185, 129, 0.45);
+}
+
+.btn-sd-center-guide {
+    background: #f8fafc;
+    color: #0284c7;
+    border: 2px solid #bae6fd;
+}
+.btn-sd-center-guide:hover {
+    background: #e0f2fe;
+    transform: translateY(-2px);
+}
+
+.btn-sd-toggle-view {
+    background: #f1f5f9;
+    color: #334155;
+    border: 1px solid #cbd5e1;
+}
+.btn-sd-toggle-view:hover {
+    background: #e2e8f0;
+}
+
+/* =========================================================
+   4. SÂN KHẤU MINDMAP TOÀN DIỆN (THE MINDMAP ARENA)
+   ========================================================= */
+.sd-mindmap-board {
+    position: relative;
+    width: 100%;
+    min-height: 640px;
+    background: #ffffff;
+    border: 2px solid #e2e8f0;
+    border-radius: 24px;
+    margin: 20px 0 40px 0;
+    padding: 30px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* SVG Line Canvas nằm chìm bên dưới */
+.sd-mindmap-svg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* ─── NODE TRUNG TÂM (CENTRAL HUB - ÂM Ở GIỮA) ─── */
+.sd-center-hub {
+    position: relative;
+    z-index: 10;
+    cursor: pointer;
+    transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.sd-center-hub:hover {
+    transform: scale(1.08);
+}
+
+.sd-center-cloud-glow {
+    position: absolute;
+    top: -10px;
+    left: -10px;
+    right: -10px;
+    bottom: -10px;
+    background: radial-gradient(circle, rgba(239, 68, 68, 0.25) 0%, rgba(239, 68, 68, 0) 70%);
+    border-radius: 50%;
+    z-index: 1;
+    animation: centerPulse 2s infinite ease-in-out;
+}
+
+@keyframes centerPulse {
+    0%, 100% { transform: scale(1); opacity: 0.6; }
+    50% { transform: scale(1.15); opacity: 0.9; }
+}
+
+/* Khối đám mây / badge đỏ nổi bật ở giữa */
+.sd-center-cloud {
+    position: relative;
+    z-index: 2;
+    background: #ffffff;
+    border: 4px solid var(--sd-primary-red);
+    border-radius: 40px;
+    padding: 24px 34px;
+    box-shadow: 0 10px 30px rgba(220, 38, 38, 0.25), inset 0 2px 10px rgba(254, 226, 226, 0.5);
+    text-align: center;
+    min-width: 160px;
+}
+
+/* Icon hướng dẫn phát âm ở góc trên node trung tâm */
+.btn-center-hd-guide {
+    position: absolute;
+    top: -12px;
+    right: -12px;
+    background: #0284c7;
+    color: #ffffff;
+    border: 2px solid #ffffff;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    font-size: 0.95rem;
+    cursor: pointer;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.25);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s ease;
+}
+
+.btn-center-hd-guide:hover {
+    transform: scale(1.2);
+    background: #0369a1;
+}
+
+.sd-center-text {
+    font-size: 2.8rem;
+    font-weight: 900;
+    color: var(--sd-primary-red);
+    line-height: 1;
+    letter-spacing: 0.5px;
+    text-shadow: 0 2px 4px rgba(220, 38, 38, 0.15);
+}
+
+.sd-center-ipa-badge {
+    display: inline-block;
+    font-size: 1rem;
+    font-weight: 800;
+    color: #dc2626;
+    margin-top: 6px;
+    font-family: 'Consolas', 'Lucida Console', monospace;
+}
+
+.btn-center-audio {
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #ef4444;
+    color: #ffffff;
+    border: 2px solid #ffffff;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 800;
+    padding: 2px 10px;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    transition: all 0.2s ease;
+}
+
+.btn-center-audio:hover {
+    background: #b91c1c;
+    transform: translateX(-50%) scale(1.1);
+}
+
+/* ─── VÙNG CÁC TỪ VỆ TINH (SATELLITE WORDS) ─── */
+.sd-satellites-wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+    z-index: 5;
+}
+
+/* Thẻ từ vựng vệ tinh */
+.sd-word-card {
+    position: absolute;
+    pointer-events: auto;
+    background: #ffffff;
+    border: 2px solid #cbd5e1;
+    border-radius: 18px;
+    padding: 12px 16px;
+    min-width: 140px;
+    max-width: 180px;
+    text-align: center;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.07);
+    transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+    cursor: pointer;
+    user-select: none;
+}
+
+.sd-word-card:hover {
+    transform: scale(1.12);
+    border-color: var(--sd-primary-red);
+    box-shadow: 0 12px 28px rgba(220, 38, 38, 0.22);
+    z-index: 20;
+    background: #fffafa;
+}
+
+.sd-word-card.playing {
+    border-color: #10b981;
+    box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.3), 0 12px 28px rgba(16, 185, 129, 0.25);
+    transform: scale(1.14);
+}
+
+.sd-card-icon {
+    font-size: 1.8rem;
+    margin-bottom: 2px;
+    line-height: 1;
+}
+
+.sd-card-word {
+    font-size: 1.35rem;
+    font-weight: 800;
+    color: #0f172a;
+    letter-spacing: 0.3px;
+    line-height: 1.2;
+}
+
+/* Phần chữ cái quy tắc được bôi đỏ đậm y như ảnh */
+.sd-card-word .hl-red, .hl-red {
+    color: #dc2626 !important;
+    font-weight: 900;
+    text-decoration: underline;
+    text-decoration-color: #ef4444;
+    text-underline-offset: 2px;
+}
+
+.sd-card-ipa {
+    font-family: 'Consolas', 'Lucida Console', monospace;
+    font-size: 0.95rem;
+    color: #64748b;
+    margin: 2px 0;
+    font-weight: 600;
+}
+
+.sd-card-ipa .hl-red {
+    color: #dc2626 !important;
+    font-weight: 800;
+}
+
+.sd-card-meaning {
+    font-size: 0.85rem;
+    color: #475569;
+    font-weight: 600;
+    margin-top: 2px;
+    line-height: 1.3;
+}
+
+/* Nút bấm hành động nhỏ trên thẻ từ */
+.sd-card-actions {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    margin-top: 6px;
+}
+
+.btn-card-audio, .btn-card-guide {
+    background: #f1f5f9;
+    border: 1px solid #cbd5e1;
+    border-radius: 50%;
+    width: 26px;
+    height: 26px;
+    font-size: 0.75rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.btn-card-audio:hover {
+    background: #ef4444;
+    color: #ffffff;
+    border-color: #ef4444;
+}
+
+.btn-card-guide:hover {
+    background: #0284c7;
+    color: #ffffff;
+    border-color: #0284c7;
+}
+
+/* ─── CHẾ ĐỘ HIỂN THỊ LƯỚI THẺ (GRID VIEW CHO MOBILE / TÙY CHỌN) ─── */
+.sd-mindmap-board.view-grid {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: auto;
+    padding: 24px 16px;
+}
+
+.sd-mindmap-board.view-grid .sd-mindmap-svg {
+    display: none;
+}
+
+.sd-mindmap-board.view-grid .sd-center-hub {
+    margin-bottom: 28px;
+}
+
+.sd-mindmap-board.view-grid .sd-satellites-wrapper {
+    position: static;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 16px;
+    width: 100%;
+    max-width: 1000px;
+}
+
+.sd-mindmap-board.view-grid .sd-word-card {
+    position: static !important;
+    transform: none !important;
+    max-width: 100%;
+}
+
+.sd-mindmap-board.view-grid .sd-word-card:hover {
+    transform: translateY(-4px) !important;
+}
+
+/* Loading Spinner */
+.sd-loading-box {
+    text-align: center;
+    padding: 60px 20px;
+}
+
+.sd-spinner {
+    width: 48px;
+    height: 48px;
+    border: 4px solid #e2e8f0;
+    border-top-color: #0284c7;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin: 0 auto;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* =========================================================
+   5. MODAL HƯỚNG DẪN ÂM TRUNG TÂM
+   ========================================================= */
+.modal-sd-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(15, 23, 42, 0.7);
+    backdrop-filter: blur(6px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    padding: 16px;
+    animation: fadeIn 0.2s ease-out;
+}
+
+.modal-sd-dialog {
+    background: #ffffff;
+    border-radius: 20px;
+    max-width: 580px;
+    width: 100%;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+    overflow: hidden;
+    animation: popIn 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes popIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+.modal-sd-header {
+    background: #f8fafc;
+    padding: 16px 20px;
+    border-bottom: 1px solid #e2e8f0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-sd-title {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 800;
+}
+
+.modal-sd-close {
+    background: none;
+    border: none;
+    font-size: 1.6rem;
+    line-height: 1;
+    color: #64748b;
+    cursor: pointer;
+}
+
+.modal-sd-close:hover {
+    color: #0f172a;
+}
+
+.modal-sd-body {
+    padding: 20px;
+}
+
+.sd-modal-rule-box {
+    display: flex;
+    gap: 16px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    padding: 16px;
+}
+
+.sd-modal-phoneme-hero {
+    text-align: center;
+    border-right: 1px solid #cbd5e1;
+    padding-right: 16px;
+    min-width: 110px;
+}
+
+.sd-modal-big-symbol {
+    font-size: 2.2rem;
+    font-weight: 900;
+    color: var(--sd-primary-red);
+    font-family: 'Consolas', monospace;
+    margin-bottom: 8px;
+}
+
+.sd-modal-rule-detail {
+    flex: 1;
+}
+
+.sd-modal-words-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.sd-modal-chip-word {
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 20px;
+    padding: 4px 12px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+
+.sd-modal-chip-word:hover {
+    background: #fee2e2;
+    border-color: #ef4444;
+    color: #dc2626;
+}
+
+.modal-sd-footer {
+    background: #f8fafc;
+    padding: 12px 20px;
+    border-top: 1px solid #e2e8f0;
+    text-align: right;
+}
+
+/* =========================================================
+   6. RESPONSIVE CHO MOBILE & TABLET
+   ========================================================= */
+@media (max-width: 768px) {
+    .sd-header-container {
+        flex-direction: column;
+        text-align: center;
+    }
+    .sd-header-left {
+        justify-content: center;
+        width: 100%;
+    }
+    .sd-rule-banner {
+        flex-direction: column;
+        text-align: center;
+    }
+    .sd-rule-banner-right {
+        justify-content: center;
+        width: 100%;
+    }
+    .sd-mindmap-board {
+        min-height: auto;
+        padding: 20px 10px;
+    }
+}

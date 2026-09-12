@@ -991,6 +991,25 @@ public class GeminiService {
     }
 
     // =====================================================
+    // HÀM CHUNG TẠO NỘI DUNG TỪ PROMPT BẰNG GEMINI
+    // =====================================================
+    public String generateText(String prompt) {
+        try {
+            String res = goiGeminiAnToan(prompt, new String[]{MODEL_FLASH_LITE, MODEL_FLASH});
+            if (res != null) {
+                res = res.trim();
+                if (res.startsWith("```json")) res = res.substring(7);
+                else if (res.startsWith("```")) res = res.substring(3);
+                if (res.endsWith("```")) res = res.substring(0, res.length() - 3);
+                return res.trim();
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Lỗi gọi Gemini generateText: " + e.getMessage(), e);
+        }
+        return "";
+    }
+
+    // =====================================================
     // TẠO PHÂN TÍCH HƯỚNG DẪN ĐỌC CHUẨN HÓA TIẾNG VIỆT
     // =====================================================
     public String taoPhanTichHuongDanDoc(String prompt) {

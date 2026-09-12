@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sơ Đồ Quy Luật Đánh Vần Tiếng Anh (Phonics Mindmap)</title>
+
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- CSS Sơ đồ tư duy & Hướng dẫn đọc -->
+    <link rel="stylesheet" th:href="@{/css/so-do-danh-van.css(v=1)}">
+    <link rel="stylesheet" th:href="@{/css/huong-dan-doc.css(v=6)}">
+</head>
+<body>
+
+<div class="sd-page-wrapper">
+
+    <!-- =========================================================
+         1. HEADER ĐIỀU HƯỚNG & TÌM KIẾM
+         ========================================================= -->
+    <header class="sd-header">
+        <div class="sd-header-container">
+            <div class="sd-header-left">
+                <a href="/" class="btn-sd-back-home" title="Quay về trang chủ">← Trang chủ</a>
+                <a href="/ipa" class="btn-sd-back-ipa" title="Bảng phiên âm IPA">📢 Bảng IPA</a>
+                <a href="/hoc" class="btn-sd-back-study" title="Học từ vựng">📖 Học từ</a>
+            </div>
+
+            <div class="sd-header-center">
+                <h1 class="sd-title">🧠 SƠ ĐỒ TƯ DUY QUY LUẬT ĐÁNH VẦN</h1>
+                <p class="sd-subtitle">Học phát âm chuẩn theo quy tắc mặt chữ · Di chuột vào để nghe đọc tự động · Bấm 🗣️ xem khẩu hình chi tiết</p>
+            </div>
+
+            <div class="sd-header-right">
+                <!-- Nút bật/tắt tự động đọc khi di chuột -->
+                <label class="sd-toggle-wrap" title="Khi bật, chỉ cần rà chuột vào từ hoặc âm là máy sẽ tự động phát âm ngay lập tức">
+                    <input type="checkbox" id="chkAutoHoverRead" checked>
+                    <span class="sd-toggle-slider"></span>
+                    <span class="sd-toggle-text">🔊 Tự đọc khi di chuột</span>
+                </label>
+            </div>
+        </div>
+    </header>
+
+    <!-- =========================================================
+         2. THANH TÌM KIẾM & BỘ LỌC QUY TẮC
+         ========================================================= -->
+    <section class="sd-search-filter-section">
+        <div class="container-fluid px-lg-5">
+            <!-- Ô tìm kiếm thông minh -->
+            <div class="row justify-content-center mb-3">
+                <div class="col-12 col-md-8 col-lg-6">
+                    <div class="input-group sd-search-bar shadow-sm">
+                        <span class="input-group-text bg-white border-end-0">🔍</span>
+                        <input type="text"
+                               id="txtSearchRule"
+                               class="form-control border-start-0 border-end-0 ps-0"
+                               placeholder="Tìm quy tắc hoặc từ vựng (VD: word, ise, ar, tion, ou, knight...)"
+                               oninput="xuLyTimKiem(this.value)"
+                               onkeydown="if(event.key==='Enter'){event.preventDefault(); timKiemVaVeSoDo();}">
+                        <button type="button"
+                                class="btn btn-primary px-3 fw-bold"
+                                onclick="timKiemVaVeSoDo()"
+                                title="Tìm kiếm sơ đồ quy tắc">
+                            Tìm kiếm
+                        </button>
+                        <button type="button"
+                                class="btn btn-outline-warning text-dark px-3 fw-bold btn-ai-generate"
+                                onclick="goiAiVeSoDo()"
+                                title="Gọi AI Gemini vẽ sơ đồ cho âm hoặc từ này">
+                            🤖 AI vẽ sơ đồ
+                        </button>
+                    </div>
+                    <div id="searchSuggestions" class="sd-search-dropdown" style="display: none;"></div>
+                </div>
+            </div>
+
+            <!-- Các tab phân loại nhóm quy tắc -->
+            <div class="sd-category-tabs">
+                <button type="button" class="btn-sd-tab active" data-cat="ALL" onclick="locTheoNhom('ALL', this)">
+                    🌐 Tất cả quy tắc
+                </button>
+                <button type="button" class="btn-sd-tab" data-cat="NGUYEN_AM_DAC_BIET" onclick="locTheoNhom('NGUYEN_AM_DAC_BIET', this)">
+                    🌟 Nguyên âm đặc biệt (w+or, ar, er...)
+                </button>
+                <button type="button" class="btn-sd-tab" data-cat="DUOI_TU_HAU_TO" onclick="locTheoNhom('DUOI_TU_HAU_TO', this)">
+                    🔖 Đuôi từ & Hậu tố (ise, tion, ture...)
+                </button>
+                <button type="button" class="btn-sd-tab" data-cat="NGUYEN_AM_DOI" onclick="locTheoNhom('NGUYEN_AM_DOI', this)">
+                    🎶 Nguyên âm đôi (ea, ee, oo, igh...)
+                </button>
+                <button type="button" class="btn-sd-tab" data-cat="PHU_AM_KEP_CAM" onclick="locTheoNhom('PHU_AM_KEP_CAM', this)">
+                    🔇 Phụ âm kép & Âm câm (ch, sh, kn, wr...)
+                </button>
+                <button type="button" class="btn-sd-tab" data-cat="BIEN_AM_C_G" onclick="locTheoNhom('BIEN_AM_C_G', this)">
+                    🔄 Biến âm C & G (c/g + e/i/y)
+                </button>
+            </div>
+
+            <!-- Danh sách các viên thuốc (Pills) chọn nhanh quy tắc -->
+            <div class="sd-pills-scroll" id="sdRulePillsContainer">
+                <!-- Sẽ render động các nút chọn nhanh quy tắc -->
+            </div>
+        </div>
+    </section>
+
+    <!-- =========================================================
+         3. SÂN KHẤU SƠ ĐỒ TƯ DUY (MINDMAP ARENA)
+         ========================================================= -->
+    <main class="sd-main-arena">
+        <div class="container-fluid px-lg-5">
+
+            <!-- Banner tiêu đề quy tắc đang chọn -->
+            <div class="sd-rule-banner">
+                <div class="sd-rule-banner-left">
+                    <span class="sd-rule-badge" id="lblBannerCategory">🌟 Nguyên âm đặc biệt</span>
+                    <h2 class="sd-rule-headline" id="lblBannerTitle">Từ có "w + or" thì "or" đọc là /ɜː/</h2>
+                    <p class="sd-rule-desc" id="lblBannerDesc">
+                        Thông thường chữ "or" đọc là /ɔː/ (như fork, short). Nhưng khi đứng ngay sau "w", cụm "or" luôn bị biến âm đọc thành /ɜː/.
+                    </p>
+                </div>
+                <div class="sd-rule-banner-right">
+                    <button type="button"
+                            class="btn-sd-action btn-sd-autoplay"
+                            id="btnAutoPlayAll"
+                            onclick="docToanBoSoDo()"
+                            title="Tự động đọc lần lượt từ âm trung tâm tới tất cả các từ trong sơ đồ">
+                        ▶️ Đọc toàn bộ sơ đồ
+                    </button>
+                    <button type="button"
+                            class="btn-sd-action btn-sd-center-guide"
+                            onclick="moHuongDanAmTrungTam()"
+                            title="Xem hướng dẫn chi tiết cách phát âm và khẩu hình của âm trung tâm này">
+                        🗣️ Hướng dẫn âm này
+                    </button>
+                    <button type="button"
+                            class="btn-sd-action btn-sd-toggle-view"
+                            onclick="chuyenDoiCheDoHienThi()"
+                            title="Chuyển đổi giữa chế độ Sơ đồ tư duy (Mindmap) và Lưới thẻ (Grid)">
+                        📱 Đổi chế độ xem
+                    </button>
+                </div>
+            </div>
+
+            <!-- Loading Spinner khi gọi AI -->
+            <div id="sdLoadingBox" class="sd-loading-box" style="display: none;">
+                <div class="sd-spinner"></div>
+                <h5 class="mt-3 fw-bold text-primary" id="lblLoadingText">🤖 AI Gemini đang phân tích quy tắc và vẽ sơ đồ tư duy...</h5>
+                <p class="text-muted small">Đang tổng hợp các từ vựng tiêu biểu, phiên âm chuẩn IPA và nghĩa tiếng Việt...</p>
+            </div>
+
+            <!-- VÙNG SƠ ĐỒ MINDMAP CHÍNH (CANVAS / RADIAL CONTAINER) -->
+            <div id="sdMindmapContainer" class="sd-mindmap-board">
+                <!-- SVG Canvas vẽ các mũi tên uốn lượn cong đỏ/vàng nối từ tâm ra các nhánh -->
+                <svg id="svgMindmapLines" class="sd-mindmap-svg"></svg>
+
+                <!-- KHỐI TRUNG TÂM (CENTRAL HUB - ÂM Ở GIỮA) -->
+                <div id="nodeCenterHub"
+                     class="sd-center-hub"
+                     onmouseenter="hoverPhatAmNodeTrungTam()"
+                     onclick="clickPhatAmNodeTrungTam()"
+                     title="Di chuột hoặc bấm để nghe phát âm · Bấm icon 🗣️ để xem khẩu hình chi tiết">
+
+                    <div class="sd-center-cloud-glow"></div>
+                    <div class="sd-center-cloud">
+                        <!-- Icon hướng dẫn đọc của âm trung tâm -->
+                        <button type="button"
+                                class="btn-center-hd-guide"
+                                onclick="event.stopPropagation(); moHuongDanAmTrungTam();"
+                                title="Xem hướng dẫn cách đọc & khẩu hình của âm trung tâm này">
+                            🗣️
+                        </button>
+
+                        <!-- Chữ cái / cụm chữ cái quy tắc to rõ ở giữa (như 'or', 'ISE') -->
+                        <div class="sd-center-text" id="lblCenterLetter">or</div>
+
+                        <!-- Nhãn cách đọc (ví dụ: 'đọc là /ɜː/') -->
+                        <div class="sd-center-ipa-badge" id="lblCenterIpa">đọc là /ɜː/</div>
+
+                        <!-- Nút loa nhỏ bấm phát âm -->
+                        <button type="button"
+                                class="btn-center-audio"
+                                onclick="event.stopPropagation(); clickPhatAmNodeTrungTam();"
+                                title="Nghe phát âm">
+                            🔊
+                        </button>
+                    </div>
+                </div>
+
+                <!-- VÙNG CÁC TỪ MINH HỌA XUNG QUANH (SATELLITE WORDS) -->
+                <div id="satellitesWrapper" class="sd-satellites-wrapper">
+                    <!-- Sẽ render động các thẻ từ minh họa xung quanh -->
+                </div>
+
+            </div>
+
+        </div>
+    </main>
+
+    <!-- =========================================================
+         4. MODAL HƯỚNG DẪN ÂM TRUNG TÂM
+         ========================================================= -->
+    <div id="modalAmTrungTam" class="modal-sd-overlay" style="display: none;">
+        <div class="modal-sd-dialog">
+            <div class="modal-sd-header">
+                <h4 class="modal-sd-title">
+                    <span>🗣️</span> Hướng Dẫn Phát Âm: <span id="lblModalCenterTitle" class="text-danger"></span>
+                </h4>
+                <button type="button" class="modal-sd-close" onclick="dongModalAmTrungTam()">&times;</button>
+            </div>
+            <div class="modal-sd-body">
+                <div class="sd-modal-rule-box">
+                    <div class="sd-modal-phoneme-hero">
+                        <div class="sd-modal-big-symbol" id="lblModalBigSymbol">/ɜː/</div>
+                        <button type="button" class="btn btn-primary btn-sm fw-bold px-3" onclick="clickPhatAmNodeTrungTam()">
+                            🔊 Nghe âm chuẩn
+                        </button>
+                    </div>
+                    <div class="sd-modal-rule-detail">
+                        <h6 class="fw-bold text-success mb-1">📜 Quy luật đánh vần:</h6>
+                        <p id="lblModalRuleDetail" class="mb-2 text-dark"></p>
+
+                        <h6 class="fw-bold text-primary mb-1">👄 Hướng dẫn khẩu hình & vị trí lưỡi:</h6>
+                        <p id="lblModalMouthDetail" class="mb-0 text-muted"></p>
+                    </div>
+                </div>
+
+                <div class="mt-3">
+                    <h6 class="fw-bold mb-2">🎯 Các từ vựng mẫu tiêu biểu theo quy tắc này:</h6>
+                    <div class="sd-modal-words-list" id="lblModalSampleWords"></div>
+                </div>
+            </div>
+            <div class="modal-sd-footer">
+                <button type="button" class="btn btn-secondary px-4 fw-bold" onclick="dongModalAmTrungTam()">Đóng</button>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- Data nhúng mặc định từ Server -->
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    window.SERVER_DATA_DS_QUY_LUAT = /*[[${dsQuyLuat}]]*/ [];
+    window.SERVER_DATA_QUY_LUAT_HIEN_TAI = /*[[${quyLuatHienTai}]]*/ null;
+    window.SERVER_DATA_ID_HIEN_TAI = /*[[${idHienTai}]]*/ 'w_or';
+    /*]]>*/
+</script>
+
+<!-- Scripts logic Mindmap & Hướng dẫn đọc -->
+<script th:src="@{/js/huong-dan-doc.js(v=3)}"></script>
+<script th:src="@{/js/so-do-danh-van.js(v=1)}"></script>
+
+</body>
+</html>
