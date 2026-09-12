@@ -110,6 +110,11 @@
         document.querySelectorAll(".btn-hd-audio").forEach(function (btn) {
             btn.classList.remove("playing");
         });
+
+        // 7. Gỡ class active-playing ở các thẻ âm tiết
+        document.querySelectorAll(".hd-syllable-chip").forEach(function (chip) {
+            chip.classList.remove("active-playing");
+        });
     }
 
     // Đưa ra global để hoc-chon.js có thể gọi ngắt khi cần
@@ -344,6 +349,12 @@
             elVsStrip.onclick = function () {
                 phatAudioHuongDan(1.0);
             };
+            // Ẩn 2 dòng phụ trùng lặp để modal gọn gàng, thẻ âm tiết luôn hiển thị trọn vẹn
+            if (elVn && elVn.parentElement) elVn.parentElement.style.display = "none";
+            if (elNghia) elNghia.style.display = "none";
+        } else {
+            if (elVn && elVn.parentElement) elVn.parentElement.style.display = "block";
+            if (elNghia) elNghia.style.display = "block";
         }
 
         // Tách âm tiết (Syllables)
@@ -377,7 +388,10 @@
                 chip.addEventListener("click", function () {
                     // Dừng ngay mọi âm thanh khác trước khi đọc âm tiết này
                     dungAudioHuongDan();
-                    docAmTiet(syllable, docText);
+                    chip.classList.add("active-playing");
+                    docAmTiet(syllable, docText, function () {
+                        chip.classList.remove("active-playing");
+                    });
                 });
 
                 chipContainer.appendChild(chip);
@@ -515,10 +529,25 @@
     // =========================================================
     // 7. ĐỌC TỪNG ÂM TIẾT CHUẨN XÁC THEO TỪ CHÍNH (NEURAL TTS)
     // =========================================================
+    const SYLLABLE_PHONETIC_MAP = {
+        "co": "caw", "com": "cawm", "me": "muh", "dy": "dee", "ty": "tee",
+        "ly": "lee", "ny": "nee", "ry": "ree", "sy": "see", "cy": "see",
+        "gy": "jee", "al": "ull", "el": "ell", "le": "ull", "ble": "bull",
+        "ple": "pull", "tle": "tull", "dle": "dull", "cle": "cull",
+        "fle": "full", "tion": "shun", "sion": "zhun", "ture": "chur",
+        "ous": "us", "ful": "full", "ment": "muhnt", "ness": "ness",
+        "for": "fer", "ta": "tuh", "ca": "kuh", "ga": "guh"
+    };
+
     function docAmTiet(syllable, docText, onEnd) {
         dungAudioHuongDan();
 
-        const toSpeak = docText || syllable;
+        let toSpeak = docText;
+        if (!toSpeak || toSpeak.trim() === "") {
+            const lowerSyl = (syllable || "").toLowerCase().trim();
+            toSpeak = SYLLABLE_PHONETIC_MAP[lowerSyl] || syllable;
+        }
+
         // Ưu tiên phát qua Microsoft Edge Neural TTS cho âm chuẩn xác và tự nhiên
         const ttsUrl = "/audio/tts?text=" + encodeURIComponent(toSpeak) + "&rate=-10%";
         const audio = new Audio(ttsUrl);
@@ -562,8 +591,49 @@
     }
 
     // =========================================================
-    // 8. ĐÁNH VẦN TỪNG CHỮ CÁI (SPELLING)
+    // 8. ĐÁNH VẦN TỪNG CHỮ CÁI (SPELLING BẢN XỨ CHUẨN 100%)
+    // Dùng bộ 26 file MP3 phát âm chữ cái bản xứ (/audio/alphabet/{a-z}.mp3)
     // =========================================================
+    function phatAudioChuCai(char, onEnd) {
+        const c = (char || "").toLowerCase();
+        if (c >= 'a' && c <= 'z') {
+            const audio = new Audio("/audio/alphabet/" + c + ".mp3");
+            hdAudioHienTai = audio;
+            let done = false;
+            function finish() {
+                if (done) return;
+                done = true;
+                hdAudioHienTai = null;
+                if (onEnd) onEnd();
+            }
+            audio.onended = finish;
+            audio.onerror = function () {
+                phatSpeechChuCai(c, finish);
+            };
+            const p = audio.play();
+            if (p !== undefined) {
+                p.catch(function () {
+                    phatSpeechChuCai(c, finish);
+                });
+            }
+        } else {
+            phatSpeechChuCai(c, onEnd);
+        }
+    }
+
+    function phatSpeechChuCai(char, onEnd) {
+        if (window.speechSynthesis) {
+            const utterance = new SpeechSynthesisUtterance(char.toUpperCase());
+            utterance.lang = "en-US";
+            utterance.rate = 0.9;
+            utterance.onend = function () { if (onEnd) onEnd(); };
+            utterance.onerror = function () { if (onEnd) onEnd(); };
+            window.speechSynthesis.speak(utterance);
+        } else {
+            if (onEnd) onEnd();
+        }
+    }
+
     window.danhVanHuongDan = function (btnEl) {
         if (!duLieuHienTai || !duLieuHienTai.tu) return;
 
@@ -581,7 +651,7 @@
         let idx = 0;
         function docChuTiep() {
             if (idx >= letters.length) {
-                // Đánh vần xong -> đọc lại cả từ hoàn chỉnh!
+                // Đánh vần xong -> đọc lại cả từ hoàn chỉnh tốc độ chuẩn!
                 const t = setTimeout(function () {
                     phatAudioTu(duLieuHienTai.tu, 1.0, function () {
                         if (btnEl) btnEl.classList.remove("playing");
@@ -593,23 +663,10 @@
             const char = letters[idx];
             idx++;
 
-            if (window.speechSynthesis) {
-                const utterance = new SpeechSynthesisUtterance(char);
-                utterance.lang = "en-US";
-                utterance.rate = 0.9;
-                utterance.onend = function () {
-                    const t = setTimeout(docChuTiep, 300);
-                    hdTimeoutList.push(t);
-                };
-                utterance.onerror = function () {
-                    const t = setTimeout(docChuTiep, 300);
-                    hdTimeoutList.push(t);
-                };
-                window.speechSynthesis.speak(utterance);
-            } else {
-                const t = setTimeout(docChuTiep, 400);
+            phatAudioChuCai(char, function () {
+                const t = setTimeout(docChuTiep, 200);
                 hdTimeoutList.push(t);
-            }
+            });
         }
 
         docChuTiep();

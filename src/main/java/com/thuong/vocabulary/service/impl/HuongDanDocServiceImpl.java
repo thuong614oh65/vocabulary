@@ -239,6 +239,22 @@ public class HuongDanDocServiceImpl implements HuongDanDocService {
     private static final Map<String, HuongDanDocDTO> TU_DIEN_BOI_CHUAN = new HashMap<>();
 
     static {
+        // --- COMEDY ---
+        TU_DIEN_BOI_CHUAN.put("comedy", new HuongDanDocDTO(
+                "comedy", "/ˈkɑː.mə.di/", "hài kịch, kịch vui",
+                List.of("co", "me", "dy"),
+                List.of("ˈkɑː", "mə", "di"),
+                List.of("KO", "mơ", "đi"),
+                List.of("caw", "muh", "dee"),
+                0,
+                "KO - mơ - đi",
+                "Trọng âm chính rơi vào âm 1 (KO) - đọc to, cao và rõ hơn: KO-mơ-đi.",
+                "Mở miệng tròn phát âm /kɑː/ (nhấn mạnh), sau đó hạ cằm thả lỏng đọc /mə/, đầu lưỡi chạm chân răng phát âm /di/.",
+                "Kết thúc nhẹ nhàng bằng nguyên âm /i/ (đi).",
+                "Người Việt hay đọc nhầm theo mặt chữ thành 'cô-mê-đi' hoặc 'kăm-hì-đi'. Cách đọc chuẩn quốc tế là KO-mơ-đi!",
+                "Mẹo nhớ: Xem phim hài kịch thì phải 'KO' (co) bụng cười 'MƠ' màng 'ĐI' ngủ!"
+        ));
+
         // --- USAGE ---
         TU_DIEN_BOI_CHUAN.put("usage", new HuongDanDocDTO(
                 "usage", "/ˈjuː.sɪdʒ/", "cách sử dụng, sự dùng",
@@ -1211,7 +1227,10 @@ public class HuongDanDocServiceImpl implements HuongDanDocService {
         if (s.contains("æn") || en.equals("an")) return "An";
         if (s.contains("æp") || en.equals("ap") || en.equals("app")) return "Ép";
         if (s.contains("kæb") || en.equals("cab")) return "Kép";
-        if (s.contains("kʌm") || en.equals("com")) return "Kăm";
+        if (s.contains("kɑːm") || s.contains("kɒm") || s.contains("kɑm") || (en.equals("com") && (s.contains("ɑ") || s.contains("ɒ")))) return "Ko";
+        if (s.contains("kʌm") || s.equals("come")) return "Kăm";
+        if (s.contains("kəm") || (en.equals("com") && s.contains("ə"))) return "cầm";
+        if (en.equals("com")) return "Ko";
         if (s.contains("ɡɑːr") || en.equals("gar")) return "Gaa";
         if (s.contains("lɪk") || en.equals("lic")) return "lịk";
         if (s.contains("let") || en.equals("let")) return "Le";
@@ -1272,7 +1291,16 @@ public class HuongDanDocServiceImpl implements HuongDanDocService {
         if (s.equals("lic")) return "lịk";
         if (s.equals("let")) return "Le";
         if (s.equals("tuce")) return "tịt-s";
-        if (s.equals("com")) return "Kăm";
+        if (s.equals("com")) return "Ko";
+        if (s.equals("me")) return "mơ";
+        if (s.equals("dy")) return "đi";
+        if (s.equals("ty")) return "ti";
+        if (s.equals("ly")) return "li";
+        if (s.equals("ny")) return "ni";
+        if (s.equals("ry")) return "ri";
+        if (s.equals("sy")) return "si";
+        if (s.equals("cy")) return "si";
+        if (s.equals("gy")) return "di";
         if (s.equals("for")) return "phơ";
         if (s.equals("ta")) return "tờ";
         if (s.equals("ble")) return "bồ";
@@ -1330,7 +1358,19 @@ public class HuongDanDocServiceImpl implements HuongDanDocService {
         if (s.equals("ful")) return "full";
         if (s.equals("for")) return "fer";
         if (s.equals("ta")) return "tuh";
-        if (s.equals("com")) return "come";
+        if (s.equals("com")) {
+            if (ipa != null && (ipa.contains("ɑ") || ipa.contains("ɒ"))) return "cawm";
+            if (ipa != null && ipa.contains("ə")) return "kuhm";
+            return "cawm";
+        }
+        if (s.equals("me")) return "muh";
+        if (s.equals("dy")) return "dee";
+        if (s.equals("ty")) return "tee";
+        if (s.equals("ly")) return "lee";
+        if (s.equals("ny")) return "nee";
+        if (s.equals("ry")) return "ree";
+        if (s.equals("sy") || s.equals("cy")) return "see";
+        if (s.equals("gy")) return "jee";
         if (s.equals("beau")) return "byoo";
         if (s.equals("ti")) return "tee";
         if (s.equals("lic")) return "lick";
