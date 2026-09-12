@@ -139,6 +139,14 @@
                             '<div class="hd-word-hero">' +
                                 '<div class="hd-word" id="hdTuChinh">...</div>' +
                                 '<div><span class="hd-phonetic-ipa" id="hdPhienAmIpa"></span></div>' +
+                                '<div class="hd-visual-strip" id="hdVisualStrip" title="Bấm vào để nghe phát âm chuẩn cả từ">' +
+                                    '<span class="hd-vs-word" id="hdVsWord"></span>' +
+                                    '<span class="hd-vs-dash">–</span>' +
+                                    '<span class="hd-vs-respell" id="hdVsRespell"></span>' +
+                                    '<span class="hd-vs-dash">–</span>' +
+                                    '<span class="hd-vs-meaning" id="hdVsMeaning"></span>' +
+                                    '<span class="hd-vs-audio-icon">🔊</span>' +
+                                '</div>' +
                                 '<div><span class="hd-vietnamese-respell" id="hdPhienAmTiengViet"></span></div>' +
                                 '<div class="hd-meaning" id="hdNghia"></div>' +
                             '</div>' +
@@ -289,6 +297,21 @@
     };
 
     // =========================================================
+    // ĐỊNH DẠNG ÂM BỒI TIẾNG VIỆT & HIGHLIGHT ÂM ĐUÔI THEO ẢNH MẪU
+    // =========================================================
+    function dinhDangAmBoiHtml(str) {
+        if (!str) return "";
+        let s = String(str);
+        // Nhận diện và bọc huy hiệu âm đuôi trực quan: -x, -z, -th, -đ, -ch, -dzh, -t, -k, -s
+        s = s.replace(/-\s*(x|z|th|đ|ch|dzh|t|k|s)(?=[^a-zA-Z\d\u00C0-\u1EF9]|$)/gi, function(match, ending) {
+            const lower = ending.toLowerCase();
+            let cls = "ending-" + (lower === "đ" ? "d" : lower);
+            return '<span class="hd-ending-tag ' + cls + '">-' + ending + '</span>';
+        });
+        return s;
+    }
+
+    // =========================================================
     // 5. RENDER NỘI DUNG VÀO MODAL
     // =========================================================
     function hienThiDuLieuModal(data) {
@@ -298,10 +321,30 @@
         const elVn = document.getElementById("hdPhienAmTiengViet");
         const elNghia = document.getElementById("hdNghia");
 
+        const elVsStrip = document.getElementById("hdVisualStrip");
+        const elVsWord = document.getElementById("hdVsWord");
+        const elVsRespell = document.getElementById("hdVsRespell");
+        const elVsMeaning = document.getElementById("hdVsMeaning");
+
+        const rawVn = data.phienAmTiengViet || data.tu || "";
+        const formattedVnHtml = dinhDangAmBoiHtml(rawVn);
+        const nghiaClean = data.nghia ? data.nghia.replace(/^\(|\)$/g, "").trim() : "";
+
         if (elTu) elTu.textContent = data.tu || "";
         if (elIpa) elIpa.textContent = data.phienAm ? (data.phienAm.startsWith("/") ? data.phienAm : "/" + data.phienAm + "/") : "";
-        if (elVn) elVn.textContent = "🇻🇳 " + (data.phienAmTiengViet || data.tu);
+        if (elVn) elVn.innerHTML = '🇻🇳 <span class="hd-vn-prefix">Âm Việt:</span> ' + formattedVnHtml;
         if (elNghia) elNghia.textContent = data.nghia ? "(" + data.nghia + ")" : "";
+
+        // Card trực quan chuẩn theo ảnh mẫu (Word – Âm bồi – Nghĩa 🔊)
+        if (elVsStrip) {
+            elVsStrip.style.display = "inline-flex";
+            if (elVsWord) elVsWord.textContent = data.tu || "";
+            if (elVsRespell) elVsRespell.innerHTML = formattedVnHtml;
+            if (elVsMeaning) elVsMeaning.textContent = nghiaClean || (data.tu || "");
+            elVsStrip.onclick = function () {
+                phatAudioHuongDan(1.0);
+            };
+        }
 
         // Tách âm tiết (Syllables)
         const chipContainer = document.getElementById("hdSyllableChips");
@@ -322,12 +365,13 @@
 
                 let ipaText = amTietIpa[idx] ? "/" + amTietIpa[idx] + "/" : "";
                 let boiText = amTietBoi[idx] || "";
+                let boiHtml = dinhDangAmBoiHtml(boiText);
                 let docText = (amTietDoc && amTietDoc[idx]) ? amTietDoc[idx] : syllable;
 
                 chip.innerHTML = 
                     '<span class="syllable-stress-tag">⭐ Trọng âm</span>' +
                     '<span class="syllable-en">' + syllable + '</span>' +
-                    (boiText ? '<span class="syllable-vn">' + boiText + '</span>' : '') +
+                    (boiText ? '<span class="syllable-vn">' + boiHtml + '</span>' : '') +
                     (ipaText ? '<span class="syllable-ipa">' + ipaText + '</span>' : '');
 
                 chip.addEventListener("click", function () {

@@ -156,15 +156,25 @@ public class HuongDanDocServiceImpl implements HuongDanDocService {
                    - "usage" -> ["DIU", "sịch"]
                    - "comfortable" -> ["KĂM", "phơ", "tờ", "bồ"]
                    - "apple" -> ["ÉP", "pồ"]
-                4. QUY TẮC PHIÊN ÂM TIẾNG VIỆT BẮT BUỘC:
-                   - Đuôi "-al", "-el", "-le" và âm /əl/: Bồi là "ờl" hoặc "ồ" (ví dụ: "annual" -> "AN - niu - ờl", "apple" -> "ÉP - pồ", "table" -> "TÂY - bồ", "special" -> "SPÉ - sờl"). TUYỆT ĐỐI KHÔNG bồi là "uồl" hay "oát"!
-                   - Vần "-ual", "-ua-", âm /ju/, /nju/: Bồi là "niu" hoặc "diu" (ví dụ: "annual" -> "AN - niu - ờl", "continue" -> "kần - TÍN - niu").
-                   - Đuôi "-tion", "-sion", âm /ʃən/: Bồi là "sần".
-                   - Đuôi "-ture", âm /tʃɚ/: Bồi là "chờ".
-                   - Đuôi "-ous", âm /əs/: Bồi là "ợt-s" hoặc "ờ-s".
-                   - Đuôi "-age", âm /ɪdʒ/: Bồi là "ịch" / "bích" / "sịch".
-                   - Đuôi "-ble", âm /bəl/: Bồi là "bồ".
-                   - Âm tiết mang trọng âm chính: PHẢI VIẾT IN HOA (ví dụ: "AN", "DIU", "ÉP", "KĂM"). Âm không nhấn viết chữ thường.
+                4. QUY TẮC PHIÊN ÂM TIẾNG VIỆT THÔNG MINH TRỰC QUAN (KẾT HỢP ÂM ĐUÔI RÕ RÀNG):
+                   - CỰC KỲ QUAN TRỌNG: Các âm đuôi tiếng Anh (ending sounds) mà người Việt hay bỏ quên PHẢI được thể hiện rõ bằng dấu gạch nối '-' kèm ký hiệu âm đuôi chuẩn:
+                     + Đuôi /s/: thêm '-x' (ví dụ: "face" -> "phây-x", "nice" -> "nái-x", "bus" -> "bót-x", "class" -> "clát-x", "price" -> "prái-x")
+                     + Đuôi /z/: thêm '-z' (ví dụ: "nose" -> "nâu-z", "rose" -> "râu-z", "please" -> "plii-z", "use" -> "diu-z", "boys" -> "bôi-z", "is" -> "ít-z")
+                     + Đuôi /θ/ hoặc /ð/: thêm '-th' (ví dụ: "mouth" -> "mao-th", "tooth" -> "tu-th", "teeth" -> "ti-th", "bath" -> "bát-th", "with" -> "wít-th")
+                     + Đuôi /d/: thêm '-đ' (ví dụ: "hand" -> "hen-đ", "good" -> "gút-đ", "red" -> "rét-đ", "bad" -> "bét-đ", "friend" -> "phren-đ", "word" -> "quớt-đ")
+                     + Đuôi /t/: dùng 't' hoặc '-t' (ví dụ: "head" -> "hét", "foot" -> "phút", "cat" -> "cát-t", "meet" -> "mít-t")
+                     + Đuôi /k/ hoặc /g/: dùng 'c' hoặc '-k' (ví dụ: "leg" -> "léc", "back" -> "béc", "book" -> "búc-k", "like" -> "lái-k")
+                     + Đuôi /tʃ/: thêm '-ch' (ví dụ: "watch" -> "oát-ch", "catch" -> "két-ch", "much" -> "mất-ch")
+                     + Đuôi /dʒ/: bồi là "ịch" / "bích" hoặc thêm '-dzh' (ví dụ: "usage" -> "DIU - sịch", "cabbage" -> "KÉP - bích", "page" -> "phây-dzh", "orange" -> "o-rần-dzh")
+                     + Đuôi /p/: dùng 'p' hoặc '-p' (ví dụ: "top" -> "tháp-p", "stop" -> "sờ-tóp")
+                     + Đuôi "-al", "-el", "-le" và âm /əl/: Bồi là "ờl" hoặc "ồ" (ví dụ: "annual" -> "AN - niu - ờl", "apple" -> "ÉP - pồ", "table" -> "TÂY - bồ", "special" -> "SPÉ - sờl"). TUYỆT ĐỐI KHÔNG bồi là "uồl" hay "oát"!
+                     + Vần "-ual", "-ua-", âm /ju/, /nju/: Bồi là "niu" hoặc "diu" (ví dụ: "annual" -> "AN - niu - ờl", "continue" -> "kần - TÍN - niu").
+                     + Đuôi "-tion", "-sion", âm /ʃən/: Bồi là "sần".
+                     + Đuôi "-ture", âm /tʃɚ/: Bồi là "chờ".
+                     + Đuôi "-ous", âm /əs/: Bồi là "ợt-s" hoặc "ờ-s".
+                     + Đuôi "-ble", âm /bəl/: Bồi là "bồ".
+                   - Các từ nhiều âm tiết: nối các âm bằng dấu '-' (ví dụ: "finger" -> "phinh-gờ", "hello" -> "hê-lô", "water" -> "OÁ-tờ", "teacher" -> "TÍ-chờ").
+                   - Âm tiết mang trọng âm chính: PHẢI VIẾT IN HOA trong chuỗi nhiều âm (ví dụ: "PHINH - gờ", "AN - niu - ờl", "DIU - sịch", "KĂM - phơ - tờ - bồ", "ÉP - pồ"). Với từ 1 âm tiết, viết chữ thường có dấu trực quan (ví dụ: "phây-x", "nâu-z", "mao-th", "tu-th", "hen-đ", "hét", "léc", "phút", "béc").
                 5. 'amTietIpa': Mảng phiên âm IPA từng âm tiết chuẩn quốc tế Oxford/Cambridge (KHÔNG dùng ký hiệu Arpabet như ɫ), ví dụ cho "annual": ["ˈæn", "ju", "əl"].
                 6. 'phienAmTiengViet': Chuỗi nối các âm tiết bồi bằng dấu gạch ngang '-', ví dụ: "AN - niu - ờl", "DIU - sịch", "KĂM - phơ - tờ - bồ", "ÉP - pồ".
                 7. 'amNhanIndex': Chỉ số âm tiết mang trọng âm chính (0-indexed).
@@ -645,6 +655,247 @@ public class HuongDanDocServiceImpl implements HuongDanDocService {
                 "Tránh đọc 're-gít-tơ' theo mặt chữ.",
                 "Mẹo nhớ: Đăng ký tài khoản 'RÉ' (réo) gọi mọi người cùng vào!"
         ));
+
+        // --- CÁC TỪ VỰNG BỘ PHẬN CƠ THỂ (CHUẨN THEO ẢNH MẪU TRỰC QUAN) ---
+        TU_DIEN_BOI_CHUAN.put("head", new HuongDanDocDTO(
+                "head", "/hed/", "đầu, cái đầu",
+                List.of("head"),
+                List.of("hed"),
+                List.of("hét"),
+                List.of("head"),
+                0,
+                "hét",
+                "Từ 1 âm tiết, phát âm /e/ ngắn dứt khoát rồi chặn hơi ở nướu trên /d/ thành 'hét'.",
+                "Mở miệng vừa phải phát âm /e/, đầu lưỡi nâng lên chạm nướu trên chặn hơi âm /d/ dứt khoát.",
+                "⚠️ Đuôi /d/ chặn hơi ở nướu răng trên, phát âm dứt khoát như 'hét'.",
+                "Tránh đọc kéo dài hay đọc thành 'héc'.",
+                "Mẹo nhớ: Suy nghĩ nhiều đau 'HÉT' cả đầu!"
+        ));
+
+        TU_DIEN_BOI_CHUAN.put("hair", new HuongDanDocDTO(
+                "hair", "/heər/", "tóc, mái tóc",
+                List.of("hair"),
+                List.of("heə"),
+                List.of("he"),
+                List.of("hair"),
+                0,
+                "he",
+                "Từ 1 âm tiết, phát âm /e/ rồi thu họng cong nhẹ lưỡi /ə(r)/, đọc tự nhiên là 'he' hoặc 'he-ờ'.",
+                "Mở miệng phát âm /e/, sau đó hơi thu họng lại cong nhẹ đầu lưỡi.",
+                "Âm đuôi /r/ uốn nhẹ đầu lưỡi ở cuối âm.",
+                "Tránh đọc thành 'hai-ơ' theo mặt chữ viết.",
+                "Mẹo nhớ: Mái tóc bồng bềnh đón 'HE' (hè) sang!"
+        ));
+
+        TU_DIEN_BOI_CHUAN.put("face", new HuongDanDocDTO(
+                "face", "/feɪs/", "khuôn mặt, mặt",
+                List.of("face"),
+                List.of("feɪs"),
+                List.of("phây-x"),
+                List.of("face"),
+                0,
+                "phây-x",
+                "Từ 1 âm tiết, trượt nguyên âm đôi /eɪ/ rồi BẮT BUỘC xì hơi gió /s/ (-x) ở cuối.",
+                "Răng trên chạm nhẹ môi dưới thổi /f/, trượt sang /eɪ/ (phây), hai hàm răng khép hờ xì hơi gió /s/ (-x).",
+                "⚠️ BẮT BUỘC xì hơi gió /s/ (-x) ở cuối từ: 'phây-x', tuyệt đối không nuốt âm!",
+                "Người Việt rất hay bỏ quên âm gió /s/ cuối thành 'phây' (như lướt 'phây'). Phải đọc rõ: 'phây-x'!",
+                "Mẹo nhớ: Khuôn mặt 'PHÂY-X' (phây phây) trắng hồng xinh xắn!"
+        ));
+
+        TU_DIEN_BOI_CHUAN.put("eye", new HuongDanDocDTO(
+                "eye", "/aɪ/", "mắt, con mắt",
+                List.of("eye"),
+                List.of("aɪ"),
+                List.of("ai"),
+                List.of("eye"),
+                0,
+                "ai",
+                "Từ 1 âm tiết, nguyên âm đôi /aɪ/ đọc liền mạch trượt từ 'a' sang 'i' (ai).",
+                "Mở miệng rộng phát âm /a/ rồi thu hẹp khóe miệng trượt về /i/.",
+                "Không có phụ âm đuôi, ngân nhẹ âm /i/.",
+                "Tránh đọc cộc lốc hoặc gắt giọng.",
+                "Mẹo nhớ: Đôi mắt sáng nhìn 'AI' cũng thấy mến!"
+        ));
+
+        TU_DIEN_BOI_CHUAN.put("ear", new HuongDanDocDTO(
+                "ear", "/ɪər/", "tai, lỗ tai",
+                List.of("ear"),
+                List.of("ɪə"),
+                List.of("ia"),
+                List.of("ear"),
+                0,
+                "ia",
+                "Từ 1 âm tiết, trượt từ /ɪ/ sang /ə/ rồi cong nhẹ đầu lưỡi (đọc như 'ia' hoặc 'i-ờ').",
+                "Môi bẹt đọc /ɪ/ rồi thả lỏng trượt về /ə/, uốn nhẹ đầu lưỡi.",
+                "Âm /r/ cuối từ uốn nhẹ đầu lưỡi.",
+                "Tránh đọc thành 'e-a' theo mặt chữ.",
+                "Mẹo nhớ: Vểnh 'TAI' lắng nghe tiếng 'IA' (kia) vọng lại!"
+        ));
+
+        TU_DIEN_BOI_CHUAN.put("nose", new HuongDanDocDTO(
+                "nose", "/noʊz/", "mũi, cái mũi",
+                List.of("nose"),
+                List.of("noʊz"),
+                List.of("nâu-z"),
+                List.of("nose"),
+                0,
+                "nâu-z",
+                "Từ 1 âm tiết, đọc /noʊ/ (nâu) kết thúc bằng âm rung thanh quản /z/ (-z).",
+                "Đầu lưỡi chạm nướu trên đọc /n/, chu môi đọc /oʊ/ (nâu), hai răng khép hờ rung thanh quản âm /z/ (-z).",
+                "⚠️ Đuôi /z/ (-z) là âm rung thanh quản, khác với âm gió /s/. Đặt tay lên cổ họng sẽ cảm nhận độ rung!",
+                "Hay đọc nhầm thành 'nốt' hoặc nuốt âm thành 'nâu'. Phải đọc chuẩn: 'nâu-z'!",
+                "Mẹo nhớ: Chiếc mũi có màu 'NÂU', thở ra kêu 'Z'zz!"
+        ));
+
+        TU_DIEN_BOI_CHUAN.put("mouth", new HuongDanDocDTO(
+                "mouth", "/maʊθ/", "miệng, cái miệng",
+                List.of("mouth"),
+                List.of("maʊθ"),
+                List.of("mao-th"),
+                List.of("mouth"),
+                0,
+                "mao-th",
+                "Từ 1 âm tiết, đọc /maʊ/ (mao) rồi đưa đầu lưỡi ra giữa 2 hàm răng thổi hơi /θ/ (-th).",
+                "Hai môi mở phát âm /maʊ/ (mao), sau đó đưa đầu lưỡi kẹp nhẹ giữa 2 hàm răng, thổi luồng hơi nhẹ (-th).",
+                "⚠️ Âm đuôi /θ/ (-th): Đầu lưỡi kẹp nhẹ giữa răng trên và răng dưới rồi thổi luồng hơi gió.",
+                "Rất nhiều người đọc sai thành 'mao-s' hoặc 'mát'. Hãy thè nhẹ đầu lưỡi thổi hơi: 'mao-th'!",
+                "Mẹo nhớ: Cái miệng 'MAO' (mau) mồm mau 'TH' (thì) nói nhiều!"
+        ));
+
+        TU_DIEN_BOI_CHUAN.put("tooth", new HuongDanDocDTO(
+                "tooth", "/tuːθ/", "răng, một chiếc răng",
+                List.of("tooth"),
+                List.of("tuːθ"),
+                List.of("tu-th"),
+                List.of("tooth"),
+                0,
+                "tu-th",
+                "Từ 1 âm tiết, chu tròn môi đọc âm dài /tuː/ (tu) rồi thè nhẹ đầu lưỡi thổi hơi /θ/ (-th).",
+                "Đầu lưỡi chạm nướu bật /t/, chu môi kéo dài /uː/, đưa đầu lưỡi ra giữa 2 hàm răng thổi hơi /θ/ (-th).",
+                "⚠️ Âm đuôi /θ/ (-th): Đặt đầu lưỡi giữa răng cửa trên và dưới, thổi luồng hơi nhẹ ra.",
+                "Không đọc thành 'tút' hay 'tút-s', đuôi phải là âm thè lưỡi /θ/ (-th).",
+                "Mẹo nhớ: Đau 'TU' (tút) chiếc răng số 'TH' (tám)!"
+        ));
+
+        TU_DIEN_BOI_CHUAN.put("teeth", new HuongDanDocDTO(
+                "teeth", "/tiːθ/", "những chiếc răng (số nhiều)",
+                List.of("teeth"),
+                List.of("tiːθ"),
+                List.of("ti-th"),
+                List.of("teeth"),
+                0,
+                "ti-th",
+                "Căng khóe miệng cười đọc âm dài /tiː/ (ti), sau đó kẹp nhẹ đầu lưỡi giữa 2 răng thổi hơi /θ/ (-th).",
+                "Cười căng khóe miệng đọc /tiː/, đưa đầu lưỡi ra giữa hai hàm răng thổi hơi gió /θ/ (-th).",
+                "⚠️ Âm đuôi /θ/ (-th) thè nhẹ lưỡi thổi luồng hơi gió.",
+                "Tránh đọc thành 'tít'.",
+                "Mẹo nhớ: Đánh răng sạch 'TI' (tinh) tươm 'TH' (thơm) tho!"
+        ));
+
+        TU_DIEN_BOI_CHUAN.put("hand", new HuongDanDocDTO(
+                "hand", "/hænd/", "bàn tay, tay",
+                List.of("hand"),
+                List.of("hænd"),
+                List.of("hen-đ"),
+                List.of("hand"),
+                0,
+                "hen-đ",
+                "Từ 1 âm tiết, phát âm /hæ/ (lai e và a thành 'hen'), chặn âm /n/ rồi bật nhẹ âm /d/ (-đ).",
+                "Mở rộng miệng phát âm /hæ/, hạ ngạc mềm đọc /n/ rồi bật nhẹ đầu lưỡi ở nướu trên âm /d/ (-đ).",
+                "⚠️ Âm đuôi /d/ (-đ): Bật nhẹ đầu lưỡi ở nướu răng trên: 'hen-đ', không nuốt mất âm /d/.",
+                "Người Việt hay đọc thành 'hen' hoặc 'han' mà quên bật âm /d/ cuối.",
+                "Mẹo nhớ: 'HEN-Đ' (hẹn) nắm bàn tay ai đó thật ấm áp!"
+        ));
+
+        TU_DIEN_BOI_CHUAN.put("finger", new HuongDanDocDTO(
+                "finger", "/ˈfɪŋ.ɡɚ/", "ngón tay",
+                List.of("fin", "ger"),
+                List.of("ˈfɪŋ", "ɡɚ"),
+                List.of("PHINH", "gờ"),
+                List.of("fing", "ger"),
+                0,
+                "phinh-gờ",
+                "Trọng âm rơi vào âm 1 (PHINH) -> đọc to rõ, âm 'gờ' lướt nhẹ mềm mại: phinh-gờ.",
+                "Răng trên chạm môi dưới phát âm /f/ kết hợp ngạc mềm /ŋ/ (phinh), âm sau bật /ɡ/ cuống họng cong lưỡi nhẹ /ɚ/ (gờ).",
+                "Đuôi /ɚ/ hơi cong nhẹ đầu lưỡi vào trong vòm miệng.",
+                "Tránh đọc bằng phẳng 'phin-gơ' không có trọng âm.",
+                "Mẹo nhớ: Ngón tay đeo nhẫn vàng 'PHINH' (phổng) mũi 'GỜ' (gớm)!"
+        ));
+
+        TU_DIEN_BOI_CHUAN.put("arm", new HuongDanDocDTO(
+                "arm", "/ɑːrm/", "cánh tay",
+                List.of("arm"),
+                List.of("ɑːrm"),
+                List.of("am"),
+                List.of("arm"),
+                0,
+                "am",
+                "Từ 1 âm tiết, mở vòm họng đọc âm dài sâu /ɑː/, cong nhẹ lưỡi /r/ rồi ngậm môi phát âm /m/ (am).",
+                "Mở rộng khoang miệng và hạ thấp lưỡi đọc /ɑː/, ngậm 2 môi ở cuối từ tạo âm /m/.",
+                "Âm đuôi /m/ khép nhẹ hai môi.",
+                "Tránh đọc cụt lủn hoặc quên ngậm môi.",
+                "Mẹo nhớ: Cánh tay khoẻ mạnh ôm trọn 'AM' (ấm) áp!"
+        ));
+
+        TU_DIEN_BOI_CHUAN.put("leg", new HuongDanDocDTO(
+                "leg", "/leɡ/", "chân, cẳng chân",
+                List.of("leg"),
+                List.of("leɡ"),
+                List.of("léc"),
+                List.of("leg"),
+                0,
+                "léc",
+                "Từ 1 âm tiết, mở miệng phát âm /e/ rồi cuống lưỡi nâng chặn hơi dứt khoát /ɡ/ (đọc như 'léc').",
+                "Đầu lưỡi chạm nướu trên đọc /l/, mở miệng phát âm /e/, cuống lưỡi nâng lên ngạc mềm chặn âm /ɡ/ (léc).",
+                "Âm /ɡ/ ngắt dứt khoát ở cuống họng.",
+                "Tránh đọc thành 'lếch' hay kéo dài giọng.",
+                "Mẹo nhớ: Đôi chân nhanh nhẹn 'LÉC' (lách) qua đám đông!"
+        ));
+
+        TU_DIEN_BOI_CHUAN.put("foot", new HuongDanDocDTO(
+                "foot", "/fʊt/", "bàn chân",
+                List.of("foot"),
+                List.of("fʊt"),
+                List.of("phút"),
+                List.of("foot"),
+                0,
+                "phút",
+                "Từ 1 âm tiết, phát âm /ʊ/ ngắn dứt khoát rồi chặn nhẹ đầu lưỡi âm /t/ (đọc như 'phút').",
+                "Răng trên chạm môi dưới thổi /f/, môi hơi chu thả lỏng /ʊ/, đầu lưỡi nâng chạm nướu chặn âm /t/ (phút).",
+                "⚠️ Đuôi /t/ ngắt hơi dứt khoát ở đầu lưỡi.",
+                "Tránh đọc âm /uː/ dài như 'phu-t', đây là âm ngắn dứt khoát: 'phút'.",
+                "Mẹo nhớ: Bàn chân chạy bộ vài 'PHÚT' mỗi ngày rất khỏe!"
+        ));
+
+        TU_DIEN_BOI_CHUAN.put("feet", new HuongDanDocDTO(
+                "feet", "/fiːt/", "hai bàn chân (số nhiều)",
+                List.of("feet"),
+                List.of("fiːt"),
+                List.of("phít"),
+                List.of("feet"),
+                0,
+                "phít",
+                "Căng khóe miệng cười phát âm /iː/ kéo dài rồi chặn nhẹ đầu lưỡi âm /t/ (phít).",
+                "Cười mở khóe miệng phát âm /fiː/, đầu lưỡi chạm nướu trên chặn âm /t/ (phít).",
+                "Âm /t/ chặn dứt khoát.",
+                "Phân biệt với foot (phút - âm u ngắn), feet có âm 'i' dài (phít).",
+                "Mẹo nhớ: Hai bàn chân đi đôi giày vừa 'PHÍT' (khít)!"
+        ));
+
+        TU_DIEN_BOI_CHUAN.put("back", new HuongDanDocDTO(
+                "back", "/bæk/", "lưng, phía sau",
+                List.of("back"),
+                List.of("bæk"),
+                List.of("béc"),
+                List.of("back"),
+                0,
+                "béc",
+                "Từ 1 âm tiết, mở rộng miệng đọc /æ/ (lai a và e), ngắt hơi dứt khoát ở cuống họng /k/ (đọc như 'béc').",
+                "Ngậm 2 môi bật /b/, mở rộng khẩu hình phát âm /æ/, cuống lưỡi nâng chặn hơi dứt khoát âm /k/ (béc).",
+                "⚠️ Âm đuôi /k/ ngắt hơi sắc ở cuống họng.",
+                "Tránh đọc thành 'bắc' hay 'bách'.",
+                "Mẹo nhớ: Cái lưng mỏi nằm nghỉ trên chiếc ghế 'BÉC' (bành)!"
+        ));
     }
 
     // =========================================================================
@@ -674,7 +925,7 @@ public class HuongDanDocServiceImpl implements HuongDanDocService {
             }
             amTiet.add(ps.englishPart);
             amTietIpa.add(ps.ipaPart);
-            String boi = ps.isStressed ? ps.vietnameseBoi.toUpperCase() : ps.vietnameseBoi.toLowerCase();
+            String boi = (syllables.size() > 1 && ps.isStressed) ? ps.vietnameseBoi.toUpperCase() : ps.vietnameseBoi;
             amTietBoi.add(boi);
             boiDisplay.add(boi);
             amTietDoc.add(ps.ttsSpeakText);
@@ -906,6 +1157,25 @@ public class HuongDanDocServiceImpl implements HuongDanDocService {
         String s = ipa.toLowerCase().trim();
         String en = enSyl.toLowerCase().trim();
 
+        // 0. Nhận diện các từ vựng thường gặp từ ảnh mẫu
+        if (en.equals("head") || s.equals("hed")) return "hét";
+        if (en.equals("hair") || s.startsWith("heə")) return "he";
+        if (en.equals("face") || s.equals("feɪs")) return "phây-x";
+        if (en.equals("eye") || s.equals("aɪ")) return "ai";
+        if (en.equals("ear") || s.startsWith("ɪə")) return "ia";
+        if (en.equals("nose") || s.equals("noʊz")) return "nâu-z";
+        if (en.equals("mouth") || s.equals("maʊθ")) return "mao-th";
+        if (en.equals("tooth") || s.equals("tuːθ")) return "tu-th";
+        if (en.equals("teeth") || s.equals("tiːθ")) return "ti-th";
+        if (en.equals("hand") || s.equals("hænd")) return "hen-đ";
+        if (en.equals("arm") || s.startsWith("ɑːrm")) return "am";
+        if (en.equals("leg") || s.equals("leɡ")) return "léc";
+        if (en.equals("foot") || s.equals("fʊt")) return "phút";
+        if (en.equals("feet") || s.equals("fiːt")) return "phít";
+        if (en.equals("back") || s.equals("bæk")) return "béc";
+        if (en.equals("fin") || s.equals("fɪŋ")) return "phinh";
+        if (en.equals("ger") || s.equals("ɡɚ") || s.equals("ɡər")) return "gờ";
+
         // 1. Âm đuôi /əl/ (chuẩn xác từng phụ âm kết hợp, tuyệt đối không ra 'uồl')
         if (s.contains("pəl") || en.endsWith("ple")) return "pồ";
         if (s.contains("bəl") || en.endsWith("ble")) return "bồ";
@@ -950,11 +1220,41 @@ public class HuongDanDocServiceImpl implements HuongDanDocService {
         if (s.contains("pɔːr") || en.equals("por")) return "Po";
         if (s.contains("spɪr") || en.equals("pe")) return "Spí";
 
-        return chuyenAmTietSangBoi(enSyl);
+        String res = chuyenAmTietSangBoi(enSyl);
+        String resLower = res.toLowerCase();
+        if (s.endsWith("s") && !resLower.endsWith("-x") && !resLower.endsWith("s") && !resLower.endsWith("x")) {
+            res = res + "-x";
+        } else if (s.endsWith("z") && !resLower.endsWith("-z") && !resLower.endsWith("z")) {
+            res = res + "-z";
+        } else if ((s.endsWith("θ") || s.endsWith("ð")) && !resLower.endsWith("-th")) {
+            res = res + "-th";
+        } else if (s.endsWith("d") && (en.endsWith("nd") || en.endsWith("od") || en.endsWith("ed")) && !resLower.endsWith("-đ") && !resLower.endsWith("t")) {
+            res = res + "-đ";
+        } else if (s.endsWith("tʃ") && !resLower.endsWith("-ch")) {
+            res = res + "-ch";
+        }
+        return res;
     }
 
     private String chuyenAmTietSangBoi(String syl) {
         String s = syl.toLowerCase().trim();
+        if (s.equals("head")) return "hét";
+        if (s.equals("hair")) return "he";
+        if (s.equals("face")) return "phây-x";
+        if (s.equals("eye")) return "ai";
+        if (s.equals("ear")) return "ia";
+        if (s.equals("nose")) return "nâu-z";
+        if (s.equals("mouth")) return "mao-th";
+        if (s.equals("tooth")) return "tu-th";
+        if (s.equals("teeth")) return "ti-th";
+        if (s.equals("hand")) return "hen-đ";
+        if (s.equals("arm")) return "am";
+        if (s.equals("leg")) return "léc";
+        if (s.equals("foot")) return "phút";
+        if (s.equals("feet")) return "phít";
+        if (s.equals("back")) return "béc";
+        if (s.equals("fin")) return "phinh";
+        if (s.equals("ger")) return "gờ";
         if (s.equals("u") || s.equals("you")) return "Diu";
         if (s.equals("nu")) return "niu";
         if (s.equals("an")) return "An";
