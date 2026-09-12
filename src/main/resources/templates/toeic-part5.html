@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TOEIC Part 5 - Test 1 (Câu 101 - 130) | Luyện Thi & Phân Tích Chuyên Sâu</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/toeic-part5.css">
+</head>
+<body>
+
+    <!-- Top Navigation -->
+    <header class="toeic-header">
+        <div class="header-container">
+            <div class="header-left">
+                <a href="/" class="btn-back-home" title="Quay lại trang chủ">
+                    <span class="back-icon">⬅️</span>
+                    <span class="back-text">Trang chủ</span>
+                </a>
+                <div class="header-title-box">
+                    <h1 class="header-title">🎯 TOEIC Part 5 – Test 1</h1>
+                    <span class="header-subtitle">30 Câu hỏi thực chiến (101 – 130) kèm Phân tích Cấu trúc & Mindmap</span>
+                </div>
+            </div>
+            <div class="header-right">
+                <div class="score-pill">
+                    <span class="score-label">Điểm:</span>
+                    <span class="score-value" id="topScoreText">0 / 30</span>
+                </div>
+                <button type="button" class="btn-shuffle-test" id="btnShuffleTest" title="Đảo ngẫu nhiên câu hỏi và 4 đáp án A, B, C, D">
+                    🔀 Đảo đề ngẫu nhiên
+                </button>
+                <button type="button" class="btn-reset-test" id="btnResetTest" title="Làm lại từ đầu">
+                    🔄 Làm lại
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Toast Notification -->
+    <div id="toeicToast" class="toeic-toast" style="display: none;"></div>
+
+    <main class="toeic-main">
+        <div class="main-container">
+            
+            <!-- Left / Main Column: Question & Explanation -->
+            <div class="quiz-column">
+                
+                <!-- Loading State -->
+                <div id="quizLoading" class="quiz-loading">
+                    <div class="quiz-spinner"></div>
+                    <div>Đang tải ngân hàng câu hỏi TOEIC Part 5...</div>
+                </div>
+
+                <!-- Active Question Container -->
+                <div id="quizContent" class="quiz-content" style="display: none;">
+                    
+                    <!-- Question Header Card -->
+                    <div class="question-card">
+                        <div class="q-meta-bar">
+                            <div class="q-number-badge" id="qNumberBadge">CÂU 101 / 130</div>
+                            <div class="q-tags-wrap">
+                                <span class="q-category-tag" id="qCategoryTag">VOCAB</span>
+                                <span class="q-subcategory-tag" id="qSubCategoryTag">Loại từ: Trạng từ</span>
+                            </div>
+                            <button type="button" class="btn-audio-q" id="btnReadQuestion" title="Nghe đọc cả câu tiếng Anh">
+                                🔊 Nghe câu
+                            </button>
+                        </div>
+
+                        <!-- Mindmap Hint Bar (phản ánh ảnh viết tay của giáo viên) -->
+                        <div class="q-mindmap-hint" id="qMindmapHint">
+                            <span class="hint-icon">🧠</span>
+                            <span class="hint-text" id="qMindmapText">Hướng tư duy: <b>vocab</b> ➔ <b>loại từ</b> ➔ Cần <b>Adverb (Trạng từ)</b></span>
+                        </div>
+
+                        <!-- Question Sentence -->
+                        <div class="q-sentence-box" id="qSentenceBox">
+                            Ms. Brooker <span class="q-blank">-------</span> offered to donate thirty of the office computers to a local elementary school.
+                        </div>
+
+                        <!-- 4 Choices Grid -->
+                        <div class="choices-grid" id="choicesGrid">
+                            <button type="button" class="choice-btn" data-choice="A">
+                                <span class="choice-key">A</span>
+                                <span class="choice-text" id="textChoiceA">generous</span>
+                                <span class="choice-status-icon"></span>
+                            </button>
+                            <button type="button" class="choice-btn" data-choice="B">
+                                <span class="choice-key">B</span>
+                                <span class="choice-text" id="textChoiceB">generously</span>
+                                <span class="choice-status-icon"></span>
+                            </button>
+                            <button type="button" class="choice-btn" data-choice="C">
+                                <span class="choice-key">C</span>
+                                <span class="choice-text" id="textChoiceC">generosity</span>
+                                <span class="choice-status-icon"></span>
+                            </button>
+                            <button type="button" class="choice-btn" data-choice="D">
+                                <span class="choice-key">D</span>
+                                <span class="choice-text" id="textChoiceD">more generous</span>
+                                <span class="choice-status-icon"></span>
+                            </button>
+                        </div>
+
+                        <!-- Action Bar: Prev, Next -->
+                        <div class="q-action-bar">
+                            <button type="button" class="btn-nav btn-prev" id="btnPrevQ">
+                                ⬅️ Câu trước
+                            </button>
+                            <div class="q-quick-jump-label">Phím tắt: [A] [B] [C] [D] để chọn | [←] [→] để chuyển câu</div>
+                            <button type="button" class="btn-nav btn-next" id="btnNextQ">
+                                Câu tiếp theo ➡️
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Detailed Explanation Card (Hiện ra ngay sau khi chọn đáp án) -->
+                    <div class="analysis-card" id="analysisCard" style="display: none;">
+                        
+                        <!-- Result Header Banner -->
+                        <div class="analysis-result-banner" id="resultBanner">
+                            <div class="result-status-icon" id="resultIcon">🎉</div>
+                            <div class="result-status-content">
+                                <h3 class="result-heading" id="resultHeading">CHÍNH XÁC!</h3>
+                                <p class="result-desc" id="resultDesc">Bạn đã chọn đúng đáp án <b>(B) generously</b></p>
+                            </div>
+                        </div>
+
+                        <!-- Body of Analysis -->
+                        <div class="analysis-body">
+
+                            <!-- Section 1: Phương pháp tư duy Mindmap -->
+                            <div class="analysis-section mindmap-section">
+                                <div class="section-title">
+                                    <span class="icon">🧠</span>
+                                    <span>Phương pháp tư duy (Theo Sơ đồ giáo viên):</span>
+                                </div>
+                                <div class="section-content mindmap-content" id="analysisMindmapContent">
+                                    <!-- Nội dung tư duy mindmap -->
+                                </div>
+                            </div>
+
+                            <!-- Section 2: Cấu trúc ngữ pháp câu -->
+                            <div class="analysis-section grammar-section">
+                                <div class="section-title">
+                                    <span class="icon">📐</span>
+                                    <span>Phân tích Cấu trúc & Vị trí chỗ trống:</span>
+                                </div>
+                                <div class="section-content grammar-content" id="analysisGrammarContent">
+                                    <!-- Cấu trúc ngữ pháp -->
+                                </div>
+                            </div>
+
+                            <!-- Section 3: Dịch nghĩa toàn bộ câu -->
+                            <div class="analysis-section translation-section">
+                                <div class="section-title">
+                                    <span class="icon">📖</span>
+                                    <span>Dịch nghĩa toàn câu hoàn chỉnh:</span>
+                                </div>
+                                <div class="section-content translation-content" id="analysisTranslationContent">
+                                    <!-- Bản dịch câu tiếng Việt -->
+                                </div>
+                            </div>
+
+                            <!-- Section 4: Phân tích 4 đáp án -->
+                            <div class="analysis-section choices-section">
+                                <div class="section-title">
+                                    <span class="icon">🔍</span>
+                                    <span>Phân tích chi tiết 4 phương án:</span>
+                                </div>
+                                <div class="choices-analysis-list" id="choicesAnalysisList">
+                                    <!-- Danh sách giải thích A, B, C, D -->
+                                </div>
+                            </div>
+
+                            <!-- Section 5: Mẹo làm bài 10s -->
+                            <div class="analysis-section tip-section">
+                                <div class="section-title">
+                                    <span class="icon">💡</span>
+                                    <span>Mẹo giải nhanh bài thi TOEIC (Exam Tip):</span>
+                                </div>
+                                <div class="section-content tip-content" id="analysisTipContent">
+                                    <!-- Mẹo làm nhanh -->
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- Right Column: Question Palette & Stats -->
+            <aside class="sidebar-column">
+                <div class="sidebar-card">
+                    <h3 class="sidebar-title">📋 Bảng 30 Câu Hỏi</h3>
+                    
+                    <!-- Stats summary -->
+                    <div class="stats-summary">
+                        <div class="stat-item">
+                            <span class="stat-num text-correct" id="statCorrectCount">0</span>
+                            <span class="stat-lbl">Đúng</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-num text-wrong" id="statWrongCount">0</span>
+                            <span class="stat-lbl">Sai</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-num text-remain" id="statRemainCount">30</span>
+                            <span class="stat-lbl">Chưa làm</span>
+                        </div>
+                    </div>
+
+                    <!-- Filter buttons -->
+                    <div class="palette-filters">
+                        <button type="button" class="btn-filter active" data-filter="all">Tất cả (30)</button>
+                        <button type="button" class="btn-filter" data-filter="wrong">Câu sai</button>
+                        <button type="button" class="btn-filter" data-filter="vocab">Từ vựng</button>
+                        <button type="button" class="btn-filter" data-filter="gram">Ngữ pháp</button>
+                    </div>
+
+                    <!-- Question Grid -->
+                    <div class="question-palette-grid" id="questionPaletteGrid">
+                        <!-- 30 buttons generated by JS -->
+                    </div>
+
+                    <div class="palette-legend">
+                        <div class="legend-item"><span class="legend-dot dot-current"></span> Đang làm</div>
+                        <div class="legend-item"><span class="legend-dot dot-correct"></span> Đúng</div>
+                        <div class="legend-item"><span class="legend-dot dot-wrong"></span> Sai</div>
+                        <div class="legend-item"><span class="legend-dot dot-empty"></span> Chưa làm</div>
+                    </div>
+                </div>
+
+                <!-- Educational Mindmap Card Reference -->
+                <div class="sidebar-card mindmap-info-card">
+                    <h4 class="info-card-title">💡 Sơ Đồ Tư Duy Part 5</h4>
+                    <div class="mindmap-diagram-box">
+                        <div class="mm-branch gram-branch">
+                            <div class="mm-node mm-main">📘 Ngữ pháp (Grammar)</div>
+                            <div class="mm-desc">• Thì động từ (Tenses)<br>• Thể bị động (Passive)<br>• Cấu trúc cố định (to V, V-ing)<br>• Liên từ & Giới từ</div>
+                        </div>
+                        <div class="mm-branch vocab-branch">
+                            <div class="mm-node mm-main highlight">📕 Từ vựng (Vocab)</div>
+                            <div class="mm-sub">• <b>Loại từ</b>: Noun, Verb, Adj, Adv<br>• <b>Nghĩa</b>: Dịch theo ngữ cảnh công sở</div>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+        </div>
+    </main>
+
+    <script src="/js/toeic-part5.js"></script>
+</body>
+</html>
