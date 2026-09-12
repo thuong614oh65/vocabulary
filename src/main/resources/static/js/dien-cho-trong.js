@@ -293,73 +293,24 @@ document.addEventListener("DOMContentLoaded", function () {
                 btnDungNghe.style.display = "inline-block";
             }
 
-            let daFallback = false;
-            function fallbackSpeech() {
-                if (daFallback) return;
-                daFallback = true;
-                if (window.speechSynthesis) {
-                    console.log("Dùng giọng đọc trình duyệt (SpeechSynthesis) cho đoạn văn.");
-                    let utterance = new SpeechSynthesisUtterance(fullText);
-                    utterance.lang = "en-US";
-                    utterance.rate = 0.85;
-                    utterance.onend = function () {
+            if (window.phatAmThanh) {
+                window.phatAmThanh(fullText, {
+                    rate: "-5%",
+                    onStart: function () {
+                        console.log("BẮT ĐẦU ĐỌC ĐOẠN VĂN (MP3 Chuẩn Server)...");
+                        if (btnDungNghe) btnDungNghe.style.display = "inline-block";
+                    },
+                    onEnd: function () {
+                        console.log("ĐỌC XONG ĐOẠN VĂN.");
                         if (btnDungNghe) btnDungNghe.style.display = "none";
-                    };
-                    utterance.onerror = function () {
+                    },
+                    onError: function (err) {
+                        console.warn("LỖI PHÁT MP3 ĐOẠN VĂN:", err);
                         if (btnDungNghe) btnDungNghe.style.display = "none";
-                    };
-                    window.speechSynthesis.speak(utterance);
-                }
-            }
-
-            fetch("/audio/tts", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    text: fullText,
-                    rate: "-5%" // Tốc độ đọc đoạn văn chuẩn, rõ ràng
-                })
-            })
-            .then(function (response) {
-                if (!response.ok) {
-                    throw new Error("Lỗi HTTP " + response.status);
-                }
-                return response.blob();
-            })
-            .then(function (blob) {
-                const audioUrl = URL.createObjectURL(blob);
-                audioDoanVan = new Audio(audioUrl);
-
-                audioDoanVan.onplay = function () {
-                    console.log("BẮT ĐẦU ĐỌC ĐOẠN VĂN (MP3 Edge Neural TTS)...");
-                    if (btnDungNghe) btnDungNghe.style.display = "inline-block";
-                };
-
-                audioDoanVan.onended = function () {
-                    console.log("ĐỌC XONG ĐOẠN VĂN.");
-                    URL.revokeObjectURL(audioUrl); // Giải phóng RAM
-                    audioDoanVan = null;
-                    if (btnDungNghe) btnDungNghe.style.display = "none";
-                };
-
-                audioDoanVan.onerror = function (err) {
-                    console.warn("LỖI PHÁT MP3 ĐOẠN VĂN:", err, "- Chuyển sang giọng đọc trình duyệt.");
-                    URL.revokeObjectURL(audioUrl);
-                    fallbackSpeech();
-                };
-
-                audioDoanVan.play().catch(function (playErr) {
-                    console.warn("KHÔNG THỂ PHÁT MP3 ĐOẠN VĂN:", playErr, "- Chuyển sang giọng đọc trình duyệt.");
-                    URL.revokeObjectURL(audioUrl);
-                    fallbackSpeech();
+                    }
                 });
-            })
-            .catch(function (err) {
-                console.warn("LỖI GỌI API /audio/tts:", err.message, "- Chuyển sang giọng đọc trình duyệt.");
-                fallbackSpeech();
-            });
+                return;
+            }
         });
     }
 
@@ -373,50 +324,15 @@ let audioDienTu = null;
 function docTuDien(tu) {
     if (!tu) return;
 
-    if (window.speechSynthesis) {
-        window.speechSynthesis.cancel();
-    }
-    if (audioDienTu) {
-        audioDienTu.pause();
-        audioDienTu = null;
+    if (window.phatAmThanh) {
+        window.phatAmThanh(tu, { rate: "+0%" });
+        return;
     }
 
-    console.log("ĐỌC TỪ:", tu);
-
-    let tenFile = tu.toLowerCase().trim().replace(/[\\/:*?"<>|]/g, "").split(/\s+/).join("-");
-    let duongDan = "/audio/tu-vung/" + tenFile + ".mp3";
-
-    let daFallback = false;
-    function fallback() {
-        if (daFallback) return;
-        daFallback = true;
-        if (window.speechSynthesis) {
-            console.log("Dùng giọng đọc trình duyệt (SpeechSynthesis) cho từ:", tu);
-            let utterance = new SpeechSynthesisUtterance(tu);
-            utterance.lang = "en-US";
-            utterance.rate = 0.9;
-            window.speechSynthesis.speak(utterance);
-        }
-    }
-
+    let duongDan = "/audio/phat?text=" + encodeURIComponent(tu) + "&rate=+0%";
     audioDienTu = new Audio(duongDan);
-
-    audioDienTu.onplay = function () {
-        console.log("BẮT ĐẦU ĐỌC:", tu);
-    };
-
-    audioDienTu.onended = function () {
-        console.log("ĐỌC XONG:", tu);
-    };
-
-    audioDienTu.onerror = function (e) {
-        console.warn("LỖI ĐỌC MP3:", duongDan, "- Chuyển sang giọng đọc trình duyệt.");
-        fallback();
-    };
-
-    audioDienTu.play().catch(function (err) {
-        console.warn("KHÔNG THỂ PHÁT MP3:", err, "- Chuyển sang giọng đọc trình duyệt.");
-        fallback();
+    audioDienTu.play().catch(function (e) {
+        console.warn("Lỗi phát audio:", e);
     });
 }
 

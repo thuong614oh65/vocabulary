@@ -427,78 +427,25 @@ function batDauDocTu(tu, maDoc) {
         tu
     );
 
-    let tenFile =
-        tu
-            .toLowerCase()
-            .trim()
-            .replace(/[\\/:*?"<>|]/g, "")
-            .split(/\s+/)
-            .join("-");
-
-    let duongDan =
-        "/audio/tu-vung/"
-        + tenFile
-        + ".mp3";
-
-    // Dừng audio cũ
-    dungTatCaAmThanh();
-
-    let daFallback = false;
-    function fallbackSpeech() {
-        if (daFallback) return;
-        daFallback = true;
-        if (window.speechSynthesis) {
-            console.log("Dùng giọng đọc trình duyệt (SpeechSynthesis) cho từ:", tu);
-            let utterance = new SpeechSynthesisUtterance(tu);
-            utterance.lang = 'en-US';
-            utterance.rate = 0.9;
-            window.speechSynthesis.speak(utterance);
-        }
+    if (window.phatAmThanh) {
+        window.phatAmThanh(tu, {
+            rate: "+0%",
+            onStart: function () {
+                console.log("BẮT ĐẦU ĐỌC:", tu);
+            },
+            onEnd: function () {
+                console.log("ĐỌC XONG:", tu);
+            }
+        });
+        return;
     }
 
-    // Tạo audio mới
-    audioHienTai =
-        new Audio(duongDan);
-
-    audioHienTai.onplay =
-        function () {
-            console.log(
-                "BẮT ĐẦU ĐỌC:",
-                tu
-            );
-        };
-
-    audioHienTai.onended =
-        function () {
-            console.log(
-                "ĐỌC XONG:",
-                tu
-            );
-        };
-
-    audioHienTai.onerror =
-        function (e) {
-            console.warn(
-                "LỖI ĐỌC MP3:",
-                duongDan,
-                "- Chuyển sang giọng đọc trình duyệt."
-            );
-            fallbackSpeech();
-        };
-
-    audioHienTai
-        .play()
-        .catch(
-            function (error) {
-                console.warn(
-                    "KHÔNG THỂ PHÁT MP3:",
-                    error,
-                    "- Chuyển sang giọng đọc trình duyệt."
-                );
-                fallbackSpeech();
-            }
-        );
-
+    let duongDan = "/audio/phat?text=" + encodeURIComponent(tu) + "&rate=+0%";
+    dungTatCaAmThanh();
+    audioHienTai = new Audio(duongDan);
+    audioHienTai.play().catch(function (e) {
+        console.warn("Lỗi phát audio:", e);
+    });
 }
 
 

@@ -411,64 +411,15 @@ function phatAmCau(cau, tocDo) {
         rateStr = "-25%";
     }
 
-    let daFallback = false;
-    function fallbackSpeech() {
-        if (daFallback) return;
-        daFallback = true;
-        if (window.speechSynthesis) {
-            console.log("Dùng giọng đọc trình duyệt (SpeechSynthesis) cho câu:", cau);
-            let utterance = new SpeechSynthesisUtterance(cau);
-            utterance.lang = "en-US";
-            utterance.rate = speed;
-            window.speechSynthesis.speak(utterance);
-        }
+    if (window.phatAmThanh) {
+        window.phatAmThanh(cau, { rate: rateStr });
+        return;
     }
 
-    fetch("/audio/tts", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            text: cau,
-            rate: rateStr
-        })
-    })
-    .then(function (response) {
-        if (!response.ok) {
-            throw new Error("Lỗi HTTP " + response.status);
-        }
-        return response.blob();
-    })
-    .then(function (blob) {
-        const audioUrl = URL.createObjectURL(blob);
-        audioDangPhat = new Audio(audioUrl);
-
-        audioDangPhat.onplay = function () {
-            console.log("BẮT ĐẦU ĐỌC CÂU (MP3 Edge Neural TTS):", cau);
-        };
-
-        audioDangPhat.onended = function () {
-            console.log("ĐỌC XONG CÂU:", cau);
-            URL.revokeObjectURL(audioUrl); // Giải phóng bộ nhớ RAM ngay khi đọc xong
-            audioDangPhat = null;
-        };
-
-        audioDangPhat.onerror = function (err) {
-            console.warn("LỖI PHÁT MP3 CÂU:", err, "- Chuyển sang giọng đọc trình duyệt.");
-            URL.revokeObjectURL(audioUrl);
-            fallbackSpeech();
-        };
-
-        audioDangPhat.play().catch(function (playErr) {
-            console.warn("KHÔNG THỂ PHÁT MP3:", playErr, "- Chuyển sang giọng đọc trình duyệt.");
-            URL.revokeObjectURL(audioUrl);
-            fallbackSpeech();
-        });
-    })
-    .catch(function (err) {
-        console.warn("LỖI GỌI API /audio/tts:", err.message, "- Chuyển sang giọng đọc trình duyệt.");
-        fallbackSpeech();
+    let url = "/audio/phat?text=" + encodeURIComponent(cau) + "&rate=" + encodeURIComponent(rateStr);
+    audioDangPhat = new Audio(url);
+    audioDangPhat.play().catch(function (e) {
+        console.warn("Lỗi phát âm thanh câu:", e);
     });
 }
 

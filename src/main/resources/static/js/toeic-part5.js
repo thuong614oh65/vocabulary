@@ -717,18 +717,29 @@
         const q = questions[currentIndex];
         if (!q || !q.questionText) return;
 
-        // Dừng audio cũ nếu đang phát
+        const cleanText = q.questionText.replace(/-------/g, "blank");
+        const btn = document.getElementById("btnReadQuestion");
+        btn.textContent = "⏳ Đang đọc...";
+
+        if (window.phatAmThanh) {
+            window.phatAmThanh(cleanText, {
+                rate: "+0%",
+                onEnd: function () {
+                    btn.textContent = "🔊 Nghe câu";
+                },
+                onError: function () {
+                    btn.textContent = "🔊 Nghe câu";
+                }
+            });
+            return;
+        }
+
         if (currentAudio) {
             currentAudio.pause();
             currentAudio = null;
         }
 
-        const cleanText = q.questionText.replace(/-------/g, "blank");
-        const btn = document.getElementById("btnReadQuestion");
-        btn.textContent = "⏳ Đang đọc...";
-
-        // Thử phát qua endpoint TTS của server
-        const audioUrl = "/audio/tts?text=" + encodeURIComponent(cleanText) + "&rate=+0%";
+        const audioUrl = "/audio/phat?text=" + encodeURIComponent(cleanText) + "&rate=+0%";
         const audio = new Audio(audioUrl);
         currentAudio = audio;
 
@@ -738,36 +749,14 @@
         };
 
         audio.onerror = function () {
-            // Fallback Web Speech API
-            if (window.speechSynthesis) {
-                const u = new SpeechSynthesisUtterance(cleanText);
-                u.lang = "en-US";
-                u.rate = 0.95;
-                u.onend = function () {
-                    btn.textContent = "🔊 Nghe câu";
-                };
-                window.speechSynthesis.speak(u);
-            } else {
-                btn.textContent = "🔊 Nghe câu";
-            }
+            btn.textContent = "🔊 Nghe câu";
+            currentAudio = null;
         };
 
-        const playPromise = audio.play();
-        if (playPromise !== undefined) {
-            playPromise.catch(function () {
-                if (window.speechSynthesis) {
-                    const u = new SpeechSynthesisUtterance(cleanText);
-                    u.lang = "en-US";
-                    u.rate = 0.95;
-                    u.onend = function () {
-                        btn.textContent = "🔊 Nghe câu";
-                    };
-                    window.speechSynthesis.speak(u);
-                } else {
-                    btn.textContent = "🔊 Nghe câu";
-                }
-            });
-        }
+        audio.play().catch(function () {
+            btn.textContent = "🔊 Nghe câu";
+            currentAudio = null;
+        });
     }
 
     // Helper escape HTML

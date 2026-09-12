@@ -19,24 +19,16 @@ function docTu(tu) {
     if (!tu) return;
     dungTatCaAmThanh();
 
-    let tenFile = tu.toLowerCase().trim().replace(/[\\/:*?"<>|]/g, "").split(/\s+/).join("-");
-    let duongDan = "/audio/tu-vung/" + tenFile + ".mp3";
-
-    let daFallback = false;
-    function fallbackSpeech() {
-        if (daFallback) return;
-        daFallback = true;
-        if (window.speechSynthesis) {
-            let utterance = new SpeechSynthesisUtterance(tu);
-            utterance.lang = 'en-US';
-            utterance.rate = 0.9;
-            window.speechSynthesis.speak(utterance);
-        }
+    if (window.phatAmThanh) {
+        window.phatAmThanh(tu, { rate: "+0%" });
+        return;
     }
 
+    let duongDan = "/audio/phat?text=" + encodeURIComponent(tu) + "&rate=+0%";
     audioHienTai = new Audio(duongDan);
-    audioHienTai.onerror = fallbackSpeech;
-    audioHienTai.play().catch(fallbackSpeech);
+    audioHienTai.play().catch(function (e) {
+        console.warn("Lỗi phát audio:", e);
+    });
 }
 window.docTu = docTu;
 

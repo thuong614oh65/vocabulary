@@ -144,10 +144,37 @@ public class AudioController {
 
 
     // =====================================================
-    // PHÁT AUDIO TẠM THỜI QUA STREAM (KHÔNG LƯU VÀO ĐĨA)
+    // ENDPOINT TOÀN HỆ THỐNG: PHÁT AUDIO CHUẨN ĐA TẦNG CACHE
+    // 1. Kiểm tra CSDL: nếu có -> lấy mp3; chưa có -> tải lưu vĩnh viễn
+    // 2. Ngoài CSDL / đoạn văn: tạo mp3 tạm, lưu RAM cache 30 phút
     // =====================================================
-    @PostMapping(value = "/tts", produces = "audio/mpeg")
-    public ResponseEntity<byte[]> phatAudioTamThoiPost(
+    @GetMapping(value = "/phat", produces = "audio/mpeg")
+    public ResponseEntity<byte[]> phatAudioGet(
+            @RequestParam("text") String text,
+            @RequestParam(required = false, defaultValue = "+0%") String rate
+    ) {
+        if (text == null || text.trim().isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        AudioService.AudioResult result = audioService.phatAudioToanHeThong(text.trim(), rate);
+        if (result == null || result.getData() == null || result.getData().length == 0) {
+            return ResponseEntity.internalServerError().build();
+        }
+
+        String cacheControl = result.isPermanent()
+                ? "public, max-age=86400, stale-while-revalidate=604800"
+                : "public, max-age=1800, stale-while-revalidate=3600";
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + result.getFilename() + "\"")
+                .header(HttpHeaders.CACHE_CONTROL, cacheControl)
+                .contentType(MediaType.parseMediaType("audio/mpeg"))
+                .body(result.getData());
+    }
+
+    @PostMapping(value = "/phat", produces = "audio/mpeg")
+    public ResponseEntity<byte[]> phatAudioPost(
             @RequestBody(required = false) java.util.Map<String, String> body,
             @RequestParam(required = false) String text,
             @RequestParam(required = false, defaultValue = "+0%") String rate
@@ -168,16 +195,32 @@ public class AudioController {
             return ResponseEntity.badRequest().build();
         }
 
-        byte[] mp3Data = audioService.taoAudioStream(textToSpeak.trim(), speechRate);
-        if (mp3Data == null || mp3Data.length == 0) {
+        AudioService.AudioResult result = audioService.phatAudioToanHeThong(textToSpeak.trim(), speechRate);
+        if (result == null || result.getData() == null || result.getData().length == 0) {
             return ResponseEntity.internalServerError().build();
         }
 
+        String cacheControl = result.isPermanent()
+                ? "public, max-age=86400, stale-while-revalidate=604800"
+                : "public, max-age=1800, stale-while-revalidate=3600";
+
         return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"speech.mp3\"")
-                .header(HttpHeaders.CACHE_CONTROL, "no-cache, no-store, must-revalidate")
+                .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + result.getFilename() + "\"")
+                .header(HttpHeaders.CACHE_CONTROL, cacheControl)
                 .contentType(MediaType.parseMediaType("audio/mpeg"))
-                .body(mp3Data);
+                .body(result.getData());
+    }
+
+    // =====================================================
+    // ENDPOINT TƯƠNG THÍCH CŨ: /audio/tts (ĐƯỢC NÂNG CẤP CACHE 30 PHÚT)
+    // =====================================================
+    @PostMapping(value = "/tts", produces = "audio/mpeg")
+    public ResponseEntity<byte[]> phatAudioTamThoiPost(
+            @RequestBody(required = false) java.util.Map<String, String> body,
+            @RequestParam(required = false) String text,
+            @RequestParam(required = false, defaultValue = "+0%") String rate
+    ) {
+        return phatAudioPost(body, text, rate);
     }
 
     @GetMapping(value = "/tts", produces = "audio/mpeg")
@@ -185,20 +228,7 @@ public class AudioController {
             @RequestParam("text") String text,
             @RequestParam(required = false, defaultValue = "+0%") String rate
     ) {
-        if (text == null || text.trim().isEmpty()) {
-            return ResponseEntity.badRequest().build();
-        }
-
-        byte[] mp3Data = audioService.taoAudioStream(text.trim(), rate);
-        if (mp3Data == null || mp3Data.length == 0) {
-            return ResponseEntity.internalServerError().build();
-        }
-
-        return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"speech.mp3\"")
-                .header(HttpHeaders.CACHE_CONTROL, "no-cache, no-store, must-revalidate")
-                .contentType(MediaType.parseMediaType("audio/mpeg"))
-                .body(mp3Data);
+        return phatAudioGet(text, rate);
     }
 
     // =====================================================

@@ -143,39 +143,14 @@ document.addEventListener("DOMContentLoaded", function () {
             currentSampleAudio = null;
         }
 
-        console.log("PHÁT ÂM MẪU:", item.tiengAnh, "Tốc độ:", tocDoRate);
+        if (window.phatAmThanh) {
+            window.phatAmThanh(item.tiengAnh, { rate: tocDoRate });
+            return;
+        }
 
-        fetch("/audio/tts", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                text: item.tiengAnh,
-                rate: tocDoRate
-            })
-        })
-        .then(res => {
-            if (!res.ok) throw new Error("Lỗi HTTP " + res.status);
-            return res.blob();
-        })
-        .then(blob => {
-            const url = URL.createObjectURL(blob);
-            currentSampleAudio = new Audio(url);
-            currentSampleAudio.onended = () => {
-                URL.revokeObjectURL(url);
-                currentSampleAudio = null;
-            };
-            currentSampleAudio.play().catch(err => console.warn("Lỗi play audio:", err));
-        })
-        .catch(err => {
-            console.warn("Lỗi fetch /audio/tts:", err.message);
-            // Fallback sang SpeechSynthesis
-            if (window.speechSynthesis) {
-                let utt = new SpeechSynthesisUtterance(item.tiengAnh);
-                utt.lang = "en-US";
-                utt.rate = (tocDoRate === "-25%") ? 0.75 : 1.0;
-                window.speechSynthesis.speak(utt);
-            }
-        });
+        let url = "/audio/phat?text=" + encodeURIComponent(item.tiengAnh) + "&rate=" + encodeURIComponent(tocDoRate);
+        currentSampleAudio = new Audio(url);
+        currentSampleAudio.play().catch(err => console.warn("Lỗi play audio:", err));
     }
 
     if (btnNgheChuan) {

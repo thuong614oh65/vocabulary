@@ -679,6 +679,7 @@
 <!-- Toast notification -->
 <div class="play-toast" id="playToast"></div>
 
+<script th:src="@{/js/global-audio.js(v=1)}"></script>
 <script>
 // ============================================================
 //  QUẢN LÝ PHÁT ÂM SỐ ĐẾM & SỐ THỨ TỰ BẰNG FILE MP3 CHUẨN
@@ -754,16 +755,18 @@ function playNumber(card) {
 
     audio.onended = () => card.classList.remove('playing');
     audio.onerror = () => {
-        // Fallback sang SpeechSynthesis nếu lỗi mạng
-        if (window.speechSynthesis) {
-            const u = new SpeechSynthesisUtterance(card.querySelector('.num-word').textContent);
-            u.lang = 'en-US';
-            u.rate = 0.85;
-            u.onend = () => card.classList.remove('playing');
-            u.onerror = () => card.classList.remove('playing');
-            window.speechSynthesis.speak(u);
+        const text = card.querySelector('.num-word').textContent;
+        if (window.phatAmThanh) {
+            window.phatAmThanh(text, {
+                rate: "+0%",
+                onEnd: () => card.classList.remove('playing'),
+                onError: () => card.classList.remove('playing')
+            });
         } else {
-            card.classList.remove('playing');
+            const fallbackAudio = new Audio('/audio/phat?text=' + encodeURIComponent(text));
+            fallbackAudio.onended = () => card.classList.remove('playing');
+            fallbackAudio.onerror = () => card.classList.remove('playing');
+            fallbackAudio.play().catch(() => card.classList.remove('playing'));
         }
     };
 

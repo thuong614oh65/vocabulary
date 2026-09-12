@@ -399,52 +399,27 @@ function phatAmTiengAnh(rate = 1.0) {
 
     if (!englishText) return;
 
-    // Dừng âm thanh cũ
-    if (currentAudioObj) {
-        currentAudioObj.pause();
-        currentAudioObj = null;
-    }
-    if (window.speechSynthesis) {
-        window.speechSynthesis.cancel();
+    if (window.phatAmThanh) {
+        let rateStr = (rate < 0.9) ? "-25%" : "+0%";
+        window.phatAmThanh(englishText, { rate: rateStr });
+        return;
     }
 
-    // Nếu có file audio URL từ Dictionary API và phát ở tốc độ 1.0
-    if (currentResultData.audioUrl && rate === 1.0) {
-        currentAudioObj = new Audio(currentResultData.audioUrl);
-        currentAudioObj.play().catch(() => {
-            phatAmSpeechSynthesis(englishText, rate);
-        });
-    } else {
-        phatAmSpeechSynthesis(englishText, rate);
-    }
+    let rateStr = (rate < 0.9) ? "-25%" : "+0%";
+    let url = "/audio/phat?text=" + encodeURIComponent(englishText) + "&rate=" + encodeURIComponent(rateStr);
+    currentAudioObj = new Audio(url);
+    currentAudioObj.play().catch(() => {});
 }
 
 function phatAmCau(sentence) {
     if (!sentence) return;
-    if (window.speechSynthesis) {
-        window.speechSynthesis.cancel();
-    }
-    phatAmSpeechSynthesis(sentence, 0.95);
-}
-
-function phatAmSpeechSynthesis(text, rate = 1.0) {
-    if (!('speechSynthesis' in window)) {
-        showToast("⚠️ Trình duyệt của bạn không hỗ trợ phát âm.");
+    if (window.phatAmThanh) {
+        window.phatAmThanh(sentence, { rate: "+0%" });
         return;
     }
-
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = 'en-US';
-    utterance.rate = rate;
-
-    // Cố gắng chọn voice US/UK tự nhiên nếu có
-    const voices = window.speechSynthesis.getVoices();
-    const usVoice = voices.find(v => v.lang === 'en-US' || v.lang === 'en_US' || v.lang.startsWith('en'));
-    if (usVoice) {
-        utterance.voice = usVoice;
-    }
-
-    window.speechSynthesis.speak(utterance);
+    let url = "/audio/phat?text=" + encodeURIComponent(sentence) + "&rate=+0%";
+    currentAudioObj = new Audio(url);
+    currentAudioObj.play().catch(() => {});
 }
 
 // =========================================================

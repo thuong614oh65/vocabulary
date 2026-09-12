@@ -442,50 +442,18 @@ function speakText(text) {
         window.speechSynthesis.cancel();
     }
 
+    if (window.phatAmThanh) {
+        const cleanText = text.replace(/\(.*?\)/g, '').trim();
+        window.phatAmThanh(cleanText, { rate: "+0%" });
+        return;
+    }
+
     const cleanText = text.replace(/\(.*?\)/g, '').trim();
-
-    fetch("/audio/tts", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            text: cleanText,
-            rate: "1.0"
-        })
-    })
-    .then(res => {
-        if (!res.ok) throw new Error("API TTS thất bại");
-        return res.blob();
-    })
-    .then(blob => {
-        const audioUrl = URL.createObjectURL(blob);
-        currentAudioObj = new Audio(audioUrl);
-        currentAudioObj.onended = () => {
-            URL.revokeObjectURL(audioUrl);
-            currentAudioObj = null;
-        };
-        currentAudioObj.onerror = () => {
-            URL.revokeObjectURL(audioUrl);
-            fallbackSpeech(cleanText);
-        };
-        currentAudioObj.play().catch(err => {
-            URL.revokeObjectURL(audioUrl);
-            fallbackSpeech(cleanText);
-        });
-    })
-    .catch(err => {
-        console.warn("Lỗi tải âm thanh từ server, dùng giọng trình duyệt thay thế:", err);
-        fallbackSpeech(cleanText);
+    const url = "/audio/phat?text=" + encodeURIComponent(cleanText) + "&rate=+0%";
+    currentAudioObj = new Audio(url);
+    currentAudioObj.play().catch(err => {
+        console.warn("Lỗi phát âm thanh:", err);
     });
-}
-
-function fallbackSpeech(text) {
-    if (!('speechSynthesis' in window)) return;
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = 'en-US';
-    utterance.rate = 0.95;
-    window.speechSynthesis.speak(utterance);
 }
 
 // -------------------------------------------------------------

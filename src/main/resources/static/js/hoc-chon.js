@@ -161,114 +161,53 @@ function batDauDocTu(
         + tenFile
         + ".mp3";
 
-    // -------------------------------------------------
     // Dừng tất cả âm thanh cũ
     // -------------------------------------------------
 
     dungTatCaAmThanh();
 
-    let daFallback = false;
-    function fallbackSpeech() {
-        if (daFallback) return;
-        daFallback = true;
-        if (window.speechSynthesis) {
-            console.log("Dùng giọng đọc trình duyệt (SpeechSynthesis) cho từ:", tu);
-            let utterance = new SpeechSynthesisUtterance(tu);
-            utterance.lang = 'en-US';
-            utterance.rate = 0.9;
-            utterance.onend = function () {
+    if (window.phatAmThanh) {
+        window.phatAmThanh(tu, {
+            rate: "+0%",
+            onStart: function () {
+                console.log("BẮT ĐẦU ĐỌC:", tu);
+            },
+            onEnd: function () {
+                console.log("ĐỌC XONG:", tu);
                 if (maDoc === soLanDoc) {
                     danhVan(tu, maDoc);
                 }
-            };
-            utterance.onerror = function () {
+            },
+            onError: function () {
                 if (maDoc === soLanDoc) {
                     danhVan(tu, maDoc);
                 }
-            };
-            window.speechSynthesis.speak(utterance);
-        } else {
-            if (maDoc === soLanDoc) {
-                danhVan(tu, maDoc);
             }
-        }
+        });
+        return;
     }
 
-    // -------------------------------------------------
-    // Tạo MP3 mới
-    // -------------------------------------------------
-
-    audioHienTai =
-        new Audio(duongDan);
-
-    // -------------------------------------------------
-    // Khi bắt đầu đọc
-    // -------------------------------------------------
-
-    audioHienTai.onplay =
-        function () {
-            console.log(
-                "BẮT ĐẦU ĐỌC:",
-                tu
-            );
-        };
-
-    // -------------------------------------------------
-    // Đọc xong cả từ
-    // -------------------------------------------------
-
-    audioHienTai.onended =
-        function () {
-            console.log(
-                "ĐỌC XONG:",
-                tu
-            );
-
-            // Nếu người dùng đã chuyển sang
-            // từ khác thì bỏ lượt này
-            if (
-                maDoc !== soLanDoc
-            ) {
-                return;
-            }
-
-            // Đọc xong từ mới bắt đầu đánh vần
-            danhVan(
-                tu,
-                maDoc
-            );
-        };
-
-    // -------------------------------------------------
-    // Lỗi MP3 -> Chuyển sang giọng đọc trình duyệt
-    // -------------------------------------------------
-
-    audioHienTai.onerror =
-        function (e) {
-            console.warn(
-                "LỖI ĐỌC MP3:",
-                duongDan,
-                "- Chuyển sang SpeechSynthesis."
-            );
-            fallbackSpeech();
-        };
-
-    // -------------------------------------------------
-    // Phát MP3
-    // -------------------------------------------------
-
-    audioHienTai
-        .play()
-        .catch(
-            function (error) {
-                console.warn(
-                    "KHÔNG THỂ PHÁT MP3:",
-                    error,
-                    "- Chuyển sang SpeechSynthesis."
-                );
-                fallbackSpeech();
-            }
-        );
+    let duongDan = "/audio/phat?text=" + encodeURIComponent(tu) + "&rate=+0%";
+    audioHienTai = new Audio(duongDan);
+    audioHienTai.onplay = function () {
+        console.log("BẮT ĐẦU ĐỌC:", tu);
+    };
+    audioHienTai.onended = function () {
+        console.log("ĐỌC XONG:", tu);
+        if (maDoc === soLanDoc) {
+            danhVan(tu, maDoc);
+        }
+    };
+    audioHienTai.onerror = function () {
+        if (maDoc === soLanDoc) {
+            danhVan(tu, maDoc);
+        }
+    };
+    audioHienTai.play().catch(function () {
+        if (maDoc === soLanDoc) {
+            danhVan(tu, maDoc);
+        }
+    });
 
 }
 

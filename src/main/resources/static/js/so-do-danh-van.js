@@ -106,8 +106,16 @@
         dungAudio();
         if (!vanBan && !audioUrl) return;
 
-        // Ưu tiên Audio URL từ backend
-        const url = audioUrl || ("/audio/tts?text=" + encodeURIComponent(vanBan) + "&rate=+0%");
+        if (window.phatAmThanh && vanBan) {
+            window.phatAmThanh(vanBan, {
+                rate: "+0%",
+                onEnd: callback,
+                onError: callback
+            });
+            return;
+        }
+
+        const url = audioUrl || ("/audio/phat?text=" + encodeURIComponent(vanBan) + "&rate=+0%");
         const audio = new Audio(url);
         audioHienTai = audio;
 
@@ -117,19 +125,12 @@
         };
 
         audio.onerror = function () {
-            // Fallback SpeechSynthesis nếu trình duyệt chặn audio
-            if (window.speechSynthesis) {
-                const utter = new SpeechSynthesisUtterance(vanBan);
-                utter.lang = "en-US";
-                utter.rate = 0.9;
-                utter.onend = function () {
-                    if (typeof callback === "function") callback();
-                };
-                window.speechSynthesis.speak(utter);
-            }
+            audioHienTai = null;
+            if (typeof callback === "function") callback();
         };
 
         audio.play().catch(function () {
+            audioHienTai = null;
             if (typeof callback === "function") callback();
         });
     }

@@ -932,25 +932,22 @@
     // 10. PHÁT AUDIO TỰ ĐỘNG
     // =========================================================
     function phatAmThanhTu(tu, audioUrl) {
+        if (!dangThiDau) return;
+
+        if (window.phatAmThanh) {
+            window.phatAmThanh(tu, { rate: "+0%" });
+            return;
+        }
+
         if (audioHienTai) {
             try { audioHienTai.pause(); audioHienTai.currentTime = 0; } catch (e) {}
             audioHienTai = null;
         }
-        if (!dangThiDau) return;
 
-        const audio = new Audio(audioUrl);
+        const url = audioUrl || ("/audio/phat?text=" + encodeURIComponent(tu) + "&rate=+0%");
+        const audio = new Audio(url);
         audioHienTai = audio;
-
-        const p = audio.play();
-        if (p !== undefined) {
-            p.catch(function () {
-                if (!dangThiDau) return;
-                // Fallback stream nếu file mp3 chưa có
-                const streamAudio = new Audio("/audio/tts?text=" + encodeURIComponent(tu) + "&rate=+0%");
-                audioHienTai = streamAudio;
-                streamAudio.play().catch(function () {});
-            });
-        }
+        audio.play().catch(function () {});
     }
 
     window.phatLaiAudio = function () {

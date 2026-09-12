@@ -20,6 +20,11 @@ public interface TuVungRepository extends JpaRepository<TuVung, Long> {
             Long taiKhoanId
     );
 
+    boolean existsByTiengAnhIgnoreCase(String tiengAnh);
+
+    @Query("SELECT COUNT(t) > 0 FROM TuVung t WHERE LOWER(TRIM(t.tiengAnh)) = LOWER(TRIM(:tiengAnh))")
+    boolean existsByTiengAnhTrimIgnoreCase(@Param("tiengAnh") String tiengAnh);
+
     @Query("SELECT LOWER(TRIM(t.tiengAnh)) FROM TuVung t WHERE t.boTuVung.taiKhoan.id = :taiKhoanId")
     List<String> findAllTiengAnhByTaiKhoanId(@Param("taiKhoanId") Long taiKhoanId);
 

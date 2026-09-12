@@ -450,62 +450,20 @@
 
     function phatAudioTu(tu, tocDo, onEnd) {
         const isSlow = tocDo && tocDo < 0.9;
-        const tenFile = tu.toLowerCase().replace(/\s+/g, "-") + ".mp3";
+        const rateParam = isSlow ? "-28%" : "+0%";
 
-        // Với tốc độ chậm (0.6x), dùng trực tiếp Edge Neural TTS với rate=-28% để âm thanh tự nhiên, tròn vành rõ chữ mà KHÔNG bị méo tiếng như HTML5 playbackRate!
-        const urlPhat = isSlow
-            ? "/audio/tts?text=" + encodeURIComponent(tu) + "&rate=-28%"
-            : "/audio/tu-vung/" + encodeURIComponent(tenFile);
+        if (window.phatAmThanh) {
+            window.phatAmThanh(tu, {
+                rate: rateParam,
+                onEnd: onEnd,
+                onError: onEnd
+            });
+            return;
+        }
 
+        const urlPhat = "/audio/phat?text=" + encodeURIComponent(tu) + "&rate=" + encodeURIComponent(rateParam);
         const audio = new Audio(urlPhat);
         hdAudioHienTai = audio;
-
-        let daChuyenFallback = false;
-
-        function fallbackTTS() {
-            if (daChuyenFallback) return;
-            daChuyenFallback = true;
-
-            // Nếu đọc chuẩn từ file thất bại, thử phát trực tiếp qua /audio/tts stream trước khi dùng Web Speech API
-            if (!isSlow) {
-                const streamUrl = "/audio/tts?text=" + encodeURIComponent(tu) + "&rate=+0%";
-                const streamAudio = new Audio(streamUrl);
-                hdAudioHienTai = streamAudio;
-                streamAudio.onended = function () {
-                    hdAudioHienTai = null;
-                    if (onEnd) onEnd();
-                };
-                streamAudio.onerror = function () {
-                    fallbackBrowserSpeech();
-                };
-                const p = streamAudio.play();
-                if (p !== undefined) {
-                    p.catch(function () {
-                        fallbackBrowserSpeech();
-                    });
-                }
-                return;
-            }
-
-            fallbackBrowserSpeech();
-        }
-
-        function fallbackBrowserSpeech() {
-            if (window.speechSynthesis) {
-                const utterance = new SpeechSynthesisUtterance(tu);
-                utterance.lang = "en-US";
-                utterance.rate = isSlow ? 0.65 : 1.0;
-                utterance.onend = function () {
-                    if (onEnd) onEnd();
-                };
-                utterance.onerror = function () {
-                    if (onEnd) onEnd();
-                };
-                window.speechSynthesis.speak(utterance);
-            } else {
-                if (onEnd) onEnd();
-            }
-        }
 
         audio.onended = function () {
             hdAudioHienTai = null;
@@ -513,15 +471,15 @@
         };
 
         audio.onerror = function () {
-            console.warn("[HuongDanDoc] Audio error -> Chuyển TTS dự phòng:", urlPhat);
-            fallbackTTS();
+            hdAudioHienTai = null;
+            if (onEnd) onEnd();
         };
 
         const playPromise = audio.play();
         if (playPromise !== undefined) {
-            playPromise.catch(function (err) {
-                console.warn("[HuongDanDoc] Play error -> Chuyển TTS dự phòng:", err);
-                fallbackTTS();
+            playPromise.catch(function () {
+                hdAudioHienTai = null;
+                if (onEnd) onEnd();
             });
         }
     }
@@ -622,15 +580,15 @@
     }
 
     function phatSpeechChuCai(char, onEnd) {
-        if (window.speechSynthesis) {
-            const utterance = new SpeechSynthesisUtterance(char.toUpperCase());
-            utterance.lang = "en-US";
-            utterance.rate = 0.9;
-            utterance.onend = function () { if (onEnd) onEnd(); };
-            utterance.onerror = function () { if (onEnd) onEnd(); };
-            window.speechSynthesis.speak(utterance);
+        const text = (char || "").toUpperCase();
+        if (window.phatAmThanh) {
+            window.phatAmThanh(text, { onEnd: onEnd, onError: onEnd });
         } else {
-            if (onEnd) onEnd();
+            const audio = new Audio("/audio/phat?text=" + encodeURIComponent(text) + "&rate=+0%");
+            hdAudioHienTai = audio;
+            audio.onended = function () { hdAudioHienTai = null; if (onEnd) onEnd(); };
+            audio.onerror = function () { hdAudioHienTai = null; if (onEnd) onEnd(); };
+            audio.play().catch(function () { hdAudioHienTai = null; if (onEnd) onEnd(); });
         }
     }
 
