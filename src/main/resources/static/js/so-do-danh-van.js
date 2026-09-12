@@ -8,11 +8,72 @@
     // State toàn cục
     let dsQuyLuat = window.SERVER_DATA_DS_QUY_LUAT || [];
     let quyLuatHienTai = window.SERVER_DATA_QUY_LUAT_HIEN_TAI || null;
+    let currentCategoryKey = window.SERVER_DATA_CAT_HIEN_TAI || "NGUYEN_AM_DAC_BIET";
+    let danhSachAmNhomHienTai = [];
+    let currentView = "CATEGORY_HUB"; // "CATEGORY_HUB" | "SOUND_LIST" | "MINDMAP"
     let audioHienTai = null;
     let hoverTimeout = null;
     let autoPlayTimer = null;
     let dangAutoPlay = false;
     let cheDoViewGrid = false;
+
+    // Metadata 6 nhóm quy luật đánh vần chuẩn
+    const CATEGORY_META = {
+        "NGUYEN_AM_DAC_BIET": {
+            key: "NGUYEN_AM_DAC_BIET",
+            name: "Nguyên âm đặc biệt & Biến âm R",
+            icon: "🌟",
+            color: "#f59e0b",
+            bgLight: "#fef3c7",
+            badgeBg: "#fef3c7",
+            desc: "Các quy tắc biến âm khi nguyên âm đi liền với r, w hoặc phụ âm đặc biệt (w+or, ar, or, er/ir/ur, al/all, wa/qua)."
+        },
+        "DUOI_TU_HAU_TO": {
+            key: "DUOI_TU_HAU_TO",
+            name: "Đuôi từ & Hậu tố thông dụng",
+            icon: "🏷️",
+            color: "#3b82f6",
+            bgLight: "#eff6ff",
+            badgeBg: "#dbeafe",
+            desc: "Các quy tắc phát âm chuẩn xác cho các đuôi hậu tố như -ise/-ize, -tion, -sion, -ture, -cial/-tial."
+        },
+        "NGUYEN_AM_DOI": {
+            key: "NGUYEN_AM_DOI",
+            name: "Nguyên âm đôi & Nguyên âm dài",
+            icon: "🔤",
+            color: "#10b981",
+            bgLight: "#ecfdf5",
+            badgeBg: "#d1fae5",
+            desc: "Tổng hợp các cặp nguyên âm đôi và nguyên âm dài phổ biến nhất như ea, ee, oo, oa, igh, oy/oi, aw/au."
+        },
+        "PHU_AM_KEP_CAM": {
+            key: "PHU_AM_KEP_CAM",
+            name: "Phụ âm kép & Phụ âm câm",
+            icon: "🤫",
+            color: "#8b5cf6",
+            bgLight: "#f5f3ff",
+            badgeBg: "#ede9fe",
+            desc: "Cách đọc các cặp phụ âm ch, sh, th vô thanh, th hữu thanh, ph, và các phụ âm câm kn-, wr-, wh-, -mb."
+        },
+        "BIEN_AM_C_G": {
+            key: "BIEN_AM_C_G",
+            name: "Quy tắc biến âm C & G (Mềm / Cứng)",
+            icon: "🔀",
+            color: "#ec4899",
+            bgLight: "#fdf2f8",
+            badgeBg: "#fce7f3",
+            desc: "Quy luật biến âm sống còn khi chữ C và G đứng trước e, i, y (Soft C /s/ & Soft G /dʒ/)."
+        },
+        "ALL": {
+            key: "ALL",
+            name: "Tất cả quy tắc đánh vần",
+            icon: "📚",
+            color: "#6366f1",
+            bgLight: "#eef2ff",
+            badgeBg: "#e0e7ff",
+            desc: "Kho lưu trữ đầy đủ toàn bộ 30+ quy luật đánh vần tiếng Anh từ cơ bản đến nâng cao."
+        }
+    };
 
     // =========================================================
     // 1. QUẢN LÝ ÂM THANH DUY NHẤT (AUDIO CONTROLLER)
@@ -74,7 +135,219 @@
     }
 
     // =========================================================
-    // 2. KHỞI TẠO KHI TẢI TRANG
+    // 2. ĐIỀU HƯỚNG 3 CẤP MÀN HÌNH (LEVEL 1 -> LEVEL 2 -> LEVEL 3)
+    // =========================================================
+    function chuyenManHinh(viewName) {
+        currentView = viewName;
+        const vHub = document.getElementById("viewCategoryHub");
+        const vList = document.getElementById("viewSoundListArena");
+        const vMindmap = document.getElementById("viewMindmapArena");
+
+        if (vHub) vHub.style.display = (viewName === "CATEGORY_HUB") ? "block" : "none";
+        if (vList) vList.style.display = (viewName === "SOUND_LIST") ? "block" : "none";
+        if (vMindmap) vMindmap.style.display = (viewName === "MINDMAP") ? "block" : "none";
+
+        window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    window.quayLaiBangDanhMuc = function () {
+        dungAudio();
+        chuyenManHinh("CATEGORY_HUB");
+        if (window.history && window.history.replaceState) {
+            window.history.replaceState({}, "", "/quy-luat-danh-van/so-do");
+        }
+    };
+
+    window.quayLaiDanhSachAm = function () {
+        dungAudio();
+        chuyenManHinh("SOUND_LIST");
+        if (window.history && window.history.replaceState && currentCategoryKey) {
+            window.history.replaceState({}, "", "/quy-luat-danh-van/so-do?cat=" + encodeURIComponent(currentCategoryKey));
+        }
+    };
+
+    window.chonNhomTuBangNgoai = function (catKey) {
+        currentCategoryKey = catKey;
+        hienThiDanhSachAmTheoNhom(catKey);
+        chuyenManHinh("SOUND_LIST");
+        if (window.history && window.history.replaceState) {
+            window.history.replaceState({}, "", "/quy-luat-danh-van/so-do?cat=" + encodeURIComponent(catKey));
+        }
+    };
+
+    window.moSoDoTuDanhSach = function (ruleId) {
+        chuyenManHinh("MINDMAP");
+        taiQuyLuat(ruleId);
+        if (window.history && window.history.replaceState) {
+            window.history.replaceState({}, "", "/quy-luat-danh-van/so-do?id=" + encodeURIComponent(ruleId));
+        }
+    };
+
+    window.chuyenAmKeTiep = function (step) {
+        if (!quyLuatHienTai || !danhSachAmNhomHienTai || danhSachAmNhomHienTai.length === 0) return;
+        const currIdx = danhSachAmNhomHienTai.findIndex(function (r) { return r.id === quyLuatHienTai.id; });
+        if (currIdx === -1) return;
+        const nextIdx = currIdx + step;
+        if (nextIdx >= 0 && nextIdx < danhSachAmNhomHienTai.length) {
+            taiQuyLuat(danhSachAmNhomHienTai[nextIdx].id);
+        }
+    };
+
+    window.moHuongDanAmTheoQuyTac = function (ruleId) {
+        const found = dsQuyLuat.find(function (r) { return r.id === ruleId; });
+        if (found) {
+            quyLuatHienTai = found;
+            moHuongDanAmTrungTam();
+        } else {
+            taiQuyLuat(ruleId);
+        }
+    };
+
+    // =========================================================
+    // 3. RENDER BẢNG DANH MỤC Ở NGOÀI (LEVEL 1 - CATEGORY HUB)
+    // =========================================================
+    function renderCategoryHub() {
+        const grid = document.getElementById("categoryGrid");
+        if (!grid) return;
+        grid.innerHTML = "";
+
+        Object.keys(CATEGORY_META).forEach(function (key) {
+            const cat = CATEGORY_META[key];
+            const matchingRules = (key === "ALL")
+                ? dsQuyLuat
+                : dsQuyLuat.filter(function (r) { return r.phanLoai === key; });
+
+            const count = matchingRules.length;
+            const previewRules = matchingRules.slice(0, 5);
+
+            const card = document.createElement("div");
+            card.className = "sd-cat-card";
+            card.style.setProperty("--cat-accent", cat.color);
+            card.style.setProperty("--cat-bg-light", cat.bgLight);
+            card.style.setProperty("--cat-badge-bg", cat.badgeBg);
+            card.onclick = function () {
+                chonNhomTuBangNgoai(key);
+            };
+
+            let previewHtml = previewRules.map(function (r) {
+                return `<span class="sd-cat-preview-pill"><strong>${r.cumChu}</strong> <small>(${r.docLaIpa})</small></span>`;
+            }).join("");
+
+            if (matchingRules.length > 5) {
+                previewHtml += `<span class="sd-cat-preview-pill text-muted">+${matchingRules.length - 5} nữa...</span>`;
+            }
+
+            card.innerHTML = `
+                <div>
+                    <div class="sd-cat-card-header">
+                        <div class="sd-cat-icon-box">${cat.icon}</div>
+                        <div class="sd-cat-title-wrap">
+                            <h3 class="sd-cat-title">${cat.name}</h3>
+                            <span class="sd-cat-badge">${count} quy tắc</span>
+                        </div>
+                    </div>
+                    <p class="sd-cat-desc">${cat.desc}</p>
+                    <div class="sd-cat-preview-sounds">
+                        ${previewHtml}
+                    </div>
+                </div>
+                <div class="sd-cat-footer-btn">
+                    <span>👉 Mở bảng danh sách các âm (${count} âm)</span>
+                    <span>➔</span>
+                </div>
+            `;
+
+            grid.appendChild(card);
+        });
+    }
+
+    // =========================================================
+    // 4. RENDER BẢNG CÁC ÂM CỦA NHÓM (LEVEL 2 - SOUNDS LIST)
+    // =========================================================
+    function hienThiDanhSachAmTheoNhom(catKey) {
+        const cat = CATEGORY_META[catKey] || CATEGORY_META["ALL"];
+        currentCategoryKey = cat.key;
+
+        // Cập nhật Breadcrumb & Banner
+        const lblCrumb = document.getElementById("lblBreadcrumbGroup");
+        if (lblCrumb) lblCrumb.textContent = `${cat.icon} ${cat.name}`;
+
+        const lblIcon = document.getElementById("lblGroupBannerIcon");
+        const lblTitle = document.getElementById("lblGroupBannerTitle");
+        const lblCount = document.getElementById("lblGroupBannerCount");
+        const lblDesc = document.getElementById("lblGroupBannerDesc");
+
+        if (lblIcon) lblIcon.textContent = cat.icon;
+        if (lblTitle) lblTitle.textContent = cat.name;
+        if (lblDesc) lblDesc.textContent = cat.desc;
+
+        // Lọc danh sách quy luật
+        const rules = (catKey === "ALL")
+            ? dsQuyLuat
+            : dsQuyLuat.filter(function (r) { return r.phanLoai === catKey; });
+
+        danhSachAmNhomHienTai = rules;
+        if (lblCount) lblCount.textContent = `${rules.length} quy tắc`;
+
+        // Render danh sách các thẻ âm
+        const soundsGrid = document.getElementById("soundsGrid");
+        if (!soundsGrid) return;
+        soundsGrid.innerHTML = "";
+
+        if (rules.length === 0) {
+            soundsGrid.innerHTML = `<div class="col-12 text-center text-muted py-5">
+                Chưa có quy tắc nào trong nhóm này.
+            </div>`;
+            return;
+        }
+
+        rules.forEach(function (ql) {
+            const card = document.createElement("div");
+            card.className = "sd-sound-card";
+
+            const sampleWords = (ql.danhSachTu || []).slice(0, 5);
+            let wordsHtml = sampleWords.map(function (w) {
+                return `
+                    <span class="sd-sc-word-chip" onclick="event.stopPropagation(); phatAmThanh('${w.tu}', '${w.audioUrl || ''}')" title="Bấm để nghe đọc">
+                        <strong>${w.tu}</strong> <small class="text-muted">${w.phienAm || ''}</small>
+                    </span>
+                `;
+            }).join("");
+
+            card.innerHTML = `
+                <div>
+                    <div class="sd-sc-header">
+                        <div class="sd-sc-main-sound">
+                            <span class="sd-sc-letter">${ql.cumChu}</span>
+                            <span class="sd-sc-ipa">${ql.docLaIpa}</span>
+                        </div>
+                        <div class="sd-sc-actions">
+                            <button type="button" class="btn-sc-audio" onclick="event.stopPropagation(); phatAmThanh('${ql.cumChu}', '${ql.audioUrl || ''}')" title="Nghe âm này">🔊</button>
+                            <button type="button" class="btn-sc-guide" onclick="event.stopPropagation(); moHuongDanAmTheoQuyTac('${ql.id}')" title="Xem khẩu hình chi tiết">🗣️</button>
+                        </div>
+                    </div>
+                    <h4 class="sd-sc-title">${ql.tieuDeQuyTac || ql.cumChu}</h4>
+                    <p class="sd-sc-desc">${ql.moTaQuyTac || ''}</p>
+                    
+                    <div class="sd-sc-words-wrap">
+                        <div class="sd-sc-words-label">Các từ tiêu biểu:</div>
+                        <div class="sd-sc-words-list">
+                            ${wordsHtml || '<span class="text-muted small">Đang cập nhật...</span>'}
+                        </div>
+                    </div>
+                </div>
+
+                <button type="button" class="btn-sc-open-mindmap" onclick="moSoDoTuDanhSach('${ql.id}')">
+                    🎯 Mở sơ đồ tư duy tỏa tròn ➔
+                </button>
+            `;
+
+            soundsGrid.appendChild(card);
+        });
+    }
+
+    // =========================================================
+    // 5. KHỞI TẠO KHI TẢI TRANG
     // =========================================================
     document.addEventListener("DOMContentLoaded", function () {
         // Tự động chuyển grid nếu màn hình nhỏ (Mobile)
@@ -84,78 +357,68 @@
             if (board) board.classList.add("view-grid");
         }
 
+        function khoiTaoGiaoDien() {
+            renderCategoryHub();
+
+            const moBangNgoai = (window.SERVER_DATA_MO_BANG_NGOAI === true);
+            const catHienTai = window.SERVER_DATA_CAT_HIEN_TAI || "";
+            const idHienTai = window.SERVER_DATA_ID_HIEN_TAI || "";
+
+            if (moBangNgoai && !catHienTai && !idHienTai) {
+                // Mặc định vào Bảng danh mục ở ngoài (Level 1)
+                chuyenManHinh("CATEGORY_HUB");
+            } else if (catHienTai && !idHienTai) {
+                // Vào thẳng danh sách các âm của nhóm (Level 2)
+                chonNhomTuBangNgoai(catHienTai);
+            } else if (idHienTai || quyLuatHienTai) {
+                // Vào thẳng Mindmap của âm đó (Level 3)
+                const targetId = idHienTai || (quyLuatHienTai ? quyLuatHienTai.id : "");
+                chuyenManHinh("MINDMAP");
+                taiQuyLuat(targetId);
+            } else {
+                chuyenManHinh("CATEGORY_HUB");
+            }
+        }
+
         // Tải danh sách quy tắc nếu chưa có
         if (!dsQuyLuat || dsQuyLuat.length === 0) {
             fetch("/api/so-do-danh-van/danh-sach")
                 .then(function (r) { return r.json(); })
                 .then(function (data) {
                     dsQuyLuat = data;
-                    renderRulePills(dsQuyLuat);
-                    if (!quyLuatHienTai && dsQuyLuat.length > 0) {
-                        taiQuyLuat(dsQuyLuat[0].id);
-                    }
+                    khoiTaoGiaoDien();
                 })
-                .catch(function () {});
+                .catch(function () {
+                    khoiTaoGiaoDien();
+                });
         } else {
-            renderRulePills(dsQuyLuat);
-            if (quyLuatHienTai) {
-                renderSoDoMindmap(quyLuatHienTai);
-            } else if (dsQuyLuat.length > 0) {
-                taiQuyLuat(dsQuyLuat[0].id);
-            }
+            khoiTaoGiaoDien();
         }
 
         // Tự vẽ lại đường nối SVG khi thay đổi kích thước cửa sổ
         window.addEventListener("resize", function () {
-            if (!cheDoViewGrid) {
+            if (!cheDoViewGrid && currentView === "MINDMAP") {
                 veCacDuongMuiTenSvg();
             }
         });
     });
 
     // =========================================================
-    // 3. RENDER DANH SÁCH PILLS CHỌN QUY TẮC
-    // =========================================================
-    function renderRulePills(danhSach) {
-        const container = document.getElementById("sdRulePillsContainer");
-        if (!container) return;
-
-        container.innerHTML = "";
-        const idHienTai = quyLuatHienTai ? quyLuatHienTai.id : "";
-
-        danhSach.forEach(function (ql) {
-            const btn = document.createElement("button");
-            btn.type = "button";
-            btn.className = "btn-sd-pill" + (ql.id === idHienTai ? " active" : "");
-            btn.setAttribute("data-id", ql.id);
-            btn.setAttribute("data-cat", ql.phanLoai);
-            btn.innerHTML = `<span>${ql.icon || '⚡'}</span> <span>${ql.cumChu} <small>(${ql.docLaIpa})</small></span>`;
-
-            btn.onclick = function () {
-                taiQuyLuat(ql.id);
-            };
-
-            container.appendChild(btn);
-        });
-    }
-
-    // =========================================================
-    // 4. TẢI VÀ HIỂN THỊ CHI TIẾT 1 QUY TẮC
+    // 6. TẢI VÀ HIỂN THỊ CHI TIẾT 1 QUY TẮC
     // =========================================================
     window.taiQuyLuat = function (id) {
         dungAudio();
         dangAutoPlay = false;
         capNhatNutAutoPlay(false);
 
-        // Đổi active pill
-        document.querySelectorAll(".btn-sd-pill").forEach(function (p) {
-            p.classList.toggle("active", p.getAttribute("data-id") === id);
-        });
-
         // Kiểm tra trong danh sách cục bộ
         const timThay = dsQuyLuat.find(function (item) { return item.id === id; });
         if (timThay && timThay.danhSachTu && timThay.danhSachTu.length > 0) {
             quyLuatHienTai = timThay;
+            if (timThay.phanLoai && currentCategoryKey !== timThay.phanLoai) {
+                currentCategoryKey = timThay.phanLoai;
+                danhSachAmNhomHienTai = dsQuyLuat.filter(function (r) { return r.phanLoai === timThay.phanLoai; });
+            }
             renderSoDoMindmap(timThay);
             return;
         }
@@ -170,6 +433,10 @@
             .then(function (data) {
                 hienThiLoading(false);
                 quyLuatHienTai = data;
+                if (data.phanLoai && currentCategoryKey !== data.phanLoai) {
+                    currentCategoryKey = data.phanLoai;
+                    danhSachAmNhomHienTai = dsQuyLuat.filter(function (r) { return r.phanLoai === data.phanLoai; });
+                }
                 renderSoDoMindmap(data);
             })
             .catch(function (err) {
@@ -192,6 +459,24 @@
         if (elCat) elCat.textContent = ql.tenPhanLoai || "Quy luật đánh vần";
         if (elTitle) elTitle.textContent = ql.tieuDeQuyTac || ql.cumChu;
         if (elDesc) elDesc.textContent = ql.moTaQuyTac || "";
+
+        // Cập nhật Mindmap Top Navigation
+        const catMeta = CATEGORY_META[ql.phanLoai] || CATEGORY_META["ALL"];
+        const lblNavCat = document.getElementById("lblNavCatBackName");
+        if (lblNavCat) lblNavCat.textContent = catMeta ? catMeta.name : "Nhóm";
+
+        const lblStep = document.getElementById("lblStepSoundInfo");
+        if (lblStep) lblStep.textContent = `${ql.cumChu} (${ql.docLaIpa})`;
+
+        if (!danhSachAmNhomHienTai || danhSachAmNhomHienTai.length === 0) {
+            danhSachAmNhomHienTai = dsQuyLuat.filter(function (r) { return r.phanLoai === ql.phanLoai; });
+        }
+
+        const currIdx = danhSachAmNhomHienTai.findIndex(function (r) { return r.id === ql.id; });
+        const btnPrev = document.getElementById("btnPrevSound");
+        const btnNext = document.getElementById("btnNextSound");
+        if (btnPrev) btnPrev.disabled = (currIdx <= 0);
+        if (btnNext) btnNext.disabled = (currIdx === -1 || currIdx >= danhSachAmNhomHienTai.length - 1);
 
         // Cập nhật Node Trung tâm (Âm ở giữa)
         const elCenterLetter = document.getElementById("lblCenterLetter");
@@ -549,29 +834,8 @@
     // =========================================================
     // 11. BỘ LỌC THEO NHÓM & CHUYỂN VIEW
     // =========================================================
-    window.locTheoNhom = function (cat, btnEl) {
-        document.querySelectorAll(".sd-category-tabs .btn-sd-tab").forEach(function (b) {
-            b.classList.remove("active");
-        });
-        if (btnEl) btnEl.classList.add("active");
-
-        const pills = document.querySelectorAll("#sdRulePillsContainer .btn-sd-pill");
-        let firstMatchId = null;
-
-        pills.forEach(function (pill) {
-            const pillCat = pill.getAttribute("data-cat");
-            if (cat === "ALL" || pillCat === cat) {
-                pill.style.display = "inline-flex";
-                if (!firstMatchId) firstMatchId = pill.getAttribute("data-id");
-            } else {
-                pill.style.display = "none";
-            }
-        });
-
-        // Nếu quy luật hiện tại không thuộc nhóm mới, chuyển sang cái đầu tiên của nhóm
-        if (firstMatchId && quyLuatHienTai && quyLuatHienTai.phanLoai !== cat && cat !== "ALL") {
-            taiQuyLuat(firstMatchId);
-        }
+    window.locTheoNhom = function (cat) {
+        chonNhomTuBangNgoai(cat);
     };
 
     window.chuyenDoiCheDoHienThi = function () {
@@ -653,7 +917,7 @@
     window.chonGoiYTimKiem = function (id) {
         const drop = document.getElementById("searchSuggestions");
         if (drop) drop.style.display = "none";
-        taiQuyLuat(id);
+        moSoDoTuDanhSach(id);
     };
 
     window.timKiemVaVeSoDo = function () {
@@ -672,7 +936,7 @@
         });
 
         if (found) {
-            taiQuyLuat(found.id);
+            moSoDoTuDanhSach(found.id);
         } else {
             goiAiVeSoDo();
         }
@@ -687,6 +951,7 @@
             return;
         }
 
+        chuyenManHinh("MINDMAP");
         hienThiLoading(true, `🤖 AI Gemini đang phân tích quy luật đánh vần cho "${val}" và vẽ sơ đồ tư duy...`);
 
         fetch("/api/so-do-danh-van/ai-generate?q=" + encodeURIComponent(val))
@@ -701,7 +966,7 @@
                 // Thêm vào danh sách nếu chưa có
                 if (!dsQuyLuat.some(function (x) { return x.id === data.id; })) {
                     dsQuyLuat.unshift(data);
-                    renderRulePills(dsQuyLuat);
+                    renderCategoryHub();
                 }
 
                 renderSoDoMindmap(data);

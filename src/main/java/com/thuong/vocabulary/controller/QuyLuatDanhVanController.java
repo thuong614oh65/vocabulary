@@ -23,9 +23,10 @@ public class QuyLuatDanhVanController {
     /**
      * Màn hình chính Sơ đồ Tư duy Quy luật Đánh vần (Phonics Mindmap)
      */
-    @GetMapping("/so-do-danh-van")
+    @GetMapping({"/so-do-danh-van", "/quy-luat-danh-van/so-do"})
     public String trangSoDoDanhVan(
-            @RequestParam(value = "id", required = false, defaultValue = "w_or") String id,
+            @RequestParam(value = "id", required = false) String id,
+            @RequestParam(value = "cat", required = false) String cat,
             @RequestParam(value = "tu", required = false) String tu,
             Model model
     ) {
@@ -36,17 +37,22 @@ public class QuyLuatDanhVanController {
             qlHienTai = quyLuatDanhVanService.taoSoDoTuAI(tu.trim());
         }
 
-        if (qlHienTai == null) {
+        if (qlHienTai == null && id != null && !id.isBlank()) {
             qlHienTai = quyLuatDanhVanService.layTheoId(id);
         }
 
+        // Nếu người dùng không chỉ định id hay tu, qlHienTai giữ null hoặc lấy câu đầu tiên để dự phòng
         if (qlHienTai == null && !dsQuyLuat.isEmpty()) {
             qlHienTai = dsQuyLuat.get(0);
         }
 
+        boolean moBangNgoai = (id == null || id.isBlank()) && (tu == null || tu.isBlank());
+
         model.addAttribute("dsQuyLuat", dsQuyLuat);
         model.addAttribute("quyLuatHienTai", qlHienTai);
-        model.addAttribute("idHienTai", qlHienTai != null ? qlHienTai.getId() : "w_or");
+        model.addAttribute("idHienTai", (id != null && !id.isBlank()) ? id : (qlHienTai != null ? qlHienTai.getId() : "w_or"));
+        model.addAttribute("catHienTai", cat != null ? cat : "");
+        model.addAttribute("moBangNgoai", moBangNgoai);
 
         return "so-do-danh-van";
     }

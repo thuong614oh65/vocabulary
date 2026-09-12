@@ -9,7 +9,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- CSS Sơ đồ tư duy & Hướng dẫn đọc -->
-    <link rel="stylesheet" th:href="@{/css/so-do-danh-van.css(v=1)}">
+    <link rel="stylesheet" th:href="@{/css/so-do-danh-van.css(v=3)}">
     <link rel="stylesheet" th:href="@{/css/huong-dan-doc.css(v=6)}">
 </head>
 <body>
@@ -17,7 +17,7 @@
 <div class="sd-page-wrapper">
 
     <!-- =========================================================
-         1. HEADER ĐIỀU HƯỚNG & TÌM KIẾM
+         1. HEADER ĐIỀU HƯỚNG CHUNG
          ========================================================= -->
     <header class="sd-header">
         <div class="sd-header-container">
@@ -28,8 +28,8 @@
             </div>
 
             <div class="sd-header-center">
-                <h1 class="sd-title">🧠 SƠ ĐỒ TƯ DUY QUY LUẬT ĐÁNH VẦN</h1>
-                <p class="sd-subtitle">Học phát âm chuẩn theo quy tắc mặt chữ · Di chuột vào để nghe đọc tự động · Bấm 🗣️ xem khẩu hình chi tiết</p>
+                <h1 class="sd-title">🧠 SƠ ĐỒ QUY LUẬT ĐÁNH VẦN</h1>
+                <p class="sd-subtitle">Quy tắc mặt chữ ➔ Cách phát âm chuẩn · Di chuột tự đọc · Bấm 🗣️ xem khẩu hình chi tiết</p>
             </div>
 
             <div class="sd-header-right">
@@ -44,12 +44,11 @@
     </header>
 
     <!-- =========================================================
-         2. THANH TÌM KIẾM & BỘ LỌC QUY TẮC
+         2. THANH TÌM KIẾM THÔNG MINH (XUYÊN SUỐT CÁC MÀN HÌNH)
          ========================================================= -->
-    <section class="sd-search-filter-section">
+    <section class="sd-search-section">
         <div class="container-fluid px-lg-5">
-            <!-- Ô tìm kiếm thông minh -->
-            <div class="row justify-content-center mb-3">
+            <div class="row justify-content-center">
                 <div class="col-12 col-md-8 col-lg-6">
                     <div class="input-group sd-search-bar shadow-sm">
                         <span class="input-group-text bg-white border-end-0">🔍</span>
@@ -75,41 +74,98 @@
                     <div id="searchSuggestions" class="sd-search-dropdown" style="display: none;"></div>
                 </div>
             </div>
+        </div>
+    </section>
 
-            <!-- Các tab phân loại nhóm quy tắc -->
-            <div class="sd-category-tabs">
-                <button type="button" class="btn-sd-tab active" data-cat="ALL" onclick="locTheoNhom('ALL', this)">
-                    🌐 Tất cả quy tắc
-                </button>
-                <button type="button" class="btn-sd-tab" data-cat="NGUYEN_AM_DAC_BIET" onclick="locTheoNhom('NGUYEN_AM_DAC_BIET', this)">
-                    🌟 Nguyên âm đặc biệt (w+or, ar, er...)
-                </button>
-                <button type="button" class="btn-sd-tab" data-cat="DUOI_TU_HAU_TO" onclick="locTheoNhom('DUOI_TU_HAU_TO', this)">
-                    🔖 Đuôi từ & Hậu tố (ise, tion, ture...)
-                </button>
-                <button type="button" class="btn-sd-tab" data-cat="NGUYEN_AM_DOI" onclick="locTheoNhom('NGUYEN_AM_DOI', this)">
-                    🎶 Nguyên âm đôi (ea, ee, oo, igh...)
-                </button>
-                <button type="button" class="btn-sd-tab" data-cat="PHU_AM_KEP_CAM" onclick="locTheoNhom('PHU_AM_KEP_CAM', this)">
-                    🔇 Phụ âm kép & Âm câm (ch, sh, kn, wr...)
-                </button>
-                <button type="button" class="btn-sd-tab" data-cat="BIEN_AM_C_G" onclick="locTheoNhom('BIEN_AM_C_G', this)">
-                    🔄 Biến âm C & G (c/g + e/i/y)
-                </button>
+    <!-- =========================================================
+         MÀN HÌNH 1: BẢNG DANH MỤC CÁC NHÓM Ở NGOÀI (CATEGORY HUB)
+         ========================================================= -->
+    <section id="viewCategoryHub" class="sd-view-section">
+        <div class="container-fluid px-lg-5">
+            <div class="sd-hub-intro text-center mb-4">
+                <span class="sd-hub-pill-badge">📚 KHO QUY TẮC ĐÁNH VẦN TIẾNG ANH</span>
+                <h2 class="sd-hub-heading mt-2">BẢNG DANH MỤC CÁC NHÓM QUY TẮC</h2>
+                <p class="sd-hub-lead text-muted">
+                    Bấm vào một nhóm bên dưới để mở bảng danh sách toàn bộ các âm tương ứng:
+                </p>
             </div>
 
-            <!-- Danh sách các viên thuốc (Pills) chọn nhanh quy tắc -->
-            <div class="sd-pills-scroll" id="sdRulePillsContainer">
-                <!-- Sẽ render động các nút chọn nhanh quy tắc -->
+            <!-- Lưới các khối danh mục to, đẹp, trực quan -->
+            <div class="sd-category-grid" id="categoryGrid">
+                <!-- Sẽ render động các thẻ danh mục lớn từ JS -->
             </div>
         </div>
     </section>
 
     <!-- =========================================================
-         3. SÂN KHẤU SƠ ĐỒ TƯ DUY (MINDMAP ARENA)
+         MÀN HÌNH 2: BẢNG CÁC ÂM CỦA NHÓM ĐÃ CHỌN (SOUNDS LIST ARENA)
+         ("chọn xong ra các âm bảng đó")
          ========================================================= -->
-    <main class="sd-main-arena">
+    <section id="viewSoundListArena" class="sd-view-section" style="display: none;">
         <div class="container-fluid px-lg-5">
+            
+            <!-- Thanh điều hướng đầu trang -->
+            <div class="sd-nav-bar-top mb-3">
+                <button type="button" class="btn-sd-nav-back" onclick="quayLaiBangDanhMuc()">
+                    ⬅️ Quay lại Bảng danh mục ở ngoài
+                </button>
+                <div class="sd-breadcrumb-trail">
+                    <span class="crumb-root" onclick="quayLaiBangDanhMuc()">Bảng ngoài</span>
+                    <span class="crumb-sep">➔</span>
+                    <strong class="crumb-curr" id="lblBreadcrumbGroup">🌟 Nguyên âm đặc biệt</strong>
+                </div>
+            </div>
+
+            <!-- Banner giới thiệu nhóm âm -->
+            <div class="sd-group-banner shadow-sm mb-4" id="groupBannerBox">
+                <div class="group-banner-icon" id="lblGroupBannerIcon">🌟</div>
+                <div class="group-banner-content">
+                    <div class="d-flex align-items-center gap-2 flex-wrap">
+                        <h2 class="group-banner-title mb-0" id="lblGroupBannerTitle">Nguyên âm đặc biệt & Biến âm R</h2>
+                        <span class="badge bg-primary rounded-pill px-3 py-1" id="lblGroupBannerCount">6 quy tắc</span>
+                    </div>
+                    <p class="group-banner-desc mb-0 mt-1" id="lblGroupBannerDesc">
+                        Các quy tắc biến âm khi nguyên âm đi liền với r, w hoặc phụ âm đặc biệt...
+                    </p>
+                </div>
+            </div>
+
+            <!-- Lưới các thẻ âm to, rõ, có phát âm và từ ví dụ -->
+            <div class="sd-sounds-grid" id="soundsGrid">
+                <!-- Sẽ render động danh sách các thẻ âm của nhóm này -->
+            </div>
+
+        </div>
+    </section>
+
+    <!-- =========================================================
+         MÀN HÌNH 3: SÂN KHẤU SƠ ĐỒ TƯ DUY CHI TIẾT (MINDMAP ARENA)
+         ========================================================= -->
+    <main id="viewMindmapArena" class="sd-main-arena" style="display: none;">
+        <div class="container-fluid px-lg-5">
+
+            <!-- Thanh điều hướng quay lại danh sách âm hoặc bảng ngoài -->
+            <div class="sd-mindmap-top-nav mb-3">
+                <div class="d-flex gap-2 align-items-center flex-wrap">
+                    <button type="button" class="btn-sd-nav-back" onclick="quayLaiDanhSachAm()">
+                        ⬅️ Bảng các âm (<span id="lblNavCatBackName">Nhóm</span>)
+                    </button>
+                    <button type="button" class="btn-sd-nav-hub" onclick="quayLaiBangDanhMuc()">
+                        🏠 Bảng danh mục ở ngoài
+                    </button>
+                </div>
+
+                <!-- Chuyển nhanh giữa các âm trong cùng nhóm -->
+                <div class="sd-sound-step-nav">
+                    <button type="button" class="btn-step-arrow" id="btnPrevSound" onclick="chuyenAmKeTiep(-1)" title="Chuyển sang âm trước trong nhóm">
+                        ◀️ Âm trước
+                    </button>
+                    <span class="step-curr-badge" id="lblStepSoundInfo">w + or (/ɜː/)</span>
+                    <button type="button" class="btn-step-arrow" id="btnNextSound" onclick="chuyenAmKeTiep(1)" title="Chuyển sang âm tiếp theo trong nhóm">
+                        Âm tiếp ▶️
+                    </button>
+                </div>
+            </div>
 
             <!-- Banner tiêu đề quy tắc đang chọn -->
             <div class="sd-rule-banner">
@@ -244,13 +300,15 @@
     /*<![CDATA[*/
     window.SERVER_DATA_DS_QUY_LUAT = /*[[${dsQuyLuat}]]*/ [];
     window.SERVER_DATA_QUY_LUAT_HIEN_TAI = /*[[${quyLuatHienTai}]]*/ null;
-    window.SERVER_DATA_ID_HIEN_TAI = /*[[${idHienTai}]]*/ 'w_or';
+    window.SERVER_DATA_ID_HIEN_TAI = /*[[${idHienTai}]]*/ '';
+    window.SERVER_DATA_CAT_HIEN_TAI = /*[[${catHienTai}]]*/ '';
+    window.SERVER_DATA_MO_BANG_NGOAI = /*[[${moBangNgoai}]]*/ true;
     /*]]>*/
 </script>
 
 <!-- Scripts logic Mindmap & Hướng dẫn đọc -->
 <script th:src="@{/js/huong-dan-doc.js(v=3)}"></script>
-<script th:src="@{/js/so-do-danh-van.js(v=1)}"></script>
+<script th:src="@{/js/so-do-danh-van.js(v=2)}"></script>
 
 </body>
 </html>
