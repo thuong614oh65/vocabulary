@@ -144,26 +144,7 @@ function batDauDocTu(
         tu
     );
 
-    // -------------------------------------------------
-    // Tạo tên file MP3
-    // -------------------------------------------------
-
-    let tenFile =
-        tu
-            .toLowerCase()
-            .trim()
-            .replace(/[\\/:*?"<>|]/g, "")
-            .split(/\s+/)
-            .join("-");
-
-    let duongDan =
-        "/audio/tu-vung/"
-        + tenFile
-        + ".mp3";
-
     // Dừng tất cả âm thanh cũ
-    // -------------------------------------------------
-
     dungTatCaAmThanh();
 
     if (window.phatAmThanh) {

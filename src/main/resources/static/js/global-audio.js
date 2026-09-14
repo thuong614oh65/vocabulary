@@ -69,6 +69,10 @@
             let finished = false;
             let audioObj = null;
 
+            function isAbortError(err) {
+                return !!(err && (err.name === "AbortError" || err.code === 20 || (typeof err.message === "string" && err.message.includes("interrupted"))));
+            }
+
             function handleFinish() {
                 if (finished) return;
                 finished = true;
@@ -87,11 +91,15 @@
                 if (audioHienTai === audioObj) {
                     audioHienTai = null;
                 }
+                if (isAbortError(err)) {
+                    resolve();
+                    return;
+                }
                 console.warn("[GlobalAudio] Lỗi phát âm thanh:", cleanText, err);
                 if (typeof opt.onError === "function") {
                     try { opt.onError(err); } catch (e) {}
                 }
-                reject(err);
+                resolve();
             }
 
             // 1. KIỂM TRA CLIENT CACHE (PHÁT NGAY LẬP TỨC 0ms)
@@ -111,6 +119,7 @@
                 const playPromise = audioObj.play();
                 if (playPromise !== undefined) {
                     playPromise.catch(function (e) {
+                        if (isAbortError(e)) return;
                         console.warn("[GlobalAudio] Play cache error:", e);
                         handleError(e);
                     });
@@ -133,7 +142,10 @@
                 audioHienTai = fbAudio;
                 fbAudio.onended = handleFinish;
                 fbAudio.onerror = handleError;
-                fbAudio.play().catch(handleError);
+                fbAudio.play().catch(function (e) {
+                    if (isAbortError(e)) return;
+                    handleError(e);
+                });
             };
 
             if (typeof opt.onStart === "function") {
@@ -150,6 +162,7 @@
             const playPromise = audioObj.play();
             if (playPromise !== undefined) {
                 playPromise.catch(function (e) {
+                    if (isAbortError(e)) return;
                     console.warn("[GlobalAudio] Play network error:", e);
                     handleError(e);
                 });
