@@ -35,34 +35,34 @@ public class HuongDanDocServiceImpl implements HuongDanDocService {
 
         String phienAmChuan = chuanHoaIpaDauVao(phienAm);
 
-        // 1. Kiểm tra từ điển chuẩn hóa đã được biên soạn kỹ lưỡng trước
+        // 1. Kiểm tra từ điển chuẩn hóa đã được biên soạn kỹ lưỡng trước (0ms)
         if (TU_DIEN_BOI_CHUAN.containsKey(tuChuanHoa)) {
             HuongDanDocDTO kq = layMauCoSan(tuChuanHoa, phienAmChuan, nghia);
             cache.put(tuChuanHoa, kq);
             return kq;
         }
 
-        HuongDanDocDTO ketQua = null;
-
-        // 2. Thử gọi Gemini AI nếu GeminiService khả dụng
-        if (geminiService != null) {
-            try {
-                ketQua = goiGeminiPhanTich(tu.trim(), phienAmChuan, nghia);
-                if (ketQua != null) {
-                    ketQua = lamSachKetQua(ketQua);
-                }
-            } catch (Exception e) {
-                System.err.println("[HuongDanDocService] Gọi Gemini không thành công: " + e.getMessage() + " -> Dùng bộ quy tắc ngữ âm dự phòng.");
-            }
-        }
-
-        // 3. Nếu không có AI hoặc AI lỗi -> Dùng thuật toán phân tích ngữ âm thông minh dựa trên IPA & mặt chữ
-        if (ketQua == null) {
-            ketQua = taoHuongDanDocThongMinh(tu.trim(), phienAmChuan, nghia);
+        // 2. Phân tích ngữ âm tức thì (0ms latency, cực nhanh, chuẩn xác theo IPA Cambridge/Oxford)
+        HuongDanDocDTO ketQua = taoHuongDanDocThongMinh(tu.trim(), phienAmChuan, nghia);
+        if (ketQua != null) {
             ketQua = lamSachKetQua(ketQua);
+            cache.put(tuChuanHoa, ketQua);
         }
 
-        cache.put(tuChuanHoa, ketQua);
+        // 3. Tùy chọn: Chạy Gemini ngầm ở luồng riêng (Background) để làm giàu thêm mẹo nhớ cho lần sau mà TUYỆT ĐỐI KHÔNG BẮT NGƯỜI DÙNG PHẢI CHỜ
+        if (geminiService != null) {
+            java.util.concurrent.CompletableFuture.runAsync(() -> {
+                try {
+                    HuongDanDocDTO geminiDto = goiGeminiPhanTich(tu.trim(), phienAmChuan, nghia);
+                    if (geminiDto != null) {
+                        geminiDto = lamSachKetQua(geminiDto);
+                        cache.put(tuChuanHoa, geminiDto);
+                    }
+                } catch (Exception ignored) {
+                }
+            });
+        }
+
         return ketQua;
     }
 

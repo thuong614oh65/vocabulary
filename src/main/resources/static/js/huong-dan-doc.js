@@ -10,6 +10,7 @@
     let duLieuHienTai = null;
     let recognition = null;
     let dangThuAm = false;
+    const clientHuongDanCache = new Map();
 
     // =========================================================
     // 1. BỘ ĐIỀU PHỐI ÂM THANH TOÀN TRANG (MASTER AUDIO CONTROLLER)
@@ -228,6 +229,20 @@
             btnBack.style.display = (hangDangChon && hangDangChon.querySelector(".cau-tra-loi")) ? "inline-flex" : "none";
         }
 
+        const tuKey = (tu || "").trim().toLowerCase();
+
+        // 1. Nếu đã có trong Client Cache -> Hiển thị ngay lập tức (0ms delay)
+        if (clientHuongDanCache.has(tuKey)) {
+            const cachedData = clientHuongDanCache.get(tuKey);
+            duLieuHienTai = cachedData;
+            hienThiDuLieuModal(cachedData);
+            modal.classList.add("show");
+            if (loadingBox) loadingBox.style.display = "none";
+            if (contentBox) contentBox.style.display = "flex";
+            phatAudioTu(tu, 1.0);
+            return;
+        }
+
         modal.classList.add("show");
         if (loadingBox) loadingBox.style.display = "block";
         if (contentBox) contentBox.style.display = "none";
@@ -235,25 +250,39 @@
         // Tự động phát âm 1 lần tốc độ chuẩn ngay khi mở modal (như Google Dịch)
         phatAudioTu(tu, 1.0);
 
-        // Gọi API lấy dữ liệu phân tích ngữ âm
+        // Gọi API lấy dữ liệu phân tích ngữ âm (kèm timeout 3.5s chống đứng quay)
         const params = new URLSearchParams({
             tu: tu,
             phienAm: phienAm || "",
             nghia: nghia || ""
         });
 
-        fetch("/api/huong-dan-doc?" + params.toString())
+        let controller = null;
+        let timeoutId = null;
+        if (window.AbortController) {
+            controller = new AbortController();
+            timeoutId = setTimeout(function () {
+                try { controller.abort(); } catch (e) {}
+            }, 3500);
+        }
+
+        const fetchOptions = controller ? { signal: controller.signal } : {};
+
+        fetch("/api/huong-dan-doc?" + params.toString(), fetchOptions)
             .then(function (res) {
+                if (timeoutId) clearTimeout(timeoutId);
                 if (!res.ok) throw new Error("Lỗi mạng khi tải hướng dẫn");
                 return res.json();
             })
             .then(function (data) {
+                clientHuongDanCache.set(tuKey, data);
                 duLieuHienTai = data;
                 hienThiDuLieuModal(data);
                 if (loadingBox) loadingBox.style.display = "none";
                 if (contentBox) contentBox.style.display = "flex";
             })
             .catch(function (err) {
+                if (timeoutId) clearTimeout(timeoutId);
                 console.warn("[HuongDanDoc] Dùng dữ liệu dự phòng:", err);
                 const fallbackData = taoDuLieuDuPhong(tu, phienAm, nghia);
                 duLieuHienTai = fallbackData;
