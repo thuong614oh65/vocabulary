@@ -24,10 +24,13 @@
     let audioHienTai = null;
     let cancelCallbackHienTai = null;
 
-    // =============================================================
-    // DỪNG TẤT CẢ ÂM THANH ĐANG PHÁT TRÊN TOÀN TRANG
-    // =============================================================
-    window.dungTatCaAmThanh = function () {
+    const origNativeCancel = (window.speechSynthesis && typeof window.speechSynthesis.cancel === "function")
+        ? window.speechSynthesis.cancel.bind(window.speechSynthesis)
+        : null;
+
+    let isCanceling = false;
+
+    function dungAudioNoiBo() {
         if (audioHienTai) {
             try {
                 audioHienTai.pause();
@@ -40,11 +43,32 @@
             try { cancelCallbackHienTai(); } catch (e) {}
             cancelCallbackHienTai = null;
         }
+    }
 
-        // Tắt class active-playing / playing trên các nút loa giao diện
-        document.querySelectorAll(".playing, .audio-playing, .active-playing, .hd-audio-playing").forEach(function (el) {
-            el.classList.remove("playing", "audio-playing", "active-playing", "hd-audio-playing");
-        });
+    // =============================================================
+    // DỪNG TẤT CẢ ÂM THANH ĐANG PHÁT TRÊN TOÀN TRANG
+    // =============================================================
+    window.dungTatCaAmThanh = function () {
+        if (isCanceling) return;
+        isCanceling = true;
+        try {
+            dungAudioNoiBo();
+
+            if (origNativeCancel) {
+                try { origNativeCancel(); } catch (e) {}
+            }
+
+            if (typeof window.dungAudioHuongDan === "function") {
+                try { window.dungAudioHuongDan(); } catch (e) {}
+            }
+
+            // Tắt class active-playing / playing trên các nút loa giao diện
+            document.querySelectorAll(".playing, .audio-playing, .active-playing, .hd-audio-playing").forEach(function (el) {
+                el.classList.remove("playing", "audio-playing", "active-playing", "hd-audio-playing");
+            });
+        } finally {
+            isCanceling = false;
+        }
     };
 
     // =============================================================
@@ -206,7 +230,16 @@
         };
 
         window.speechSynthesis.cancel = function () {
-            window.dungTatCaAmThanh();
+            if (isCanceling) return;
+            isCanceling = true;
+            try {
+                if (origNativeCancel) {
+                    try { origNativeCancel(); } catch (e) {}
+                }
+                dungAudioNoiBo();
+            } finally {
+                isCanceling = false;
+            }
         };
     }
 

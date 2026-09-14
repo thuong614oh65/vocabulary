@@ -391,24 +391,26 @@ let soLanDoc = 0;
 // DỪNG TẤT CẢ ÂM THANH
 // =========================================================
 
+const hocGlobalAudioDung = (typeof window.dungTatCaAmThanh === "function") ? window.dungTatCaAmThanh : null;
+
 function dungTatCaAmThanh() {
-
-    if (window.speechSynthesis) {
-
-        window.speechSynthesis.cancel();
-
-    }
-
     if (audioHienTai) {
-
-        audioHienTai.pause();
-
-        audioHienTai.currentTime = 0;
-
+        try {
+            audioHienTai.pause();
+            audioHienTai.currentTime = 0;
+        } catch (e) {}
         audioHienTai = null;
-
     }
 
+    if (typeof hocGlobalAudioDung === "function") {
+        try {
+            hocGlobalAudioDung();
+        } catch (e) {}
+    } else if (window.speechSynthesis) {
+        try {
+            window.speechSynthesis.cancel();
+        } catch (e) {}
+    }
 }
 
 

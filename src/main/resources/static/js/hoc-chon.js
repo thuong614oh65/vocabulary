@@ -87,42 +87,39 @@ document.addEventListener("DOMContentLoaded", function () {
 // DỪNG TẤT CẢ ÂM THANH
 // =========================================================
 
+const globalAudioDung = (typeof window.dungTatCaAmThanh === "function") ? window.dungTatCaAmThanh : null;
+
 function dungTatCaAmThanh() {
-
-
-    // -------------------------------------------------
-    // Dừng SpeechSynthesis
-    // -------------------------------------------------
-
-    if (
-        window.speechSynthesis
-    ) {
-
-        window.speechSynthesis.cancel();
-
-    }
-
-
     // -------------------------------------------------
     // Dừng file MP3 hiện tại
     // -------------------------------------------------
-
     if (audioHienTai) {
-
-        audioHienTai.pause();
-
-        audioHienTai.currentTime = 0;
-
-        audioHienTai = null;
-
-    }
-
-    if (typeof window.dungAudioHuongDan === "function") {
         try {
-            window.dungAudioHuongDan();
+            audioHienTai.pause();
+            audioHienTai.currentTime = 0;
         } catch (e) {}
+        audioHienTai = null;
     }
 
+    // -------------------------------------------------
+    // Dừng qua GlobalAudio controller nếu có
+    // -------------------------------------------------
+    if (typeof globalAudioDung === "function") {
+        try {
+            globalAudioDung();
+        } catch (e) {}
+    } else {
+        if (window.speechSynthesis) {
+            try {
+                window.speechSynthesis.cancel();
+            } catch (e) {}
+        }
+        if (typeof window.dungAudioHuongDan === "function") {
+            try {
+                window.dungAudioHuongDan();
+            } catch (e) {}
+        }
+    }
 }
 
 
