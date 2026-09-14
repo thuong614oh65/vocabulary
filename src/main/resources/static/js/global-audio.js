@@ -109,6 +109,11 @@
                 audioHienTai = audioObj;
 
                 audioObj.currentTime = 0;
+                if (typeof opt.playbackRate === "number") {
+                    audioObj.playbackRate = opt.playbackRate;
+                } else {
+                    audioObj.playbackRate = 1.0;
+                }
                 audioObj.onended = handleFinish;
                 audioObj.onerror = handleError;
 
@@ -132,6 +137,11 @@
             const url = "/audio/phat?text=" + encodeURIComponent(cleanText) + "&rate=" + encodeURIComponent(rate);
             audioObj = new Audio(url);
             audioHienTai = audioObj;
+            if (typeof opt.playbackRate === "number") {
+                audioObj.playbackRate = opt.playbackRate;
+            } else {
+                audioObj.playbackRate = 1.0;
+            }
 
             audioObj.onended = handleFinish;
             audioObj.onerror = function () {

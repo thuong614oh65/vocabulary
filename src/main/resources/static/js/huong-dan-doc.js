@@ -450,11 +450,12 @@
 
     function phatAudioTu(tu, tocDo, onEnd) {
         const isSlow = tocDo && tocDo < 0.9;
-        const rateParam = isSlow ? "-28%" : "+0%";
+        const rateParam = isSlow ? "-35%" : "+0%";
 
         if (window.phatAmThanh) {
             window.phatAmThanh(tu, {
                 rate: rateParam,
+                playbackRate: isSlow ? 0.7 : 1.0,
                 onEnd: onEnd,
                 onError: onEnd
             });
@@ -463,6 +464,9 @@
 
         const urlPhat = "/audio/phat?text=" + encodeURIComponent(tu) + "&rate=" + encodeURIComponent(rateParam);
         const audio = new Audio(urlPhat);
+        if (isSlow) {
+            audio.playbackRate = 0.7;
+        }
         hdAudioHienTai = audio;
 
         audio.onended = function () {
@@ -488,48 +492,123 @@
     // 7. ĐỌC TỪNG ÂM TIẾT CHUẨN XÁC THEO TỪ CHÍNH (NEURAL TTS)
     // =========================================================
     const SYLLABLE_PHONETIC_MAP = {
-        "co": "caw", "com": "cawm", "me": "muh", "dy": "dee", "ty": "tee",
-        "ly": "lee", "ny": "nee", "ry": "ree", "sy": "see", "cy": "see",
-        "gy": "jee", "al": "ull", "el": "ell", "le": "ull", "ble": "bull",
-        "ple": "pull", "tle": "tull", "dle": "dull", "cle": "cull",
-        "fle": "full", "tion": "shun", "sion": "zhun", "ture": "chur",
-        "ous": "us", "ful": "full", "ment": "muhnt", "ness": "ness",
-        "for": "fer", "ta": "tuh", "ca": "kuh", "ga": "guh"
+        "re": "ree",
+        "cruit": "croot",
+        "ing": "ting",
+        "co": "caw",
+        "com": "come",
+        "con": "kahn",
+        "col": "kahl",
+        "me": "muh",
+        "dy": "dee",
+        "ty": "tee",
+        "ly": "lee",
+        "ny": "nee",
+        "ry": "ree",
+        "sy": "see",
+        "cy": "see",
+        "gy": "jee",
+        "py": "pee",
+        "by": "bee",
+        "my": "mee",
+        "ky": "kee",
+        "vy": "vee",
+        "zy": "zee",
+        "ti": "tee",
+        "ci": "see",
+        "di": "dee",
+        "ni": "nee",
+        "li": "lee",
+        "ri": "ree",
+        "si": "see",
+        "pi": "pee",
+        "bi": "bee",
+        "mi": "mee",
+        "gi": "jee",
+        "al": "ull",
+        "el": "ell",
+        "il": "ill",
+        "ol": "ohl",
+        "ul": "uhl",
+        "le": "ull",
+        "ble": "bull",
+        "ple": "pull",
+        "tle": "tull",
+        "dle": "dull",
+        "cle": "cull",
+        "fle": "full",
+        "gle": "gull",
+        "tion": "shun",
+        "sion": "shun",
+        "ture": "chur",
+        "ous": "us",
+        "ful": "full",
+        "ment": "muhnt",
+        "dent": "duhnt",
+        "tant": "tuhnt",
+        "ness": "ness",
+        "sage": "sidge",
+        "bage": "bidge",
+        "tuce": "tiss",
+        "for": "fer",
+        "por": "pour",
+        "ta": "tuh",
+        "pa": "puh",
+        "ca": "kuh",
+        "ba": "buh",
+        "ma": "muh",
+        "na": "nuh",
+        "da": "duh",
+        "fa": "fuh",
+        "ga": "guh",
+        "la": "luh",
+        "ra": "ruh",
+        "sa": "suh",
+        "va": "vuh",
+        "ex": "ecks",
+        "im": "ihm",
+        "in": "inn",
+        "un": "unn",
+        "dis": "diss",
+        "sub": "sub",
+        "i": "ih",
+        "a": "uh",
+        "u": "you",
+        "nu": "you"
     };
 
-    function docAmTiet(syllable, docText, onEnd) {
-        dungAudioHuongDan();
+    function chuyenAmTietSangPhatAmChuan(syllable, docText) {
+        if (docText && docText.trim() !== "" && docText.toLowerCase() !== (syllable || "").toLowerCase()) {
+            return docText.trim();
+        }
+        const s = (syllable || "").toLowerCase().trim();
+        if (SYLLABLE_PHONETIC_MAP[s]) {
+            return SYLLABLE_PHONETIC_MAP[s];
+        }
+        if (s.length >= 2 && s.endsWith("y") && s !== "by" && s !== "my") {
+            return s.slice(0, -1) + "ee";
+        }
+        if (s.length >= 2 && s.endsWith("i") && s !== "hi" && s !== "pi") {
+            return s.slice(0, -1) + "ee";
+        }
+        return s;
+    }
 
-        let toSpeak = docText;
-        if (!toSpeak || toSpeak.trim() === "") {
-            const lowerSyl = (syllable || "").toLowerCase().trim();
-            toSpeak = SYLLABLE_PHONETIC_MAP[lowerSyl] || syllable;
+    function docAmTiet(syllable, docText, onEnd) {
+        const toSpeak = chuyenAmTietSangPhatAmChuan(syllable, docText);
+
+        if (window.phatAmThanh) {
+            window.phatAmThanh(toSpeak, {
+                rate: "-15%",
+                onEnd: onEnd,
+                onError: onEnd
+            });
+            return;
         }
 
-        // Ưu tiên phát qua Microsoft Edge Neural TTS cho âm chuẩn xác và tự nhiên
-        const ttsUrl = "/audio/tts?text=" + encodeURIComponent(toSpeak) + "&rate=-10%";
+        const ttsUrl = "/audio/phat?text=" + encodeURIComponent(toSpeak) + "&rate=-15%";
         const audio = new Audio(ttsUrl);
         hdAudioHienTai = audio;
-
-        let fallbackDone = false;
-        function doFallback() {
-            if (fallbackDone) return;
-            fallbackDone = true;
-            if (window.speechSynthesis) {
-                const utterance = new SpeechSynthesisUtterance(toSpeak);
-                utterance.lang = "en-US";
-                utterance.rate = 0.8;
-                utterance.onend = function () {
-                    if (onEnd) onEnd();
-                };
-                utterance.onerror = function () {
-                    if (onEnd) onEnd();
-                };
-                window.speechSynthesis.speak(utterance);
-            } else {
-                if (onEnd) onEnd();
-            }
-        }
 
         audio.onended = function () {
             hdAudioHienTai = null;
@@ -537,13 +616,15 @@
         };
 
         audio.onerror = function () {
-            doFallback();
+            hdAudioHienTai = null;
+            if (onEnd) onEnd();
         };
 
         const p = audio.play();
         if (p !== undefined) {
             p.catch(function () {
-                doFallback();
+                hdAudioHienTai = null;
+                if (onEnd) onEnd();
             });
         }
     }

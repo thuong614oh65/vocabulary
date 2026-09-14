@@ -588,11 +588,20 @@ public class AudioService {
         }
 
         // -----------------------------------------------------
-        // TRƯỜNG HỢP 1: TỪ CÓ TRONG CƠ SỞ DỮ LIỆU
+        // KIỂM TRA TỐC ĐỘ YÊU CẦU CÓ PHẢI TỐC ĐỘ CHUẨN (+0%) KHÔNG
+        // -----------------------------------------------------
+        boolean laTocDoChuan = rateParam.isBlank()
+                || rateParam.equals("+0%")
+                || rateParam.equals("0%")
+                || rateParam.equals("+0")
+                || rateParam.equals("0");
+
+        // -----------------------------------------------------
+        // TRƯỜNG HỢP 1: TỪ CÓ TRONG CƠ SỞ DỮ LIỆU VÀ TỐC ĐỘ CHUẨN (1.0x)
         // "đọc từ ấy kiểm tra trong cơ sở dữ liệu nếu có thì lấy mp3 đó đọc.
         //  ko có thì tải mp3 chuẩn cho âm đó và lưu lại."
         // -----------------------------------------------------
-        if (laTuTrongCSDL) {
+        if (laTuTrongCSDL && laTocDoChuan) {
             // 1. Nếu đã có file trên đĩa -> Đọc file & nạp RAM cache
             if (Files.exists(audioFile)) {
                 try {
@@ -632,7 +641,8 @@ public class AudioService {
         }
 
         // -----------------------------------------------------
-        // TRƯỜNG HỢP 2: ĐOẠN VĂN / CÂU / TỪ NGOÀI CSDL
+        // TRƯỜNG HỢP 2: TỐC ĐỘ ĐẶC BIỆT (CHẬM -35%, NHANH...), ĐOẠN VĂN / CÂU / TỪ NGOÀI CSDL
+        // -> Sinh MP3 chuẩn với đúng tốc độ yêu cầu và lưu RAM cache 30 phút
         // "từ ko có thì đưa về server và gửi mp3 chuẩn tạm thời từ đó để phát.
         //  đoạn văn hay tất cả những gì trừ từ trong cơ sở dữ liệu thì để gủi về server
         //  để mấy bản mp3 chuẩn tạm thời, lưu tạm trong vòng mây phút đó đê nghe lại

@@ -255,6 +255,54 @@ public class HuongDanDocServiceImpl implements HuongDanDocService {
                 "Mẹo nhớ: Xem phim hài kịch thì phải 'KO' (co) bụng cười 'MƠ' màng 'ĐI' ngủ!"
         ));
 
+        // --- COMPANY ---
+        TU_DIEN_BOI_CHUAN.put("company", new HuongDanDocDTO(
+                "company", "/ˈkʌm.pə.ni/", "công ty, đoàn thể",
+                List.of("com", "pa", "ny"),
+                List.of("ˈkʌm", "pə", "ni"),
+                List.of("KĂM", "pơ", "ni"),
+                List.of("come", "puh", "nee"),
+                0,
+                "KĂM - pơ - ni",
+                "Trọng âm chính rơi vào âm 1 (KĂM) - đọc to, dứt khoát: KĂM-pơ-ni.",
+                "Bật /k/ từ cuống họng kết hợp khép môi đọc âm /ʌm/ (come), sau đó hạ cằm thả lỏng đọc /pə/ (puh), cuối cùng cười nhẹ phát âm /ni/ (nee).",
+                "Kết thúc nhẹ nhàng bằng nguyên âm /i/ (ni).",
+                "Người Việt hay đọc nhầm theo mặt chữ thành 'côm-pa-ni' hoặc 'côm-pen-ni'. Cách đọc chuẩn quốc tế là KĂM-pơ-ni (come-puh-nee)!",
+                "Mẹo nhớ: Thành lập công ty lớn thì ai cũng 'KĂM' (chăm) chỉ làm việc!"
+        ));
+
+        // --- RECRUITING ---
+        TU_DIEN_BOI_CHUAN.put("recruiting", new HuongDanDocDTO(
+                "recruiting", "/riˈkruː.tɪŋ/", "tuyển dụng, chiêu mộ",
+                List.of("re", "cruit", "ing"),
+                List.of("riː", "ˈkruːt", "ɪŋ"),
+                List.of("ri", "KRUUT", "tinh"),
+                List.of("ree", "croot", "ting"),
+                1,
+                "ri - KRUUT - tinh",
+                "Trọng âm chính rơi vào âm 2 (KRUUT) -> đọc to, rõ, ngân dài: ri-KRUUT-tinh.",
+                "Thả lỏng môi phát âm nhẹ /ri/ (ree), chu tròn môi đẩy luồng hơi bật /kruːt/ (croot), kết thúc nhẹ nhàng bằng âm đuôi /tɪŋ/ (ting).",
+                "⚠️ Trọng âm rơi vào âm thứ 2 (cruit), âm 're' và 'ing' đọc lướt nhẹ nhàng.",
+                "Người Việt hay đọc nhầm theo mặt chữ thành 'rê-cờ-rui-tinh'. Cách đọc chuẩn quốc tế là ri-KRUUT-tinh!",
+                "Mẹo nhớ: Tuyển dụng (recruiting) thì phải 'RI' (ghi) nhận người giỏi, làm việc 'KRUUT' (trút) hết tâm can!"
+        ));
+
+        // --- RECRUIT ---
+        TU_DIEN_BOI_CHUAN.put("recruit", new HuongDanDocDTO(
+                "recruit", "/riˈkruːt/", "tuyển dụng, chiêu mộ",
+                List.of("re", "cruit"),
+                List.of("riː", "ˈkruːt"),
+                List.of("ri", "KRUUT"),
+                List.of("ree", "croot"),
+                1,
+                "ri - KRUUT",
+                "Trọng âm rơi vào âm 2 (KRUUT).",
+                "Phát âm lướt nhẹ /ri/, nhấn mạnh vào /kruːt/ có bật nhẹ âm /t/ cuối.",
+                "⚠️ Âm đuôi /t/ ngắt nhẹ ở đầu lưỡi.",
+                "Tránh đọc 'rê-cờ-rút'.",
+                "Mẹo nhớ: 'RI' nhận nhân tài 'KRUUT' trút lòng!"
+        ));
+
         // --- USAGE ---
         TU_DIEN_BOI_CHUAN.put("usage", new HuongDanDocDTO(
                 "usage", "/ˈjuː.sɪdʒ/", "cách sử dụng, sự dùng",
@@ -1337,9 +1385,15 @@ public class HuongDanDocServiceImpl implements HuongDanDocService {
 
     private String taoTuDocChoSpeech(String ipa, String enSyl) {
         String s = enSyl.toLowerCase().trim();
+        String p = ipa != null ? ipa.toLowerCase().trim() : "";
+
+        // 1. Các âm tiết / vần đặc biệt thông dụng
         if (s.equals("al")) return "ull";
         if (s.equals("el")) return "ell";
-        if (s.equals("nu")) return "you";
+        if (s.equals("il")) return "ill";
+        if (s.equals("ol")) return "ohl";
+        if (s.equals("ul")) return "uhl";
+        if (s.equals("nu")) return (p.contains("ju") || p.contains("juː")) ? "you" : "new";
         if (s.equals("an")) return "an";
         if (s.equals("u")) return "you";
         if (s.equals("sage")) return "sidge";
@@ -1350,20 +1404,39 @@ public class HuongDanDocServiceImpl implements HuongDanDocService {
         if (s.equals("dle")) return "dull";
         if (s.equals("cle")) return "cull";
         if (s.equals("fle")) return "full";
+        if (s.equals("gle")) return "gull";
         if (s.equals("bage")) return "bidge";
         if (s.equals("tuce")) return "tiss";
-        if (s.equals("tion")) return "shun";
-        if (s.equals("sion")) return "shun";
+        if (s.equals("tion") || s.equals("sion")) return "shun";
         if (s.equals("ture")) return "chur";
         if (s.equals("ful")) return "full";
         if (s.equals("for")) return "fer";
+        if (s.equals("por")) return "pour";
         if (s.equals("ta")) return "tuh";
+        if (s.equals("pa")) return (p.contains("ɑ") || p.contains("a")) ? "pah" : "puh";
+        if (s.equals("ca") || s.equals("ka")) return "kuh";
+        if (s.equals("ba")) return "buh";
+        if (s.equals("ma")) return (p.contains("eɪ") || p.contains("ei")) ? "may" : "muh";
+        if (s.equals("na")) return "nuh";
+        if (s.equals("da")) return "duh";
+        if (s.equals("fa")) return "fuh";
+        if (s.equals("ga")) return "guh";
+        if (s.equals("la")) return "luh";
+        if (s.equals("ra")) return "ruh";
+        if (s.equals("sa")) return "suh";
+        if (s.equals("va")) return "vuh";
         if (s.equals("com")) {
-            if (ipa != null && (ipa.contains("ɑ") || ipa.contains("ɒ"))) return "cawm";
-            if (ipa != null && ipa.contains("ə")) return "kuhm";
-            return "cawm";
+            if (p.contains("ʌ") || p.contains("ə")) return "come";
+            if (p.contains("ɑ") || p.contains("ɒ")) return "cawm";
+            return "come";
         }
-        if (s.equals("me")) return "muh";
+        if (s.equals("con")) {
+            if (p.contains("ɑ") || p.contains("ɒ")) return "kahn";
+            return "kuhn";
+        }
+        if (s.equals("col")) return "kahl";
+        if (s.equals("co")) return (p.contains("ɑ") || p.contains("ɒ")) ? "caw" : "koh";
+        if (s.equals("me")) return (p.contains("i") || p.contains("iː")) ? "mee" : "muh";
         if (s.equals("dy")) return "dee";
         if (s.equals("ty")) return "tee";
         if (s.equals("ly")) return "lee";
@@ -1371,11 +1444,49 @@ public class HuongDanDocServiceImpl implements HuongDanDocService {
         if (s.equals("ry")) return "ree";
         if (s.equals("sy") || s.equals("cy")) return "see";
         if (s.equals("gy")) return "jee";
-        if (s.equals("beau")) return "byoo";
+        if (s.equals("py")) return "pee";
+        if (s.equals("by")) return "bee";
+        if (s.equals("my")) return "mee";
+        if (s.equals("ky")) return "kee";
+        if (s.equals("vy")) return "vee";
+        if (s.equals("zy")) return "zee";
         if (s.equals("ti")) return "tee";
+        if (s.equals("ci")) return "see";
+        if (s.equals("di")) return "dee";
+        if (s.equals("ni")) return "nee";
+        if (s.equals("li")) return "lee";
+        if (s.equals("ri")) return "ree";
+        if (s.equals("si")) return "see";
+        if (s.equals("pi")) return "pee";
+        if (s.equals("bi")) return "bee";
+        if (s.equals("mi")) return "mee";
+        if (s.equals("gi")) return "jee";
+        if (s.equals("beau")) return "byoo";
         if (s.equals("lic")) return "lick";
         if (s.equals("ap") || s.equals("app")) return "app";
         if (s.equals("ment")) return "muhnt";
+        if (s.equals("dent")) return "duhnt";
+        if (s.equals("tant")) return "tuhnt";
+        if (s.equals("ence") || s.equals("ance")) return "uns";
+        if (s.equals("ous")) return "us";
+        if (s.equals("ex")) return "ecks";
+        if (s.equals("im")) return "ihm";
+        if (s.equals("in")) return "inn";
+        if (s.equals("un")) return "unn";
+        if (s.equals("dis")) return "diss";
+        if (s.equals("sub")) return "sub";
+        if (s.equals("i")) return "ih";
+        if (s.equals("a")) return "uh";
+
+        // Quy tắc chung theo đuôi y -> ee (tránh đọc tên chữ cái)
+        if (s.length() >= 2 && s.endsWith("y") && !s.equals("by") && !s.equals("my")) {
+            return s.substring(0, s.length() - 1) + "ee";
+        }
+        // Quy tắc chung theo đuôi i -> ee
+        if (s.length() >= 2 && s.endsWith("i") && !s.equals("hi") && !s.equals("pi")) {
+            return s.substring(0, s.length() - 1) + "ee";
+        }
+
         return enSyl;
     }
 }
