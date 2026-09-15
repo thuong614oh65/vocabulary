@@ -222,15 +222,18 @@
 
                 <!-- 2. BẢNG DANH SÁCH CÁC TỪ VỰNG VÍ DỤ TIÊU BIỂU (BOOK EXAMPLES GRID) -->
                 <div class="sd-book-examples-section mt-4">
-                    <div class="sd-bes-header">
+                    <div class="sd-bes-header d-flex align-items-center justify-content-between flex-wrap gap-2">
                         <div>
                             <h3 class="sd-bes-title">
                                 🎯 CÁC TỪ VỰNG TIÊU BIỂU ÁP DỤNG QUY TẮC NÀY (<span id="lblExampleCount">0</span> từ)
                             </h3>
                             <p class="sd-bes-sub">
-                                Phần chữ cái đỏ ứng với âm phiên âm đỏ. Bấm 🔊 để nghe, bấm 🗣️ để xem thầy ảo đánh vần từng âm như tiếng Việt.
+                                Phần chữ cái đỏ ứng với âm phiên âm đỏ. Bấm 🔊 để nghe, bấm 🗣️ để xem hướng dẫn đánh vần từng âm.
                             </p>
                         </div>
+                        <button type="button" class="btn-refresh-8words" id="btnRefreshWords" onclick="doi8TuNgauNhien()" title="Lấy ngẫu nhiên 8 từ khác áp dụng quy tắc này">
+                            🔄 Đổi 8 từ khác
+                        </button>
                     </div>
 
                     <!-- Lưới các thẻ từ ví dụ rõ nét, trang nhã -->

@@ -181,9 +181,6 @@
                                         '<p class="hd-phonics-sub">Ghép âm như: <i>u - y - a ➔ uya, khờ - uya ➔ khuya</i></p>' +
                                     '</div>' +
                                     '<div class="hd-phonics-actions">' +
-                                        '<button type="button" class="btn-hd-phonics-play" id="btnAutoSpellPhonics" onclick="chayDanhVanTungBuoc(this)" title="Thầy ảo lần lượt phát âm từng phụ âm, nguyên âm rồi ghép lại hoàn chỉnh">' +
-                                            '🗣️ Thầy ảo đánh vần từng bước' +
-                                        '</button>' +
                                         '<button type="button" class="btn-hd-phonics-help" onclick="moModalGiaiDapDanhVan()" title="Xem bí quyết: Nhìn từ biết cách chia âm tiết và đọc đúng không cần tra từ điển">' +
                                             '💡 Bí quyết đánh vần' +
                                         '</button>' +
@@ -596,38 +593,40 @@
             const codaVal = step.amCuoi || "∅";
             const codaSpoken = step.amCuoiDoc || "không có";
 
+            const cleanStepIpa = (step.ipa || "").replace(/^\/+|\/+$/g, "");
+
             card.innerHTML = 
                 '<div class="hd-phonics-step-header">' +
                     '<div class="step-badge-num">Âm tiết ' + (sIdx + 1) + '</div>' +
                     '<div class="step-syllable-name">' +
                         '<strong>' + step.amTiet + '</strong> ' +
-                        '<span class="step-ipa">/' + step.ipa + '/</span> ' +
+                        '<span class="step-ipa">/' + cleanStepIpa + '/</span> ' +
                         (step.laTrongAm ? '<span class="step-stress-tag">⭐ Trọng âm chính</span>' : '') +
                     '</div>' +
                 '</div>' +
                 '<div class="hd-phonics-parts-grid">' +
-                    '<div class="hd-phonics-part-cell cell-onset" title="Bấm nghe phụ âm đầu" onclick="phatAmTungPhan(\'' + (step.phuAmDauDoc || step.phuAmDau) + '\', this)">' +
+                    '<div class="hd-phonics-part-cell cell-onset">' +
                         '<div class="part-label">Phụ âm đầu (Onset)</div>' +
                         '<div class="part-char">' + onsetVal + '</div>' +
                         '<div class="part-spoken">"' + onsetSpoken + '"</div>' +
                     '</div>' +
                     '<div class="hd-phonics-plus">+</div>' +
-                    '<div class="hd-phonics-part-cell cell-nucleus" title="Bấm nghe nguyên âm nhân" onclick="phatAmTungPhan(\'' + (step.nguyenAmDoc || step.nguyenAm) + '\', this)">' +
+                    '<div class="hd-phonics-part-cell cell-nucleus">' +
                         '<div class="part-label">Nguyên âm (Nucleus)</div>' +
                         '<div class="part-char">' + nucVal + '</div>' +
                         '<div class="part-spoken">"' + nucSpoken + '"</div>' +
                     '</div>' +
                     '<div class="hd-phonics-plus">+</div>' +
-                    '<div class="hd-phonics-part-cell cell-coda" title="Bấm nghe phụ âm cuối" onclick="phatAmTungPhan(\'' + (step.amCuoiDoc || step.amCuoi) + '\', this)">' +
+                    '<div class="hd-phonics-part-cell cell-coda">' +
                         '<div class="part-label">Phụ âm cuối (Coda)</div>' +
                         '<div class="part-char">' + codaVal + '</div>' +
                         '<div class="part-spoken">"' + codaSpoken + '"</div>' +
                     '</div>' +
                 '</div>' +
-                '<div class="hd-phonics-equation" onclick="docAmTiet(\'' + step.amTiet + '\', \'' + (step.amTietDoc || step.amTiet) + '\', null)" title="Bấm nghe âm tiết đã ghép">' +
+                '<div class="hd-phonics-equation" onclick="phatAudioHuongDan(1.0)" title="Bấm nghe phát âm chuẩn">' +
                     '<span class="equation-lead">👉 Ghép vần:</span>' +
                     '<span class="equation-formula">' + (step.cachDanhVan || (step.amTiet + ' ➔ ' + (step.amTietDoc || step.amTiet))) + '</span>' +
-                    '<button type="button" class="btn-step-speak">🔊</button>' +
+                    '<button type="button" class="btn-step-speak" onclick="event.stopPropagation(); phatAudioHuongDan(1.0);">🔊</button>' +
                 '</div>';
             container.appendChild(card);
         });

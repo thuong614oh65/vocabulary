@@ -1287,6 +1287,51 @@ public class HuongDanDocServiceImpl implements HuongDanDocService {
                 "Tránh đọc thành 'bắc' hay 'bách'.",
                 "Mẹo nhớ: Cái lưng mỏi nằm nghỉ trên chiếc ghế 'BÉC' (bành)!"
         ));
+
+        TU_DIEN_BOI_CHUAN.put("world", new HuongDanDocDTO(
+                "world", "/wɜːld/", "thế giới",
+                List.of("world"),
+                List.of("wɜːld"),
+                List.of("quớt -đ"),
+                List.of("world"),
+                0,
+                "quớt -đ",
+                "Từ 1 âm tiết, nhấn trọng âm toàn bộ từ: QUỚT-Đ!",
+                "Mở khẩu hình chu môi nhẹ tạo âm /w/, chuyển sang vòm họng mở rộng ngân dài /ɜː/, sau đó uốn cong đầu lưỡi chạm chân răng trên cho âm /l/ và chặn nhẹ âm /d/.",
+                "🔔 Chú ý phụ âm cuối /ld/: Uốn lưỡi /l/ rồi chặn nhẹ âm /d/ (-đ).",
+                "Người Việt hay phát âm là 'uôn' hoặc 'uơ', hãy chú ý phát âm chuẩn vần /ɜːld/ (quớt -đ).",
+                "Mẹo nhớ: Công thức ghép vần: quờ + ơ dài + bật âm ld ➔ QUỚT-Đ."
+        ));
+
+        TU_DIEN_BOI_CHUAN.put("word", new HuongDanDocDTO(
+                "word", "/wɜːd/", "từ, từ ngữ",
+                List.of("word"),
+                List.of("wɜːd"),
+                List.of("quớt -đ"),
+                List.of("word"),
+                0,
+                "quớt -đ",
+                "Từ 1 âm tiết, nhấn trọng âm toàn bộ từ: QUỚT-Đ!",
+                "Khẩu hình âm /ɜː/: Mở miệng tự nhiên, ngân dài hơi từ cuống họng, kết thúc bằng cách chặn nhẹ âm /d/.",
+                "🔔 Chú ý âm đuôi /d/: Chặn nhẹ đầu lưỡi ở chân răng trên (-đ).",
+                "Tránh nhầm lẫn với từ world (thế giới) có thêm âm /l/ uốn lưỡi.",
+                "Mẹo: Nhớ công thức: quờ + ơ dài + chặn nhẹ âm đờ ➔ QUỚT-Đ."
+        ));
+
+        TU_DIEN_BOI_CHUAN.put("work", new HuongDanDocDTO(
+                "work", "/wɜːk/", "làm việc, công việc",
+                List.of("work"),
+                List.of("wɜːk"),
+                List.of("quớc"),
+                List.of("work"),
+                0,
+                "quớc",
+                "Từ 1 âm tiết, nhấn trọng âm toàn bộ từ: QUỚC!",
+                "Mở tròn môi nhẹ tạo âm /w/, ngân dài âm /ɜː/, sau đó ngắt hơi sắc ở cuống họng với âm /k/.",
+                "🔔 Chú ý âm đuôi /k/: Ngắt hơi dứt khoát ở cuống họng.",
+                "Tránh phát âm thành 'guốc' hay 'uốc' không có độ ngân.",
+                "Mẹo: Nhớ công thức: quờ + ơ dài + ngắt hơi ở cuống họng (cờ) ➔ QUỚC."
+        ));
     }
 
     // =========================================================================
@@ -1387,6 +1432,7 @@ public class HuongDanDocServiceImpl implements HuongDanDocService {
     private List<PhoneticSyllable> phanTichAmTietTuIpaVaTu(String word, String ipaRaw) {
         List<PhoneticSyllable> result = new ArrayList<>();
         String ipa = chuanHoaIpaDauVao(ipaRaw);
+        String ipaClean = ipa.replaceAll("[ˈˌ'/|\\[\\]]", "").trim();
 
         // Trường hợp đặc biệt: từ bắt đầu bằng "u" phát âm /juː/ như usage, user
         if (word.startsWith("usag") || (ipa.contains("j") && ipa.contains("u") && word.startsWith("u"))) {
@@ -1422,9 +1468,18 @@ public class HuongDanDocServiceImpl implements HuongDanDocService {
 
         // Thuật toán tách âm tiết tiếng Anh thực tế
         List<String> syllables = tachAmTietTiengAnhThucTe(word);
+
+        if (syllables.size() <= 1) {
+            String syl = syllables.isEmpty() ? word : syllables.get(0);
+            String ipaSyl = !ipaClean.isEmpty() ? ipaClean.replaceAll("[ˈˌ'/|\\[\\]]", "").trim() : syl;
+            String boi = chuyenIpaSangBoiTiengViet(ipaSyl, syl);
+            String tts = taoTuDocChoSpeech(ipaSyl, syl);
+            result.add(new PhoneticSyllable(syl, ipaSyl, boi, tts, true));
+            return result;
+        }
+
         int stressedIndex = 0;
         if (ipa.contains("ˈ") || ipa.contains("'")) {
-            // Xác định trọng âm rơi vào âm nào dựa trên vị trí dấu ˈ
             int stressPos = Math.max(ipa.indexOf("ˈ"), ipa.indexOf("'"));
             if (stressPos > 2 && syllables.size() > 1) {
                 stressedIndex = Math.min(1, syllables.size() - 1);
@@ -1434,9 +1489,10 @@ public class HuongDanDocServiceImpl implements HuongDanDocService {
         for (int i = 0; i < syllables.size(); i++) {
             String syl = syllables.get(i);
             boolean stressed = (i == stressedIndex);
-            String boi = chuyenIpaSangBoiTiengViet(syl, syl);
-            String tts = taoTuDocChoSpeech(syl, syl);
-            result.add(new PhoneticSyllable(syl, syl, boi, tts, stressed));
+            String ipaSyl = (i == 0 && syllables.size() == 1 && !ipaClean.isEmpty()) ? ipaClean : syl;
+            String boi = chuyenIpaSangBoiTiengViet(ipaSyl, syl);
+            String tts = taoTuDocChoSpeech(ipaSyl, syl);
+            result.add(new PhoneticSyllable(syl, ipaSyl, boi, tts, stressed));
         }
 
         return result;
@@ -1549,6 +1605,9 @@ public class HuongDanDocServiceImpl implements HuongDanDocService {
         String en = enSyl.toLowerCase().trim();
 
         // 0. Nhận diện các từ vựng thường gặp từ ảnh mẫu
+        if (en.equals("world") || s.contains("wɜːld") || s.contains("wɝld")) return "quớt -đ";
+        if (en.equals("word") || s.contains("wɜːd") || s.contains("wɝd")) return "quớt -đ";
+        if (en.equals("work") || s.contains("wɜːk") || s.contains("wɝk")) return "quớc";
         if (en.equals("head") || s.equals("hed")) return "hét";
         if (en.equals("hair") || s.startsWith("heə")) return "he";
         if (en.equals("face") || s.equals("feɪs")) return "phây-x";

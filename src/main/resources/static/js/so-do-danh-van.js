@@ -490,20 +490,59 @@
         if (btnPrev) btnPrev.disabled = (currIdx <= 0);
         if (btnNext) btnNext.disabled = (currIdx === -1 || currIdx >= danhSachAmNhomHienTai.length - 1);
 
-        // Render danh sách các từ ví dụ tiêu biểu (Book Examples Grid)
+        // Render danh sách các từ ví dụ tiêu biểu (ngẫu nhiên 8 từ mỗi lần vào)
+        render8TuViDu(ql, false);
+
+        // Render thanh chuyển nhanh các âm khác trong cùng nhóm
+        renderQuickSoundsList(ql);
+    }
+
+    let danhSachTu8TuHienThi = [];
+
+    function lay8TuNgauNhien(ds) {
+        if (!ds || ds.length <= 8) return ds ? [...ds] : [];
+        const shuffled = [...ds].sort(function () { return 0.5 - Math.random(); });
+        return shuffled.slice(0, 8);
+    }
+
+    window.doi8TuNgauNhien = function () {
+        if (!quyLuatHienTai || !quyLuatHienTai.danhSachTu || quyLuatHienTai.danhSachTu.length === 0) return;
+        render8TuViDu(quyLuatHienTai, true);
+    };
+
+    function render8TuViDu(ql, isShuffle) {
         const grid = document.getElementById("bookExamplesGrid");
-        const dsTu = ql.danhSachTu || [];
-        if (elCount) elCount.textContent = dsTu.length;
+        const elCount = document.getElementById("lblExampleCount");
+        const btnRefresh = document.getElementById("btnRefreshWords");
+        const dsGoc = ql.danhSachTu || [];
+
+        // Mỗi lần vào hoặc bấm đổi từ -> Lấy ngẫu nhiên 8 từ khác nhau
+        danhSachTu8TuHienThi = lay8TuNgauNhien(dsGoc);
+
+        if (elCount) {
+            if (dsGoc.length > 8) {
+                elCount.textContent = danhSachTu8TuHienThi.length + " / " + dsGoc.length;
+            } else {
+                elCount.textContent = danhSachTu8TuHienThi.length;
+            }
+        }
+
+        if (btnRefresh) {
+            btnRefresh.style.display = (dsGoc.length > 8) ? "inline-flex" : "none";
+        }
 
         if (grid) {
             grid.innerHTML = "";
 
-            if (dsTu.length === 0) {
+            if (danhSachTu8TuHienThi.length === 0) {
                 grid.innerHTML = '<div class="col-12 text-center text-muted py-4">Đang cập nhật các từ ví dụ cho quy luật này...</div>';
             } else {
-                dsTu.forEach(function (t) {
+                danhSachTu8TuHienThi.forEach(function (t) {
                     const card = document.createElement("div");
                     card.className = "sd-book-word-card";
+                    if (isShuffle) {
+                        card.style.animation = "fadeIn 0.3s ease";
+                    }
                     card.setAttribute("data-tu", t.tu);
 
                     const wordHtml = taoChuHighlight(t.tu, t.phanHighlight || ql.cumChu);
@@ -522,7 +561,7 @@
                             <button type="button" class="btn-bwc-audio" title="Nghe phát âm từ này" onclick="event.stopPropagation(); clickPhatAmTu('${t.tu}', '${t.audioUrl || ''}', this.closest('.sd-book-word-card'))">
                                 🔊 Nghe đọc
                             </button>
-                            <button type="button" class="btn-bwc-spell" title="Xem thầy ảo đánh vần từng âm như tiếng Việt" onclick="event.stopPropagation(); moHuongDanTu('${t.tu}', '${t.phienAm || ''}', '${t.nghia || ''}', this)">
+                            <button type="button" class="btn-bwc-spell" title="Xem hướng dẫn đánh vần từng âm như tiếng Việt" onclick="event.stopPropagation(); moHuongDanTu('${t.tu}', '${t.phienAm || ''}', '${t.nghia || ''}', this)">
                                 🗣️ Đánh vần
                             </button>
                         </div>
@@ -537,9 +576,6 @@
                 });
             }
         }
-
-        // Render thanh chuyển nhanh các âm khác trong cùng nhóm
-        renderQuickSoundsList(ql);
     }
 
     // Render danh sách chip chuyển nhanh âm trong nhóm

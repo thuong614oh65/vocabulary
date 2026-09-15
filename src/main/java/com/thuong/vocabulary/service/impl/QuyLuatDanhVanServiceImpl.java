@@ -179,7 +179,20 @@ public class QuyLuatDanhVanServiceImpl implements QuyLuatDanhVanService {
                         new TuMinhHoaDTO("worthy", "wor", "/ˈwɜː.ði/", "ɜː", "xứng đáng", "🏆", "/audio/tts?text=worthy"),
                         new TuMinhHoaDTO("worse", "wor", "/wɜːs/", "ɜː", "tệ hơn, xấu hơn", "📉", "/audio/tts?text=worse"),
                         new TuMinhHoaDTO("worm", "wor", "/wɜːm/", "ɜː", "con giun, sâu", "🐛", "/audio/tts?text=worm"),
-                        new TuMinhHoaDTO("workplace", "wor", "/ˈwɜːk.pleɪs/", "ɜː", "nơi làm việc", "🏢", "/audio/tts?text=workplace")
+                        new TuMinhHoaDTO("workplace", "wor", "/ˈwɜːk.pleɪs/", "ɜː", "nơi làm việc", "🏢", "/audio/tts?text=workplace"),
+                        new TuMinhHoaDTO("worker", "wor", "/ˈwɜː.kər/", "ɜː", "người lao động, công nhân", "👷", "/audio/tts?text=worker"),
+                        new TuMinhHoaDTO("workshop", "wor", "/ˈwɜːk.ʃɒp/", "ɜː", "hội thảo, xưởng làm việc", "🛠️", "/audio/tts?text=workshop"),
+                        new TuMinhHoaDTO("workbook", "wor", "/ˈwɜːk.bʊk/", "ɜː", "sách bài tập rèn luyện", "📘", "/audio/tts?text=workbook"),
+                        new TuMinhHoaDTO("workout", "wor", "/ˈwɜːk.aʊt/", "ɜː", "tập thể dục, rèn thể lực", "🏋️", "/audio/tts?text=workout"),
+                        new TuMinhHoaDTO("worst", "wor", "/wɜːst/", "ɜː", "tồi tệ nhất, xấu nhất", "👎", "/audio/tts?text=worst"),
+                        new TuMinhHoaDTO("worth", "wor", "/wɜːθ/", "ɜː", "đáng giá, giá trị", "💎", "/audio/tts?text=worth"),
+                        new TuMinhHoaDTO("worthless", "wor", "/ˈwɜːθ.ləs/", "ɜː", "vô giá trị, không ích lợi", "🗑️", "/audio/tts?text=worthless"),
+                        new TuMinhHoaDTO("wording", "wor", "/ˈwɜː.dɪŋ/", "ɜː", "cách dùng từ, lời văn", "✍️", "/audio/tts?text=wording"),
+                        new TuMinhHoaDTO("homework", "wor", "/ˈhəʊm.wɜːk/", "ɜː", "bài tập về nhà", "🏠", "/audio/tts?text=homework"),
+                        new TuMinhHoaDTO("teamwork", "wor", "/ˈtiːm.wɜːk/", "ɜː", "tinh thần làm việc nhóm", "🤝", "/audio/tts?text=teamwork"),
+                        new TuMinhHoaDTO("network", "wor", "/ˈnet.wɜːk/", "ɜː", "mạng lưới, kết nối", "🌐", "/audio/tts?text=network"),
+                        new TuMinhHoaDTO("artwork", "wor", "/ˈɑːt.wɜːk/", "ɜː", "tác phẩm nghệ thuật", "🎨", "/audio/tts?text=artwork"),
+                        new TuMinhHoaDTO("framework", "wor", "/ˈfreɪm.wɜːk/", "ɜː", "khung sườn, khuôn khổ", "🏗️", "/audio/tts?text=framework")
                 )
         ));
 
@@ -197,7 +210,15 @@ public class QuyLuatDanhVanServiceImpl implements QuyLuatDanhVanService {
                         new TuMinhHoaDTO("farm", "ar", "/fɑːm/", "ɑː", "nông trại, trang trại", "🚜", "/audio/tts?text=farm"),
                         new TuMinhHoaDTO("hard", "ar", "/hɑːd/", "ɑː", "chăm chỉ, khó khăn", "💪", "/audio/tts?text=hard"),
                         new TuMinhHoaDTO("card", "ar", "/kɑːd/", "ɑː", "thẻ, thiệp, quân bài", "💳", "/audio/tts?text=card"),
-                        new TuMinhHoaDTO("smart", "ar", "/smɑːt/", "ɑː", "thông minh, nhanh nhạy", "🧠", "/audio/tts?text=smart")
+                        new TuMinhHoaDTO("smart", "ar", "/smɑːt/", "ɑː", "thông minh, nhanh nhạy", "🧠", "/audio/tts?text=smart"),
+                        new TuMinhHoaDTO("market", "ar", "/ˈmɑː.kɪt/", "ɑː", "chợ, thị trường", "🛒", "/audio/tts?text=market"),
+                        new TuMinhHoaDTO("party", "ar", "/ˈpɑː.ti/", "ɑː", "bữa tiệc, buổi liên hoan", "🎈", "/audio/tts?text=party"),
+                        new TuMinhHoaDTO("garden", "ar", "/ˈɡɑː.dən/", "ɑː", "khu vườn xanh mát", "🌻", "/audio/tts?text=garden"),
+                        new TuMinhHoaDTO("artist", "ar", "/ˈɑː.tɪst/", "ɑː", "họa sĩ, nghệ sĩ", "🎨", "/audio/tts?text=artist"),
+                        new TuMinhHoaDTO("army", "ar", "/ˈɑː.mi/", "ɑː", "quân đội, lực lượng", "🪖", "/audio/tts?text=army"),
+                        new TuMinhHoaDTO("arm", "ar", "/ɑːm/", "ɑː", "cánh tay khỏe khoắn", "💪", "/audio/tts?text=arm"),
+                        new TuMinhHoaDTO("start", "ar", "/stɑːt/", "ɑː", "bắt đầu, khởi động", "🏁", "/audio/tts?text=start"),
+                        new TuMinhHoaDTO("target", "ar", "/ˈtɑː.ɡɪt/", "ɑː", "mục tiêu, bia ngắm", "🎯", "/audio/tts?text=target")
                 )
         ));
 
@@ -215,7 +236,13 @@ public class QuyLuatDanhVanServiceImpl implements QuyLuatDanhVanService {
                         new TuMinhHoaDTO("short", "or", "/ʃɔːt/", "ɔː", "ngắn, thấp", "📏", "/audio/tts?text=short"),
                         new TuMinhHoaDTO("north", "or", "/nɔːθ/", "ɔː", "hướng bắc", "🧭", "/audio/tts?text=north"),
                         new TuMinhHoaDTO("port", "or", "/pɔːt/", "ɔː", "cảng biển, cổng", "⚓", "/audio/tts?text=port"),
-                        new TuMinhHoaDTO("corner", "or", "/ˈkɔː.nər/", "ɔː", "góc phố, góc phòng", "📐", "/audio/tts?text=corner")
+                        new TuMinhHoaDTO("corner", "or", "/ˈkɔː.nər/", "ɔː", "góc phố, góc phòng", "📐", "/audio/tts?text=corner"),
+                        new TuMinhHoaDTO("morning", "or", "/ˈmɔː.nɪŋ/", "ɔː", "buổi sáng trong lành", "🌅", "/audio/tts?text=morning"),
+                        new TuMinhHoaDTO("sport", "or", "/spɔːt/", "ɔː", "thể thao, vận động", "⚽", "/audio/tts?text=sport"),
+                        new TuMinhHoaDTO("order", "or", "/ˈɔː.dər/", "ɔː", "đặt hàng, thứ tự", "📦", "/audio/tts?text=order"),
+                        new TuMinhHoaDTO("forest", "or", "/ˈfɒr.ɪst/", "ɔː", "khu rừng rậm rạp", "🌲", "/audio/tts?text=forest"),
+                        new TuMinhHoaDTO("report", "or", "/rɪˈpɔːt/", "ɔː", "báo cáo, thông báo", "📊", "/audio/tts?text=report"),
+                        new TuMinhHoaDTO("important", "or", "/ɪmˈpɔː.tənt/", "ɔː", "quan trọng, cốt yếu", "⭐", "/audio/tts?text=important")
                 )
         ));
 
@@ -233,7 +260,15 @@ public class QuyLuatDanhVanServiceImpl implements QuyLuatDanhVanService {
                         new TuMinhHoaDTO("turn", "ur", "/tɜːn/", "ɜː", "quay, xoay vòng", "🔄", "/audio/tts?text=turn"),
                         new TuMinhHoaDTO("burn", "ur", "/bɜːn/", "ɜː", "đốt cháy, ngọn lửa", "🔥", "/audio/tts?text=burn"),
                         new TuMinhHoaDTO("hurt", "ur", "/hɜːt/", "ɜː", "làm đau, tổn thương", "🩹", "/audio/tts?text=hurt"),
-                        new TuMinhHoaDTO("nurse", "ur", "/nɜːs/", "ɜː", "y tá chăm sóc", "🩺", "/audio/tts?text=nurse")
+                        new TuMinhHoaDTO("nurse", "ur", "/nɜːs/", "ɜː", "y tá chăm sóc", "🩺", "/audio/tts?text=nurse"),
+                        new TuMinhHoaDTO("person", "er", "/ˈpɜː.sən/", "ɜː", "con người, một người", "👤", "/audio/tts?text=person"),
+                        new TuMinhHoaDTO("service", "er", "/ˈsɜː.vɪs/", "ɜː", "dịch vụ phục vụ", "🛎️", "/audio/tts?text=service"),
+                        new TuMinhHoaDTO("perfect", "er", "/ˈpɜː.fɪkt/", "ɜː", "hoàn hảo, tuyệt vời", "👌", "/audio/tts?text=perfect"),
+                        new TuMinhHoaDTO("circle", "ir", "/ˈsɜː.kəl/", "ɜː", "hình tròn, vòng cung", "⭕", "/audio/tts?text=circle"),
+                        new TuMinhHoaDTO("first", "ir", "/fɜːst/", "ɜː", "đầu tiên, hạng nhất", "🥇", "/audio/tts?text=first"),
+                        new TuMinhHoaDTO("purple", "ur", "/ˈpɜː.pəl/", "ɜː", "màu tím thủy chung", "💜", "/audio/tts?text=purple"),
+                        new TuMinhHoaDTO("turtle", "ur", "/ˈtɜː.təl/", "ɜː", "con rùa chậm rãi", "🐢", "/audio/tts?text=turtle"),
+                        new TuMinhHoaDTO("burger", "ur", "/ˈbɜː.ɡər/", "ɜː", "bánh mì kẹp thịt", "🍔", "/audio/tts?text=burger")
                 )
         ));
 
@@ -251,7 +286,12 @@ public class QuyLuatDanhVanServiceImpl implements QuyLuatDanhVanService {
                         new TuMinhHoaDTO("wall", "all", "/wɔːl/", "ɔːl", "bức tường thành", "🧱", "/audio/tts?text=wall"),
                         new TuMinhHoaDTO("small", "all", "/smɔːl/", "ɔːl", "nhỏ bé", "🤏", "/audio/tts?text=small"),
                         new TuMinhHoaDTO("salt", "al", "/sɔːlt/", "ɔːl", "muối ăn", "🧂", "/audio/tts?text=salt"),
-                        new TuMinhHoaDTO("talk", "al", "/tɔːk/", "ɔː", "nói chuyện, trò chuyện", "🗣️", "/audio/tts?text=talk")
+                        new TuMinhHoaDTO("talk", "al", "/tɔːk/", "ɔː", "nói chuyện, trò chuyện", "🗣️", "/audio/tts?text=talk"),
+                        new TuMinhHoaDTO("mall", "all", "/mɔːl/", "ɔːl", "trung tâm mua sắm", "🛍️", "/audio/tts?text=mall"),
+                        new TuMinhHoaDTO("walk", "al", "/wɔːk/", "ɔːl", "đi bộ, tản bộ", "🚶", "/audio/tts?text=walk"),
+                        new TuMinhHoaDTO("always", "al", "/ˈɔːl.weɪz/", "ɔːl", "luôn luôn, mãi mãi", "⏰", "/audio/tts?text=always"),
+                        new TuMinhHoaDTO("also", "al", "/ˈɔːl.səʊ/", "ɔːl", "cũng vậy, ngoài ra", "➕", "/audio/tts?text=also"),
+                        new TuMinhHoaDTO("almost", "al", "/ˈɔːl.məʊst/", "ɔːl", "gần như, hầu như", "⏳", "/audio/tts?text=almost")
                 )
         ));
 
@@ -290,7 +330,12 @@ public class QuyLuatDanhVanServiceImpl implements QuyLuatDanhVanService {
                         new TuMinhHoaDTO("justify", "fy", "/ˈdʒʌs.tɪ.faɪ/", "aɪ", "biện minh, chứng minh", "⚖️", "/audio/tts?text=justify"),
                         new TuMinhHoaDTO("identify", "fy", "/aɪˈden.tɪ.faɪ/", "aɪ", "nhận diện, xác định", "🔍", "/audio/tts?text=identify"),
                         new TuMinhHoaDTO("satisfy", "fy", "/ˈsæt.ɪs.faɪ/", "aɪ", "làm hài lòng, thỏa mãn", "😊", "/audio/tts?text=satisfy"),
-                        new TuMinhHoaDTO("clarify", "fy", "/ˈklær.ɪ.faɪ/", "aɪ", "làm rõ, giải thích rõ", "🔎", "/audio/tts?text=clarify")
+                        new TuMinhHoaDTO("clarify", "fy", "/ˈklær.ɪ.faɪ/", "aɪ", "làm rõ, giải thích rõ", "🔎", "/audio/tts?text=clarify"),
+                        new TuMinhHoaDTO("specify", "fy", "/ˈspes.ɪ.faɪ/", "aɪ", "chỉ rõ, ghi rõ chi tiết", "📋", "/audio/tts?text=specify"),
+                        new TuMinhHoaDTO("verify", "fy", "/ˈver.ɪ.faɪ/", "aɪ", "xác thực, chứng thực", "✅", "/audio/tts?text=verify"),
+                        new TuMinhHoaDTO("amplify", "fy", "/ˈæm.plɪ.faɪ/", "aɪ", "khuếch đại, mở rộng", "📢", "/audio/tts?text=amplify"),
+                        new TuMinhHoaDTO("magnify", "fy", "/ˈmæɡ.nɪ.faɪ/", "aɪ", "phóng to qua kính lúp", "🔬", "/audio/tts?text=magnify"),
+                        new TuMinhHoaDTO("beautify", "fy", "/ˈbjuː.tɪ.faɪ/", "aɪ", "làm đẹp, trang hoàng", "💄", "/audio/tts?text=beautify")
                 )
         ));
 
@@ -311,7 +356,13 @@ public class QuyLuatDanhVanServiceImpl implements QuyLuatDanhVanService {
                         new TuMinhHoaDTO("castle", "le", "/ˈkɑː.səl/", "əl", "lâu đài nguy nga", "🏰", "/audio/tts?text=castle"),
                         new TuMinhHoaDTO("circle", "le", "/ˈsɜː.kəl/", "əl", "hình tròn, vòng tròn", "⭕", "/audio/tts?text=circle"),
                         new TuMinhHoaDTO("double", "le", "/ˈdʌ.bəl/", "əl", "gấp đôi, nhân đôi", "👥", "/audio/tts?text=double"),
-                        new TuMinhHoaDTO("handle", "le", "/ˈhæn.dəl/", "əl", "xử lý, tay cầm", "🎛️", "/audio/tts?text=handle")
+                        new TuMinhHoaDTO("handle", "le", "/ˈhæn.dəl/", "əl", "xử lý, tay cầm", "🎛️", "/audio/tts?text=handle"),
+                        new TuMinhHoaDTO("uncle", "cle", "/ˈʌŋ.kəl/", "əl", "chú, bác, cậu", "👨", "/audio/tts?text=uncle"),
+                        new TuMinhHoaDTO("noodle", "dle", "/ˈnuː.dəl/", "əl", "mì sợi, phở", "🍜", "/audio/tts?text=noodle"),
+                        new TuMinhHoaDTO("sample", "ple", "/ˈsɑːm.pəl/", "əl", "mẫu vật, hàng mẫu", "🧪", "/audio/tts?text=sample"),
+                        new TuMinhHoaDTO("gentle", "tle", "/ˈdʒen.təl/", "əl", "nhẹ nhàng, hòa nhã", "🕊️", "/audio/tts?text=gentle"),
+                        new TuMinhHoaDTO("jungle", "gle", "/ˈdʒʌŋ.ɡəl/", "əl", "rừng rậm nhiệt đới", "🌴", "/audio/tts?text=jungle"),
+                        new TuMinhHoaDTO("trouble", "ble", "/ˈtrʌb.əl/", "əl", "rắc rối, phiền toái", "⚠️", "/audio/tts?text=trouble")
                 )
         ));
 
@@ -347,7 +398,12 @@ public class QuyLuatDanhVanServiceImpl implements QuyLuatDanhVanService {
                         new TuMinhHoaDTO("vision", "sion", "/ˈvɪʒ.n/", "ʒn", "tầm nhìn, thị giác", "👁️", "/audio/tts?text=vision"),
                         new TuMinhHoaDTO("decision", "sion", "/dɪˈsɪʒ.n/", "ʒn", "quyết định quan trọng", "⚖️", "/audio/tts?text=decision"),
                         new TuMinhHoaDTO("television", "sion", "/ˈtel.ɪ.vɪʒ.n/", "ʒn", "ti vi, truyền hình", "📺", "/audio/tts?text=television"),
-                        new TuMinhHoaDTO("conclusion", "sion", "/kənˈkluː.ʒn/", "ʒn", "kết luận, tổng kết", "🏁", "/audio/tts?text=conclusion")
+                        new TuMinhHoaDTO("conclusion", "sion", "/kənˈkluː.ʒn/", "ʒn", "kết luận, tổng kết", "🏁", "/audio/tts?text=conclusion"),
+                        new TuMinhHoaDTO("question", "tion", "/ˈkwes.tʃən/", "ʃn", "câu hỏi, nghi vấn", "❓", "/audio/tts?text=question"),
+                        new TuMinhHoaDTO("direction", "tion", "/daɪˈrek.ʃən/", "ʃn", "phương hướng, chỉ đạo", "🧭", "/audio/tts?text=direction"),
+                        new TuMinhHoaDTO("condition", "tion", "/kənˈdɪʃ.ən/", "ʃn", "điều kiện, trạng thái", "📑", "/audio/tts?text=condition"),
+                        new TuMinhHoaDTO("position", "tion", "/pəˈzɪʃ.ən/", "ʃn", "vị trí, tư thế", "📍", "/audio/tts?text=position"),
+                        new TuMinhHoaDTO("mission", "sion", "/ˈmɪʃ.ən/", "ʃn", "nhiệm vụ, sứ mệnh", "🚀", "/audio/tts?text=mission")
                 )
         ));
 
