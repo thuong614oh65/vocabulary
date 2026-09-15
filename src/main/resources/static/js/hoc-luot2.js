@@ -280,3 +280,22 @@ function dungHoc() {
     dungTatCaAmThanh();
     window.location = "/hoc/dung";
 }
+
+// =========================================================
+// LUYỆN PHẢN XẠ VỚI TỪ ĐANG HỌC
+// =========================================================
+
+function luyenPhanXaDangHoc() {
+    dungTatCaAmThanh();
+    window.location = "/luyen-phan-xa?kieuHoc=DANG_HOC";
+}
+
+
+// =========================================================
+// TIẾP TỤC HỌC LẠI VỚI TỪ ĐANG HỌC (XÁO TRỘN VÀ LẶP)
+// =========================================================
+
+function tiepTucHocVoiTuDangHoc() {
+    dungTatCaAmThanh();
+    window.location = "/hoc/tiep";
+}

@@ -128,6 +128,58 @@ public class HuongDanDocServiceImpl implements HuongDanDocService {
             dto.setAmTiet(cleanedEn);
         }
 
+        // 5b. Chuẩn hóa căn chỉnh ngữ âm giữa các âm tiết (tránh lỗi chữ một đằng bồi một nẻo)
+        if (dto.getAmTiet() != null && dto.getAmTietBoi() != null) {
+            List<String> enList = dto.getAmTiet();
+            List<String> boiList = new ArrayList<>(dto.getAmTietBoi());
+            List<String> ipaList = (dto.getAmTietIpa() != null) ? new ArrayList<>(dto.getAmTietIpa()) : new ArrayList<>();
+            boolean coThayDoi = false;
+
+            for (int i = 0; i < enList.size(); i++) {
+                String at = enList.get(i).toLowerCase().trim();
+                // Sửa lỗi đuôi "ty" bồi thành "thị"
+                if (at.equals("ty") && i < boiList.size() && (boiList.get(i).toLowerCase().contains("thị") || boiList.get(i).toLowerCase().contains("thi"))) {
+                    boiList.set(i, "ti");
+                    coThayDoi = true;
+                }
+                // Sửa lỗi "i" bị bồi thành "lị"
+                if (at.equals("i") && i < boiList.size() && boiList.get(i).toLowerCase().contains("lị")) {
+                    boiList.set(i, "i");
+                    coThayDoi = true;
+                }
+                // Sửa lỗi "a" bị bồi thành "tạ"
+                if (at.equals("a") && i < boiList.size() && boiList.get(i).toLowerCase().contains("tạ")) {
+                    boiList.set(i, "ơ");
+                    coThayDoi = true;
+                }
+                // Sửa lỗi "ac" bị bồi thành "ờk" hoặc IPA là "ʌk"
+                if (at.equals("ac") && i < boiList.size()) {
+                    if (boiList.get(i).toLowerCase().contains("ờk") || boiList.get(i).toLowerCase().contains("ác")) {
+                        boiList.set(i, "ờ");
+                        coThayDoi = true;
+                    }
+                    if (i < ipaList.size() && (ipaList.get(i).contains("ʌk") || ipaList.get(i).contains("ək"))) {
+                        ipaList.set(i, "ə");
+                        coThayDoi = true;
+                    }
+                }
+                // Sửa lỗi "coun" / "count" bị mất âm /k/
+                if ((at.equals("coun") || at.equals("count")) && i < ipaList.size()) {
+                    String ipaPart = ipaList.get(i);
+                    if (ipaPart.startsWith("aʊn") || ipaPart.startsWith("'aʊn") || ipaPart.startsWith("ˈaʊn")) {
+                        ipaList.set(i, "ˌkaʊn");
+                        coThayDoi = true;
+                    }
+                }
+            }
+
+            if (coThayDoi) {
+                dto.setAmTietBoi(boiList);
+                dto.setAmTietIpa(ipaList);
+                dto.setPhienAmTiengViet(String.join(" - ", boiList));
+            }
+        }
+
         // 6. Bổ sung các bước đánh vần ghép âm theo phương pháp tiếng Việt (u-y-a uya, khờ-uya khuya)
         if (dto.getCacBuocDanhVan() == null || dto.getCacBuocDanhVan().isEmpty()) {
             dto.setCacBuocDanhVan(taoCacBuocDanhVan(dto));
@@ -202,7 +254,25 @@ public class HuongDanDocServiceImpl implements HuongDanDocService {
                     "sờ + n ➔ sần", "shun", "Quy tắc: Đuôi -tion luôn đọc là /ʃn/ (sần)!", false);
         }
 
-        // 5. Tách Onset, Nucleus, Coda tổng quát từ chuỗi IPA và mặt chữ
+        // 5. Trường hợp "ac" ở đầu từ (tiền tố ac- như account, accountability, accept)
+        if (en.equals("ac")) {
+            return new BuocDanhVanDTO(enSyl, "/ə/", "∅", "không có", "/ə/", "ơ (lướt nhẹ)", "∅", "không có", "/ə/",
+                    "ơ (lướt nhẹ) ➔ ờ", "uh", "Quy tắc: Chữ 'c' đầu là âm câm, 'ac-' đọc lướt nhẹ là /ə/ (ờ)!", false);
+        }
+
+        // 6. Trường hợp "coun" / "count"
+        if (en.equals("coun")) {
+            return new BuocDanhVanDTO(enSyl, "/kaʊn/", "/k/", "cờ", "/aʊ/", "ao", "/n/", "áp lưỡi n", "/aʊn/",
+                    "cờ + ao + n ➔ cao-n", "count", "Chữ 'c' phát âm là /k/, 'ou' đọc là /aʊ/!", isStressed);
+        }
+
+        // 7. Trường hợp đuôi "ty" ở cuối từ
+        if (en.equals("ty")) {
+            return new BuocDanhVanDTO(enSyl, "/ti/", "/t/", "tờ", "/i/", "i", "∅", "không có", "/ti/",
+                    "tờ + i ➔ ti", "tea", "Hậu tố [-ty] luôn đọc là /ti/ (ti)!", false);
+        }
+
+        // 8. Tách Onset, Nucleus, Coda tổng quát từ chuỗi IPA và mặt chữ
         String[] onsetArr = {"tʃ", "dʒ", "kr", "tr", "pr", "dr", "sk", "sp", "st", "pl", "bl", "kl", "fl", "ʃ", "ʒ", "θ", "ð", "b", "d", "f", "ɡ", "g", "h", "k", "l", "m", "n", "p", "r", "s", "t", "v", "w", "z", "j"};
         String[] vowelArr = {"eɪ", "aɪ", "ɔɪ", "oʊ", "əʊ", "aʊ", "ɪə", "eə", "ʊə", "iː", "uː", "ɑː", "ɔː", "ɜː", "ɪ", "e", "æ", "ɒ", "ʊ", "ʌ", "ə", "a", "i", "u", "o"};
         String[] codaArr  = {"tʃ", "dʒ", "ʃ", "θ", "ð", "ŋ", "t", "d", "k", "ɡ", "g", "p", "b", "s", "z", "m", "n", "l", "r"};
@@ -510,6 +580,17 @@ public class HuongDanDocServiceImpl implements HuongDanDocService {
                 10. 'amDuoi': Nhắc nhở âm đuôi quan trọng (như /dʒ/, /s/, /t/, /d/, /k/...).
                 11. 'loiThuongGap': Lỗi người Việt thường phát âm sai ở từ này.
                 12. 'meoGhiNho': Mẹo nhớ vui và trực quan.
+                13. NGUYÊN TẮC CĂN CHỈNH ĐỒNG BỘ 100% GIỮA MẶT CHỮ (amTiet) - PHIÊN ÂM (amTietIpa) - BỒI TIẾNG VIỆT (amTietBoi):
+                   - Mảng 'amTiet' khi nối lại BẮT BUỘC phải tạo thành đúng từ tiếng Anh gốc.
+                   - MỖI ÂM TIẾT trong 'amTiet', 'amTietIpa' và 'amTietBoi' PHẢI KHỚP NHAU CHÍNH XÁC VỀ MẶT NGỮ ÂM:
+                     + Không được đẩy phụ âm đầu của âm sau sang âm trước:
+                       Ví dụ từ 'accountability': 'ac' đọc /ə/ (ờ), chữ 'c' đầu là âm câm, phụ âm /k/ thuộc về 'coun' (/kaʊn/). Tuyệt đối không được gán /k/ vào 'ac' thành /ʌk/ ('ờk')!
+                       Cụ thể chuẩn xác:
+                       * amTiet: ["ac", "coun", "ta", "bil", "i", "ty"]
+                       * amTietIpa: ["ə", "ˌkaʊn", "tə", "ˈbɪl", "ə", "ti"]
+                       * amTietBoi: ["ờ", "cao-n", "tờ", "BÍL", "i", "ti"]
+                       * amTietDoc: ["uh", "count", "tuh", "bill", "ih", "tea"]
+                     + Tuyệt đối không để mặt chữ một đằng, phiên âm một nẻo (như chữ 'a' mà bồi 'tạ', chữ 'i' mà bồi 'lị', chữ 'ty' mà bồi 'thị'). Hậu tố '-ty' luôn đọc là /ti/ (ti)!
 
                 CHỈ TRẢ VỀ DUY NHẤT 1 ĐỐI TƯỢNG JSON (KHÔNG KÈM MARKDOWN, KHÔNG GIẢI THÍCH):
                 {
@@ -556,7 +637,11 @@ public class HuongDanDocServiceImpl implements HuongDanDocService {
                 mau.getKhauHinh(),
                 mau.getAmDuoi(),
                 mau.getLoiThuongGap(),
-                mau.getMeoGhiNho()
+                mau.getMeoGhiNho(),
+                mau.getCacBuocDanhVan(),
+                mau.getQuyTacMatChu(),
+                mau.getMaQuyTacLienKet(),
+                mau.getTenQuyTacLienKet()
         );
     }
 
@@ -566,6 +651,147 @@ public class HuongDanDocServiceImpl implements HuongDanDocService {
     private static final Map<String, HuongDanDocDTO> TU_DIEN_BOI_CHUAN = new HashMap<>();
 
     static {
+        // --- ACCOUNTABILITY ---
+        List<BuocDanhVanDTO> buocAccountability = List.of(
+                new BuocDanhVanDTO(
+                        "ac", "/ə/", "∅", "không có",
+                        "/ə/", "ơ (lướt nhẹ)", "∅", "không có",
+                        "/ə/", "ơ (lướt nhẹ) ➔ ờ", "uh",
+                        "Quy tắc: Chữ 'c' đầu là âm câm, 'ac' đọc lướt nhẹ là /ə/ (ờ)!", false
+                ),
+                new BuocDanhVanDTO(
+                        "coun", "/ˌkaʊn/", "/k/", "cờ",
+                        "/aʊ/", "ao", "/n/", "áp lưỡi n",
+                        "/aʊn/", "cờ + ao + n ➔ cao-n", "count",
+                        "Quy tắc: Chữ 'c' thứ 2 đọc là /k/, 'ou' phát âm là /aʊ/!", false
+                ),
+                new BuocDanhVanDTO(
+                        "ta", "/tə/", "/t/", "tờ",
+                        "/ə/", "ơ (lướt nhẹ)", "∅", "không có",
+                        "/tə/", "tờ + ơ ➔ tờ", "tuh",
+                        "Âm yếu không mang trọng âm, đọc lướt nhanh /tə/.", false
+                ),
+                new BuocDanhVanDTO(
+                        "bil", "/ˈbɪl/", "/b/", "bờ",
+                        "/ɪ/", "i ngắn", "/l/", "uốn đầu lưỡi (-ờl)",
+                        "/ɪl/", "bờ + il ➔ BÍL (nhấn mạnh)", "bill",
+                        "⭐ Trọng âm chính của từ rơi vào 'BÍL' - đọc to, cao và rõ nhất!", true
+                ),
+                new BuocDanhVanDTO(
+                        "i", "/ə/", "∅", "không có",
+                        "/ə/", "ơ / i (lướt nhẹ)", "∅", "không có",
+                        "/ə/", "ơ / i ➔ i", "ih",
+                        "Âm yếu đọc lướt nhẹ mềm mại.", false
+                ),
+                new BuocDanhVanDTO(
+                        "ty", "/ti/", "/t/", "tờ",
+                        "/i/", "i", "∅", "không có",
+                        "/ti/", "tờ + i ➔ ti", "tea",
+                        "Hậu tố [-ty] luôn phát âm là /ti/ (ti)!", false
+                )
+        );
+
+        TU_DIEN_BOI_CHUAN.put("accountability", new HuongDanDocDTO(
+                "accountability", "/əˌkaʊn.təˈbɪl.ə.ti/", "trách nhiệm giải trình, tinh thần trách nhiệm",
+                List.of("ac", "coun", "ta", "bil", "i", "ty"),
+                List.of("ə", "ˌkaʊn", "tə", "ˈbɪl", "ə", "ti"),
+                List.of("ờ", "cao-n", "tờ", "BÍL", "i", "ti"),
+                List.of("uh", "count", "tuh", "bill", "ih", "tea"),
+                3, // amNhanIndex: 3 (bil mang trọng âm chính)
+                "ờ - cao-n - tờ - BÍL - i - ti",
+                "Trọng âm chính rơi vào âm 4 (BÍL) -> đọc to, cao và ngân rõ nhất: ờ - cao-n - tờ - BÍL - i - ti.",
+                "Khẩu hình: 'ac' lướt nhẹ 'ờ', 'coun' mở tròn môi trượt sang /aʊ/ khép răng /n/, 'ta' bật nhẹ đầu lưỡi /t/, 'bil' ngậm môi bật /b/ uốn đầu lưỡi chạm nướu /l/, 'i' thả lỏng môi, 'ty' bật /t/ cười mở khóe miệng /i/.",
+                "🔔 Chú ý âm /l/ ở đuôi 'bil': Uốn nhẹ đầu lưỡi chạm chân răng trên để âm 'BÍL' có độ vang tự nhiên.",
+                "Lỗi hay gặp: Người Việt hay đọc nhầm 'ac' thành 'ờk' (thực tế chữ 'c' đầu là âm câm, 'c' thứ 2 là /k/ thuộc về 'coun' -> /kaʊn/). Tránh đọc 'a-cao-ta-bi-li-ti' đều đều không có trọng âm!",
+                "Mẹo nhớ: 'Ờ! CÁO Nằm TỜ BÁO (BÍL) Y TÝ' -> accountability = tinh thần trách nhiệm giải trình!",
+                buocAccountability,
+                "Từ ghép đa âm tiết: 'ac' đọc /ə/, 'coun' đọc /kaʊn/, hậu tố '-ability' có trọng âm rơi vào 'bil' /bɪl/.",
+                "ability_suffix",
+                "Quy tắc hậu tố [-ability] ➔ trọng âm rơi vào [-bil-]"
+        ));
+
+        // --- ACCOUNTABLE ---
+        List<BuocDanhVanDTO> buocAccountable = List.of(
+                new BuocDanhVanDTO(
+                        "ac", "/ə/", "∅", "không có",
+                        "/ə/", "ơ (lướt nhẹ)", "∅", "không có",
+                        "/ə/", "ơ (lướt nhẹ) ➔ ờ", "uh",
+                        "Quy tắc: Chữ 'c' đầu là âm câm, 'ac' đọc lướt nhẹ là /ə/ (ờ)!", false
+                ),
+                new BuocDanhVanDTO(
+                        "coun", "/ˈkaʊn/", "/k/", "cờ",
+                        "/aʊ/", "ao", "/n/", "áp lưỡi n",
+                        "/aʊn/", "cờ + ao + n ➔ KAO-N (nhấn mạnh)", "count",
+                        "⭐ Trọng âm chính rơi vào 'coun' -> đọc to, cao và vang: KAO-N!", true
+                ),
+                new BuocDanhVanDTO(
+                        "ta", "/tə/", "/t/", "tờ",
+                        "/ə/", "ơ (lướt nhẹ)", "∅", "không có",
+                        "/tə/", "tờ + ơ ➔ tờ", "tuh",
+                        "Âm lướt nhẹ không nhấn trọng âm: /tə/.", false
+                ),
+                new BuocDanhVanDTO(
+                        "ble", "/bəl/", "/b/", "bờ",
+                        "/əl/", "ồ", "∅", "không có",
+                        "/bəl/", "bờ + ồ ➔ bồ", "bull",
+                        "Quy tắc: Phụ âm + [le] ở cuối từ đọc là /bəl/ (bồ)!", false
+                )
+        );
+
+        TU_DIEN_BOI_CHUAN.put("accountable", new HuongDanDocDTO(
+                "accountable", "/əˈkaʊn.tə.bəl/", "chịu trách nhiệm",
+                List.of("ac", "coun", "ta", "ble"),
+                List.of("ə", "ˈkaʊn", "tə", "bəl"),
+                List.of("ờ", "KAO-N", "tờ", "bồ"),
+                List.of("uh", "count", "tuh", "bull"),
+                1,
+                "ờ - KAO-N - tờ - bồ",
+                "Trọng âm chính rơi vào âm 2 (KAO-N) -> đọc to rõ: ờ - KAO-N - tờ - bồ.",
+                "Khẩu hình: 'ac' đọc lướt 'ờ', 'coun' mở tròn môi đọc /kaʊn/, 'ta' chạm đầu lưỡi đọc 'tờ', 'ble' ngậm môi bật 'bồ'.",
+                "🔔 Đuôi /bəl/: Khép môi bật /b/ và uốn lưỡi nhẹ /l/ (bồ).",
+                "Lỗi hay gặp: Tránh đọc 'ac' thành 'ác' hay 'ờk', chữ 'c' đầu là âm câm!",
+                "Mẹo nhớ: Nhận trách nhiệm thì 'Ờ! CÁO Nằm TỜ BÁO (bồ)!'",
+                buocAccountable,
+                "Hậu tố [-able] kết hợp với phụ âm trước đọc là /tə.bəl/.",
+                "able_suffix",
+                "Quy tắc hậu tố [-able] ➔ /ə.bəl/"
+        ));
+
+        // --- ACCOUNT ---
+        List<BuocDanhVanDTO> buocAccount = List.of(
+                new BuocDanhVanDTO(
+                        "ac", "/ə/", "∅", "không có",
+                        "/ə/", "ơ (lướt nhẹ)", "∅", "không có",
+                        "/ə/", "ơ (lướt nhẹ) ➔ ờ", "uh",
+                        "Quy tắc: Chữ 'c' đầu câm, 'ac' đọc lướt nhẹ là /ə/ (ờ)!", false
+                ),
+                new BuocDanhVanDTO(
+                        "count", "/ˈkaʊnt/", "/k/", "cờ",
+                        "/aʊ/", "ao", "/nt/", "bật âm nt",
+                        "/aʊnt/", "cờ + ao + n-t ➔ KAO-n-t (nhấn mạnh)", "count",
+                        "⭐ Trọng âm chính rơi vào 'count' -> đọc to rõ và bật nhẹ âm đuôi /t/: KAO-n-t!", true
+                )
+        );
+
+        TU_DIEN_BOI_CHUAN.put("account", new HuongDanDocDTO(
+                "account", "/əˈkaʊnt/", "tài khoản",
+                List.of("ac", "count"),
+                List.of("ə", "ˈkaʊnt"),
+                List.of("ờ", "KAO-n-t"),
+                List.of("uh", "count"),
+                1,
+                "ờ - KAO-n-t",
+                "Trọng âm chính rơi vào âm 2 (KAO-n-t) -> đọc to rõ: ờ - KAO-n-t.",
+                "Khẩu hình: 'ac' lướt nhẹ 'ờ', 'count' mở miệng tròn đọc /kaʊ/ rồi khép răng chặn nhẹ /nt/.",
+                "🔔 Âm đuôi /t/: Bật dứt khoát đầu lưỡi ở cuối từ.",
+                "Tránh đọc 'ác-cao' hay 'ờ-cao' bỏ quên âm đuôi /t/.",
+                "Mẹo nhớ: Mở tài khoản ngân hàng thì 'Ờ! CÁO Nằm Thơ'!",
+                buocAccount,
+                "Tiền tố 'ac-' là âm lướt /ə/, gốc từ 'count' mang trọng âm chính.",
+                "prefix_ac",
+                "Quy tắc tiền tố [ac-] ➔ /ə/"
+        ));
+
         // --- COMEDY ---
         TU_DIEN_BOI_CHUAN.put("comedy", new HuongDanDocDTO(
                 "comedy", "/ˈkɑː.mə.di/", "hài kịch, kịch vui",

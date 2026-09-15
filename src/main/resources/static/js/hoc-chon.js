@@ -690,3 +690,25 @@ function dungHoc() {
         "/hoc/dung";
 
 }
+
+
+// =========================================================
+// LUYỆN PHẢN XẠ VỚI TỪ ĐANG HỌC
+// =========================================================
+
+function luyenPhanXaDangHoc() {
+    soLanDoc++;
+    dungTatCaAmThanh();
+    window.location = "/luyen-phan-xa?kieuHoc=DANG_HOC";
+}
+
+
+// =========================================================
+// TIẾP TỤC HỌC LẠI VỚI TỪ ĐANG HỌC (XÁO TRỘN VÀ LẶP)
+// =========================================================
+
+function tiepTucHocVoiTuDangHoc() {
+    soLanDoc++;
+    dungTatCaAmThanh();
+    window.location = "/hoc/tiep";
+}
