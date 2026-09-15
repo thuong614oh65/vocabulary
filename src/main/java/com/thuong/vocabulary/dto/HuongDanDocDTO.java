@@ -18,6 +18,10 @@ public class HuongDanDocDTO {
     private String amDuoi;
     private String loiThuongGap;
     private String meoGhiNho;
+    private List<BuocDanhVanDTO> cacBuocDanhVan; // Các bước đánh vần ghép âm theo phong cách tiếng Việt
+    private String quyTacMatChu;                 // Giải thích quy tắc mặt chữ của từ (ví dụ: "[fy] ở cuối từ ➔ 'y' đọc là /aɪ/")
+    private String maQuyTacLienKet;              // Mã quy tắc liên kết sang Bảng quy tắc (ví dụ: "fy_end", "consonant_le")
+    private String tenQuyTacLienKet;             // Tên quy tắc liên kết hiển thị trên nút
 
     public HuongDanDocDTO() {
     }
@@ -45,6 +49,18 @@ public class HuongDanDocDTO {
         this.amDuoi = amDuoi;
         this.loiThuongGap = loiThuongGap;
         this.meoGhiNho = meoGhiNho;
+    }
+
+    public HuongDanDocDTO(String tu, String phienAm, String nghia, List<String> amTiet, List<String> amTietIpa,
+                          List<String> amTietBoi, List<String> amTietDoc, Integer amNhanIndex, String phienAmTiengViet,
+                          String trongAm, String khauHinh, String amDuoi, String loiThuongGap, String meoGhiNho,
+                          List<BuocDanhVanDTO> cacBuocDanhVan, String quyTacMatChu,
+                          String maQuyTacLienKet, String tenQuyTacLienKet) {
+        this(tu, phienAm, nghia, amTiet, amTietIpa, amTietBoi, amTietDoc, amNhanIndex, phienAmTiengViet, trongAm, khauHinh, amDuoi, loiThuongGap, meoGhiNho);
+        this.cacBuocDanhVan = cacBuocDanhVan;
+        this.quyTacMatChu = quyTacMatChu;
+        this.maQuyTacLienKet = maQuyTacLienKet;
+        this.tenQuyTacLienKet = tenQuyTacLienKet;
     }
 
     public String getTu() {
@@ -157,5 +173,37 @@ public class HuongDanDocDTO {
 
     public void setMeoGhiNho(String meoGhiNho) {
         this.meoGhiNho = meoGhiNho;
+    }
+
+    public List<BuocDanhVanDTO> getCacBuocDanhVan() {
+        return cacBuocDanhVan;
+    }
+
+    public void setCacBuocDanhVan(List<BuocDanhVanDTO> cacBuocDanhVan) {
+        this.cacBuocDanhVan = cacBuocDanhVan;
+    }
+
+    public String getQuyTacMatChu() {
+        return quyTacMatChu;
+    }
+
+    public void setQuyTacMatChu(String quyTacMatChu) {
+        this.quyTacMatChu = quyTacMatChu;
+    }
+
+    public String getMaQuyTacLienKet() {
+        return maQuyTacLienKet;
+    }
+
+    public void setMaQuyTacLienKet(String maQuyTacLienKet) {
+        this.maQuyTacLienKet = maQuyTacLienKet;
+    }
+
+    public String getTenQuyTacLienKet() {
+        return tenQuyTacLienKet;
+    }
+
+    public void setTenQuyTacLienKet(String tenQuyTacLienKet) {
+        this.tenQuyTacLienKet = tenQuyTacLienKet;
     }
 }

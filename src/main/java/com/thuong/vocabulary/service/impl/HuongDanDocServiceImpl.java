@@ -1,6 +1,7 @@
 package com.thuong.vocabulary.service.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.thuong.vocabulary.dto.BuocDanhVanDTO;
 import com.thuong.vocabulary.dto.HuongDanDocDTO;
 import com.thuong.vocabulary.service.GeminiService;
 import com.thuong.vocabulary.service.HuongDanDocService;
@@ -127,7 +128,333 @@ public class HuongDanDocServiceImpl implements HuongDanDocService {
             dto.setAmTiet(cleanedEn);
         }
 
+        // 6. Bổ sung các bước đánh vần ghép âm theo phương pháp tiếng Việt (u-y-a uya, khờ-uya khuya)
+        if (dto.getCacBuocDanhVan() == null || dto.getCacBuocDanhVan().isEmpty()) {
+            dto.setCacBuocDanhVan(taoCacBuocDanhVan(dto));
+        }
+
+        // 7. Bổ sung quy tắc mặt chữ và liên kết sang Sơ đồ quy luật đánh vần
+        if (dto.getMaQuyTacLienKet() == null || dto.getMaQuyTacLienKet().isBlank()) {
+            boSungQuyTacLienKet(dto);
+        }
+
         return dto;
+    }
+
+    // =========================================================================
+    // THUẬT TOÁN ĐÁNH VẦN GHÉP ÂM PHONICS NHƯ TIẾNG VIỆT (BLENDING)
+    // =========================================================================
+    private List<BuocDanhVanDTO> taoCacBuocDanhVan(HuongDanDocDTO dto) {
+        List<BuocDanhVanDTO> buocList = new ArrayList<>();
+        if (dto == null) return buocList;
+
+        String w = dto.getTu() != null ? dto.getTu().toLowerCase().trim() : "";
+        List<String> amTiets = dto.getAmTiet() != null ? dto.getAmTiet() : List.of(w);
+        List<String> ipas = dto.getAmTietIpa() != null ? dto.getAmTietIpa() : List.of("");
+        List<String> bois = dto.getAmTietBoi() != null ? dto.getAmTietBoi() : List.of(w);
+        int amNhan = dto.getAmNhanIndex() != null ? dto.getAmNhanIndex() : 0;
+
+        for (int i = 0; i < amTiets.size(); i++) {
+            String enSyl = amTiets.get(i);
+            String ipaSyl = i < ipas.size() ? ipas.get(i).replaceAll("[ˈˌ'/|\\[\\]]", "").trim() : "";
+            String boiSyl = i < bois.size() ? bois.get(i) : enSyl;
+            boolean isStressed = (i == amNhan);
+
+            buocList.add(phanTich1AmTietDanhVan(enSyl, ipaSyl, boiSyl, isStressed, w));
+        }
+
+        return buocList;
+    }
+
+    private BuocDanhVanDTO phanTich1AmTietDanhVan(String enSyl, String ipaSyl, String boiSyl, boolean isStressed, String fullWord) {
+        String en = enSyl.toLowerCase().trim();
+        String ipa = ipaSyl.toLowerCase().trim();
+        String boi = boiSyl.trim();
+
+        // 1. Trường hợp đặc biệt: từ HELLO
+        if (fullWord.equals("hello")) {
+            if (en.startsWith("hel") || en.equals("he")) {
+                return new BuocDanhVanDTO(enSyl, "/hə/", "/h/", "hờ", "/ə/", "ơ (lướt nhẹ)", "", "", "/hə/",
+                        "hờ + ơ ➔ hơ (hê)", "her", "Âm tiết 1 không mang trọng âm, đọc lướt nhẹ 'hê' hoặc 'hơ'.", false);
+            } else {
+                return new BuocDanhVanDTO(enSyl, "/loʊ/", "/l/", "lờ", "/oʊ/", "âu / ô", "", "", "/loʊ/",
+                        "lờ + âu ➔ LÔ (nhấn trọng âm)", "low", "Trọng âm chính rơi vào 'lo', đọc to, cao và ngân dài: LÔ!", true);
+            }
+        }
+
+        // 2. Trường hợp đuôi "le" (như table, apple, candle, bottle, simple...)
+        if (en.endsWith("le") && en.length() >= 2) {
+            String phuAm = en.length() > 2 ? en.substring(0, en.length() - 2) : (en.length() == 2 ? en.substring(0, 1) : "l");
+            String phuAmDoc = layDocPhuAmDau(phuAm);
+            return new BuocDanhVanDTO(enSyl, "/bəl/".replace("b", phuAm), "/" + phuAm + "/", phuAmDoc, "/əl/", "ờl / ồ", "", "", "/" + phuAm + "əl/",
+                    phuAmDoc + " + ồ ➔ " + boi, enSyl, "Quy tắc: Phụ âm + [le] ở cuối từ ➔ 'e' câm và 'le' đọc là /əl/ (như 'ồ')!", false);
+        }
+
+        // 3. Trường hợp đuôi "fy" (như modify, notify, qualify...)
+        if (en.endsWith("fy")) {
+            return new BuocDanhVanDTO(enSyl, "/faɪ/", "/f/", "phờ", "/aɪ/", "ai", "", "", "/faɪ/",
+                    "phờ + ai ➔ phai", "fie", "Quy tắc: Từ có đuôi [fy] ở cuối ➔ chữ 'y' luôn phát âm là /aɪ/ (ai)!", isStressed);
+        }
+
+        // 4. Trường hợp đuôi "tion" / "sion"
+        if (en.equals("tion") || en.equals("sion")) {
+            return new BuocDanhVanDTO(enSyl, "/ʃn/", "/ʃ/", "sờ (chu môi)", "/n/", "n", "", "", "/ʃn/",
+                    "sờ + n ➔ sần", "shun", "Quy tắc: Đuôi -tion luôn đọc là /ʃn/ (sần)!", false);
+        }
+
+        // 5. Tách Onset, Nucleus, Coda tổng quát từ chuỗi IPA và mặt chữ
+        String[] onsetArr = {"tʃ", "dʒ", "kr", "tr", "pr", "dr", "sk", "sp", "st", "pl", "bl", "kl", "fl", "ʃ", "ʒ", "θ", "ð", "b", "d", "f", "ɡ", "g", "h", "k", "l", "m", "n", "p", "r", "s", "t", "v", "w", "z", "j"};
+        String[] vowelArr = {"eɪ", "aɪ", "ɔɪ", "oʊ", "əʊ", "aʊ", "ɪə", "eə", "ʊə", "iː", "uː", "ɑː", "ɔː", "ɜː", "ɪ", "e", "æ", "ɒ", "ʊ", "ʌ", "ə", "a", "i", "u", "o"};
+        String[] codaArr  = {"tʃ", "dʒ", "ʃ", "θ", "ð", "ŋ", "t", "d", "k", "ɡ", "g", "p", "b", "s", "z", "m", "n", "l", "r"};
+
+        String onset = "";
+        String nucleus = "";
+        String coda = "";
+
+        String remIpa = ipa;
+
+        // Tìm Onset
+        for (String o : onsetArr) {
+            if (remIpa.startsWith(o)) {
+                onset = o;
+                remIpa = remIpa.substring(o.length());
+                break;
+            }
+        }
+
+        // Tìm Nucleus
+        for (String v : vowelArr) {
+            if (remIpa.startsWith(v)) {
+                nucleus = v;
+                remIpa = remIpa.substring(v.length());
+                break;
+            }
+        }
+
+        // Phần còn lại là Coda
+        if (!remIpa.isEmpty()) {
+            coda = remIpa;
+        }
+
+        // Chuyển sang tên đọc tiếng Việt
+        String onsetDoc = layDocPhuAmDau(onset);
+        String nucleusDoc = layDocNguyenAm(nucleus);
+        String codaDoc = layDocPhuAmCuoi(coda);
+
+        // Tạo vần ghép và chuỗi đánh vần
+        String vanGhep = "";
+        String cachDanhVan = "";
+
+        if (!coda.isEmpty()) {
+            vanGhep = "/" + nucleus + coda + "/";
+            String vanDoc = layDocVanGhep(nucleus, coda);
+            if (!onset.isEmpty()) {
+                cachDanhVan = onsetDoc + " + " + vanDoc + " ➔ " + (isStressed ? boi.toUpperCase() : boi.toLowerCase());
+            } else {
+                cachDanhVan = nucleusDoc + " + " + codaDoc + " ➔ " + boi;
+            }
+        } else {
+            if (!onset.isEmpty() && !nucleus.isEmpty()) {
+                vanGhep = "/" + onset + nucleus + "/";
+                cachDanhVan = onsetDoc + " + " + nucleusDoc + " ➔ " + (isStressed ? boi.toUpperCase() : boi.toLowerCase());
+            } else if (!nucleus.isEmpty()) {
+                vanGhep = "/" + nucleus + "/";
+                cachDanhVan = "Đọc nguyên âm: " + nucleusDoc + " ➔ " + boi;
+            } else {
+                cachDanhVan = "Phát âm dứt khoát: " + boi;
+            }
+        }
+
+        if (isStressed) {
+            cachDanhVan += " (nhấn trọng âm)";
+        }
+
+        String note = isStressed ? "Âm này mang trọng âm chính, hãy đọc to, cao và ngân dài hơn!" : "Âm này không mang trọng âm, đọc lướt nhẹ nhàng.";
+        String amDoc = taoTuDocChoSpeech(ipaSyl, enSyl);
+
+        return new BuocDanhVanDTO(
+                enSyl,
+                !ipaSyl.isEmpty() ? "/" + ipaSyl + "/" : "/" + enSyl + "/",
+                !onset.isEmpty() ? "/" + onset + "/" : "",
+                onsetDoc,
+                !nucleus.isEmpty() ? "/" + nucleus + "/" : "",
+                nucleusDoc,
+                !coda.isEmpty() ? "/" + coda + "/" : "",
+                codaDoc,
+                vanGhep,
+                cachDanhVan,
+                amDoc,
+                note,
+                isStressed
+        );
+    }
+
+    private String layDocPhuAmDau(String onset) {
+        if (onset == null || onset.isEmpty()) return "";
+        return switch (onset.toLowerCase()) {
+            case "h" -> "hờ";
+            case "l" -> "lờ";
+            case "k", "c" -> "cờ";
+            case "b" -> "bờ";
+            case "t" -> "tờ";
+            case "d" -> "đờ";
+            case "m" -> "mờ";
+            case "n" -> "nờ";
+            case "p" -> "pờ";
+            case "r" -> "rờ";
+            case "s" -> "xờ";
+            case "f" -> "phờ";
+            case "v" -> "vờ";
+            case "w" -> "quờ";
+            case "z" -> "zờ";
+            case "ɡ", "g" -> "gờ";
+            case "tʃ", "ch" -> "chờ (bật hơi)";
+            case "dʒ", "j" -> "chờ (rung giọng)";
+            case "ʃ", "sh" -> "sờ (chu môi)";
+            case "θ", "th" -> "thờ (kẹp lưỡi)";
+            case "ð" -> "đờ (kẹp lưỡi)";
+            case "kr" -> "cờ-rờ";
+            case "tr" -> "trờ";
+            case "pr" -> "pờ-rờ";
+            case "dr" -> "đrờ";
+            case "st" -> "x-tờ";
+            case "sp" -> "x-pờ";
+            case "sk" -> "x-cờ";
+            case "pl" -> "pờ-lờ";
+            case "bl" -> "bờ-lờ";
+            case "kl" -> "cờ-lờ";
+            case "fl" -> "phờ-lờ";
+            default -> onset + "-ờ";
+        };
+    }
+
+    private String layDocNguyenAm(String n) {
+        if (n == null || n.isEmpty()) return "";
+        return switch (n) {
+            case "ə" -> "ơ (lướt nhẹ)";
+            case "oʊ", "əʊ" -> "âu / ô";
+            case "aɪ" -> "ai";
+            case "eɪ" -> "ây";
+            case "æ" -> "e bẹt (lai a và e)";
+            case "iː" -> "i dài";
+            case "ɪ" -> "i ngắn";
+            case "ɑː" -> "a dài";
+            case "ɒ" -> "o ngắn";
+            case "ɔː" -> "o dài";
+            case "uː" -> "u dài";
+            case "ʊ" -> "u ngắn";
+            case "ʌ" -> "ă / á";
+            case "ɜː", "ɚ", "ɝ" -> "ơ dài";
+            case "aʊ" -> "ao";
+            case "ɔɪ" -> "oi";
+            case "ɪə" -> "ia";
+            case "eə" -> "e-ơ";
+            case "ʊə" -> "ua";
+            case "e" -> "e";
+            default -> n;
+        };
+    }
+
+    private String layDocPhuAmCuoi(String coda) {
+        if (coda == null || coda.isEmpty()) return "";
+        return switch (coda) {
+            case "t" -> "bật nhẹ âm tờ";
+            case "d" -> "chặn nhẹ âm đờ";
+            case "k", "ɡ", "g" -> "ngắt hơi ở cuống họng (cờ)";
+            case "p", "b" -> "khép môi p/b";
+            case "s" -> "xì hơi kẽ răng (-x)";
+            case "z" -> "rung âm z kẽ răng (-z)";
+            case "ʃ" -> "xì mạnh chu môi (-sh)";
+            case "tʃ" -> "bật hơi âm chờ (-ch)";
+            case "dʒ" -> "bật rung âm chờ (-dzh)";
+            case "m" -> "khép môi m";
+            case "n" -> "áp lưỡi n";
+            case "ŋ" -> "âm ngờ";
+            case "l" -> "uốn đầu lưỡi (-ờl)";
+            default -> "bật âm " + coda;
+        };
+    }
+
+    private String layDocVanGhep(String nucleus, String coda) {
+        if (nucleus.equals("æ") && coda.equals("t")) return "át";
+        if (nucleus.equals("æ") && coda.equals("p")) return "ép / áp";
+        if (nucleus.equals("æ") && coda.equals("n")) return "an / en";
+        if (nucleus.equals("e") && coda.equals("t")) return "ét";
+        if (nucleus.equals("e") && coda.equals("d")) return "ét-đ";
+        if (nucleus.equals("ɪ") && coda.equals("t")) return "ít";
+        if (nucleus.equals("ɪ") && coda.equals("n")) return "in";
+        if (nucleus.equals("ɪ") && coda.equals("ŋ")) return "inh";
+        if (nucleus.equals("ɒ") && coda.equals("t")) return "ót";
+        if (nucleus.equals("ɒ") && (coda.equals("k") || coda.equals("ɡ") || coda.equals("g"))) return "óc";
+        if (nucleus.equals("ʌ") && coda.equals("t")) return "ắt";
+        if (nucleus.equals("ʌ") && coda.equals("p")) return "ắp";
+        if (nucleus.equals("ʌ") && coda.equals("m")) return "ăm";
+        if (nucleus.equals("aɪ") && coda.equals("t")) return "ait";
+        if (nucleus.equals("eɪ") && coda.equals("t")) return "eit";
+        if (nucleus.equals("ɔː") && coda.equals("l")) return "o-l";
+        return layDocNguyenAm(nucleus) + " + " + layDocPhuAmCuoi(coda);
+    }
+
+    // =========================================================================
+    // TỰ ĐỘNG GẮN KẾT QUY TẮC MẶT CHỮ VÀ LIÊN KẾT BẢNG QUY LUẬT ĐÁNH VẦN
+    // =========================================================================
+    private void boSungQuyTacLienKet(HuongDanDocDTO dto) {
+        if (dto == null || dto.getTu() == null) return;
+        String w = dto.getTu().toLowerCase().trim();
+
+        if (w.endsWith("fy") && w.length() >= 3) {
+            dto.setMaQuyTacLienKet("fy_end");
+            dto.setTenQuyTacLienKet("Quy tắc đuôi [fy] ➔ /aɪ/");
+            dto.setQuyTacMatChu("Từ có đuôi [fy]: Chữ 'y' luôn phát âm là /aɪ/ (như trong modify, notify, qualify)!");
+        } else if (w.matches(".*[bcdfghjklmnpqrstvwxz]le$")) {
+            dto.setMaQuyTacLienKet("consonant_le");
+            dto.setTenQuyTacLienKet("Quy tắc [phụ âm + le] ➔ /əl/");
+            dto.setQuyTacMatChu("Phụ âm đi với [le] ở cuối từ: 'e' là âm câm và 'le' đọc là /əl/ (như trong table, apple, candle)!");
+        } else if (w.contains("wor") || (w.startsWith("w") && w.contains("or"))) {
+            dto.setMaQuyTacLienKet("w_or");
+            dto.setTenQuyTacLienKet("Quy tắc [w + or] ➔ /ɜː/");
+            dto.setQuyTacMatChu("Từ có [w + or]: 'or' bị biến âm đọc là /ɜː/ thay vì /ɔː/ (như trong word, work, world)!");
+        } else if (w.contains("tion") || w.contains("sion")) {
+            dto.setMaQuyTacLienKet("tion_sion");
+            dto.setTenQuyTacLienKet("Quy tắc đuôi [tion/sion] ➔ /ʃn/");
+            dto.setQuyTacMatChu("Hậu tố [-tion] đọc là /ʃn/ (sần) và trọng âm rơi ngay vào âm tiết liền trước!");
+        } else if (w.contains("ar")) {
+            dto.setMaQuyTacLienKet("ar");
+            dto.setTenQuyTacLienKet("Quy tắc [ar] ➔ /ɑː/");
+            dto.setQuyTacMatChu("Cụm chữ [ar] thường đọc thành nguyên âm dài /ɑː/ (như trong car, park, star)!");
+        } else if (w.contains("er") || w.contains("ir") || w.contains("ur")) {
+            dto.setMaQuyTacLienKet("er_ir_ur");
+            dto.setTenQuyTacLienKet("Quy tắc [er/ir/ur] ➔ /ɜː/");
+            dto.setQuyTacMatChu("Bộ ba [er, ir, ur] khi có trọng âm đều đọc là /ɜː/ (như trong her, bird, turn)!");
+        } else if (w.contains("all") || w.endsWith("al")) {
+            dto.setMaQuyTacLienKet("all_al");
+            dto.setTenQuyTacLienKet("Quy tắc [all/al] ➔ /ɔːl/");
+            dto.setQuyTacMatChu("Cụm chữ [all/al] thường đọc là /ɔːl/ (như trong ball, call, tall)!");
+        } else if (w.contains("ch")) {
+            dto.setMaQuyTacLienKet("ch");
+            dto.setTenQuyTacLienKet("Quy tắc [ch] ➔ /tʃ/");
+            dto.setQuyTacMatChu("Cụm chữ [ch] thường đọc là /tʃ/ (như trong chair, child, watch)!");
+        } else if (w.contains("sh")) {
+            dto.setMaQuyTacLienKet("sh");
+            dto.setTenQuyTacLienKet("Quy tắc [sh] ➔ /ʃ/");
+            dto.setQuyTacMatChu("Cụm chữ [sh] luôn đọc là /ʃ/ (chu tròn môi xì hơi)!");
+        } else if (w.contains("ee") || w.contains("ea")) {
+            dto.setMaQuyTacLienKet("ea_ee");
+            dto.setTenQuyTacLienKet("Quy tắc [ee/ea] ➔ /iː/");
+            dto.setQuyTacMatChu("Cụm chữ [ee/ea] thường phát âm thành nguyên âm dài /iː/ (như trong see, meet, tea)!");
+        } else if (w.contains("igh")) {
+            dto.setMaQuyTacLienKet("igh");
+            dto.setTenQuyTacLienKet("Quy tắc [igh] ➔ /aɪ/");
+            dto.setQuyTacMatChu("Cụm chữ [igh] luôn đọc là /aɪ/ (như trong night, light, high)!");
+        } else if (w.contains("oo")) {
+            dto.setMaQuyTacLienKet("oo");
+            dto.setTenQuyTacLienKet("Quy tắc [oo] ➔ /uː/ & /ʊ/");
+            dto.setQuyTacMatChu("Cụm chữ [oo] thường đọc là /uː/ (moon, food) hoặc /ʊ/ (book, look)!");
+        } else if (w.matches(".*[cg][eiy].*")) {
+            dto.setMaQuyTacLienKet("soft_c_g");
+            dto.setTenQuyTacLienKet("Quy tắc C & G Mềm ➔ /s/ & /dʒ/");
+            dto.setQuyTacMatChu("Chữ C và G đứng trước e, i, y sẽ biến âm: C đọc là /s/, G đọc là /dʒ/!");
+        }
     }
 
     private HuongDanDocDTO goiGeminiPhanTich(String tu, String phienAm, String nghia) throws Exception {

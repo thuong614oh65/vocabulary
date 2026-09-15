@@ -763,3 +763,533 @@ tr:hover .tu-don-wrap .btn-hd-icon,
         justify-content: center;
     }
 }
+
+/* =========================================================
+   13. KHỐI QUY TẮC MẶT CHỮ LIÊN KẾT
+   ========================================================= */
+.hd-rule-link-box {
+    background: linear-gradient(135deg, #fef2f2, #fff1f2);
+    border: 1.5px solid #fecdd3;
+    border-radius: 12px;
+    padding: 12px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    box-shadow: 0 2px 8px rgba(225, 29, 72, 0.06);
+}
+
+.hd-rule-link-badge {
+    display: inline-block;
+    background: #e11d48;
+    color: #ffffff;
+    font-size: 0.72rem;
+    font-weight: 800;
+    padding: 2px 8px;
+    border-radius: 6px;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+}
+
+.hd-rule-link-text {
+    font-size: 0.9rem;
+    color: #881337;
+    line-height: 1.4;
+}
+
+.btn-hd-rule-link {
+    background: #e11d48;
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    padding: 7px 14px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.btn-hd-rule-link:hover {
+    background: #be123c;
+    transform: translateY(-1px);
+    box-shadow: 0 3px 10px rgba(225, 29, 72, 0.25);
+}
+
+/* =========================================================
+   14. KHỐI ĐÁNH VẦN TỪNG ÂM (NHƯ TIẾNG VIỆT)
+   ========================================================= */
+.hd-phonics-box {
+    background: #f8fafc;
+    border: 2px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 16px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+}
+
+.hd-phonics-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 14px;
+    padding-bottom: 10px;
+    border-bottom: 1px dashed #cbd5e1;
+}
+
+.hd-phonics-title {
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: #0f172a;
+    margin: 0;
+}
+
+.hd-phonics-sub {
+    font-size: 0.82rem;
+    color: #64748b;
+    margin: 2px 0 0 0;
+}
+
+.hd-phonics-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.btn-hd-phonics-play {
+    background: linear-gradient(135deg, #059669, #10b981);
+    color: #ffffff;
+    border: none;
+    padding: 7px 14px;
+    border-radius: 10px;
+    font-size: 0.88rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.25);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.btn-hd-phonics-play:hover {
+    background: linear-gradient(135deg, #047857, #059669);
+    transform: translateY(-1px);
+}
+
+.btn-hd-phonics-play.playing {
+    animation: pulsePlay 1.2s infinite ease-in-out;
+    background: #f59e0b;
+}
+
+@keyframes pulsePlay {
+    0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.5); }
+    50% { transform: scale(1.03); box-shadow: 0 0 0 8px rgba(245, 158, 11, 0); }
+}
+
+.btn-hd-phonics-help {
+    background: #f1f5f9;
+    color: #334155;
+    border: 1px solid #cbd5e1;
+    padding: 7px 12px;
+    border-radius: 10px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.btn-hd-phonics-help:hover {
+    background: #e2e8f0;
+    color: #0f172a;
+}
+
+.hd-phonics-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.hd-phonics-step-card {
+    background: #ffffff;
+    border: 1.5px solid #cbd5e1;
+    border-radius: 12px;
+    padding: 12px 14px;
+    transition: all 0.2s ease;
+}
+
+.hd-phonics-step-card.stressed-step {
+    border-color: #f59e0b;
+    background: #fffdfa;
+}
+
+.hd-phonics-step-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.step-badge-num {
+    font-size: 0.75rem;
+    font-weight: 800;
+    background: #e2e8f0;
+    color: #475569;
+    padding: 2px 8px;
+    border-radius: 6px;
+    text-transform: uppercase;
+}
+
+.step-syllable-name {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.95rem;
+}
+
+.step-ipa {
+    color: #0284c7;
+    font-family: monospace;
+    font-weight: 700;
+}
+
+.step-stress-tag {
+    font-size: 0.72rem;
+    background: #fef3c7;
+    color: #b45309;
+    border: 1px solid #fde68a;
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-weight: 700;
+}
+
+.hd-phonics-parts-grid {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 8px;
+    flex-wrap: wrap;
+}
+
+.hd-phonics-part-cell {
+    flex: 1;
+    min-width: 90px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 8px 6px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    user-select: none;
+}
+
+.hd-phonics-part-cell:hover {
+    background: #e0f2fe;
+    border-color: #7dd3fc;
+    transform: translateY(-1px);
+}
+
+.hd-phonics-part-cell.active-step {
+    background: #fee2e2 !important;
+    border-color: #ef4444 !important;
+    transform: scale(1.05);
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.25);
+}
+
+.part-label {
+    font-size: 0.68rem;
+    color: #64748b;
+    text-transform: uppercase;
+    font-weight: 700;
+    margin-bottom: 2px;
+}
+
+.part-char {
+    font-size: 1.15rem;
+    font-weight: 900;
+    color: #0f172a;
+    line-height: 1.2;
+}
+
+.part-spoken {
+    font-size: 0.8rem;
+    color: #0284c7;
+    font-weight: 700;
+}
+
+.hd-phonics-plus {
+    font-size: 1.1rem;
+    font-weight: 900;
+    color: #94a3b8;
+}
+
+.hd-phonics-equation {
+    background: #f1f5f9;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 8px 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.hd-phonics-equation:hover {
+    background: #fee2e2;
+    border-color: #fca5a5;
+}
+
+.hd-phonics-equation.active-step {
+    background: #fee2e2 !important;
+    border-color: #dc2626 !important;
+    box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.25);
+}
+
+.equation-lead {
+    font-size: 0.82rem;
+    font-weight: 800;
+    color: #475569;
+}
+
+.equation-formula {
+    font-size: 0.95rem;
+    font-weight: 800;
+    color: #dc2626;
+    flex: 1;
+    margin: 0 8px;
+}
+
+.btn-step-speak {
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    font-size: 0.75rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.hd-phonics-summary-row {
+    background: linear-gradient(135deg, #eff6ff, #dbeafe);
+    border: 1.5px solid #bfdbfe;
+    border-radius: 10px;
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.summary-content {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.92rem;
+    color: #1e3a8a;
+}
+
+.btn-summary-speak {
+    background: #1d4ed8;
+    color: #ffffff;
+    border: none;
+    border-radius: 6px;
+    padding: 5px 12px;
+    font-size: 0.82rem;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+/* =========================================================
+   15. MODAL FAQ GIẢI ĐÁP BÍ QUYẾT ĐÁNH VẦN
+   ========================================================= */
+.modal-faq-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(15, 23, 42, 0.7);
+    backdrop-filter: blur(4px);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 100000;
+    padding: 16px;
+    box-sizing: border-box;
+}
+
+.modal-faq-dialog {
+    background: #ffffff;
+    border-radius: 18px;
+    max-width: 720px;
+    width: 100%;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+    overflow: hidden;
+    animation: hdFadeIn 0.2s ease-out;
+}
+
+.modal-faq-header {
+    padding: 16px 20px;
+    border-bottom: 2px solid #f1f5f9;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #f8fafc;
+}
+
+.modal-faq-title {
+    font-size: 1.15rem;
+    font-weight: 900;
+    color: #0f172a;
+    margin: 0;
+}
+
+.modal-faq-close {
+    background: none;
+    border: none;
+    font-size: 1.8rem;
+    cursor: pointer;
+    color: #64748b;
+    line-height: 1;
+}
+
+.modal-faq-body {
+    padding: 20px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.faq-card {
+    background: #f8fafc;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 14px;
+    padding: 16px;
+}
+
+.faq-question {
+    font-size: 1rem;
+    font-weight: 800;
+    color: #0f172a;
+    margin-bottom: 8px;
+}
+
+.faq-answer {
+    font-size: 0.92rem;
+    color: #334155;
+    line-height: 1.5;
+    margin-bottom: 10px;
+}
+
+.faq-structure-box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 10px;
+    padding: 10px;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+}
+
+.faq-part-pill {
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 800;
+    text-align: center;
+}
+
+.faq-part-pill.onset { background: #fee2e2; color: #b91c1c; }
+.faq-part-pill.nucleus { background: #fef3c7; color: #b45309; }
+.faq-part-pill.coda { background: #dbeafe; color: #1d4ed8; }
+
+.faq-part-sep {
+    font-size: 1.1rem;
+    font-weight: 900;
+    color: #94a3b8;
+}
+
+.faq-example-note {
+    background: #ffffff;
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 0.88rem;
+    border-left: 3px solid #0284c7;
+}
+
+.faq-example-note ul {
+    margin: 6px 0 0 16px;
+    padding: 0;
+}
+
+.faq-rules-list {
+    margin: 0 0 0 18px;
+    padding: 0;
+    font-size: 0.9rem;
+    color: #334155;
+    line-height: 1.6;
+}
+
+.faq-rules-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 10px;
+}
+
+.faq-rule-mini {
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    padding: 8px 10px;
+    text-align: center;
+}
+
+.frm-tag {
+    font-weight: 800;
+    color: #dc2626;
+    font-size: 0.88rem;
+}
+
+.frm-arrow {
+    font-size: 0.8rem;
+    color: #94a3b8;
+}
+
+.frm-ipa {
+    font-weight: 800;
+    color: #0284c7;
+    font-family: monospace;
+    font-size: 0.95rem;
+}
+
+.frm-ex {
+    font-size: 0.78rem;
+    color: #64748b;
+    margin-top: 2px;
+}
+
+.modal-faq-footer {
+    padding: 12px 20px;
+    border-top: 1px solid #e2e8f0;
+    background: #f8fafc;
+    display: flex;
+    justify-content: flex-end;
+}
+

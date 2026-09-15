@@ -277,6 +277,45 @@ public class QuyLuatDanhVanServiceImpl implements QuyLuatDanhVanService {
         // NHÓM 2: ĐUÔI TỪ & HẬU TỐ (SUFFIXES & ENDINGS)
         // -------------------------------------------------------------
         themQuyLuat(new QuyLuatDanhVanDTO(
+                "fy_end", "fy", "/aɪ/", "eye",
+                "Từ có [fy] ở cuối thì \"y\" đọc là /aɪ/",
+                "Khi chữ \"y\" đứng sau phụ âm \"f\" ở cuối từ, \"y\" luôn được phát âm là nguyên âm đôi /aɪ/ (đọc như 'ai' trong tiếng Việt).",
+                "DUOI_TU_HAU_TO", "🔖 Đuôi từ & Hậu tố", "✨",
+                "Khẩu hình âm /aɪ/: Mở miệng rộng ở âm /a/, sau đó lướt dần sang âm /ɪ/ khép dần hai khóe môi (đọc như 'ai').",
+                List.of(
+                        new TuMinhHoaDTO("modify", "fy", "/ˈmɒ.dɪ.faɪ/", "aɪ", "sửa đổi, điều chỉnh", "🛠️", "/audio/tts?text=modify"),
+                        new TuMinhHoaDTO("notify", "fy", "/ˈnəʊ.tɪ.faɪ/", "aɪ", "thông báo, báo tin", "📢", "/audio/tts?text=notify"),
+                        new TuMinhHoaDTO("qualify", "fy", "/ˈkwɒ.lɪ.faɪ/", "aɪ", "đủ điều kiện, đạt chuẩn", "🏅", "/audio/tts?text=qualify"),
+                        new TuMinhHoaDTO("simplify", "fy", "/ˈsɪm.plɪ.faɪ/", "aɪ", "đơn giản hóa", "💡", "/audio/tts?text=simplify"),
+                        new TuMinhHoaDTO("justify", "fy", "/ˈdʒʌs.tɪ.faɪ/", "aɪ", "biện minh, chứng minh", "⚖️", "/audio/tts?text=justify"),
+                        new TuMinhHoaDTO("identify", "fy", "/aɪˈden.tɪ.faɪ/", "aɪ", "nhận diện, xác định", "🔍", "/audio/tts?text=identify"),
+                        new TuMinhHoaDTO("satisfy", "fy", "/ˈsæt.ɪs.faɪ/", "aɪ", "làm hài lòng, thỏa mãn", "😊", "/audio/tts?text=satisfy"),
+                        new TuMinhHoaDTO("clarify", "fy", "/ˈklær.ɪ.faɪ/", "aɪ", "làm rõ, giải thích rõ", "🔎", "/audio/tts?text=clarify")
+                )
+        ));
+
+        themQuyLuat(new QuyLuatDanhVanDTO(
+                "consonant_le", "le", "/əl/", "ull",
+                "Phụ âm + \"le\" ở cuối từ thì \"le\" đọc là /əl/",
+                "Khi chữ \"le\" đứng sau bất kỳ phụ âm nào ở cuối từ, chữ \"e\" là âm câm và cụm \"le\" đọc thành /əl/ (đọc như 'ờl' hoặc 'ồ' trong tiếng Việt).",
+                "DUOI_TU_HAU_TO", "🔖 Đuôi từ & Hậu tố", "🍎",
+                "Khẩu hình âm /əl/: Phát âm lướt nhẹ âm /ə/ rồi nâng đầu lưỡi chạm nhẹ vào chân răng cửa hàm trên tạo âm Dark L /l/ (như 'ờl' hay 'ồ').",
+                List.of(
+                        new TuMinhHoaDTO("table", "le", "/ˈteɪ.bəl/", "əl", "cái bàn", "🪑", "/audio/tts?text=table"),
+                        new TuMinhHoaDTO("apple", "le", "/ˈæ.pəl/", "əl", "quả táo", "🍎", "/audio/tts?text=apple"),
+                        new TuMinhHoaDTO("simple", "le", "/ˈsɪm.pəl/", "əl", "đơn giản", "🧩", "/audio/tts?text=simple"),
+                        new TuMinhHoaDTO("people", "le", "/ˈpiː.pəl/", "əl", "con người, mọi người", "👥", "/audio/tts?text=people"),
+                        new TuMinhHoaDTO("middle", "le", "/ˈmɪ.dəl/", "əl", "ở giữa, trung tâm", "🎯", "/audio/tts?text=middle"),
+                        new TuMinhHoaDTO("candle", "le", "/ˈkæn.dəl/", "əl", "cây nến, ngọn nến", "🕯️", "/audio/tts?text=candle"),
+                        new TuMinhHoaDTO("bottle", "le", "/ˈbɒ.təl/", "əl", "cái chai, bình nước", "🍾", "/audio/tts?text=bottle"),
+                        new TuMinhHoaDTO("castle", "le", "/ˈkɑː.səl/", "əl", "lâu đài nguy nga", "🏰", "/audio/tts?text=castle"),
+                        new TuMinhHoaDTO("circle", "le", "/ˈsɜː.kəl/", "əl", "hình tròn, vòng tròn", "⭕", "/audio/tts?text=circle"),
+                        new TuMinhHoaDTO("double", "le", "/ˈdʌ.bəl/", "əl", "gấp đôi, nhân đôi", "👥", "/audio/tts?text=double"),
+                        new TuMinhHoaDTO("handle", "le", "/ˈhæn.dəl/", "əl", "xử lý, tay cầm", "🎛️", "/audio/tts?text=handle")
+                )
+        ));
+
+        themQuyLuat(new QuyLuatDanhVanDTO(
                 "ise", "ISE", "/aɪz/", "eyes",
                 "\"ISE\" đọc là /aɪz/",
                 "Đuôi \"ise\" ở cuối các từ phổ biến thường được phát âm là nguyên âm đôi kết hợp phụ âm rung /aɪz/.",

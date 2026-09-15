@@ -339,7 +339,7 @@
                 </div>
 
                 <button type="button" class="btn-sc-open-mindmap" onclick="moSoDoTuDanhSach('${ql.id}')">
-                    🎯 Mở sơ đồ tư duy tỏa tròn ➔
+                    📖 Học quy tắc & từ ví dụ ➔
                 </button>
             `;
 
@@ -447,22 +447,33 @@
     };
 
     // =========================================================
-    // 5. RENDER SƠ ĐỒ MINDMAP (CANVAS & VỆ TINH TỎA TRÒN)
+    // 5. RENDER BÀI HỌC QUY LUẬT ĐÁNH VẦN CHUẨN SÁCH (BOOK LESSON VIEW)
     // =========================================================
     function renderSoDoMindmap(ql) {
         if (!ql) return;
 
-        // Cập nhật Banner
+        // Cập nhật Banner bài học
         const elCat = document.getElementById("lblBannerCategory");
         const elTitle = document.getElementById("lblBannerTitle");
-        const elDesc = document.getElementById("lblBannerDesc");
+        const elDesc = document.getElementById("lblBookRuleDesc");
+        const elFormulaLetter = document.getElementById("lblFormulaLetter");
+        const elFormulaIpa = document.getElementById("lblFormulaIpa");
+        const elCount = document.getElementById("lblExampleCount");
 
-        if (elCat) elCat.textContent = ql.tenPhanLoai || "Quy luật đánh vần";
-        if (elTitle) elTitle.textContent = ql.tieuDeQuyTac || ql.cumChu;
-        if (elDesc) elDesc.textContent = ql.moTaQuyTac || "";
-
-        // Cập nhật Mindmap Top Navigation
         const catMeta = CATEGORY_META[ql.phanLoai] || CATEGORY_META["ALL"];
+        if (elCat) elCat.textContent = catMeta ? `${catMeta.icon} ${catMeta.name}` : "Quy luật đánh vần";
+        if (elTitle) elTitle.textContent = ql.tieuDeQuyTac || ql.cumChu;
+        if (elDesc) elDesc.textContent = ql.moTaQuyTac || `Các từ có [${ql.cumChu}] thì được phát âm chuẩn là ${ql.docLaIpa}.`;
+
+        // Cập nhật công thức: [Mặt chữ] ➔ /Phiên âm/
+        if (elFormulaLetter) {
+            elFormulaLetter.textContent = ql.matChu || `[${ql.cumChu}]`;
+        }
+        if (elFormulaIpa) {
+            elFormulaIpa.textContent = ql.docLaIpa;
+        }
+
+        // Cập nhật Top Navigation
         const lblNavCat = document.getElementById("lblNavCatBackName");
         if (lblNavCat) lblNavCat.textContent = catMeta ? catMeta.name : "Nhóm";
 
@@ -479,62 +490,79 @@
         if (btnPrev) btnPrev.disabled = (currIdx <= 0);
         if (btnNext) btnNext.disabled = (currIdx === -1 || currIdx >= danhSachAmNhomHienTai.length - 1);
 
-        // Cập nhật Node Trung tâm (Âm ở giữa)
-        const elCenterLetter = document.getElementById("lblCenterLetter");
-        const elCenterIpa = document.getElementById("lblCenterIpa");
-
-        if (elCenterLetter) elCenterLetter.textContent = ql.cumChu;
-        if (elCenterIpa) elCenterIpa.textContent = "đọc là " + ql.docLaIpa;
-
-        // Render các thẻ từ vệ tinh xung quanh
-        const satellitesWrap = document.getElementById("satellitesWrapper");
-        if (!satellitesWrap) return;
-        satellitesWrap.innerHTML = "";
-
+        // Render danh sách các từ ví dụ tiêu biểu (Book Examples Grid)
+        const grid = document.getElementById("bookExamplesGrid");
         const dsTu = ql.danhSachTu || [];
-        const total = dsTu.length;
+        if (elCount) elCount.textContent = dsTu.length;
 
-        dsTu.forEach(function (t, idx) {
-            const card = document.createElement("div");
-            card.className = "sd-word-card";
-            card.setAttribute("data-tu", t.tu);
-            card.setAttribute("data-audio", t.audioUrl || ("/audio/tts?text=" + encodeURIComponent(t.tu)));
+        if (grid) {
+            grid.innerHTML = "";
 
-            // Tạo chữ có bôi đỏ phần quy tắc
-            const wordHtml = taoChuHighlight(t.tu, t.phanHighlight);
-            const ipaHtml = taoIpaHighlight(t.phienAm, t.phanIpaHighlight);
+            if (dsTu.length === 0) {
+                grid.innerHTML = '<div class="col-12 text-center text-muted py-4">Đang cập nhật các từ ví dụ cho quy luật này...</div>';
+            } else {
+                dsTu.forEach(function (t) {
+                    const card = document.createElement("div");
+                    card.className = "sd-book-word-card";
+                    card.setAttribute("data-tu", t.tu);
 
-            card.innerHTML = `
-                <div class="sd-card-icon">${t.icon || '💡'}</div>
-                <div class="sd-card-word">${wordHtml}</div>
-                <div class="sd-card-ipa">${ipaHtml}</div>
-                <div class="sd-card-meaning">${t.nghia || ''}</div>
-                <div class="sd-card-actions">
-                    <button type="button" class="btn-card-audio" title="Nghe phát âm" onclick="event.stopPropagation(); clickPhatAmTu('${t.tu}', '${t.audioUrl || ''}', this.closest('.sd-word-card'))">🔊</button>
-                    <button type="button" class="btn-card-guide" title="Xem hướng dẫn đọc chi tiết" onclick="event.stopPropagation(); moHuongDanTu('${t.tu}', '${t.phienAm || ''}', '${t.nghia || ''}', this)">🗣️</button>
-                </div>
-            `;
+                    const wordHtml = taoChuHighlight(t.tu, t.phanHighlight || ql.cumChu);
+                    const ipaHtml = taoIpaHighlight(t.phienAm, t.phanIpaHighlight || ql.docLaIpa);
 
-            // Hover tự động đọc
-            card.addEventListener("mouseenter", function () {
-                hoverPhatAmTu(t.tu, t.audioUrl || '', card);
-            });
+                    card.innerHTML = `
+                        <div>
+                            <div class="sd-bwc-header">
+                                <span class="sd-bwc-icon">${t.icon || '💡'}</span>
+                                <div class="sd-bwc-word">${wordHtml}</div>
+                            </div>
+                            <div class="sd-bwc-ipa">${ipaHtml}</div>
+                            <div class="sd-bwc-meaning">${t.nghia || ''}</div>
+                        </div>
+                        <div class="sd-bwc-actions">
+                            <button type="button" class="btn-bwc-audio" title="Nghe phát âm từ này" onclick="event.stopPropagation(); clickPhatAmTu('${t.tu}', '${t.audioUrl || ''}', this.closest('.sd-book-word-card'))">
+                                🔊 Nghe đọc
+                            </button>
+                            <button type="button" class="btn-bwc-spell" title="Xem thầy ảo đánh vần từng âm như tiếng Việt" onclick="event.stopPropagation(); moHuongDanTu('${t.tu}', '${t.phienAm || ''}', '${t.nghia || ''}', this)">
+                                🗣️ Đánh vần
+                            </button>
+                        </div>
+                    `;
 
-            // Click phát âm
-            card.addEventListener("click", function () {
-                clickPhatAmTu(t.tu, t.audioUrl || '', card);
-            });
+                    // Hover tự động đọc
+                    card.addEventListener("mouseenter", function () {
+                        hoverPhatAmTu(t.tu, t.audioUrl || '', card);
+                    });
 
-            satellitesWrap.appendChild(card);
-        });
-
-        // Bố trí tọa độ vệ tinh và vẽ mũi tên SVG (nếu không ở chế độ view-grid)
-        setTimeout(function () {
-            if (!cheDoViewGrid) {
-                sapXepVeTinhToaTron();
-                veCacDuongMuiTenSvg();
+                    grid.appendChild(card);
+                });
             }
-        }, 50);
+        }
+
+        // Render thanh chuyển nhanh các âm khác trong cùng nhóm
+        renderQuickSoundsList(ql);
+    }
+
+    // Render danh sách chip chuyển nhanh âm trong nhóm
+    function renderQuickSoundsList(ql) {
+        const list = document.getElementById("quickSoundsList");
+        if (!list) return;
+        list.innerHTML = "";
+
+        if (!danhSachAmNhomHienTai || danhSachAmNhomHienTai.length === 0) {
+            danhSachAmNhomHienTai = dsQuyLuat.filter(function (r) { return r.phanLoai === ql.phanLoai; });
+        }
+
+        danhSachAmNhomHienTai.forEach(function (r) {
+            const chip = document.createElement("button");
+            chip.type = "button";
+            chip.className = "sd-quick-sound-chip" + (r.id === ql.id ? " active" : "");
+            chip.innerHTML = `<strong>${r.cumChu}</strong> <small>(${r.docLaIpa})</small>`;
+            chip.title = `Chuyển sang bài học: ${r.tieuDeQuyTac || r.cumChu}`;
+            chip.onclick = function () {
+                taiQuyLuat(r.id);
+            };
+            list.appendChild(chip);
+        });
     }
 
     // Highlight phần chữ theo quy tắc màu đỏ đậm
@@ -558,115 +586,15 @@
         if (!phanIpaHl) return ipa;
 
         const cleanIpa = ipa.replace(/[/\[\]]/g, "");
-        const idx = cleanIpa.indexOf(phanIpaHl);
-        if (idx === -1) return ipa;
+        const cleanPhan = phanIpaHl.replace(/[/\[\]]/g, "");
+        const idx = cleanIpa.indexOf(cleanPhan);
+        if (idx === -1) return ipa.startsWith("/") ? ipa : `/${ipa}/`;
 
         const before = cleanIpa.substring(0, idx);
-        const match = cleanIpa.substring(idx, idx + phanIpaHl.length);
-        const after = cleanIpa.substring(idx + phanIpaHl.length);
+        const match = cleanIpa.substring(idx, idx + cleanPhan.length);
+        const after = cleanIpa.substring(idx + cleanPhan.length);
 
         return `/${before}<span class="hl-red">${match}</span>${after}/`;
-    }
-
-    // =========================================================
-    // 6. SẮP XẾP VỆ TINH THEO HÌNH ELIP TỎA TRÒN (RADIAL LAYOUT)
-    // =========================================================
-    function sapXepVeTinhToaTron() {
-        const board = document.getElementById("sdMindmapContainer");
-        const cards = document.querySelectorAll(".sd-satellites-wrapper .sd-word-card");
-        if (!board || cards.length === 0) return;
-
-        const boardWidth = board.clientWidth;
-        const boardHeight = board.clientHeight;
-
-        const centerX = boardWidth / 2;
-        const centerY = boardHeight / 2;
-
-        // Bán kính elip tùy theo kích thước màn hình
-        const radiusX = Math.min(360, Math.max(260, boardWidth * 0.36));
-        const radiusY = Math.min(240, Math.max(180, boardHeight * 0.36));
-
-        const count = cards.length;
-        // Bắt đầu từ góc -90 độ (đỉnh trên cùng 12 giờ) và quay theo chiều kim đồng hồ
-        const angleStep = (2 * Math.PI) / count;
-        const startAngle = -Math.PI / 2;
-
-        cards.forEach(function (card, i) {
-            const angle = startAngle + i * angleStep;
-            const x = centerX + radiusX * Math.cos(angle) - (card.offsetWidth / 2);
-            const y = centerY + radiusY * Math.sin(angle) - (card.offsetHeight / 2);
-
-            card.style.left = Math.round(x) + "px";
-            card.style.top = Math.round(y) + "px";
-        });
-    }
-
-    // =========================================================
-    // 7. VẼ CÁC MŨI TÊN UỐN LƯỢN SVG NỐI TỪ TÂM RA CÁC TỪ
-    // =========================================================
-    function veCacDuongMuiTenSvg() {
-        const svg = document.getElementById("svgMindmapLines");
-        const board = document.getElementById("sdMindmapContainer");
-        const centerNode = document.getElementById("nodeCenterHub");
-        const cards = document.querySelectorAll(".sd-satellites-wrapper .sd-word-card");
-
-        if (!svg || !board || !centerNode || cards.length === 0) return;
-
-        const boardRect = board.getBoundingClientRect();
-        const centerRect = centerNode.getBoundingClientRect();
-
-        const cX = centerRect.left - boardRect.left + (centerRect.width / 2);
-        const cY = centerRect.top - boardRect.top + (centerRect.height / 2);
-
-        // Thiết lập kích thước SVG
-        svg.setAttribute("width", boardRect.width);
-        svg.setAttribute("height", boardRect.height);
-
-        let pathsHtml = `
-            <defs>
-                <marker id="arrowHead" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
-                    <polygon points="0 0, 9 4.5, 0 9" fill="#dc2626" />
-                </marker>
-            </defs>
-        `;
-
-        cards.forEach(function (card) {
-            const cardRect = card.getBoundingClientRect();
-            const targetX = cardRect.left - boardRect.left + (cardRect.width / 2);
-            const targetY = cardRect.top - boardRect.top + (cardRect.height / 2);
-
-            // Điểm bắt đầu từ mép ngoài của Node trung tâm
-            const dx = targetX - cX;
-            const dy = targetY - cY;
-            const dist = Math.sqrt(dx * dx + dy * dy);
-            if (dist === 0) return;
-
-            const startX = cX + (dx / dist) * 75;
-            const startY = cY + (dy / dist) * 55;
-
-            // Điểm kết thúc ở mép thẻ từ
-            const endX = targetX - (dx / dist) * (cardRect.width * 0.45);
-            const endY = targetY - (dy / dist) * (cardRect.height * 0.45);
-
-            // Điểm điều khiển uốn lượn cong tự nhiên (Quadratic Bezier)
-            const midX = (startX + endX) / 2;
-            const midY = (startY + endY) / 2;
-            const curvature = 18;
-            const ctrlX = midX - (dy / dist) * curvature;
-            const ctrlY = midY + (dx / dist) * curvature;
-
-            pathsHtml += `
-                <path d="M ${startX.toFixed(1)} ${startY.toFixed(1)} Q ${ctrlX.toFixed(1)} ${ctrlY.toFixed(1)} ${endX.toFixed(1)} ${endY.toFixed(1)}"
-                      stroke="#ef4444"
-                      stroke-width="2.2"
-                      stroke-dasharray="4 2"
-                      fill="none"
-                      marker-end="url(#arrowHead)"
-                      opacity="0.85" />
-            `;
-        });
-
-        svg.innerHTML = pathsHtml;
     }
 
     // =========================================================
@@ -701,7 +629,7 @@
 
     function clickPhatAmTu(tu, audioUrl, cardEl) {
         if (cardEl) {
-            document.querySelectorAll(".sd-word-card.playing").forEach(function (c) { c.classList.remove("playing"); });
+            document.querySelectorAll(".sd-word-card.playing, .sd-book-word-card.playing").forEach(function (c) { c.classList.remove("playing"); });
             cardEl.classList.add("playing");
         }
         phatAmThanh(tu, audioUrl, function () {
@@ -720,8 +648,12 @@
     };
 
     // =========================================================
-    // 9. ĐỌC TOÀN BỘ SƠ ĐỒ (AUTOPLAY ALL WORDS)
+    // 9. ĐỌC TOÀN BỘ CÁC TỪ VÍ DỤ (AUTOPLAY ALL WORDS)
     // =========================================================
+    window.docToanBoCacTu = function () {
+        window.docToanBoSoDo();
+    };
+
     window.docToanBoSoDo = function () {
         if (!quyLuatHienTai) return;
 
@@ -735,42 +667,49 @@
         dangAutoPlay = true;
         capNhatNutAutoPlay(true);
 
-        const cards = Array.from(document.querySelectorAll(".sd-satellites-wrapper .sd-word-card"));
-        let step = -1; // -1: Đọc âm trung tâm trước, sau đó 0..n: đọc các từ
+        const cards = Array.from(document.querySelectorAll("#bookExamplesGrid .sd-book-word-card, .sd-satellites-wrapper .sd-word-card"));
+        let step = -1; // -1: Đọc âm quy tắc trước, sau đó 0..n: đọc các từ ví dụ
 
         function chayBuocTiepTheo() {
             if (!dangAutoPlay) return;
 
             step++;
-            if (step >= cards.length) {
+            if (step > cards.length) {
+                dangAutoPlay = false;
+                capNhatNutAutoPlay(false);
+                cards.forEach(function (c) { c.classList.remove("playing"); });
+                return;
+            }
+
+            if (step === 0) {
+                // Đọc âm quy tắc trước
+                const text = quyLuatHienTai.amDoc || quyLuatHienTai.cumChu;
+                phatAmThanh(text, null, function () {
+                    autoPlayTimer = setTimeout(chayBuocTiepTheo, 500);
+                });
+                return;
+            }
+
+            // Đọc từ ví dụ
+            const card = cards[step - 1];
+            if (!card) {
                 dangAutoPlay = false;
                 capNhatNutAutoPlay(false);
                 return;
             }
 
-            if (step === 0) {
-                // Đọc âm trung tâm trước
-                const centerNode = document.getElementById("nodeCenterHub");
-                if (centerNode) centerNode.classList.add("pulse-active");
-                const text = quyLuatHienTai.amDoc || quyLuatHienTai.cumChu;
-                phatAmThanh(text, null, function () {
-                    if (centerNode) centerNode.classList.remove("pulse-active");
-                    autoPlayTimer = setTimeout(chayBuocTiepTheo, 600);
-                });
+            const tu = card.getAttribute("data-tu");
+            if (!tu) {
+                chayBuocTiepTheo();
                 return;
             }
 
-            // Đọc các từ vệ tinh
-            const card = cards[step];
-            const tu = card.getAttribute("data-tu");
-            const audioUrl = card.getAttribute("data-audio");
-
-            document.querySelectorAll(".sd-word-card.playing").forEach(function (c) { c.classList.remove("playing"); });
+            cards.forEach(function (c) { c.classList.remove("playing"); });
             card.classList.add("playing");
 
-            phatAmThanh(tu, audioUrl, function () {
+            phatAmThanh(tu, null, function () {
                 card.classList.remove("playing");
-                autoPlayTimer = setTimeout(chayBuocTiepTheo, 700);
+                autoPlayTimer = setTimeout(chayBuocTiepTheo, 600);
             });
         }
 
@@ -781,11 +720,11 @@
         const btn = document.getElementById("btnAutoPlayAll");
         if (!btn) return;
         if (isPlaying) {
-            btn.innerHTML = "⏹️ Dừng đọc sơ đồ";
+            btn.innerHTML = "⏹️ Dừng đọc";
             btn.classList.add("btn-danger");
             btn.classList.remove("btn-sd-autoplay");
         } else {
-            btn.innerHTML = "▶️ Đọc toàn bộ sơ đồ";
+            btn.innerHTML = "▶️ Đọc tất cả từ ví dụ";
             btn.classList.add("btn-sd-autoplay");
             btn.classList.remove("btn-danger");
         }
