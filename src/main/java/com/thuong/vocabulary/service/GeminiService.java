@@ -1236,4 +1236,74 @@ public class GeminiService {
         dto.setViDu(viDu);
         return dto;
     }
-}
+
+    // =====================================================
+    // DỊCH HÀNG LOẠT TỪ ANH → VIỆT QUA GEMINI (FALLBACK KHI GOOGLE BỊ CHẶN)
+    // =====================================================
+    public java.util.Map<String, String> dichHangLoatGemini(List<String> danhSachTu) {
+        java.util.Map<String, String> ketQua = new java.util.LinkedHashMap<>();
+        if (clients.isEmpty() || danhSachTu == null || danhSachTu.isEmpty()) {
+            return ketQua;
+        }
+
+        // Chia thành batch tối đa 50 từ/lần để Gemini trả kết quả chính xác
+        int batchSize = 50;
+        List<List<String>> batches = new ArrayList<>();
+        for (int i = 0; i < danhSachTu.size(); i += batchSize) {
+            batches.add(danhSachTu.subList(i, Math.min(i + batchSize, danhSachTu.size())));
+        }
+
+        com.fasterxml.jackson.databind.ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper();
+
+        for (List<String> batch : batches) {
+            // Tạo danh sách đánh số: "1. word1\n2. word2\n..."
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < batch.size(); i++) {
+                sb.append((i + 1)).append(". ").append(batch.get(i)).append("\n");
+            }
+
+            String prompt = """
+                Bạn là từ điển Anh-Việt chuyên nghiệp. Dịch %d từ/cụm từ tiếng Anh sau sang tiếng Việt.
+
+                DANH SÁCH CẦN DỊCH:
+                %s
+                YÊU CẦU:
+                - Trả về JSON object duy nhất, không markdown, không giải thích
+                - Key là từ tiếng Anh (chính xác như trong danh sách), value là nghĩa tiếng Việt ngắn gọn nhất
+                - Nghĩa phải tự nhiên, đúng nghĩa phổ biến nhất của từ đó
+                - Ví dụ format: {"animal": "động vật", "journey": "hành trình", ...}
+                """.formatted(batch.size(), sb.toString());
+
+            try {
+                String res = goiGeminiAnToan(prompt, new String[]{MODEL_FLASH_LITE, MODEL_FLASH});
+                if (res != null) {
+                    res = res.trim();
+                    // Strip markdown code block nếu có
+                    if (res.startsWith("```json")) res = res.substring(7);
+                    else if (res.startsWith("```")) res = res.substring(3);
+                    if (res.endsWith("```")) res = res.substring(0, res.length() - 3);
+                    res = res.trim();
+
+                    // Parse JSON object
+                    com.fasterxml.jackson.databind.JsonNode root = mapper.readTree(res);
+                    if (root.isObject()) {
+                        root.fields().forEachRemaining(entry -> {
+                            String tu = entry.getKey().trim().toLowerCase();
+                            String nghia = entry.getValue().asText("").trim();
+                            if (!nghia.isBlank()) {
+                                // Chuẩn hóa chữ hoa đầu câu
+                                nghia = nghia.substring(0, 1).toUpperCase() + nghia.substring(1);
+                                ketQua.put(tu, nghia);
+                            }
+                        });
+                    }
+                }
+            } catch (Exception e) {
+                System.err.println("[GeminiService] dichHangLoatGemini batch error: " + e.getMessage());
+            }
+        }
+
+        return ketQua;
+    }
+}
+

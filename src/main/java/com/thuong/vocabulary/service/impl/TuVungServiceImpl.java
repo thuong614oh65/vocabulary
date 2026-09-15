@@ -6,6 +6,7 @@ import com.thuong.vocabulary.dto.dictionary.DictionaryResponse;
 import com.thuong.vocabulary.dto.dictionary.Meaning;
 import com.thuong.vocabulary.dto.dictionary.Phonetic;
 import com.thuong.vocabulary.service.DictionaryService;
+import com.thuong.vocabulary.service.GeminiService;
 import com.thuong.vocabulary.service.PhienAmService;
 import com.thuong.vocabulary.service.TranslateService;
 import com.thuong.vocabulary.service.TuVungService;
@@ -23,6 +24,7 @@ public class TuVungServiceImpl implements TuVungService {
     private final DictionaryService dictionaryService;
     private final TranslateService translateService;
     private final PhienAmService phienAmService;
+    private final GeminiService geminiService;
 
     // Bộ nhớ cache nhanh lưu kết quả tra từ hoàn chỉnh trong RAM (0ms cho các lần sau)
     private final Map<String, TuVungDTO> tuVungCache = new ConcurrentHashMap<>();
@@ -33,12 +35,15 @@ public class TuVungServiceImpl implements TuVungService {
     public TuVungServiceImpl(
             DictionaryService dictionaryService,
             TranslateService translateService,
-            PhienAmService phienAmService
+            PhienAmService phienAmService,
+            GeminiService geminiService
     ) {
         this.dictionaryService = dictionaryService;
         this.translateService = translateService;
         this.phienAmService = phienAmService;
+        this.geminiService = geminiService;
     }
+
 
     @Override
     public TuVungDTO traTu(String tu) {
@@ -114,8 +119,40 @@ public class TuVungServiceImpl implements TuVungService {
         // BƯỚC 1: DỊCH HÀNG LOẠT SIÊU TỐC: Dịch tất cả các từ trong 1 hoặc 2 request duy nhất (~200ms)
         Map<String, String> banDichMap = translateService.dichHangLoat(danhSach);
 
+        // BƯỚC 1B: GEMINI FALLBACK — Nếu Google/MyMemory bị chặn trên cloud (>30% từ thiếu nghĩa)
+        // → Gọi Gemini dịch hàng loạt 1 lần để bù vào (không làm chậm nếu Google đã dịch đủ)
+        long soTuCoNghia = banDichMap.values().stream().filter(v -> v != null && !v.isBlank()).count();
+        boolean canGemini = geminiService != null;
+        boolean nhieuTuThieuNghia = soTuCoNghia < danhSach.size() * 0.7;
+        if (canGemini && nhieuTuThieuNghia) {
+            try {
+                // Chỉ gửi Gemini những từ chưa có nghĩa
+                List<String> tuThieuNghia = new ArrayList<>();
+                for (String tu : danhSach) {
+                    String key = tu.trim().toLowerCase();
+                    if (!banDichMap.containsKey(key) || banDichMap.get(key) == null || banDichMap.get(key).isBlank()) {
+                        tuThieuNghia.add(tu.trim());
+                    }
+                }
+                if (!tuThieuNghia.isEmpty()) {
+                    System.out.println("[TuVungService] 🤖 Gemini fallback: dịch " + tuThieuNghia.size() + " từ thiếu nghĩa...");
+                    Map<String, String> geminiMap = geminiService.dichHangLoatGemini(tuThieuNghia);
+                    // Merge vào banDichMap
+                    geminiMap.forEach((k, v) -> {
+                        if (v != null && !v.isBlank()) {
+                            banDichMap.put(k.toLowerCase(), v);
+                        }
+                    });
+                    System.out.println("[TuVungService] ✅ Gemini đã bù " + geminiMap.size() + " từ.");
+                }
+            } catch (Exception geminiEx) {
+                System.err.println("[TuVungService] Gemini fallback error: " + geminiEx.getMessage());
+            }
+        }
+
         // BƯỚC 2: TRA CỨU TỪ ĐIỂN VÀ PHIÊN ÂM BẤT ĐỒNG BỘ ĐA LUỒNG (PARALLEL EXECUTION)
         List<CompletableFuture<TuVungKetQua>> futures = new ArrayList<>();
+
 
         for (int i = 0; i < danhSach.size(); i++) {
             final int index = i;
