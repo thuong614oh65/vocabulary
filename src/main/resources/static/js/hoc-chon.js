@@ -6,8 +6,11 @@
 let audioHienTai = null;
 
 // Mỗi lần chọn từ mới sẽ tăng số này.
-// Dùng để hủy lượt đọc/đánh vần cũ.
+// Dùng để hủy lượt đọc cũ.
 let soLanDoc = 0;
+
+// Timer lặp lại đọc từ sau 3 giây (thay vì đánh vần)
+let timerLapDocTu = null;
 
 
 // =========================================================
@@ -58,8 +61,20 @@ document.addEventListener("DOMContentLoaded", function () {
             // Dừng âm thanh cũ
             dungTatCaAmThanh();
 
-            // Bắt đầu đọc từ
+            // Bắt đầu đọc từ (sẽ tự động lặp lại sau mỗi 3 giây)
             batDauDocTu(tu, maDoc);
+        });
+
+        // -------------------------------------------------
+        // Khi blur ra ngoài (nếu không chuyển sang ô khác thì dừng lặp)
+        // -------------------------------------------------
+        input.addEventListener("blur", function () {
+            setTimeout(function () {
+                const active = document.activeElement;
+                if (!active || !active.classList || !active.classList.contains("cau-tra-loi")) {
+                    dungTatCaAmThanh();
+                }
+            }, 200);
         });
 
         // -------------------------------------------------
@@ -90,6 +105,14 @@ document.addEventListener("DOMContentLoaded", function () {
 const globalAudioDung = (typeof window.dungTatCaAmThanh === "function") ? window.dungTatCaAmThanh : null;
 
 function dungTatCaAmThanh() {
+    // -------------------------------------------------
+    // Dừng timer lặp lại 3s
+    // -------------------------------------------------
+    if (timerLapDocTu) {
+        clearTimeout(timerLapDocTu);
+        timerLapDocTu = null;
+    }
+
     // -------------------------------------------------
     // Dừng file MP3 hiện tại
     // -------------------------------------------------
@@ -153,12 +176,12 @@ function batDauDocTu(
             onEnd: function () {
                 console.log("ĐỌC XONG:", tu);
                 if (maDoc === soLanDoc) {
-                    danhVan(tu, maDoc);
+                    lenLichDocLaiSau3s(tu, maDoc);
                 }
             },
             onError: function () {
                 if (maDoc === soLanDoc) {
-                    danhVan(tu, maDoc);
+                    lenLichDocLaiSau3s(tu, maDoc);
                 }
             }
         });
@@ -173,17 +196,17 @@ function batDauDocTu(
     audioHienTai.onended = function () {
         console.log("ĐỌC XONG:", tu);
         if (maDoc === soLanDoc) {
-            danhVan(tu, maDoc);
+            lenLichDocLaiSau3s(tu, maDoc);
         }
     };
     audioHienTai.onerror = function () {
         if (maDoc === soLanDoc) {
-            danhVan(tu, maDoc);
+            lenLichDocLaiSau3s(tu, maDoc);
         }
     };
     audioHienTai.play().catch(function () {
         if (maDoc === soLanDoc) {
-            danhVan(tu, maDoc);
+            lenLichDocLaiSau3s(tu, maDoc);
         }
     });
 
@@ -252,300 +275,43 @@ window.huyDocHocChon =
     };
 
 // =========================================================
-// ĐÁNH VẦN BẰNG FILE MP3
+// CÁCH 3S ĐỌC LẠI TỪ ĐANG NHẬP (THAY VÌ ĐÁNH VẦN)
 // =========================================================
 
-async function danhVan(
-    tu,
-    maDoc
-) {
-
-
-    if (!tu) {
-
-        return;
-
+function lenLichDocLaiSau3s(tu, maDoc) {
+    if (timerLapDocTu) {
+        clearTimeout(timerLapDocTu);
+        timerLapDocTu = null;
     }
 
-
-    // Kiểm tra lượt đọc hiện tại
-
-    if (
-        maDoc !== soLanDoc
-    ) {
-
+    // Nếu đã chuyển sang lượt đọc/từ khác
+    if (maDoc !== soLanDoc) {
         return;
-
     }
 
-
-    console.log(
-        "BẮT ĐẦU ĐÁNH VẦN:",
-        tu
-    );
-
-
-    // -------------------------------------------------
-    // Chuyển từ thành chữ in hoa
-    // -------------------------------------------------
-
-    let chuoi =
-        tu.toUpperCase();
-
-
-    // Chỉ lấy A-Z
-
-    let cacChuCai =
-        chuoi.match(/[A-Z]/g);
-
-
-    if (!cacChuCai) {
-
-        return;
-
-    }
-
-
-    // -------------------------------------------------
-    // Đọc từng chữ
-    // -------------------------------------------------
-
-    for (
-        let i = 0;
-        i < cacChuCai.length;
-        i++
-    ) {
-
-
-        // Nếu đã chuyển sang từ khác
-        // thì dừng ngay
-
-        if (
-            maDoc !== soLanDoc
-        ) {
-
-            console.log(
-                "Đã hủy đánh vần:",
-                tu
-            );
-
+    // Kiểm tra: nếu ô nhập của từ này đã hoàn thành (disabled) hoặc không còn focus
+    const active = document.activeElement;
+    if (active && active.classList && active.classList.contains("cau-tra-loi")) {
+        if (active.disabled || active.dataset.tu !== tu) {
             return;
-
         }
-
-
-        let chuCai =
-            cacChuCai[i];
-
-
-        console.log(
-            "CHỮ:",
-            chuCai
-        );
-
-
-        await phatChuCai(
-            chuCai,
-            maDoc
-        );
-
-
-        // Kiểm tra lại sau khi phát
-
-        if (
-            maDoc !== soLanDoc
-        ) {
-
-            return;
-
-        }
-
     }
 
+    console.log("Hẹn giờ đọc lại sau 3s:", tu);
 
-    console.log(
-        "ĐÁNH VẦN XONG:",
-        tu
-    );
-
-}
-
-
-// =========================================================
-// PHÁT 1 FILE MP3 CHỮ CÁI
-// =========================================================
-
-function phatChuCai(
-    chuCai,
-    maDoc
-) {
-
-    return new Promise(
-        function (resolve) {
-
-
-            // Nếu đã chuyển từ khác
-
-            if (
-                maDoc !== soLanDoc
-            ) {
-
-                resolve();
-
-                return;
-
+    timerLapDocTu = setTimeout(function () {
+        if (maDoc === soLanDoc) {
+            // Kiểm tra lại lần nữa trước khi phát
+            const currentActive = document.activeElement;
+            if (currentActive && currentActive.classList && currentActive.classList.contains("cau-tra-loi")) {
+                if (currentActive.disabled || currentActive.dataset.tu !== tu) {
+                    return;
+                }
             }
-
-
-            // -------------------------------------------------
-            // Tên file
-            // -------------------------------------------------
-
-            let tenFile =
-                chuCai.toLowerCase() +
-                ".mp3";
-
-
-            // -------------------------------------------------
-            // Đường dẫn Spring Boot
-            // -------------------------------------------------
-
-            let duongDan =
-                "/audio/alphabet/" +
-                tenFile;
-
-
-            console.log(
-                "PHÁT MP3:",
-                duongDan
-            );
-
-
-            // -------------------------------------------------
-            // Tạo Audio
-            // -------------------------------------------------
-
-            let audio =
-                new Audio(duongDan);
-
-
-            audio.volume =
-                1;
-
-            audio.preload =
-                "auto";
-
-            audio.playbackRate =
-                1.3;
-
-            // Lưu audio hiện tại
-
-            audioHienTai =
-                audio;
-
-
-            // -------------------------------------------------
-            // Phát xong
-            // -------------------------------------------------
-
-            audio.onended =
-                function () {
-
-
-                    console.log(
-                        "XONG:",
-                        duongDan
-                    );
-
-
-                    if (
-                        audioHienTai === audio
-                    ) {
-
-                        audioHienTai =
-                            null;
-
-                    }
-
-
-                    resolve();
-
-                };
-
-
-            // -------------------------------------------------
-            // Lỗi MP3
-            // -------------------------------------------------
-
-            audio.onerror =
-                function (e) {
-
-
-                    console.error(
-                        "LỖI MP3:",
-                        duongDan,
-                        e
-                    );
-
-
-                    if (
-                        audioHienTai === audio
-                    ) {
-
-                        audioHienTai =
-                            null;
-
-                    }
-
-
-                    resolve();
-
-                };
-
-
-            // -------------------------------------------------
-            // Phát
-            // -------------------------------------------------
-
-            audio.play()
-                .then(
-                    function () {
-
-                        console.log(
-                            "ĐANG PHÁT:",
-                            duongDan
-                        );
-
-                    }
-                )
-                .catch(
-                    function (error) {
-
-                        console.error(
-                            "KHÔNG PHÁT ĐƯỢC:",
-                            duongDan,
-                            error
-                        );
-
-
-                        if (
-                            audioHienTai === audio
-                        ) {
-
-                            audioHienTai =
-                                null;
-
-                        }
-
-
-                        resolve();
-
-                    }
-                );
-
+            console.log("CÁCH 3S ĐỌC LẠI TỪ ĐANG NHẬP:", tu);
+            batDauDocTu(tu, maDoc);
         }
-    );
-
+    }, 3000);
 }
 
 
@@ -820,6 +586,10 @@ function chamDiem(input) {
     if (input.disabled) {
         return;
     }
+
+    // Dừng ngay việc đọc lặp lại của từ vừa làm xong
+    soLanDoc++;
+    dungTatCaAmThanh();
 
     let dapAnRaw = input.dataset.dapAn || "";
     if (!dapAnRaw) {
