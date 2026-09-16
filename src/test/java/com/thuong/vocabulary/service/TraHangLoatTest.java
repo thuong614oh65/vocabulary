@@ -162,4 +162,30 @@ public class TraHangLoatTest {
         org.junit.jupiter.api.Assertions.assertEquals(List.of("ə", "ˌkaʊn", "tə", "ˈbɪl", "ɪ", "ti"), dto2.getAmTietIpa());
         org.junit.jupiter.api.Assertions.assertEquals(List.of("ờ", "cao-n", "tờ", "BÍL", "i", "ti"), dto2.getAmTietBoi());
     }
+
+    @Test
+    void testUserExamples() {
+        com.thuong.vocabulary.service.impl.HuongDanDocServiceImpl service = 
+                new com.thuong.vocabulary.service.impl.HuongDanDocServiceImpl(null);
+
+        String[][] words = {
+            {"lunch", "/lˈʌntʃ/", "bữa trưa"},
+            {"included", "/ɪnklˈudʌd/", "bao gồm"},
+            {"registration", "/rɛdʒɪstrˈeɪʃʌn/", "đăng ký"},
+            {"fee", "/fˈi/", "lệ phí"},
+            {"workshop", "/wˈɝkʃɑp/", "xưởng, hội thảo"}
+        };
+
+        for (String[] w : words) {
+            com.thuong.vocabulary.dto.HuongDanDocDTO dto = service.layHuongDanDoc(w[0], w[1], w[2]);
+            System.out.println("========== " + w[0].toUpperCase() + " ==========");
+            System.out.println("Tu: " + dto.getTu());
+            System.out.println("IPA: " + dto.getPhienAm());
+            System.out.println("amTiet (TRÊN): " + dto.getAmTiet());
+            System.out.println("amTietBoi (GIỮA): " + dto.getAmTietBoi());
+            System.out.println("amTietIpa (DƯỚI): " + dto.getAmTietIpa());
+            System.out.println("amTietDoc (SPEAK): " + dto.getAmTietDoc());
+            System.out.println("phienAmTiengViet: " + dto.getPhienAmTiengViet());
+        }
+    }
 }
