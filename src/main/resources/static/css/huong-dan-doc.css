@@ -1469,16 +1469,23 @@ tr:hover .tu-don-wrap .btn-hd-icon,
     font-weight: 700;
 }
 
-.btn-hd-mindmap-sound.rule-highlight {
-    border-color: #f59e0b;
+.hd-mml-title.rule-title {
     color: #b45309;
+    font-size: 0.86rem;
+}
+
+.btn-hd-mindmap-sound.rule-highlight {
+    border: 1.5px solid #f59e0b;
+    color: #92400e;
     background: #fffbeb;
+    font-weight: 700;
 }
 
 .btn-hd-mindmap-sound.rule-highlight:hover {
-    background: #d97706;
+    background: linear-gradient(135deg, #f59e0b, #d97706);
     color: #ffffff;
     border-color: #d97706;
+    box-shadow: 0 3px 8px rgba(217, 119, 6, 0.3);
 }
 
 

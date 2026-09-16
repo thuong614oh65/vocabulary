@@ -512,6 +512,95 @@
                 '<span class="blending-result">' + data.tu + ' <em>(' + fullBoi + ')</em></span>';
         }
 
+    // =========================================================
+    // DANH MỤC CÁC QUY TẮC ĐÁNH VẦN CÓ TRONG SƠ ĐỒ ĐÁNH VẦN (36+ QUY TẮC)
+    // =========================================================
+    const DANH_MUC_QUY_TAC_SO_DO = [
+        // Nhóm 1: Nguyên âm đặc biệt & Biến âm R
+        { id: "w_or", cum: "w + or", ipa: "/ɜː/", regex: /w[oO]r/i, icon: "🌟", label: 'w + or ➔ /ɜː/ (biến âm như trong work, word)' },
+        { id: "ar", cum: "ar", ipa: "/ɑː/", regex: /ar/i, icon: "⭐", label: 'ar ➔ /ɑː/ (nguyên âm dài như trong car, park)' },
+        { id: "er_ir_ur", cum: "er/ir/ur", ipa: "/ɜː/", regex: /er|ir|ur/i, icon: "⭐", label: 'er / ir / ur ➔ /ɜː/ (như trong her, bird, turn)' },
+        { id: "all_al", cum: "all/al", ipa: "/ɔːl/", regex: /all|^al/i, icon: "⭐", label: 'all / al ➔ /ɔːl/ (như trong ball, call, also)' },
+        { id: "or_normal", cum: "or", ipa: "/ɔː/", regex: /or/i, icon: "⭐", label: 'or ➔ /ɔː/ (như trong horse, fork, sport)' },
+        { id: "wa_qua", cum: "wa/qua", ipa: "/ɒ/", regex: /wa|qua/i, icon: "⭐", label: 'wa / qua biến âm /ɒ/ (như trong water, watch)' },
+
+        // Nhóm 2: Đuôi từ & Hậu tố thông dụng
+        { id: "ability_suffix", cum: "-ability", ipa: "/əˈbɪl.ə.ti/", regex: /ability/i, icon: "🏷️", label: 'Hậu tố "-ability" ➔ /əˈbɪl.ə.ti/' },
+        { id: "ty_ending", cum: "-ty", ipa: "/ti/", regex: /ty$/i, icon: "🏷️", label: 'Đuôi danh từ "-ty" ➔ /ti/' },
+        { id: "fy_end", cum: "-fy", ipa: "/aɪ/", regex: /fy$/i, icon: "🏷️", label: 'Đuôi "-fy" ➔ /aɪ/ (như trong modify, qualify)' },
+        { id: "consonant_le", cum: "-le", ipa: "/əl/", regex: /[bcdfghjklmnpqrstvwxyz]le$/i, icon: "🏷️", label: 'Đuôi "[phụ âm + le]" ➔ /əl/ (như table, apple)' },
+        { id: "ise_ize", cum: "-ise/-ize", ipa: "/aɪz/", regex: /ise$|ize$/i, icon: "🏷️", label: 'Đuôi "-ise / -ize" ➔ /aɪz/ (như organize, realize)' },
+        { id: "tion_sion", cum: "-tion/-sion", ipa: "/ʃn/", regex: /tion|sion/i, icon: "🏷️", label: 'Đuôi "-tion / -sion" ➔ /ʃn/ (như registration, action)' },
+        { id: "ture_end", cum: "-ture", ipa: "/tʃə/", regex: /ture$/i, icon: "🏷️", label: 'Đuôi "-ture" ➔ /tʃə/ (như picture, nature)' },
+        { id: "cial_tial", cum: "-cial/-tial", ipa: "/ʃəl/", regex: /cial|tial/i, icon: "🏷️", label: 'Đuôi "-cial / -tial" ➔ /ʃəl/ (như special, official)' },
+        { id: "ious_eous", cum: "-ious/-eous", ipa: "/əs/", regex: /ious|eous/i, icon: "🏷️", label: 'Đuôi "-ious / -eous" ➔ /əs/ (như famous, delicious)' },
+        { id: "ate_adj_noun", cum: "-ate", ipa: "/ət/", regex: /ate$/i, icon: "🏷️", label: 'Đuôi "-ate" ➔ /ət/ (như climate, accurate)' },
+        { id: "ment_end", cum: "-ment", ipa: "/mənt/", regex: /ment$/i, icon: "🏷️", label: 'Đuôi "-ment" ➔ /mənt/ (như payment, movement)' },
+        { id: "ness_end", cum: "-ness", ipa: "/nəs/", regex: /ness$/i, icon: "🏷️", label: 'Đuôi "-ness" ➔ /nəs/ (như kindness, business)' },
+
+        // Nhóm 3: Nguyên âm đôi & Nguyên âm dài
+        { id: "ou_sound", cum: "ou", ipa: "/aʊ/", regex: /ou/i, icon: "🔤", label: 'Nguyên âm đôi "ou" ➔ /aʊ/ (như trong coun, house, sound)' },
+        { id: "ea_ee", cum: "ee/ea", ipa: "/iː/", regex: /ee|ea/i, icon: "🔤", label: 'Nguyên âm dài "ee / ea" ➔ /iː/ (như fee, see, tea)' },
+        { id: "oo_long", cum: "oo", ipa: "/uː/", regex: /oo/i, icon: "🔤", label: 'Cụm "oo" ➔ /uː/ & /ʊ/ (như moon, food, book)' },
+        { id: "oa_sound", cum: "oa", ipa: "/oʊ/", regex: /oa/i, icon: "🔤", label: 'Nguyên âm "oa" ➔ /oʊ/ (như boat, coat, road)' },
+        { id: "igh_sound", cum: "igh", ipa: "/aɪ/", regex: /igh/i, icon: "🔤", label: 'Cụm "igh" ➔ /aɪ/ (như high, night, light)' },
+        { id: "oy_oi", cum: "oy/oi", ipa: "/ɔɪ/", regex: /oy|oi/i, icon: "🔤", label: 'Cặp "oy / oi" ➔ /ɔɪ/ (như boy, toy, coin)' },
+        { id: "aw_au", cum: "aw/au", ipa: "/ɔː/", regex: /aw|au/i, icon: "🔤", label: 'Cặp "aw / au" ➔ /ɔː/ (như law, saw, cause)' },
+        { id: "ai_ay", cum: "ai/ay", ipa: "/eɪ/", regex: /ai|ay/i, icon: "🔤", label: 'Cặp "ai / ay" ➔ /eɪ/ (như day, play, train)' },
+
+        // Nhóm 4: Phụ âm kép & Phụ âm câm
+        { id: "ch_sound", cum: "ch", ipa: "/tʃ/", regex: /ch/i, icon: "🐥", label: 'Phụ âm kép "ch" ➔ /tʃ/ (như trong lunch, chair)' },
+        { id: "sh_sound", cum: "sh", ipa: "/ʃ/", regex: /sh/i, icon: "🐥", label: 'Phụ âm kép "sh" ➔ /ʃ/ (như trong shop, workshop, fish)' },
+        { id: "th_unvoiced", cum: "th", ipa: "/θ/ & /ð/", regex: /th/i, icon: "🐥", label: 'Phụ âm kép "th" ➔ /θ/ & /ð/ (như think, this)' },
+        { id: "ph_sound", cum: "ph", ipa: "/f/", regex: /ph/i, icon: "🐥", label: 'Phụ âm "ph" ➔ /f/ (như phone, photo)' },
+        { id: "silent_kn_wr", cum: "kn/wr", ipa: "âm câm", regex: /^kn|^wr/i, icon: "🐥", label: 'Âm câm "kn / wr" (như know, knife, write)' },
+        { id: "silent_mb", cum: "mb", ipa: "b câm", regex: /mb$/i, icon: "🐥", label: 'Đuôi "-mb" câm chữ "b" (như climb, lamb)' },
+        { id: "silent_wh", cum: "wh", ipa: "h/w câm", regex: /^wh/i, icon: "🐥", label: 'Cụm "wh" (như what, where, when)' },
+
+        // Nhóm 5: Quy tắc biến âm C & G
+        { id: "ac_prefix", cum: "ac-", ipa: "/ək/", regex: /^ac/i, icon: "🔀", label: 'Tiền tố "ac-" ➔ /ək/ (như trong account, accept)' },
+        { id: "soft_c", cum: "c + e/i/y", ipa: "/s/", regex: /c[eiy]/i, icon: "🔀", label: 'C Mềm (c + e, i, y) ➔ /s/ (như city, nice, circle)' },
+        { id: "soft_g", cum: "g + e/i/y", ipa: "/dʒ/", regex: /g[eiy]/i, icon: "🔀", label: 'G Mềm (g + e, i, y) ➔ /dʒ/ (như gem, giraffe, registration)' }
+    ];
+
+    // =========================================================
+    // 5B. RENDER HƯỚNG DẪN ĐỌC GHÉP VẦN THÀNH TỪ (BLENDING)
+    // =========================================================
+    function renderBlendingBox(data) {
+        const box = document.getElementById("hdBlendingBox");
+        const formulaEl = document.getElementById("hdBlendingFormula");
+        if (!box || !formulaEl) return;
+
+        const amTiet = data.amTiet || [data.tu];
+        const amTietBoi = data.amTietBoi || [];
+        const amNhan = typeof data.amNhanIndex === "number" ? data.amNhanIndex : -1;
+
+        box.style.display = "flex";
+        formulaEl.innerHTML = "";
+
+        if (amTiet.length <= 1) {
+            const fullBoi = data.phienAmTiengViet || (amTietBoi[0] || data.tu);
+            formulaEl.innerHTML = '<span class="blending-result">' + data.tu + ' <em>(' + fullBoi + ')</em></span>';
+        } else {
+            const parts = [];
+            for (let i = 0; i < amTiet.length; i++) {
+                const en = amTiet[i].replace(/\s*\([^)]*\)/g, "").trim();
+                const boi = amTietBoi[i] || "";
+                const isStressed = (i === amNhan);
+                parts.push(
+                    '<span class="blending-item' + (isStressed ? ' stressed' : '') + '">' +
+                        en + (boi ? ' <em>(' + boi + ')</em>' : '') +
+                    '</span>'
+                );
+            }
+
+            const fullBoi = data.phienAmTiengViet || amTietBoi.join(" - ");
+            formulaEl.innerHTML = 
+                parts.join(' <span style="color:#94a3b8; font-weight:700;">+</span> ') +
+                ' <span class="blending-arrow">➔</span> ' +
+                '<span class="blending-result">' + data.tu + ' <em>(' + fullBoi + ')</em></span>';
+        }
+
         // Render các nút chuyển sang Sơ đồ đánh vần luyện âm
         let mmlContainer = document.getElementById("hdMindmapLinks");
         if (!mmlContainer) {
@@ -522,16 +611,68 @@
         }
         mmlContainer.innerHTML = "";
 
-        const mmlTitle = document.createElement("div");
-        mmlTitle.className = "hd-mml-title";
-        mmlTitle.innerHTML = '<span>🧠</span> Luyện từng âm trong Sơ đồ đánh vần (bấm vào âm chưa biết đọc để luyện, xong quay lại học tiếp):';
-        mmlContainer.appendChild(mmlTitle);
+        // 1. Quét tìm TẤT CẢ các quy tắc trong từ khớp với Bảng Sơ đồ đánh vần
+        const tuLower = (data.tu || "").trim().toLowerCase();
+        const matchedRules = [];
+        const seenRuleIds = new Set();
+
+        if (data.maQuyTacLienKet && !seenRuleIds.has(data.maQuyTacLienKet)) {
+            matchedRules.push({
+                id: data.maQuyTacLienKet,
+                label: data.tenQuyTacLienKet || "Quy tắc liên quan",
+                icon: "⭐"
+            });
+            seenRuleIds.add(data.maQuyTacLienKet);
+        }
+
+        DANH_MUC_QUY_TAC_SO_DO.forEach(function (r) {
+            if (seenRuleIds.has(r.id)) return;
+            if (r.id === "or_normal" && /w[oO]r/i.test(tuLower)) return; // Tránh nhầm với w_or
+            if (r.id === "ea_ee" && seenRuleIds.has("ee_double")) return;
+
+            if (r.regex.test(tuLower)) {
+                matchedRules.push(r);
+                seenRuleIds.add(r.id);
+            }
+        });
+
+        // Nếu có quy tắc khớp với bảng Sơ đồ đánh vần: hiển thị nổi bật trên cùng
+        if (matchedRules.length > 0) {
+            const ruleTitle = document.createElement("div");
+            ruleTitle.className = "hd-mml-title rule-title";
+            ruleTitle.innerHTML = '<span>🌟</span> Quy tắc đánh vần trong Sơ đồ (bấm để sang học quy tắc):';
+            mmlContainer.appendChild(ruleTitle);
+
+            const ruleList = document.createElement("div");
+            ruleList.className = "hd-mml-buttons rule-buttons";
+
+            matchedRules.forEach(function (rule) {
+                const btnRule = document.createElement("button");
+                btnRule.type = "button";
+                btnRule.className = "btn-hd-mindmap-sound rule-highlight";
+                const icon = rule.icon || "⭐";
+                btnRule.innerHTML = icon + ' ' + (rule.label || rule.id) + ' ➔';
+                btnRule.title = 'Mở Sơ đồ đánh vần quy tắc: ' + (rule.label || rule.id) + ' (luyện xong quay lại học tiếp)';
+                btnRule.onclick = function () {
+                    moSoDoLuyenAm(null, rule.id);
+                };
+                ruleList.appendChild(btnRule);
+            });
+
+            mmlContainer.appendChild(ruleList);
+        }
+
+        // 2. Hiển thị các nút luyện từng âm tiết ngắt quãng
+        const sylTitle = document.createElement("div");
+        sylTitle.className = "hd-mml-title";
+        sylTitle.style.marginTop = matchedRules.length > 0 ? "6px" : "0px";
+        sylTitle.innerHTML = '<span>🧠</span> Luyện từng âm tiết (bấm vào âm chưa biết đọc để luyện, xong quay lại học tiếp):';
+        mmlContainer.appendChild(sylTitle);
 
         const mmlList = document.createElement("div");
         mmlList.className = "hd-mml-buttons";
 
-        // Thêm nút cho từng âm tiết của từ
-        amTiet.forEach(function(syl, idx) {
+        amTiet.forEach(function (syl, idx) {
             const cleanSyl = syl.replace(/\s*\([^)]*\)/g, "").trim();
             if (!cleanSyl) return;
             const boi = amTietBoi[idx] ? ' (' + amTietBoi[idx] + ')' : '';
@@ -540,25 +681,11 @@
             btn.className = "btn-hd-mindmap-sound";
             btn.innerHTML = '📖 Luyện âm <strong>"' + cleanSyl + '"</strong>' + boi + ' ➔';
             btn.title = 'Mở Sơ đồ đánh vần để luyện âm "' + cleanSyl + '" (luyện xong quay lại học tiếp)';
-            btn.onclick = function() {
+            btn.onclick = function () {
                 moSoDoLuyenAm(cleanSyl);
             };
             mmlList.appendChild(btn);
         });
-
-        // Nếu có quy tắc liên kết riêng (như hậu tố -ability, -tion...)
-        if (data.maQuyTacLienKet || data.tenQuyTacLienKet) {
-            const btnRule = document.createElement("button");
-            btnRule.type = "button";
-            btnRule.className = "btn-hd-mindmap-sound rule-highlight";
-            const ruleName = data.tenQuyTacLienKet || "Quy tắc liên quan";
-            btnRule.innerHTML = '⭐ ' + ruleName + ' ➔';
-            btnRule.title = 'Mở bài học quy luật đánh vần cho từ này';
-            btnRule.onclick = function() {
-                moSoDoLuyenAm(null, data.maQuyTacLienKet);
-            };
-            mmlList.appendChild(btnRule);
-        }
 
         mmlContainer.appendChild(mmlList);
     }

@@ -37,6 +37,15 @@ public class QuyLuatDanhVanServiceImpl implements QuyLuatDanhVanService {
         if (thuVienQuyLuat.containsKey(key)) {
             return thuVienQuyLuat.get(key);
         }
+        if (key.equals("ch") && thuVienQuyLuat.containsKey("ch_sound")) return thuVienQuyLuat.get("ch_sound");
+        if (key.equals("sh") && thuVienQuyLuat.containsKey("sh_sound")) return thuVienQuyLuat.get("sh_sound");
+        if (key.equals("oo") && thuVienQuyLuat.containsKey("oo_long")) return thuVienQuyLuat.get("oo_long");
+        if (key.equals("soft_c_g") && thuVienQuyLuat.containsKey("soft_c")) return thuVienQuyLuat.get("soft_c");
+        if (key.equals("igh") && thuVienQuyLuat.containsKey("igh_sound")) return thuVienQuyLuat.get("igh_sound");
+        if (key.equals("ou") && thuVienQuyLuat.containsKey("ou_sound")) return thuVienQuyLuat.get("ou_sound");
+        if (key.equals("ability") && thuVienQuyLuat.containsKey("ability_suffix")) return thuVienQuyLuat.get("ability_suffix");
+        if (key.equals("ty") && thuVienQuyLuat.containsKey("ty_ending")) return thuVienQuyLuat.get("ty_ending");
+        if (key.equals("ac") && thuVienQuyLuat.containsKey("ac_prefix")) return thuVienQuyLuat.get("ac_prefix");
         if (aiCache.containsKey(key)) {
             return aiCache.get(key);
         }
