@@ -81,15 +81,31 @@ public class QuyLuatDanhVanServiceImpl implements QuyLuatDanhVanService {
         String key = tuHoacAm.trim().toLowerCase();
 
         // 1. Kiểm tra kho có sẵn
+        String cleanKey = key.replace("-", "").trim();
         for (QuyLuatDanhVanDTO ql : thuVienQuyLuat.values()) {
-            if (ql.getId().equalsIgnoreCase(key) || ql.getCumChu().equalsIgnoreCase(key)) {
+            String qlCleanCum = ql.getCumChu().replace("-", "").trim().toLowerCase();
+            if (ql.getId().equalsIgnoreCase(key) || ql.getCumChu().equalsIgnoreCase(key)
+                    || qlCleanCum.equalsIgnoreCase(cleanKey) || ql.getId().equalsIgnoreCase(cleanKey)) {
                 return ql;
             }
             for (TuMinhHoaDTO tm : ql.getDanhSachTu()) {
-                if (tm.getTu().equalsIgnoreCase(key)) {
+                if (tm.getTu().equalsIgnoreCase(key) || tm.getTu().equalsIgnoreCase(cleanKey)) {
                     return ql;
                 }
             }
+        }
+
+        if (cleanKey.equals("ac") && thuVienQuyLuat.containsKey("ac_prefix")) {
+            return thuVienQuyLuat.get("ac_prefix");
+        }
+        if (cleanKey.equals("ty") && thuVienQuyLuat.containsKey("ty_ending")) {
+            return thuVienQuyLuat.get("ty_ending");
+        }
+        if (cleanKey.contains("ou") && thuVienQuyLuat.containsKey("ou_sound")) {
+            return thuVienQuyLuat.get("ou_sound");
+        }
+        if (cleanKey.contains("ability") && thuVienQuyLuat.containsKey("ability_suffix")) {
+            return thuVienQuyLuat.get("ability_suffix");
         }
 
         // 2. Kiểm tra cache AI
@@ -461,6 +477,58 @@ public class QuyLuatDanhVanServiceImpl implements QuyLuatDanhVanService {
                 )
         ));
 
+        themQuyLuat(new QuyLuatDanhVanDTO(
+                "ability_suffix", "ability", "/əˈbɪl.ə.ti/", "uh-BILL-ih-tee",
+                "Hậu tố \"-ABILITY\" trọng âm luôn rơi vào \"-BIL-\"",
+                "Khi từ có hậu tố '-ability', trọng âm chính luôn rơi vào âm tiết 'bil' (/bɪl/), đuôi '-ty' phát âm là /ti/.",
+                "DUOI_TU_HAU_TO", "🔖 Đuôi từ & Hậu tố", "⭐",
+                "Khẩu hình: 'bil' ngậm môi bật /b/ kết hợp uốn đầu lưỡi chạm chân răng trên âm /l/ (BÍL), rồi kết thúc bằng 'ty' /ti/.",
+                List.of(
+                        new TuMinhHoaDTO("accountability", "ability", "/əˌkaʊn.təˈbɪl.ə.ti/", "bɪl", "trách nhiệm giải trình", "📋", "/audio/tts?text=accountability"),
+                        new TuMinhHoaDTO("responsibility", "ability", "/rɪˌspɒn.səˈbɪl.ə.ti/", "bɪl", "tinh thần trách nhiệm", "🛡️", "/audio/tts?text=responsibility"),
+                        new TuMinhHoaDTO("capability", "ability", "/ˌkeɪ.pəˈbɪl.ə.ti/", "bɪl", "năng lực, khả năng", "⚡", "/audio/tts?text=capability"),
+                        new TuMinhHoaDTO("possibility", "ability", "/ˌpɒs.əˈbɪl.ə.ti/", "bɪl", "khả năng xảy ra", "🎲", "/audio/tts?text=possibility"),
+                        new TuMinhHoaDTO("probability", "ability", "/ˌprɒb.əˈbɪl.ə.ti/", "bɪl", "xác suất xảy ra", "📊", "/audio/tts?text=probability"),
+                        new TuMinhHoaDTO("flexibility", "ability", "/ˌflek.səˈbɪl.ə.ti/", "bɪl", "sự linh hoạt, uyển chuyển", "🤸", "/audio/tts?text=flexibility"),
+                        new TuMinhHoaDTO("stability", "ability", "/stəˈbɪl.ə.ti/", "bɪl", "sự ổn định, vững vàng", "🏛️", "/audio/tts?text=stability"),
+                        new TuMinhHoaDTO("availability", "ability", "/əˌveɪ.ləˈbɪl.ə.ti/", "bɪl", "sự sẵn có, có sẵn", "🟢", "/audio/tts?text=availability")
+                )
+        ));
+
+        themQuyLuat(new QuyLuatDanhVanDTO(
+                "ty_ending", "-ty", "/ti/", "tee",
+                "Đuôi \"-TY\" luôn phát âm là /ti/",
+                "Hậu tố danh từ '-ty' trong tiếng Anh luôn được phát âm là /ti/ (ti), không bao giờ đọc là 'thị'.",
+                "DUOI_TU_HAU_TO", "🔖 Đuôi từ & Hậu tố", "🏷️",
+                "Khẩu hình âm /ti/: Đầu lưỡi chạm nướu răng trên bật nhẹ hơi âm /t/, khóe miệng kéo dẹt sang hai bên mỉm cười phát âm /i/.",
+                List.of(
+                        new TuMinhHoaDTO("city", "ty", "/ˈsɪt.i/", "ti", "thành phố, đô thị", "🏙️", "/audio/tts?text=city"),
+                        new TuMinhHoaDTO("safety", "ty", "/ˈseɪf.ti/", "ti", "sự an toàn", "🦺", "/audio/tts?text=safety"),
+                        new TuMinhHoaDTO("duty", "ty", "/ˈdʒuː.ti/", "ti", "nghĩa vụ, bổn phận", "🎖️", "/audio/tts?text=duty"),
+                        new TuMinhHoaDTO("beauty", "ty", "/ˈbjuː.ti/", "ti", "vẻ đẹp, nhan sắc", "🌸", "/audio/tts?text=beauty"),
+                        new TuMinhHoaDTO("activity", "ty", "/ækˈtɪv.ə.ti/", "ti", "hoạt động, sinh hoạt", "🏃", "/audio/tts?text=activity"),
+                        new TuMinhHoaDTO("community", "ty", "/kəˈmjuː.nə.ti/", "ti", "cộng đồng dân cư", "🏘️", "/audio/tts?text=community"),
+                        new TuMinhHoaDTO("security", "ty", "/sɪˈkjʊə.rə.ti/", "ti", "an ninh, bảo vệ", "🔒", "/audio/tts?text=security"),
+                        new TuMinhHoaDTO("quality", "ty", "/ˈkwɒl.ə.ti/", "ti", "chất lượng sản phẩm", "⭐", "/audio/tts?text=quality")
+                )
+        ));
+
+        themQuyLuat(new QuyLuatDanhVanDTO(
+                "ac_prefix", "ac-", "/ə/", "uh",
+                "Tiền tố \"AC-\" chữ \"c\" đầu là âm câm, đọc là /ə/",
+                "Khi từ bắt đầu bằng 'ac-' đi trước một phụ âm (như account, accept, acquire), chữ 'c' đầu là âm câm hoặc bị đồng hóa, 'ac' đọc lướt là /ə/.",
+                "DUOI_TU_HAU_TO", "🔖 Đuôi từ & Hậu tố", "🗝️",
+                "Khẩu hình âm /ə/: Thả lỏng hoàn toàn môi và hàm miệng, phát âm lướt nhẹ mềm mại 'ờ'.",
+                List.of(
+                        new TuMinhHoaDTO("account", "ac", "/əˈkaʊnt/", "ə", "tài khoản, tính toán", "💳", "/audio/tts?text=account"),
+                        new TuMinhHoaDTO("accept", "ac", "/əkˈsept/", "ə", "chấp nhận, đồng ý", "✅", "/audio/tts?text=accept"),
+                        new TuMinhHoaDTO("accumulate", "ac", "/əˈkjuː.mjə.leɪt/", "ə", "tích lũy, gom góp", "💰", "/audio/tts?text=accumulate"),
+                        new TuMinhHoaDTO("accessible", "ac", "/əkˈses.ə.bəl/", "ə", "dễ tiếp cận, truy cập", "🚪", "/audio/tts?text=accessible"),
+                        new TuMinhHoaDTO("accommodate", "ac", "/əˈkɒm.ə.deɪt/", "ə", "cung cấp chỗ ở, chứa", "🏨", "/audio/tts?text=accommodate"),
+                        new TuMinhHoaDTO("accurate", "ac", "/ˈæk.jə.rət/", "æk", "chính xác, đúng đắn", "🎯", "/audio/tts?text=accurate")
+                )
+        ));
+
         // -------------------------------------------------------------
         // NHÓM 3: NGUYÊN ÂM ĐÔI & NHÓM CHỮ CÁI (VOWEL DIGRAPHS)
         // -------------------------------------------------------------
@@ -605,6 +673,24 @@ public class QuyLuatDanhVanServiceImpl implements QuyLuatDanhVanService {
                         new TuMinhHoaDTO("boy", "oy", "/bɔɪ/", "ɔɪ", "cậu bé trai", "👦", "/audio/tts?text=boy"),
                         new TuMinhHoaDTO("toy", "oy", "/tɔɪ/", "ɔɪ", "đồ chơi trẻ em", "🧸", "/audio/tts?text=toy"),
                         new TuMinhHoaDTO("enjoy", "oy", "/ɪnˈdʒɔɪ/", "ɔɪ", "thưởng thức, vui thích", "🎉", "/audio/tts?text=enjoy")
+                )
+        ));
+
+        themQuyLuat(new QuyLuatDanhVanDTO(
+                "ou_sound", "OU", "/aʊ/", "ow",
+                "Cụm \"OU\" thường đọc là /aʊ/",
+                "Khi hai chữ cái 'ou' đi cùng nhau trong phần lớn từ thông dụng, chúng phát âm thành nguyên âm đôi /aʊ/ (như count, house, sound).",
+                "NGUYEN_AM_DOI", "🎶 Nguyên âm đôi", "🏠",
+                "Khẩu hình âm /aʊ/: Mở rộng vòm miệng phát âm /a/, sau đó trượt nhanh thu tròn môi về phía trước phát âm /ʊ/.",
+                List.of(
+                        new TuMinhHoaDTO("count", "ou", "/kaʊnt/", "aʊ", "đếm số, tính toán", "🔢", "/audio/tts?text=count"),
+                        new TuMinhHoaDTO("house", "ou", "/haʊs/", "aʊ", "ngôi nhà ấm cúng", "🏠", "/audio/tts?text=house"),
+                        new TuMinhHoaDTO("mouse", "ou", "/maʊs/", "aʊ", "con chuột nhỏ", "🐭", "/audio/tts?text=mouse"),
+                        new TuMinhHoaDTO("sound", "ou", "/saʊnd/", "aʊ", "âm thanh, tiếng động", "🔊", "/audio/tts?text=sound"),
+                        new TuMinhHoaDTO("round", "ou", "/raʊnd/", "aʊ", "hình tròn, vòng quanh", "⭕", "/audio/tts?text=round"),
+                        new TuMinhHoaDTO("cloud", "ou", "/klaʊd/", "aʊ", "đám mây trên trời", "☁️", "/audio/tts?text=cloud"),
+                        new TuMinhHoaDTO("mountain", "ou", "/ˈmaʊn.tɪn/", "aʊ", "ngọn núi cao", "⛰️", "/audio/tts?text=mountain"),
+                        new TuMinhHoaDTO("about", "ou", "/əˈbaʊt/", "aʊ", "về, khoảng chừng", "ℹ️", "/audio/tts?text=about")
                 )
         ));
 

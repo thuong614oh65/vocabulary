@@ -359,6 +359,20 @@
         }
 
         function khoiTaoGiaoDien() {
+            // Cập nhật nút quay lại bài học nếu có lưu url trước đó
+            const btnBackStudy = document.getElementById("btnSdBackStudy");
+            if (btnBackStudy) {
+                try {
+                    const urlQuayLai = sessionStorage.getItem("urlQuayLaiHoc");
+                    if (urlQuayLai) {
+                        btnBackStudy.href = urlQuayLai;
+                        btnBackStudy.innerHTML = "← Quay lại học tiếp";
+                        btnBackStudy.classList.add("fw-bold");
+                        btnBackStudy.title = "Quay lại trang học từ vựng bạn vừa rời đi";
+                    }
+                } catch (e) {}
+            }
+
             renderCategoryHub();
 
             const moBangNgoai = (window.SERVER_DATA_MO_BANG_NGOAI === true);

@@ -1413,4 +1413,72 @@ tr:hover .tu-don-wrap .btn-hd-icon,
     animation: hdAudioPulse 1s infinite alternate;
 }
 
+/* =========================================================
+   NÚT CHUYỂN SANG SƠ ĐỒ ĐÁNH VẦN ĐỂ LUYỆN ÂM
+   ========================================================= */
+.hd-mindmap-links {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 4px;
+    padding-top: 10px;
+    border-top: 1px dashed #bbf7d0;
+}
+
+.hd-mml-title {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: #15803d;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.hd-mml-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.btn-hd-mindmap-sound {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: #ffffff;
+    border: 1.5px solid #22c55e;
+    color: #15803d;
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.btn-hd-mindmap-sound:hover {
+    background: #15803d;
+    color: #ffffff;
+    border-color: #15803d;
+    transform: translateY(-1px);
+    box-shadow: 0 3px 8px rgba(21, 128, 61, 0.25);
+}
+
+.btn-hd-mindmap-sound strong {
+    color: inherit;
+    font-weight: 700;
+}
+
+.btn-hd-mindmap-sound.rule-highlight {
+    border-color: #f59e0b;
+    color: #b45309;
+    background: #fffbeb;
+}
+
+.btn-hd-mindmap-sound.rule-highlight:hover {
+    background: #d97706;
+    color: #ffffff;
+    border-color: #d97706;
+}
+
 

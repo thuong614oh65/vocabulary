@@ -486,32 +486,103 @@
         const amTietBoi = data.amTietBoi || [];
         const amNhan = typeof data.amNhanIndex === "number" ? data.amNhanIndex : -1;
 
-        if (amTiet.length <= 1) {
-            box.style.display = "none";
-            return;
-        }
-
         box.style.display = "flex";
         formulaEl.innerHTML = "";
 
-        const parts = [];
-        for (let i = 0; i < amTiet.length; i++) {
-            const en = amTiet[i].replace(/\s*\([^)]*\)/g, "").trim();
-            const boi = amTietBoi[i] || "";
-            const isStressed = (i === amNhan);
-            parts.push(
-                '<span class="blending-item' + (isStressed ? ' stressed' : '') + '">' +
-                    en + (boi ? ' <em>(' + boi + ')</em>' : '') +
-                '</span>'
-            );
+        if (amTiet.length <= 1) {
+            const fullBoi = data.phienAmTiengViet || (amTietBoi[0] || data.tu);
+            formulaEl.innerHTML = '<span class="blending-result">' + data.tu + ' <em>(' + fullBoi + ')</em></span>';
+        } else {
+            const parts = [];
+            for (let i = 0; i < amTiet.length; i++) {
+                const en = amTiet[i].replace(/\s*\([^)]*\)/g, "").trim();
+                const boi = amTietBoi[i] || "";
+                const isStressed = (i === amNhan);
+                parts.push(
+                    '<span class="blending-item' + (isStressed ? ' stressed' : '') + '">' +
+                        en + (boi ? ' <em>(' + boi + ')</em>' : '') +
+                    '</span>'
+                );
+            }
+
+            const fullBoi = data.phienAmTiengViet || amTietBoi.join(" - ");
+            formulaEl.innerHTML = 
+                parts.join(' <span style="color:#94a3b8; font-weight:700;">+</span> ') +
+                ' <span class="blending-arrow">➔</span> ' +
+                '<span class="blending-result">' + data.tu + ' <em>(' + fullBoi + ')</em></span>';
         }
 
-        const fullBoi = data.phienAmTiengViet || amTietBoi.join(" - ");
-        formulaEl.innerHTML = 
-            parts.join(' <span style="color:#94a3b8; font-weight:700;">+</span> ') +
-            ' <span class="blending-arrow">➔</span> ' +
-            '<span class="blending-result">' + data.tu + ' <em>(' + fullBoi + ')</em></span>';
+        // Render các nút chuyển sang Sơ đồ đánh vần luyện âm
+        let mmlContainer = document.getElementById("hdMindmapLinks");
+        if (!mmlContainer) {
+            mmlContainer = document.createElement("div");
+            mmlContainer.id = "hdMindmapLinks";
+            mmlContainer.className = "hd-mindmap-links";
+            box.appendChild(mmlContainer);
+        }
+        mmlContainer.innerHTML = "";
+
+        const mmlTitle = document.createElement("div");
+        mmlTitle.className = "hd-mml-title";
+        mmlTitle.innerHTML = '<span>🧠</span> Luyện từng âm trong Sơ đồ đánh vần (bấm vào âm chưa biết đọc để luyện, xong quay lại học tiếp):';
+        mmlContainer.appendChild(mmlTitle);
+
+        const mmlList = document.createElement("div");
+        mmlList.className = "hd-mml-buttons";
+
+        // Thêm nút cho từng âm tiết của từ
+        amTiet.forEach(function(syl, idx) {
+            const cleanSyl = syl.replace(/\s*\([^)]*\)/g, "").trim();
+            if (!cleanSyl) return;
+            const boi = amTietBoi[idx] ? ' (' + amTietBoi[idx] + ')' : '';
+            const btn = document.createElement("button");
+            btn.type = "button";
+            btn.className = "btn-hd-mindmap-sound";
+            btn.innerHTML = '📖 Luyện âm <strong>"' + cleanSyl + '"</strong>' + boi + ' ➔';
+            btn.title = 'Mở Sơ đồ đánh vần để luyện âm "' + cleanSyl + '" (luyện xong quay lại học tiếp)';
+            btn.onclick = function() {
+                moSoDoLuyenAm(cleanSyl);
+            };
+            mmlList.appendChild(btn);
+        });
+
+        // Nếu có quy tắc liên kết riêng (như hậu tố -ability, -tion...)
+        if (data.maQuyTacLienKet || data.tenQuyTacLienKet) {
+            const btnRule = document.createElement("button");
+            btnRule.type = "button";
+            btnRule.className = "btn-hd-mindmap-sound rule-highlight";
+            const ruleName = data.tenQuyTacLienKet || "Quy tắc liên quan";
+            btnRule.innerHTML = '⭐ ' + ruleName + ' ➔';
+            btnRule.title = 'Mở bài học quy luật đánh vần cho từ này';
+            btnRule.onclick = function() {
+                moSoDoLuyenAm(null, data.maQuyTacLienKet);
+            };
+            mmlList.appendChild(btnRule);
+        }
+
+        mmlContainer.appendChild(mmlList);
     }
+
+    // Chuyển sang Sơ đồ đánh vần để luyện âm chưa biết đọc
+    window.moSoDoLuyenAm = function(am, ruleId) {
+        dungAudioHuongDan();
+        try {
+            sessionStorage.setItem("urlQuayLaiHoc", window.location.href);
+        } catch (e) {}
+
+        let url = "/so-do-danh-van";
+        if (ruleId) {
+            url += "?id=" + encodeURIComponent(ruleId);
+        } else if (am) {
+            url += "?tu=" + encodeURIComponent(am);
+        }
+
+        // Mở trong tab mới để không mất tiến trình học hiện tại
+        const win = window.open(url, "_blank");
+        if (!win || win.closed || typeof win.closed === "undefined") {
+            window.location.href = url;
+        }
+    };
 
     // =========================================================
     // 6. PHÁT AUDIO (CHUẨN 1.0x HOẶC CHẬM 0.6x)

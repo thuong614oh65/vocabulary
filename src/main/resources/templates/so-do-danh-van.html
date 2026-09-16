@@ -10,7 +10,7 @@
 
     <!-- CSS Sơ đồ tư duy & Hướng dẫn đọc -->
     <link rel="stylesheet" th:href="@{/css/so-do-danh-van.css(v=4)}">
-    <link rel="stylesheet" th:href="@{/css/huong-dan-doc.css(v=7)}">
+    <link rel="stylesheet" th:href="@{/css/huong-dan-doc.css(v=9)}">
 </head>
 <body>
 
@@ -24,7 +24,7 @@
             <div class="sd-header-left">
                 <a href="/" class="btn-sd-back-home" title="Quay về trang chủ">← Trang chủ</a>
                 <a href="/ipa" class="btn-sd-back-ipa" title="Bảng phiên âm IPA">📢 Bảng IPA</a>
-                <a href="/hoc" class="btn-sd-back-study" title="Học từ vựng">📖 Học từ</a>
+                <a href="/hoc" class="btn-sd-back-study" id="btnSdBackStudy" title="Học từ vựng">📖 Học từ</a>
             </div>
 
             <div class="sd-header-center">
@@ -312,8 +312,8 @@
 
 <!-- Scripts logic Mindmap & Hướng dẫn đọc -->
 <script th:src="@{/js/global-audio.js(v=1)}"></script>
-<script th:src="@{/js/huong-dan-doc.js(v=4)}"></script>
-<script th:src="@{/js/so-do-danh-van.js(v=3)}"></script>
+<script th:src="@{/js/huong-dan-doc.js(v=9)}"></script>
+<script th:src="@{/js/so-do-danh-van.js(v=4)}"></script>
 
 </body>
 </html>
