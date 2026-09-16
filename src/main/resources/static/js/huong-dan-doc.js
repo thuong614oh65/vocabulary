@@ -475,44 +475,6 @@
 
 
     // =========================================================
-    // 5B. RENDER HƯỚNG DẪN ĐỌC GHÉP VẦN THÀNH TỪ (BLENDING)
-    // =========================================================
-    function renderBlendingBox(data) {
-        const box = document.getElementById("hdBlendingBox");
-        const formulaEl = document.getElementById("hdBlendingFormula");
-        if (!box || !formulaEl) return;
-
-        const amTiet = data.amTiet || [data.tu];
-        const amTietBoi = data.amTietBoi || [];
-        const amNhan = typeof data.amNhanIndex === "number" ? data.amNhanIndex : -1;
-
-        box.style.display = "flex";
-        formulaEl.innerHTML = "";
-
-        if (amTiet.length <= 1) {
-            const fullBoi = data.phienAmTiengViet || (amTietBoi[0] || data.tu);
-            formulaEl.innerHTML = '<span class="blending-result">' + data.tu + ' <em>(' + fullBoi + ')</em></span>';
-        } else {
-            const parts = [];
-            for (let i = 0; i < amTiet.length; i++) {
-                const en = amTiet[i].replace(/\s*\([^)]*\)/g, "").trim();
-                const boi = amTietBoi[i] || "";
-                const isStressed = (i === amNhan);
-                parts.push(
-                    '<span class="blending-item' + (isStressed ? ' stressed' : '') + '">' +
-                        en + (boi ? ' <em>(' + boi + ')</em>' : '') +
-                    '</span>'
-                );
-            }
-
-            const fullBoi = data.phienAmTiengViet || amTietBoi.join(" - ");
-            formulaEl.innerHTML = 
-                parts.join(' <span style="color:#94a3b8; font-weight:700;">+</span> ') +
-                ' <span class="blending-arrow">➔</span> ' +
-                '<span class="blending-result">' + data.tu + ' <em>(' + fullBoi + ')</em></span>';
-        }
-
-    // =========================================================
     // DANH MỤC CÁC QUY TẮC ĐÁNH VẦN CÓ TRONG SƠ ĐỒ ĐÁNH VẦN (36+ QUY TẮC)
     // =========================================================
     const DANH_MUC_QUY_TAC_SO_DO = [
