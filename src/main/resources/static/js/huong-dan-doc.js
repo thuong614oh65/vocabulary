@@ -108,7 +108,7 @@
         hdTimeoutList = [];
 
         // 6. Gỡ class playing ở các nút
-        document.querySelectorAll(".btn-hd-audio").forEach(function (btn) {
+        document.querySelectorAll(".btn-hd-audio, .btn-hd-blending-speak").forEach(function (btn) {
             btn.classList.remove("playing");
         });
 
@@ -160,38 +160,22 @@
                                 '<button type="button" class="btn-hd-audio btn-primary-audio" onclick="phatAudioHuongDan(1.0, this)" title="Nghe với tốc độ người bản xứ bình thường">🔊 Chuẩn (1.0x)</button>' +
                                 '<button type="button" class="btn-hd-audio" onclick="phatAudioHuongDan(0.6, this)" title="Nghe chậm rõ từng âm như Google Dịch">🐢 Chậm (0.6x)</button>' +
                                 '<button type="button" class="btn-hd-audio" onclick="docTachAmHuongDan(this)" title="Đọc từng âm tiết rồi đọc cả từ">🎶 Tách âm tiết</button>' +
-                                '<button type="button" class="btn-hd-audio" onclick="danhVanHuongDan(this)" title="Đánh vần từng chữ cái tiếng Anh">🔡 Đánh vần chữ cái</button>' +
-                                '<button type="button" class="btn-hd-audio btn-hd-mindmap" style="background:#fef2f2; color:#dc2626; border-color:#fca5a5;" onclick="moSoDoDanhVanChoTuHienTai()" title="Xem bài học quy luật đánh vần của từ này">📖 Bài học quy luật</button>' +
-                            '</div>' +
-                            '<!-- KHỐI QUY TẮC MẶT CHỮ LIÊN KẾT -->' +
-                            '<div id="hdRuleLinkBox" class="hd-rule-link-box" style="display: none;">' +
-                                '<div class="hd-rule-link-left">' +
-                                    '<span class="hd-rule-link-badge">📖 BÀI HỌC QUY TẮC LIÊN QUAN</span>' +
-                                    '<div class="hd-rule-link-text" id="hdRuleLinkText">...</div>' +
-                                '</div>' +
-                                '<button type="button" class="btn-hd-rule-link" id="btnHdGoToRule" onclick="chuyenSangBaiHocQuyTac()">' +
-                                    'Xem bài học quy tắc này ➔' +
-                                '</button>' +
-                            '</div>' +
-                            '<!-- KHỐI ĐÁNH VẦN TỪNG ÂM (NHƯ TIẾNG VIỆT) -->' +
-                            '<div class="hd-phonics-box" id="hdPhonicsSection">' +
-                                '<div class="hd-phonics-header">' +
-                                    '<div class="hd-phonics-title-wrap">' +
-                                        '<h6 class="hd-phonics-title">🔤 ĐÁNH VẦN TỪNG ÂM (NHƯ TIẾNG VIỆT)</h6>' +
-                                        '<p class="hd-phonics-sub">Ghép âm như: <i>u - y - a ➔ uya, khờ - uya ➔ khuya</i></p>' +
-                                    '</div>' +
-                                    '<div class="hd-phonics-actions">' +
-                                        '<button type="button" class="btn-hd-phonics-help" onclick="moModalGiaiDapDanhVan()" title="Xem bí quyết: Nhìn từ biết cách chia âm tiết và đọc đúng không cần tra từ điển">' +
-                                            '💡 Bí quyết đánh vần' +
-                                        '</button>' +
-                                    '</div>' +
-                                '</div>' +
-                                '<div class="hd-phonics-steps" id="hdPhonicsSteps"></div>' +
                             '</div>' +
                             '<div class="hd-syllables-box">' +
                                 '<div class="hd-section-title"><span>🎯</span> Các âm tiết (Bấm từng âm để nghe):</div>' +
                                 '<div class="hd-syllable-chips" id="hdSyllableChips"></div>' +
                                 '<p class="hd-syllable-hint">💡 Nhấp chuột vào từng âm tiết ở trên để luyện nghe riêng âm đó</p>' +
+                            '</div>' +
+                            '<!-- KHỐI HƯỚNG DẪN ĐỌC GHÉP VẦN THÀNH TỪ -->' +
+                            '<div class="hd-blending-box" id="hdBlendingBox">' +
+                                '<div class="hd-blending-header">' +
+                                    '<span class="hd-blending-icon">🤝</span>' +
+                                    '<div class="hd-blending-title">Ghép các âm tiết lại thành từ:</div>' +
+                                '</div>' +
+                                '<div class="hd-blending-formula" id="hdBlendingFormula"></div>' +
+                                '<button type="button" class="btn-hd-blending-speak" id="btnBlendingSpeak" onclick="docTachAmHuongDan(this)" title="Nghe đọc từng âm tiết có ngắt quãng, rồi ghép lại thành từ hoàn chỉnh">' +
+                                    '▶ Nghe đọc ngắt quãng từng âm ➔ Ghép cả từ' +
+                                '</button>' +
                             '</div>' +
                             '<div class="hd-speech-box">' +
                                 '<button type="button" id="btnMicPractice" class="btn-mic-practice" onclick="batDauLuyenDoc()">🎙️ Bấm để thử phát âm</button>' +
@@ -474,26 +458,8 @@
             elLoi.textContent = data.loiThuongGap || "Chú ý nhấn đúng trọng âm và phát âm đầy đủ các âm tiết.";
         }
 
-        // 1. Khối Quy tắc mặt chữ liên kết
-        const boxRuleLink = document.getElementById("hdRuleLinkBox");
-        const lblRuleText = document.getElementById("hdRuleLinkText");
-        const btnGoRule = document.getElementById("btnHdGoToRule");
-        if (data.maQuyTacLienKet || data.quyTacMatChu) {
-            if (boxRuleLink) boxRuleLink.style.display = "flex";
-            if (lblRuleText) {
-                const title = data.tenQuyTacLienKet || "Quy tắc đánh vần";
-                const desc = data.quyTacMatChu || "";
-                lblRuleText.innerHTML = '<strong>' + title + ':</strong> ' + desc;
-            }
-            if (btnGoRule) {
-                btnGoRule.setAttribute("data-rule-id", data.maQuyTacLienKet || "");
-            }
-        } else {
-            if (boxRuleLink) boxRuleLink.style.display = "none";
-        }
-
-        // 2. Khối Đánh vần từng âm (như tiếng Việt)
-        renderPhonicsSteps(data);
+        // Render khối "Ghép các âm tiết lại thành từ"
+        renderBlendingBox(data);
 
         // Reset trạng thái thu âm luyện đọc
         const micBtn = document.getElementById("btnMicPractice");
@@ -507,411 +473,45 @@
         }
     }
 
+
     // =========================================================
-    // 5B. RENDER ĐÁNH VẦN TỪNG ÂM (NHƯ TIẾNG VIỆT)
+    // 5B. RENDER HƯỚNG DẪN ĐỌC GHÉP VẦN THÀNH TỪ (BLENDING)
     // =========================================================
-    function taoCacBuocDanhVanTuAmTiet(data) {
-        const amTietList = data.amTiet || [data.tu];
-        const amTietIpaList = data.amTietIpa || [];
-        const amTietBoiList = data.amTietBoi || [];
-        const amTietDocList = data.amTietDoc || [];
-        const amNhan = typeof data.amNhanIndex === "number" ? data.amNhanIndex : 0;
+    function renderBlendingBox(data) {
+        const box = document.getElementById("hdBlendingBox");
+        const formulaEl = document.getElementById("hdBlendingFormula");
+        if (!box || !formulaEl) return;
 
-        return amTietList.map(function (at, idx) {
-            const cleanAt = at.replace(/\s*\([^)]*\)/g, "").trim();
-            const ipa = amTietIpaList[idx] || cleanAt;
-            const boi = amTietBoiList[idx] || cleanAt;
-            const doc = amTietDocList[idx] || cleanAt;
-            const laTrongAm = (idx === amNhan);
+        const amTiet = data.amTiet || [data.tu];
+        const amTietBoi = data.amTietBoi || [];
+        const amNhan = typeof data.amNhanIndex === "number" ? data.amNhanIndex : -1;
 
-            // Tách đơn giản Onset - Nucleus - Coda
-            let onset = "";
-            let onsetDoc = "";
-            let nucleus = cleanAt;
-            let nucleusDoc = boi;
-            let coda = "";
-            let codaDoc = "";
-
-            // Kiểm tra phụ âm đầu đơn giản
-            const onsetMatch = cleanAt.match(/^(qu|[bcdfghjklmnpqrstvwxyz]{1,2})/i);
-            if (onsetMatch) {
-                onset = onsetMatch[1].toLowerCase();
-                onsetDoc = onset + "ờ";
-                const rem = cleanAt.slice(onset.length);
-                const codaMatch = rem.match(/([bcdfghjklmnpqrstvwxyz]+)$/i);
-                if (codaMatch) {
-                    coda = codaMatch[1].toLowerCase();
-                    codaDoc = coda + "ờ";
-                    nucleus = rem.slice(0, -coda.length) || rem;
-                } else {
-                    nucleus = rem;
-                }
-            }
-
-            return {
-                amTiet: cleanAt,
-                ipa: ipa,
-                phuAmDau: onset || "∅",
-                phuAmDauDoc: onsetDoc || "không có",
-                nguyenAm: nucleus || cleanAt,
-                nguyenAmDoc: nucleusDoc || boi,
-                amCuoi: coda || "∅",
-                amCuoiDoc: codaDoc || "không có",
-                vanGhep: nucleusDoc,
-                cachDanhVan: (onsetDoc ? onsetDoc + " + " : "") + (nucleusDoc || cleanAt) + (codaDoc ? " + " + codaDoc : "") + " ➔ " + boi,
-                amTietDoc: doc,
-                quyTacLienQuan: laTrongAm ? "Âm nhấn trọng âm" : "",
-                laTrongAm: laTrongAm
-            };
-        });
-    }
-
-    function renderPhonicsSteps(data) {
-        const container = document.getElementById("hdPhonicsSteps");
-        if (!container) return;
-        container.innerHTML = "";
-
-        let steps = data.cacBuocDanhVan;
-        if (!steps || steps.length === 0) {
-            steps = taoCacBuocDanhVanTuAmTiet(data);
-            data.cacBuocDanhVan = steps;
-        }
-
-        if (!steps || steps.length === 0) {
-            container.innerHTML = '<div class="text-muted small py-2">Đang phân tích đánh vần từng âm...</div>';
+        if (amTiet.length <= 1) {
+            box.style.display = "none";
             return;
         }
 
-        steps.forEach(function (step, sIdx) {
-            const card = document.createElement("div");
-            card.className = "hd-phonics-step-card" + (step.laTrongAm ? " stressed-step" : "");
-            
-            const onsetVal = step.phuAmDau || "∅";
-            const onsetSpoken = step.phuAmDauDoc || "không có";
-            const nucVal = step.nguyenAm || "";
-            const nucSpoken = step.nguyenAmDoc || "";
-            const codaVal = step.amCuoi || "∅";
-            const codaSpoken = step.amCuoiDoc || "không có";
+        box.style.display = "flex";
+        formulaEl.innerHTML = "";
 
-            const cleanStepIpa = (step.ipa || "").replace(/^\/+|\/+$/g, "");
-
-            card.innerHTML = 
-                '<div class="hd-phonics-step-header">' +
-                    '<div class="step-badge-num">Âm tiết ' + (sIdx + 1) + '</div>' +
-                    '<div class="step-syllable-name">' +
-                        '<strong>' + step.amTiet + '</strong> ' +
-                        '<span class="step-ipa">/' + cleanStepIpa + '/</span> ' +
-                        (step.laTrongAm ? '<span class="step-stress-tag">⭐ Trọng âm chính</span>' : '') +
-                    '</div>' +
-                '</div>' +
-                '<div class="hd-phonics-parts-grid">' +
-                    '<div class="hd-phonics-part-cell cell-onset">' +
-                        '<div class="part-label">Phụ âm đầu (Onset)</div>' +
-                        '<div class="part-char">' + onsetVal + '</div>' +
-                        '<div class="part-spoken">"' + onsetSpoken + '"</div>' +
-                    '</div>' +
-                    '<div class="hd-phonics-plus">+</div>' +
-                    '<div class="hd-phonics-part-cell cell-nucleus">' +
-                        '<div class="part-label">Nguyên âm (Nucleus)</div>' +
-                        '<div class="part-char">' + nucVal + '</div>' +
-                        '<div class="part-spoken">"' + nucSpoken + '"</div>' +
-                    '</div>' +
-                    '<div class="hd-phonics-plus">+</div>' +
-                    '<div class="hd-phonics-part-cell cell-coda">' +
-                        '<div class="part-label">Phụ âm cuối (Coda)</div>' +
-                        '<div class="part-char">' + codaVal + '</div>' +
-                        '<div class="part-spoken">"' + codaSpoken + '"</div>' +
-                    '</div>' +
-                '</div>' +
-                '<div class="hd-phonics-equation" onclick="phatAudioHuongDan(1.0)" title="Bấm nghe phát âm chuẩn">' +
-                    '<span class="equation-lead">👉 Ghép vần:</span>' +
-                    '<span class="equation-formula">' + (step.cachDanhVan || (step.amTiet + ' ➔ ' + (step.amTietDoc || step.amTiet))) + '</span>' +
-                    '<button type="button" class="btn-step-speak" onclick="event.stopPropagation(); phatAudioHuongDan(1.0);">🔊</button>' +
-                '</div>';
-            container.appendChild(card);
-        });
-
-        // Nếu từ có từ 2 âm tiết trở lên -> Thêm hàng tổng kết ghép các âm tiết lại thành từ
-        if (steps.length > 1) {
-            const summaryRow = document.createElement("div");
-            summaryRow.className = "hd-phonics-summary-row";
-            const syllablesEquation = steps.map(function (s) {
-                const txt = s.amTietDoc || s.amTiet;
-                return s.laTrongAm ? txt.toUpperCase() : txt.toLowerCase();
-            }).join(" + ");
-
-            summaryRow.innerHTML = 
-                '<div class="summary-content">' +
-                    '<span class="summary-icon">🤝</span>' +
-                    '<span class="summary-text"><strong>Ghép cả từ:</strong> ' + syllablesEquation + ' ➔ <strong>' + (data.phienAmTiengViet || data.tu) + '</strong></span>' +
-                '</div>' +
-                '<button type="button" class="btn-summary-speak" onclick="phatAudioHuongDan(1.0)">🔊 Nghe cả từ</button>';
-            container.appendChild(summaryRow);
+        const parts = [];
+        for (let i = 0; i < amTiet.length; i++) {
+            const en = amTiet[i].replace(/\s*\([^)]*\)/g, "").trim();
+            const boi = amTietBoi[i] || "";
+            const isStressed = (i === amNhan);
+            parts.push(
+                '<span class="blending-item' + (isStressed ? ' stressed' : '') + '">' +
+                    en + (boi ? ' <em>(' + boi + ')</em>' : '') +
+                '</span>'
+            );
         }
+
+        const fullBoi = data.phienAmTiengViet || amTietBoi.join(" - ");
+        formulaEl.innerHTML = 
+            parts.join(' <span style="color:#94a3b8; font-weight:700;">+</span> ') +
+            ' <span class="blending-arrow">➔</span> ' +
+            '<span class="blending-result">' + data.tu + ' <em>(' + fullBoi + ')</em></span>';
     }
-
-    // Phát âm đơn lẻ tiếng Việt hoặc âm thanh ngắn
-    function phatAmDonLe(text, callback) {
-        if (!text || text === "không có" || text === "∅") {
-            if (typeof callback === "function") callback();
-            return;
-        }
-        if (window.phatAmThanh) {
-            window.phatAmThanh(text, {
-                rate: "+0%",
-                onEnd: callback,
-                onError: callback
-            });
-            return;
-        }
-        const url = "/audio/phat?text=" + encodeURIComponent(text) + "&rate=+0%";
-        const audio = new Audio(url);
-        hdAudioHienTai = audio;
-        audio.onended = function () { hdAudioHienTai = null; if (callback) callback(); };
-        audio.onerror = function () { hdAudioHienTai = null; if (callback) callback(); };
-        audio.play().catch(function () { hdAudioHienTai = null; if (callback) callback(); });
-    }
-
-    window.phatAmTungPhan = function (spokenText, cellEl) {
-        if (!spokenText || spokenText === "không có" || spokenText === "∅") return;
-        dungAudioHuongDan();
-        if (cellEl) cellEl.classList.add("active-step");
-
-        phatAmDonLe(spokenText, function () {
-            if (cellEl) cellEl.classList.remove("active-step");
-        });
-    };
-
-    // Chuỗi tự động đọc ghép vần từng bước (Người thầy ảo)
-    window.chayDanhVanTungBuoc = function (btnEl) {
-        if (!duLieuHienTai) return;
-        dungAudioHuongDan();
-        const btn = btnEl || document.getElementById("btnAutoSpellPhonics");
-        if (btn) btn.classList.add("playing");
-
-        const steps = duLieuHienTai.cacBuocDanhVan || [];
-        const stepCards = document.querySelectorAll(".hd-phonics-step-card");
-
-        if (steps.length === 0) {
-            docTachAmHuongDan(btn);
-            return;
-        }
-
-        const queue = [];
-
-        steps.forEach(function (step, sIdx) {
-            const card = stepCards[sIdx];
-
-            // 1. Phụ âm đầu
-            if (step.phuAmDau && step.phuAmDau !== "∅" && step.phuAmDauDoc && step.phuAmDauDoc !== "không có") {
-                queue.push({
-                    card: card,
-                    targetSelector: ".cell-onset",
-                    speakText: step.phuAmDauDoc,
-                    pauseAfter: 350
-                });
-            }
-
-            // 2. Nguyên âm
-            if (step.nguyenAm && step.nguyenAmDoc) {
-                queue.push({
-                    card: card,
-                    targetSelector: ".cell-nucleus",
-                    speakText: step.nguyenAmDoc,
-                    pauseAfter: 350
-                });
-            }
-
-            // 3. Phụ âm cuối
-            if (step.amCuoi && step.amCuoi !== "∅" && step.amCuoiDoc && step.amCuoiDoc !== "không có") {
-                queue.push({
-                    card: card,
-                    targetSelector: ".cell-coda",
-                    speakText: step.amCuoiDoc,
-                    pauseAfter: 350
-                });
-            }
-
-            // 4. Âm tiết đã ghép
-            const syllableWord = step.amTietDoc || step.amTiet;
-            queue.push({
-                card: card,
-                targetSelector: ".hd-phonics-equation",
-                speakText: syllableWord,
-                isSyllable: true,
-                syllableRaw: step.amTiet,
-                pauseAfter: 550
-            });
-        });
-
-        // 5. Đọc cả từ hoàn chỉnh
-        queue.push({
-            targetSelector: "#hdVisualStrip",
-            speakText: duLieuHienTai.tu,
-            isFullWord: true,
-            pauseAfter: 300
-        });
-
-        let qIdx = 0;
-        function runNextQueue() {
-            if (qIdx >= queue.length) {
-                document.querySelectorAll(".active-step").forEach(function (el) { el.classList.remove("active-step"); });
-                if (btn) btn.classList.remove("playing");
-                return;
-            }
-
-            const item = queue[qIdx];
-            qIdx++;
-
-            document.querySelectorAll(".active-step").forEach(function (el) { el.classList.remove("active-step"); });
-
-            let highlightEl = null;
-            if (item.card && item.targetSelector) {
-                highlightEl = item.card.querySelector(item.targetSelector);
-            } else if (item.targetSelector) {
-                highlightEl = document.querySelector(item.targetSelector);
-            }
-            if (highlightEl) highlightEl.classList.add("active-step");
-
-            function onStepEnd() {
-                const t = setTimeout(runNextQueue, item.pauseAfter || 300);
-                hdTimeoutList.push(t);
-            }
-
-            if (item.isFullWord) {
-                phatAudioTu(item.speakText, 1.0, onStepEnd);
-            } else if (item.isSyllable) {
-                docAmTiet(item.syllableRaw, item.speakText, onStepEnd);
-            } else {
-                phatAmDonLe(item.speakText, onStepEnd);
-            }
-        }
-
-        runNextQueue();
-    };
-
-    // Chuyển sang bài học quy tắc liên quan
-    window.chuyenSangBaiHocQuyTac = function () {
-        const btn = document.getElementById("btnHdGoToRule");
-        const ruleId = btn ? btn.getAttribute("data-rule-id") : "";
-        dongHuongDanDoc(false);
-        if (ruleId) {
-            if (typeof window.moSoDoTuDanhSach === "function") {
-                window.moSoDoTuDanhSach(ruleId);
-            } else {
-                window.location.href = "/quy-luat-danh-van/so-do?id=" + encodeURIComponent(ruleId);
-            }
-        } else {
-            window.location.href = "/quy-luat-danh-van/so-do";
-        }
-    };
-
-    // =========================================================
-    // 5C. MODAL GIẢI ĐÁP BÍ QUYẾT ĐÁNH VẦN & CHIA ÂM TIẾT
-    // =========================================================
-    function ensureFaqModalExists() {
-        let modal = document.getElementById("modalGiaiDapDanhVan");
-        if (!modal) {
-            const div = document.createElement("div");
-            div.id = "modalGiaiDapDanhVan";
-            div.className = "modal-faq-overlay";
-            div.style.display = "none";
-            div.innerHTML = 
-                '<div class="modal-faq-dialog">' +
-                    '<div class="modal-faq-header">' +
-                        '<h4 class="modal-faq-title">💡 BÍ QUYẾT ĐÁNH VẦN: NHÌN TỪ BIẾT CÁCH ĐỌC</h4>' +
-                        '<button type="button" class="modal-faq-close" onclick="dongModalGiaiDapDanhVan()">&times;</button>' +
-                    '</div>' +
-                    '<div class="modal-faq-body">' +
-                        '<div class="faq-card">' +
-                            '<h5 class="faq-question">1️⃣ 1 âm đọc trong tiếng Anh gồm mấy âm IPA cộng lại?</h5>' +
-                            '<p class="faq-answer">' +
-                                'Tiếng Anh ghép vần <strong>giống hệt tiếng Việt</strong> (như <i>u - y - a ➔ uya, khờ - uya ➔ khuya</i>). Mỗi âm tiết tiếng Anh được cấu tạo từ 3 thành phần:' +
-                            '</p>' +
-                            '<div class="faq-structure-box">' +
-                                '<div class="faq-part-pill onset">Phụ âm đầu (Onset)<br><small>vd: /h/ ("hờ"), /k/ ("cờ")</small></div>' +
-                                '<div class="faq-part-sep">+</div>' +
-                                '<div class="faq-part-pill nucleus">Nguyên âm nhân (Nucleus)<br><small>vd: /ə/ ("ơ"), /æ/ ("e bẹt")</small></div>' +
-                                '<div class="faq-part-sep">+</div>' +
-                                '<div class="faq-part-pill coda">Phụ âm cuối (Coda)<br><small>vd: /t/ ("tờ"), /p/ ("pờ")</small></div>' +
-                            '</div>' +
-                            '<div class="faq-example-note">' +
-                                '📌 <strong>Ví dụ:</strong>' +
-                                '<ul>' +
-                                    '<li><code>cat</code>: /k/ (cờ) + /æ/ (e) + /t/ (tờ) ➔ <strong>cát</strong> (/kæt/)</li>' +
-                                    '<li><code>night</code>: /n/ (nờ) + /aɪ/ (ai) + /t/ (tờ) ➔ <strong>nait</strong> (/naɪt/)</li>' +
-                                    '<li><code>hello</code>: Âm 1 (/h/ + /ə/ = "hê") + Âm 2 (/l/ + /oʊ/ = "LÔ") ➔ <strong>hê-LÔ</strong> (/həˈloʊ/)</li>' +
-                                '</ul>' +
-                            '</div>' +
-                        '</div>' +
-                        '<div class="faq-card">' +
-                            '<h5 class="faq-question">2️⃣ Làm sao biết cách chia âm tiết (như <code>hello</code> chia ở đâu)?</h5>' +
-                            '<p class="faq-answer">' +
-                                'Dựa vào <strong>4 quy luật bất biến</strong> sau:' +
-                            '</p>' +
-                            '<ol class="faq-rules-list">' +
-                                '<li><strong>Đếm số nguyên âm phát âm:</strong> 1 nguyên âm phát âm = 1 âm tiết (vd: <code>hello</code> có 2 nguyên âm <i>e</i> và <i>o</i> ➔ 2 âm tiết).</li>' +
-                                '<li><strong>Quy tắc 2 phụ âm đứng giữa (V-CC-V):</strong> Cắt đôi ở giữa 2 phụ âm (vd: <code>hel-lo</code> cắt giữa 2 chữ l; <code>hap-py</code>; <code>doc-tor</code>).</li>' +
-                                '<li><strong>Quy tắc 1 phụ âm đứng giữa (V-C-V):</strong> 70% trường hợp phụ âm đi về âm tiết sau (vd: <code>re-port</code>, <code>mu-sic</code>).</li>' +
-                                '<li><strong>Đuôi phụ âm + "le":</strong> Luôn tách thành 1 âm tiết riêng (vd: <code>ta-ble</code>, <code>ap-ple</code>, <code>can-dle</code>).</li>' +
-                            '</ol>' +
-                        '</div>' +
-                        '<div class="faq-card">' +
-                            '<h5 class="faq-question">3️⃣ Nhìn mặt chữ có thể biết cách đọc hay bắt buộc phải có phiên âm?</h5>' +
-                            '<p class="faq-answer">' +
-                                'Hơn <strong>85% từ vựng tiếng Anh tuân theo Quy luật đánh vần (Phonics)</strong>. Khi nắm quy luật này, bạn hoàn toàn <strong>nhìn mặt chữ là đọc chuẩn 100% không cần tra từ điển</strong>:' +
-                            '</p>' +
-                            '<div class="faq-rules-grid">' +
-                                '<div class="faq-rule-mini">' +
-                                    '<div class="frm-tag">[fy] ở cuối từ</div>' +
-                                    '<div class="frm-arrow">➔</div>' +
-                                    '<div class="frm-ipa">/aɪ/</div>' +
-                                    '<div class="frm-ex">modify, notify, qualify...</div>' +
-                                '</div>' +
-                                '<div class="faq-rule-mini">' +
-                                    '<div class="frm-tag">Phụ âm + "le" ở cuối</div>' +
-                                    '<div class="frm-arrow">➔</div>' +
-                                    '<div class="frm-ipa">/əl/</div>' +
-                                    '<div class="frm-ex">table, apple, simple...</div>' +
-                                '</div>' +
-                                '<div class="faq-rule-mini">' +
-                                    '<div class="frm-tag">"w + or"</div>' +
-                                    '<div class="frm-arrow">➔</div>' +
-                                    '<div class="frm-ipa">/ɜː/</div>' +
-                                    '<div class="frm-ex">word, work, world...</div>' +
-                                '</div>' +
-                                '<div class="faq-rule-mini">' +
-                                    '<div class="frm-tag">Đuôi "-tion / -sion"</div>' +
-                                    '<div class="frm-arrow">➔</div>' +
-                                    '<div class="frm-ipa">/ʃən/</div>' +
-                                    '<div class="frm-ex">action, station, nation...</div>' +
-                                '</div>' +
-                            '</div>' +
-                        '</div>' +
-                    '</div>' +
-                    '<div class="modal-faq-footer">' +
-                        '<button type="button" class="btn btn-primary px-4 fw-bold" onclick="dongModalGiaiDapDanhVan()">Đã hiểu, đóng lại</button>' +
-                    '</div>' +
-                '</div>';
-            document.body.appendChild(div);
-            div.addEventListener("click", function (e) {
-                if (e.target === div) dongModalGiaiDapDanhVan();
-            });
-            modal = div;
-        }
-        return modal;
-    }
-
-    window.moModalGiaiDapDanhVan = function () {
-        dungAudioHuongDan();
-        const modal = ensureFaqModalExists();
-        if (modal) modal.style.display = "flex";
-    };
-
-    window.dongModalGiaiDapDanhVan = function () {
-        const modal = document.getElementById("modalGiaiDapDanhVan");
-        if (modal) modal.style.display = "none";
-    };
 
     // =========================================================
     // 6. PHÁT AUDIO (CHUẨN 1.0x HOẶC CHẬM 0.6x)
@@ -1055,7 +655,10 @@
         "i": "ih",
         "a": "uh",
         "u": "you",
-        "nu": "you"
+        "nu": "you",
+        "ac": "uh",
+        "coun": "count",
+        "bil": "bill"
     };
 
     function chuyenAmTietSangPhatAmChuan(syllable, docText) {
@@ -1201,7 +804,9 @@
         // Dừng tất cả âm thanh trước đó
         dungAudioHuongDan();
 
+        const blendingBtn = document.getElementById("btnBlendingSpeak");
         if (btnEl) btnEl.classList.add("playing");
+        if (blendingBtn) blendingBtn.classList.add("playing");
 
         const amTietList = duLieuHienTai.amTiet && duLieuHienTai.amTiet.length > 0 
             ? duLieuHienTai.amTiet 
@@ -1219,6 +824,7 @@
                 const t = setTimeout(function () {
                     phatAudioTu(duLieuHienTai.tu, 1.0, function () {
                         if (btnEl) btnEl.classList.remove("playing");
+                        if (blendingBtn) blendingBtn.classList.remove("playing");
                     });
                 }, 500);
                 hdTimeoutList.push(t);

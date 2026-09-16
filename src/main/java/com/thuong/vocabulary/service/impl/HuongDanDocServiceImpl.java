@@ -30,16 +30,17 @@ public class HuongDanDocServiceImpl implements HuongDanDocService {
         }
 
         String tuChuanHoa = tu.trim().toLowerCase();
-        if (cache.containsKey(tuChuanHoa)) {
-            return cache.get(tuChuanHoa);
-        }
-
         String phienAmChuan = chuanHoaIpaDauVao(phienAm);
+        String cacheKey = tuChuanHoa + ":" + phienAmChuan;
+
+        if (cache.containsKey(cacheKey)) {
+            return cache.get(cacheKey);
+        }
 
         // 1. Kiểm tra từ điển chuẩn hóa đã được biên soạn kỹ lưỡng trước (0ms)
         if (TU_DIEN_BOI_CHUAN.containsKey(tuChuanHoa)) {
             HuongDanDocDTO kq = layMauCoSan(tuChuanHoa, phienAmChuan, nghia);
-            cache.put(tuChuanHoa, kq);
+            cache.put(cacheKey, kq);
             return kq;
         }
 
@@ -47,7 +48,7 @@ public class HuongDanDocServiceImpl implements HuongDanDocService {
         HuongDanDocDTO ketQua = taoHuongDanDocThongMinh(tu.trim(), phienAmChuan, nghia);
         if (ketQua != null) {
             ketQua = lamSachKetQua(ketQua);
-            cache.put(tuChuanHoa, ketQua);
+            cache.put(cacheKey, ketQua);
         }
 
         // 3. Tùy chọn: Chạy Gemini ngầm ở luồng riêng (Background) để làm giàu thêm mẹo nhớ cho lần sau mà TUYỆT ĐỐI KHÔNG BẮT NGƯỜI DÙNG PHẢI CHỜ
@@ -142,10 +143,16 @@ public class HuongDanDocServiceImpl implements HuongDanDocService {
                     boiList.set(i, "ti");
                     coThayDoi = true;
                 }
-                // Sửa lỗi "i" bị bồi thành "lị"
-                if (at.equals("i") && i < boiList.size() && boiList.get(i).toLowerCase().contains("lị")) {
-                    boiList.set(i, "i");
-                    coThayDoi = true;
+                // Sửa lỗi "i" bị bồi thành "lị" hoặc IPA là "ə"
+                if (at.equals("i")) {
+                    if (i < boiList.size() && boiList.get(i).toLowerCase().contains("lị")) {
+                        boiList.set(i, "i");
+                        coThayDoi = true;
+                    }
+                    if (i < ipaList.size() && (ipaList.get(i).equals("ə") || ipaList.get(i).equals("/ə/"))) {
+                        ipaList.set(i, "ɪ");
+                        coThayDoi = true;
+                    }
                 }
                 // Sửa lỗi "a" bị bồi thành "tạ"
                 if (at.equals("a") && i < boiList.size() && boiList.get(i).toLowerCase().contains("tạ")) {
@@ -621,11 +628,108 @@ public class HuongDanDocServiceImpl implements HuongDanDocService {
     }
 
     private HuongDanDocDTO layMauCoSan(String tu, String phienAm, String nghia) {
-        HuongDanDocDTO mau = TU_DIEN_BOI_CHUAN.get(tu.toLowerCase().trim());
+        String cleanTu = tu.toLowerCase().trim();
+        HuongDanDocDTO mau = TU_DIEN_BOI_CHUAN.get(cleanTu);
         if (mau == null) return null;
+
+        String finalPhienAm = phienAm != null && !phienAm.isBlank() ? phienAm : mau.getPhienAm();
+
+        if ("accountability".equals(cleanTu)) {
+            boolean hasV = finalPhienAm != null && finalPhienAm.contains("ʌ");
+            List<String> amTiet = List.of("ac", "coun", "ta", "bil", "i", "ty");
+            List<String> amTietBoi = List.of("ờ", "cao-n", "tờ", "BÍL", "i", "ti");
+            List<String> amTietDoc = List.of("uh", "count", "tuh", "bill", "ih", "tea");
+            List<String> amTietIpa = hasV
+                    ? List.of("ʌ", "kˈaʊn", "tʌ", "ˈbɪl", "ɪ", "ti")
+                    : List.of("ə", "ˌkaʊn", "tə", "ˈbɪl", "ɪ", "ti");
+
+            return new HuongDanDocDTO(
+                    tu,
+                    finalPhienAm,
+                    nghia != null && !nghia.isBlank() ? nghia : mau.getNghia(),
+                    amTiet,
+                    amTietIpa,
+                    amTietBoi,
+                    amTietDoc,
+                    3,
+                    "ờ - cao-n - tờ - BÍL - i - ti",
+                    "Trọng âm chính rơi vào âm 4 (BÍL) -> đọc to, cao và ngân rõ nhất: ờ - cao-n - tờ - BÍL - i - ti.",
+                    mau.getKhauHinh(),
+                    mau.getAmDuoi(),
+                    mau.getLoiThuongGap(),
+                    mau.getMeoGhiNho(),
+                    Collections.emptyList(),
+                    null,
+                    null,
+                    null
+            );
+        }
+
+        if ("accountable".equals(cleanTu)) {
+            boolean hasV = finalPhienAm != null && finalPhienAm.contains("ʌ");
+            List<String> amTiet = List.of("ac", "coun", "ta", "ble");
+            List<String> amTietBoi = List.of("ờ", "CAO-N", "tờ", "bồ");
+            List<String> amTietDoc = List.of("uh", "count", "tuh", "bull");
+            List<String> amTietIpa = hasV
+                    ? List.of("ʌ", "kˈaʊn", "tʌ", "bəl")
+                    : List.of("ə", "ˈkaʊn", "tə", "bəl");
+
+            return new HuongDanDocDTO(
+                    tu,
+                    finalPhienAm,
+                    nghia != null && !nghia.isBlank() ? nghia : mau.getNghia(),
+                    amTiet,
+                    amTietIpa,
+                    amTietBoi,
+                    amTietDoc,
+                    1,
+                    "ờ - CAO-N - tờ - bồ",
+                    mau.getTrongAm(),
+                    mau.getKhauHinh(),
+                    mau.getAmDuoi(),
+                    mau.getLoiThuongGap(),
+                    mau.getMeoGhiNho(),
+                    Collections.emptyList(),
+                    null,
+                    null,
+                    null
+            );
+        }
+
+        if ("account".equals(cleanTu)) {
+            boolean hasV = finalPhienAm != null && finalPhienAm.contains("ʌ");
+            List<String> amTiet = List.of("ac", "count");
+            List<String> amTietBoi = List.of("ờ", "CAO-N-T");
+            List<String> amTietDoc = List.of("uh", "count");
+            List<String> amTietIpa = hasV
+                    ? List.of("ʌ", "kˈaʊnt")
+                    : List.of("ə", "ˈkaʊnt");
+
+            return new HuongDanDocDTO(
+                    tu,
+                    finalPhienAm,
+                    nghia != null && !nghia.isBlank() ? nghia : mau.getNghia(),
+                    amTiet,
+                    amTietIpa,
+                    amTietBoi,
+                    amTietDoc,
+                    1,
+                    "ờ - CAO-N-T",
+                    mau.getTrongAm(),
+                    mau.getKhauHinh(),
+                    mau.getAmDuoi(),
+                    mau.getLoiThuongGap(),
+                    mau.getMeoGhiNho(),
+                    Collections.emptyList(),
+                    null,
+                    null,
+                    null
+            );
+        }
+
         return new HuongDanDocDTO(
                 tu,
-                phienAm != null && !phienAm.isBlank() ? phienAm : mau.getPhienAm(),
+                finalPhienAm,
                 nghia != null && !nghia.isBlank() ? nghia : mau.getNghia(),
                 mau.getAmTiet(),
                 mau.getAmTietIpa(),
@@ -638,10 +742,10 @@ public class HuongDanDocServiceImpl implements HuongDanDocService {
                 mau.getAmDuoi(),
                 mau.getLoiThuongGap(),
                 mau.getMeoGhiNho(),
-                mau.getCacBuocDanhVan(),
-                mau.getQuyTacMatChu(),
-                mau.getMaQuyTacLienKet(),
-                mau.getTenQuyTacLienKet()
+                Collections.emptyList(),
+                null,
+                null,
+                null
         );
     }
 
@@ -694,7 +798,7 @@ public class HuongDanDocServiceImpl implements HuongDanDocService {
         TU_DIEN_BOI_CHUAN.put("accountability", new HuongDanDocDTO(
                 "accountability", "/əˌkaʊn.təˈbɪl.ə.ti/", "trách nhiệm giải trình, tinh thần trách nhiệm",
                 List.of("ac", "coun", "ta", "bil", "i", "ty"),
-                List.of("ə", "ˌkaʊn", "tə", "ˈbɪl", "ə", "ti"),
+                List.of("ə", "ˌkaʊn", "tə", "ˈbɪl", "ɪ", "ti"),
                 List.of("ờ", "cao-n", "tờ", "BÍL", "i", "ti"),
                 List.of("uh", "count", "tuh", "bill", "ih", "tea"),
                 3, // amNhanIndex: 3 (bil mang trọng âm chính)
@@ -1672,6 +1776,34 @@ public class HuongDanDocServiceImpl implements HuongDanDocService {
             result.add(new PhoneticSyllable("an", "ˈæn", "AN", "an", true));
             result.add(new PhoneticSyllable("nu", "ju", "niu", "you", false));
             result.add(new PhoneticSyllable("al", "əl", "ờl", "ull", false));
+            return result;
+        }
+
+        // Trường hợp đặc biệt: "accountability"
+        if (word.equals("accountability")) {
+            boolean hasV = ipa.contains("ʌ");
+            result.add(new PhoneticSyllable("ac", hasV ? "ʌ" : "ə", "ờ", "uh", false));
+            result.add(new PhoneticSyllable("coun", hasV ? "kˈaʊn" : "ˌkaʊn", "cao-n", "count", false));
+            result.add(new PhoneticSyllable("ta", hasV ? "tʌ" : "tə", "tờ", "tuh", false));
+            result.add(new PhoneticSyllable("bil", "ˈbɪl", "BÍL", "bill", true));
+            result.add(new PhoneticSyllable("i", "ɪ", "i", "ih", false));
+            result.add(new PhoneticSyllable("ty", "ti", "ti", "tea", false));
+            return result;
+        }
+
+        if (word.equals("accountable")) {
+            boolean hasV = ipa.contains("ʌ");
+            result.add(new PhoneticSyllable("ac", hasV ? "ʌ" : "ə", "ờ", "uh", false));
+            result.add(new PhoneticSyllable("coun", hasV ? "kˈaʊn" : "ˈkaʊn", "CAO-N", "count", true));
+            result.add(new PhoneticSyllable("ta", hasV ? "tʌ" : "tə", "tờ", "tuh", false));
+            result.add(new PhoneticSyllable("ble", "bəl", "bồ", "bull", false));
+            return result;
+        }
+
+        if (word.equals("account")) {
+            boolean hasV = ipa.contains("ʌ");
+            result.add(new PhoneticSyllable("ac", hasV ? "ʌ" : "ə", "ờ", "uh", false));
+            result.add(new PhoneticSyllable("count", hasV ? "kˈaʊnt" : "ˈkaʊnt", "CAO-N-T", "count", true));
             return result;
         }
 

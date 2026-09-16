@@ -110,7 +110,7 @@ public class TraHangLoatTest {
         TranslateService transService = new TranslateServiceImpl();
         PhienAmService phienAmService = new PhienAmServiceImpl(dictService, restTemplate);
 
-        TuVungService tuVungService = new TuVungServiceImpl(dictService, transService, phienAmService);
+        TuVungService tuVungService = new TuVungServiceImpl(dictService, transService, phienAmService, null);
 
         List<String> loi = new ArrayList<>();
         long start = System.currentTimeMillis();
@@ -133,5 +133,33 @@ public class TraHangLoatTest {
         }
         System.out.println("Tong co nghia: " + countCoNghia + " / " + ketQua.size());
         System.out.println("Tong khong co nghia: " + countKhongNghia + " / " + ketQua.size());
+    }
+
+    @Test
+    void testAccountabilityPhanTich() {
+        com.thuong.vocabulary.service.impl.HuongDanDocServiceImpl service = 
+                new com.thuong.vocabulary.service.impl.HuongDanDocServiceImpl(null);
+
+        // Case 1: IPA với /ʌ/
+        com.thuong.vocabulary.dto.HuongDanDocDTO dto1 = 
+                service.layHuongDanDoc("accountability", "/ʌkˈaʊntʌbɪlɪti/", "trách nhiệm giải trình");
+        System.out.println("=== TEST ACCOUNTABILITY 1 (ʌ) ===");
+        System.out.println("amTiet: " + dto1.getAmTiet());
+        System.out.println("amTietIpa: " + dto1.getAmTietIpa());
+        System.out.println("amTietBoi: " + dto1.getAmTietBoi());
+        org.junit.jupiter.api.Assertions.assertEquals(List.of("ac", "coun", "ta", "bil", "i", "ty"), dto1.getAmTiet());
+        org.junit.jupiter.api.Assertions.assertEquals(List.of("ʌ", "kˈaʊn", "tʌ", "ˈbɪl", "ɪ", "ti"), dto1.getAmTietIpa());
+        org.junit.jupiter.api.Assertions.assertEquals(List.of("ờ", "cao-n", "tờ", "BÍL", "i", "ti"), dto1.getAmTietBoi());
+
+        // Case 2: IPA Cambridge với /ə/
+        com.thuong.vocabulary.dto.HuongDanDocDTO dto2 = 
+                service.layHuongDanDoc("accountability", "/əˌkaʊn.təˈbɪl.ə.ti/", "trách nhiệm giải trình");
+        System.out.println("=== TEST ACCOUNTABILITY 2 (ə) ===");
+        System.out.println("amTiet: " + dto2.getAmTiet());
+        System.out.println("amTietIpa: " + dto2.getAmTietIpa());
+        System.out.println("amTietBoi: " + dto2.getAmTietBoi());
+        org.junit.jupiter.api.Assertions.assertEquals(List.of("ac", "coun", "ta", "bil", "i", "ty"), dto2.getAmTiet());
+        org.junit.jupiter.api.Assertions.assertEquals(List.of("ə", "ˌkaʊn", "tə", "ˈbɪl", "ɪ", "ti"), dto2.getAmTietIpa());
+        org.junit.jupiter.api.Assertions.assertEquals(List.of("ờ", "cao-n", "tờ", "BÍL", "i", "ti"), dto2.getAmTietBoi());
     }
 }

@@ -22,7 +22,7 @@
 
     <link
             rel="stylesheet"
-            th:href="@{/css/huong-dan-doc.css}">
+            th:href="@{/css/huong-dan-doc.css(v=8)}">
 
 </head>
 
@@ -236,9 +236,6 @@
                     <button type="button" class="btn-hd-audio" onclick="docTachAmHuongDan(this)" title="Đọc từng âm tiết rồi đọc cả từ">
                         🎶 Tách âm tiết
                     </button>
-                    <button type="button" class="btn-hd-audio" onclick="danhVanHuongDan(this)" title="Đánh vần từng chữ cái tiếng Anh">
-                        🔡 Đánh vần
-                    </button>
                 </div>
 
                 <!-- Tách âm tiết tương tác -->
@@ -250,6 +247,18 @@
                         <!-- Dynamic syllable chips -->
                     </div>
                     <p class="hd-syllable-hint">💡 Nhấp chuột vào từng âm tiết ở trên để luyện nghe riêng âm đó</p>
+                </div>
+
+                <!-- Khối hướng dẫn đọc ghép vần thành từ -->
+                <div class="hd-blending-box" id="hdBlendingBox">
+                    <div class="hd-blending-header">
+                        <span class="hd-blending-icon">🤝</span>
+                        <div class="hd-blending-title">Ghép các âm tiết lại thành từ:</div>
+                    </div>
+                    <div class="hd-blending-formula" id="hdBlendingFormula"></div>
+                    <button type="button" class="btn-hd-blending-speak" id="btnBlendingSpeak" onclick="docTachAmHuongDan(this)" title="Nghe đọc từng âm tiết có ngắt quãng, rồi ghép lại thành từ hoàn chỉnh">
+                        ▶ Nghe đọc ngắt quãng từng âm ➔ Ghép cả từ
+                    </button>
                 </div>
 
                 <!-- Luyện phát âm qua Micro -->
@@ -292,7 +301,7 @@
     </div>
 </div>
 
-<script th:src="@{/js/huong-dan-doc.js(v=7)}"></script>
+<script th:src="@{/js/huong-dan-doc.js(v=8)}"></script>
 
 </body>
 
