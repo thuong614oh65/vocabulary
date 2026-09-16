@@ -369,6 +369,13 @@
                         btnBackStudy.innerHTML = "← Quay lại học tiếp";
                         btnBackStudy.classList.add("fw-bold");
                         btnBackStudy.title = "Quay lại trang học từ vựng bạn vừa rời đi";
+                        btnBackStudy.addEventListener("click", function (e) {
+                            if (window.opener && !window.opener.closed) {
+                                e.preventDefault();
+                                window.opener.focus();
+                                window.close();
+                            }
+                        });
                     }
                 } catch (e) {}
             }
