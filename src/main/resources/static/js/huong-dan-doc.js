@@ -974,7 +974,7 @@
                         if (btnEl) btnEl.classList.remove("playing");
                         if (blendingBtn) blendingBtn.classList.remove("playing");
                     });
-                }, 500);
+                }, 380);
                 hdTimeoutList.push(t);
                 return;
             }
@@ -991,7 +991,7 @@
             });
 
             docAmTiet(syllable, speakText, function () {
-                const t = setTimeout(docAmTiep, 450);
+                const t = setTimeout(docAmTiep, 260);
                 hdTimeoutList.push(t);
             });
         }
