@@ -598,11 +598,11 @@
             }
         });
 
-        // Nếu có quy tắc khớp với bảng Sơ đồ đánh vần: hiển thị nổi bật trên cùng
+        // Nếu có quy tắc khớp với bảng Sơ đồ đánh vần: hiển thị các nút chuyển sang học quy tắc
         if (matchedRules.length > 0) {
             const ruleTitle = document.createElement("div");
             ruleTitle.className = "hd-mml-title rule-title";
-            ruleTitle.innerHTML = '<span>🌟</span> Quy tắc đánh vần trong Sơ đồ (bấm để sang học quy tắc):';
+            ruleTitle.innerHTML = '<span>🌟</span> Quy tắc đánh vần trong Sơ đồ (bấm vào âm/quy tắc chưa biết đọc để sang luyện, xong quay lại học tiếp):';
             mmlContainer.appendChild(ruleTitle);
 
             const ruleList = document.createElement("div");
@@ -623,33 +623,6 @@
 
             mmlContainer.appendChild(ruleList);
         }
-
-        // 2. Hiển thị các nút luyện từng âm tiết ngắt quãng
-        const sylTitle = document.createElement("div");
-        sylTitle.className = "hd-mml-title";
-        sylTitle.style.marginTop = matchedRules.length > 0 ? "6px" : "0px";
-        sylTitle.innerHTML = '<span>🧠</span> Luyện từng âm tiết (bấm vào âm chưa biết đọc để luyện, xong quay lại học tiếp):';
-        mmlContainer.appendChild(sylTitle);
-
-        const mmlList = document.createElement("div");
-        mmlList.className = "hd-mml-buttons";
-
-        amTiet.forEach(function (syl, idx) {
-            const cleanSyl = syl.replace(/\s*\([^)]*\)/g, "").trim();
-            if (!cleanSyl) return;
-            const boi = amTietBoi[idx] ? ' (' + amTietBoi[idx] + ')' : '';
-            const btn = document.createElement("button");
-            btn.type = "button";
-            btn.className = "btn-hd-mindmap-sound";
-            btn.innerHTML = '📖 Luyện âm <strong>"' + cleanSyl + '"</strong>' + boi + ' ➔';
-            btn.title = 'Mở Sơ đồ đánh vần để luyện âm "' + cleanSyl + '" (luyện xong quay lại học tiếp)';
-            btn.onclick = function () {
-                moSoDoLuyenAm(cleanSyl);
-            };
-            mmlList.appendChild(btn);
-        });
-
-        mmlContainer.appendChild(mmlList);
     }
 
     // Chuyển sang Sơ đồ đánh vần để luyện âm chưa biết đọc

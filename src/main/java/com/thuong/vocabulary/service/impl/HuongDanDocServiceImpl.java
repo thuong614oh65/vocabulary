@@ -643,7 +643,7 @@ public class HuongDanDocServiceImpl implements HuongDanDocService {
                     ? List.of("ʌ", "kˈaʊn", "tʌ", "ˈbɪl", "ɪ", "ti")
                     : List.of("ə", "ˌkaʊn", "tə", "ˈbɪl", "ɪ", "ti");
 
-            return new HuongDanDocDTO(
+            HuongDanDocDTO kq = new HuongDanDocDTO(
                     tu,
                     finalPhienAm,
                     nghia != null && !nghia.isBlank() ? nghia : mau.getNghia(),
@@ -658,11 +658,13 @@ public class HuongDanDocServiceImpl implements HuongDanDocService {
                     mau.getAmDuoi(),
                     mau.getLoiThuongGap(),
                     mau.getMeoGhiNho(),
-                    Collections.emptyList(),
-                    null,
-                    null,
-                    null
+                    mau.getCacBuocDanhVan() != null ? mau.getCacBuocDanhVan() : Collections.emptyList(),
+                    mau.getQuyTacMatChu(),
+                    mau.getMaQuyTacLienKet() != null ? mau.getMaQuyTacLienKet() : "ability_suffix",
+                    mau.getTenQuyTacLienKet() != null ? mau.getTenQuyTacLienKet() : "Hậu tố [-ability] ➔ /əˈbɪl.ə.ti/"
             );
+            if (kq.getMaQuyTacLienKet() == null) boSungQuyTacLienKet(kq);
+            return kq;
         }
 
         if ("accountable".equals(cleanTu)) {
@@ -674,7 +676,7 @@ public class HuongDanDocServiceImpl implements HuongDanDocService {
                     ? List.of("ʌ", "kˈaʊn", "tʌ", "bəl")
                     : List.of("ə", "ˈkaʊn", "tə", "bəl");
 
-            return new HuongDanDocDTO(
+            HuongDanDocDTO kq = new HuongDanDocDTO(
                     tu,
                     finalPhienAm,
                     nghia != null && !nghia.isBlank() ? nghia : mau.getNghia(),
@@ -689,11 +691,13 @@ public class HuongDanDocServiceImpl implements HuongDanDocService {
                     mau.getAmDuoi(),
                     mau.getLoiThuongGap(),
                     mau.getMeoGhiNho(),
-                    Collections.emptyList(),
-                    null,
-                    null,
-                    null
+                    mau.getCacBuocDanhVan() != null ? mau.getCacBuocDanhVan() : Collections.emptyList(),
+                    mau.getQuyTacMatChu(),
+                    mau.getMaQuyTacLienKet() != null ? mau.getMaQuyTacLienKet() : "consonant_le",
+                    mau.getTenQuyTacLienKet() != null ? mau.getTenQuyTacLienKet() : "Quy tắc [phụ âm + le] ➔ /əl/"
             );
+            if (kq.getMaQuyTacLienKet() == null) boSungQuyTacLienKet(kq);
+            return kq;
         }
 
         if ("account".equals(cleanTu)) {
@@ -705,7 +709,7 @@ public class HuongDanDocServiceImpl implements HuongDanDocService {
                     ? List.of("ʌ", "kˈaʊnt")
                     : List.of("ə", "ˈkaʊnt");
 
-            return new HuongDanDocDTO(
+            HuongDanDocDTO kq = new HuongDanDocDTO(
                     tu,
                     finalPhienAm,
                     nghia != null && !nghia.isBlank() ? nghia : mau.getNghia(),
@@ -720,14 +724,16 @@ public class HuongDanDocServiceImpl implements HuongDanDocService {
                     mau.getAmDuoi(),
                     mau.getLoiThuongGap(),
                     mau.getMeoGhiNho(),
-                    Collections.emptyList(),
-                    null,
-                    null,
-                    null
+                    mau.getCacBuocDanhVan() != null ? mau.getCacBuocDanhVan() : Collections.emptyList(),
+                    mau.getQuyTacMatChu(),
+                    mau.getMaQuyTacLienKet() != null ? mau.getMaQuyTacLienKet() : "ac_prefix",
+                    mau.getTenQuyTacLienKet() != null ? mau.getTenQuyTacLienKet() : "Tiền tố [ac-] ➔ /ək/"
             );
+            if (kq.getMaQuyTacLienKet() == null) boSungQuyTacLienKet(kq);
+            return kq;
         }
 
-        return new HuongDanDocDTO(
+        HuongDanDocDTO kq = new HuongDanDocDTO(
                 tu,
                 finalPhienAm,
                 nghia != null && !nghia.isBlank() ? nghia : mau.getNghia(),
@@ -742,11 +748,15 @@ public class HuongDanDocServiceImpl implements HuongDanDocService {
                 mau.getAmDuoi(),
                 mau.getLoiThuongGap(),
                 mau.getMeoGhiNho(),
-                Collections.emptyList(),
-                null,
-                null,
-                null
+                mau.getCacBuocDanhVan() != null ? mau.getCacBuocDanhVan() : Collections.emptyList(),
+                mau.getQuyTacMatChu(),
+                mau.getMaQuyTacLienKet(),
+                mau.getTenQuyTacLienKet()
         );
+        if (kq.getMaQuyTacLienKet() == null) {
+            boSungQuyTacLienKet(kq);
+        }
+        return kq;
     }
 
     // =========================================================================
@@ -1662,7 +1672,114 @@ public class HuongDanDocServiceImpl implements HuongDanDocService {
                 "Tránh phát âm thành 'guốc' hay 'uốc' không có độ ngân.",
                 "Mẹo: Nhớ công thức: quờ + ơ dài + ngắt hơi ở cuống họng (cờ) ➔ QUỚC."
         ));
+
+        TU_DIEN_BOI_CHUAN.put("registration", new HuongDanDocDTO(
+                "registration", "/rɛdʒɪstrˈeɪʃʌn/", "đăng ký",
+                List.of("re", "gis", "tra", "tion"),
+                List.of("rɛ", "dʒɪs", "trˈeɪ", "ʃʌn"),
+                List.of("re", "dít", "TRÂY", "sần"),
+                List.of("reh", "jis", "tray", "shun"),
+                2,
+                "re - dít - TRÂY - sần",
+                "Trọng âm chính rơi vào âm 3 (TRÂY): re - dít - TRÂY - sần. Đuôi [-tion] đọc là /ʃʌn/ (sần).",
+                "G đứng trước 'i' → G mềm /dʒ/: 'gis' đọc là /dʒɪs/. Đuôi [-tion] luôn đọc /ʃʌn/ không đọc 'ti-on'!",
+                "🔔 Âm đuôi /n/: Kết thúc ở âm tiết [tion] bằng cách chặn nhẹ đầu lưỡi ở vòm miệng.",
+                "⚠️ Tránh đọc 're-gít-trây-ti-on'. Đuôi -tion là /ʃʌn/ (sần) không phải /tiɒn/.",
+                "Mẹo: re + GIS (dít) + TRA (trây) + TION (sần) ➔ registration!",
+                Collections.emptyList(),
+                "G đứng trước [i] → G mềm /dʒ/: 'gis' đọc là /dʒɪs/. Đuôi [-tion] luôn đọc /ʃʌn/ (sần).",
+                "soft_g",
+                "G Mềm (g + e, i, y) ➔ /dʒ/ (như registration)"
+        ));
+
+        TU_DIEN_BOI_CHUAN.put("included", new HuongDanDocDTO(
+                "included", "/ɪnklˈuːdɪd/", "bao gồm",
+                List.of("in", "clu", "ded"),
+                List.of("ɪn", "klˈuː", "dɪd"),
+                List.of("in", "CLUU", "địt"),
+                List.of("in", "clood", "did"),
+                1,
+                "in - CLUU - địt",
+                "Trọng âm rơi vào âm 2 (CLUU): in - CLUU - địt.",
+                "Phụ âm kép /kl/: môi khép không bật, trượt ngay sang /uː/ dài.",
+                "🔔 Âm đuôi /d/ kết thúc chặn nhẹ.",
+                "⚠️ Đừng đọc là 'in-clú-địt-đ' — âm cuối /d/ chặn nhẹ không bật.",
+                "Mẹo: in + CLUU (clue) + did → included!"
+        ));
+
+        TU_DIEN_BOI_CHUAN.put("include", new HuongDanDocDTO(
+                "include", "/ɪnklˈuːd/", "bao gồm",
+                List.of("in", "clude"),
+                List.of("ɪn", "klˈuːd"),
+                List.of("in", "CLUUD"),
+                List.of("in", "clood"),
+                1,
+                "in - CLUUD",
+                "Trọng âm rơi vào âm 2 (CLUUD): in - CLUUD.",
+                "Phụ âm kép /kl/ trượt thẳng vào /uː/ dài, kết thúc bằng /d/ chặn nhẹ.",
+                "🔔 Âm đuôi /d/ chặn nhẹ ở chân răng trên.",
+                "⚠️ Không bật âm /k/ riêng, /kl/ đi liền nhau.",
+                "Mẹo: in + CLUE + D → include!"
+        ));
+
+        TU_DIEN_BOI_CHUAN.put("fee", new HuongDanDocDTO(
+                "fee", "/fˈiː/", "lệ phí",
+                List.of("fee"),
+                List.of("fˈiː"),
+                List.of("FII"),
+                List.of("fee"),
+                0,
+                "FII",
+                "Từ 1 âm tiết, nhấn toàn bộ: FII!",
+                "Môi không khép hẳn như /p/ hay /b/, hơi xì nhẹ qua kẽ răng rồi kéo dài nguyên âm /iː/.",
+                "🔔 Nguyên âm dài /iː/, không có phụ âm đuôi.",
+                "⚠️ /iː/ phải kéo dài, không ngắt.",
+                "Mẹo: fee = fi + i dài = FII",
+                Collections.emptyList(),
+                "Nguyên âm kép [ee] luôn đọc là /iː/ dài!",
+                "ea_ee",
+                "Nguyên âm dài [ee / ea] ➔ /iː/ (như fee, see)"
+        ));
+
+        TU_DIEN_BOI_CHUAN.put("lunch", new HuongDanDocDTO(
+                "lunch", "/lˈʌntʃ/", "bữa trưa",
+                List.of("lun", "ch"),
+                List.of("lˈʌn", "tʃ"),
+                List.of("LĂN", "ch"),
+                List.of("lun", "ch"),
+                0,
+                "LĂN - ch",
+                "Tách âm: lun (/lˈʌn/) + ch (/tʃ/) ➔ LĂN-ch!",
+                "/ʌ/ là âm 'ă' ngắn. Đuôi /tʃ/ bật hơi mạnh (chờ).",
+                "🔔 Âm đuôi /tʃ/: Chờ bật hơi dứt khoát không nuốt âm.",
+                "⚠️ Đuôi là /tʃ/ bật hơi dứt khoát không nuốt âm.",
+                "Mẹo: Lunch = LĂN + ch (bật nhẹ)",
+                Collections.emptyList(),
+                "Phụ âm kép 'ch' luôn phát âm là /tʃ/!",
+                "ch_sound",
+                "Phụ âm kép [ch] ➔ /tʃ/ (như lunch)"
+        ));
+
+        TU_DIEN_BOI_CHUAN.put("workshop", new HuongDanDocDTO(
+                "workshop", "/wˈɜːrkʃɑːp/", "xưởng, hội thảo",
+                List.of("work", "shop"),
+                List.of("wˈɜːrk", "ʃɑːp"),
+                List.of("QUỚC", "shop"),
+                List.of("work", "shop"),
+                0,
+                "QUỚC - shop",
+                "Trọng âm âm 1 (QUỚC): QUỚC - shop.",
+                "/w+or/ biến âm thành /ɜː/ — đây là quy tắc w+or. 'shop' có phụ âm /ʃ/ chu môi.",
+                "🔔 Âm đuôi /p/ ở shop ngậm môi dứt khoát.",
+                "⚠️ 'work' không đọc là 'uốc', phải là QUỚC (uốn lưỡi /ɜː/).",
+                "Mẹo: WORK (quớc) + SHOP (shop) = workshop",
+                Collections.emptyList(),
+                "Quy tắc [w + or]: 'or' đứng sau 'w' phát âm là /ɜː/!",
+                "w_or",
+                "Quy tắc [w + or] ➔ /ɜːr/ (như work, word)"
+        ));
     }
+
 
     // =========================================================================
     // THUẬT TOÁN PHÂN TÍCH NGỮ ÂM THÔNG MINH DỰA TRÊN IPA VÀ NGUYÊN TẮC ÂM TIẾT
@@ -1804,6 +1921,45 @@ public class HuongDanDocServiceImpl implements HuongDanDocService {
             boolean hasV = ipa.contains("ʌ");
             result.add(new PhoneticSyllable("ac", hasV ? "ʌ" : "ə", "ờ", "uh", false));
             result.add(new PhoneticSyllable("count", hasV ? "kˈaʊnt" : "ˈkaʊnt", "CAO-N-T", "count", true));
+            return result;
+        }
+
+        // Trường hợp người dùng yêu cầu chuẩn xác: registration, included, workshop, lunch, fee
+        if (word.equals("registration")) {
+            result.add(new PhoneticSyllable("re", "rɛ", "re", "reh", false));
+            result.add(new PhoneticSyllable("gis", "dʒɪs", "dít", "jis", false));
+            result.add(new PhoneticSyllable("tra", "trˈeɪ", "TRÂY", "tray", true));
+            result.add(new PhoneticSyllable("tion", "ʃən", "sần", "shun", false));
+            return result;
+        }
+
+        if (word.equals("included")) {
+            result.add(new PhoneticSyllable("in", "ɪn", "in", "in", false));
+            result.add(new PhoneticSyllable("clu", "klˈuː", "CLUU", "clood", true));
+            result.add(new PhoneticSyllable("ded", "dɪd", "địt", "did", false));
+            return result;
+        }
+
+        if (word.equals("include")) {
+            result.add(new PhoneticSyllable("in", "ɪn", "in", "in", false));
+            result.add(new PhoneticSyllable("clude", "klˈuːd", "CLUUD", "clood", true));
+            return result;
+        }
+
+        if (word.equals("workshop")) {
+            result.add(new PhoneticSyllable("work", "wˈɜːrk", "QUỚC", "work", true));
+            result.add(new PhoneticSyllable("shop", "ʃɑːp", "shop", "shop", false));
+            return result;
+        }
+
+        if (word.equals("lunch")) {
+            result.add(new PhoneticSyllable("lun", "lˈʌn", "LĂN", "lun", true));
+            result.add(new PhoneticSyllable("ch", "tʃ", "ch", "ch", false));
+            return result;
+        }
+
+        if (word.equals("fee")) {
+            result.add(new PhoneticSyllable("fee", "fˈiː", "FII", "fee", true));
             return result;
         }
 

@@ -46,6 +46,9 @@ public class QuyLuatDanhVanServiceImpl implements QuyLuatDanhVanService {
         if (key.equals("ability") && thuVienQuyLuat.containsKey("ability_suffix")) return thuVienQuyLuat.get("ability_suffix");
         if (key.equals("ty") && thuVienQuyLuat.containsKey("ty_ending")) return thuVienQuyLuat.get("ty_ending");
         if (key.equals("ac") && thuVienQuyLuat.containsKey("ac_prefix")) return thuVienQuyLuat.get("ac_prefix");
+        if (key.equals("g_soft") && thuVienQuyLuat.containsKey("soft_g")) return thuVienQuyLuat.get("soft_g");
+        if (key.equals("tion") && thuVienQuyLuat.containsKey("tion_sion")) return thuVienQuyLuat.get("tion_sion");
+        if (key.equals("sion") && thuVienQuyLuat.containsKey("tion_sion")) return thuVienQuyLuat.get("tion_sion");
         if (aiCache.containsKey(key)) {
             return aiCache.get(key);
         }

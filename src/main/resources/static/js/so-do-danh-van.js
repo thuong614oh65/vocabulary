@@ -106,6 +106,25 @@
         dungAudio();
         if (!vanBan && !audioUrl) return;
 
+        // ƯU TIÊN 1: Phát trực tiếp file âm thanh tĩnh chuẩn (ví dụ: /audio/ipa/dzh.mp3)
+        if (audioUrl) {
+            const audio = new Audio(audioUrl);
+            audioHienTai = audio;
+            audio.onended = function () {
+                audioHienTai = null;
+                if (typeof callback === "function") callback();
+            };
+            audio.onerror = function () {
+                audioHienTai = null;
+                if (typeof callback === "function") callback();
+            };
+            audio.play().catch(function () {
+                audioHienTai = null;
+                if (typeof callback === "function") callback();
+            });
+            return;
+        }
+
         if (window.phatAmThanh && vanBan) {
             window.phatAmThanh(vanBan, {
                 rate: "+0%",
@@ -670,8 +689,88 @@
         }, 150);
     };
 
+    // Bảng âm thanh IPA bản xứ chuẩn có sẵn trong thư mục /audio/ipa/
+    const BANG_AM_THANH_IPA = {
+        "dzh": "/audio/ipa/dzh.mp3",
+        "dʒ": "/audio/ipa/dzh.mp3",
+        "tʃ": "/audio/ipa/tsh.mp3",
+        "tsh": "/audio/ipa/tsh.mp3",
+        "s": "/audio/ipa/s.mp3",
+        "ʃ": "/audio/ipa/sh.mp3",
+        "sh": "/audio/ipa/sh.mp3",
+        "ʒ": "/audio/ipa/zh.mp3",
+        "θ": "/audio/ipa/th_v.mp3",
+        "ð": "/audio/ipa/th_d.mp3",
+        "ɜː": "/audio/ipa/er_long.mp3",
+        "ɚ": "/audio/ipa/er_long.mp3",
+        "ɝ": "/audio/ipa/er_long.mp3",
+        "ɑː": "/audio/ipa/ah_long.mp3",
+        "ɔː": "/audio/ipa/aw_long.mp3",
+        "æ": "/audio/ipa/ae.mp3",
+        "e": "/audio/ipa/e.mp3",
+        "iː": "/audio/ipa/i_long.mp3",
+        "ɪ": "/audio/ipa/i_short.mp3",
+        "uː": "/audio/ipa/u_long.mp3",
+        "ʊ": "/audio/ipa/u_short.mp3",
+        "ʌ": "/audio/ipa/uh.mp3",
+        "ɒ": "/audio/ipa/o_short.mp3",
+        "ə": "/audio/ipa/schwa.mp3",
+        "eɪ": "/audio/ipa/ei.mp3",
+        "aɪ": "/audio/ipa/ai.mp3",
+        "ɔɪ": "/audio/ipa/oi.mp3",
+        "aʊ": "/audio/ipa/au.mp3",
+        "f": "/audio/ipa/f.mp3"
+    };
+
+    function timAudioIpaChoQuyLuat(ql) {
+        if (!ql) return null;
+        if (ql.audioUrl && ql.audioUrl.startsWith("/audio/ipa/")) return ql.audioUrl;
+
+        // Các quy tắc hậu tố/tiền tố nên đọc chuẩn bằng Neural TTS (ví dụ: -tion/-sion đọc là "shun")
+        if (ql.id === "tion_sion" || ql.id === "ability_suffix" || ql.id === "ty_ending" ||
+            ql.id === "ture_end" || ql.id === "cial_tial" || ql.id === "ious_eous" ||
+            ql.id === "ment_end" || ql.id === "ness_end" || ql.id === "ate_adj_noun" ||
+            ql.id === "ac_prefix" || ql.id === "consonant_le" || ql.id === "ise_ize" || ql.id === "fy_end") {
+            return null;
+        }
+
+        // Ưu tiên khớp theo ID quy tắc
+        if (ql.id === "soft_g") return "/audio/ipa/dzh.mp3";
+        if (ql.id === "soft_c") return "/audio/ipa/s.mp3";
+        if (ql.id === "ch_sound") return "/audio/ipa/tsh.mp3";
+        if (ql.id === "sh_sound") return "/audio/ipa/sh.mp3";
+        if (ql.id === "ph_sound") return "/audio/ipa/f.mp3";
+        if (ql.id === "w_or" || ql.id === "er_ir_ur") return "/audio/ipa/er_long.mp3";
+        if (ql.id === "ar") return "/audio/ipa/ah_long.mp3";
+        if (ql.id === "or_normal") return "/audio/ipa/aw_long.mp3";
+        if (ql.id === "ea_ee" || ql.id === "ee" || ql.id === "ea") return "/audio/ipa/i_long.mp3";
+        if (ql.id === "oo_long") return "/audio/ipa/u_long.mp3";
+        if (ql.id === "oo_short") return "/audio/ipa/u_short.mp3";
+        if (ql.id === "igh" || ql.id === "igh_sound") return "/audio/ipa/ai.mp3";
+        if (ql.id === "ou_sound") return "/audio/ipa/au.mp3";
+        if (ql.id === "oy_oi" || ql.id === "oi_oy") return "/audio/ipa/oi.mp3";
+        if (ql.id === "ai_ay") return "/audio/ipa/ei.mp3";
+        if (ql.id === "th_unvoiced") return "/audio/ipa/th_v.mp3";
+        if (ql.id === "th_voiced") return "/audio/ipa/th_d.mp3";
+
+        // Khớp theo ký hiệu docLaIpa
+        if (ql.docLaIpa) {
+            const clean = ql.docLaIpa.replace(/[/ˈˌ\[\]\s]/g, "");
+            if (BANG_AM_THANH_IPA[clean]) return BANG_AM_THANH_IPA[clean];
+            for (const [key, url] of Object.entries(BANG_AM_THANH_IPA)) {
+                if (clean === key) return url;
+            }
+        }
+        return null;
+    }
+
     window.clickPhatAmNodeTrungTam = function () {
         if (!quyLuatHienTai) return;
+        const ipaUrl = timAudioIpaChoQuyLuat(quyLuatHienTai);
+        if (ipaUrl) {
+            phatAmThanh(null, ipaUrl);
+            return;
+        }
         const textToRead = quyLuatHienTai.amDoc || quyLuatHienTai.cumChu;
         phatAmThanh(textToRead, null);
     };
