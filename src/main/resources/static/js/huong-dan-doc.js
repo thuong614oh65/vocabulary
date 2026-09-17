@@ -791,7 +791,22 @@
         "nu": "you",
         "ac": "uh",
         "coun": "count",
-        "bil": "bill"
+        "bil": "bill",
+        "sche": "skeh",
+        "dule": "jool",
+        "psy": "sigh",
+        "cho": "koh",
+        "rhy": "rih",
+        "thm": "thum",
+        "fri": "frih",
+        "chi": "kye",
+        "colo": "ker",
+        "nel": "nul",
+        "wednes": "wenz",
+        "scien": "shun",
+        "tious": "shus",
+        "chie": "chiv",
+        "vous": "vus"
     };
 
     function chuyenAmTietSangPhatAmChuan(syllable, docText) {

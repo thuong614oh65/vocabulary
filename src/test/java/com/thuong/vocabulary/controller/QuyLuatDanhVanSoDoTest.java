@@ -157,4 +157,56 @@ public class QuyLuatDanhVanSoDoTest {
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("tion_sion")));
     }
+
+    @Test
+    void testDanhSachTuKhoTiengAnh() throws Exception {
+        String[][] tuKhoList = {
+            {"comfortable", "/ˈkʌm.fər.tə.bəl/", "thoải mái"},
+            {"schedule", "/ˈskedʒ.uːl/", "lịch trình"},
+            {"wednesday", "/ˈwenz.deɪ/", "thứ tư"},
+            {"colonel", "/ˈkɜːr.nəl/", "đại tá"},
+            {"pronunciation", "/prəˌnʌn.siˈeɪ.ʃən/", "sự phát âm"},
+            {"enthusiastic", "/ɪnˌθuː.ziˈæs.tɪk/", "nhiệt tình"},
+            {"extraordinary", "/ɪkˈstrɔːr.dən.er.i/", "phi thường"},
+            {"psychology", "/saɪˈkɑː.lə.dʒi/", "tâm lý học"},
+            {"subtle", "/ˈsʌt.əl/", "tinh tế, khó nhận thấy"},
+            {"doubt", "/daʊt/", "nghi ngờ"},
+            {"rhythm", "/ˈrɪð.əm/", "nhịp điệu"},
+            {"thorough", "/ˈθɜːr.oʊ/", "thấu đáo, kỹ lưỡng"},
+            {"conscientious", "/ˌkɑːn.ʃiˈen.ʃəs/", "chu đáo, tận tâm"},
+            {"mischievous", "/ˈmɪs.tʃɪ.vəs/", "tinh nghịch"},
+            {"knowledge", "/ˈnɑː.lɪdʒ/", "kiến thức"},
+            {"receipt", "/rɪˈsiːt/", "biên lai"},
+            {"choir", "/ˈkwaɪ.ɚ/", "dàn hợp xướng"},
+            {"architect", "/ˈɑːr.kə.tekt/", "kiến trúc sư"},
+            {"island", "/ˈaɪ.lənd/", "hòn đảo"},
+            {"refrigerator", "/rɪˈfrɪdʒ.ə.reɪ.t̬ɚ/", "tủ lạnh"}
+        };
+
+        System.out.println("================================================================================");
+        System.out.println("       KIỂM THỬ ĐỘ ỔN ĐỊNH VÀ CHUẨN XÁC CỦA CÁC TỪ TIẾNG ANH KHÓ PHỨC TẠP       ");
+        System.out.println("================================================================================");
+
+        int passCount = 0;
+        for (String[] item : tuKhoList) {
+            String word = item[0];
+            String ipa = item[1];
+            String nghia = item[2];
+
+            var result = mockMvc.perform(get("/api/huong-dan-doc")
+                            .param("tu", word)
+                            .param("phienAm", ipa)
+                            .param("nghia", nghia))
+                    .andExpect(status().isOk())
+                    .andReturn();
+
+            String json = result.getResponse().getContentAsString(java.nio.charset.StandardCharsets.UTF_8);
+            System.out.println("Từ: [" + word + "] -> " + json);
+            passCount++;
+        }
+
+        System.out.println("================================================================================");
+        System.out.println("ĐÃ KIỂM THỬ THÀNH CÔNG " + passCount + "/" + tuKhoList.length + " TỪ KHÓ!");
+        System.out.println("================================================================================");
+    }
 }

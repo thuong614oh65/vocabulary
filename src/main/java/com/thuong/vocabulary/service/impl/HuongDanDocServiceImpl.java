@@ -527,10 +527,14 @@ public class HuongDanDocServiceImpl implements HuongDanDocService {
             dto.setMaQuyTacLienKet("oo");
             dto.setTenQuyTacLienKet("Quy tắc [oo] ➔ /uː/ & /ʊ/");
             dto.setQuyTacMatChu("Cụm chữ [oo] thường đọc là /uː/ (moon, food) hoặc /ʊ/ (book, look)!");
-        } else if (w.matches(".*[cg][eiy].*")) {
-            dto.setMaQuyTacLienKet("soft_c_g");
-            dto.setTenQuyTacLienKet("Quy tắc C & G Mềm ➔ /s/ & /dʒ/");
-            dto.setQuyTacMatChu("Chữ C và G đứng trước e, i, y sẽ biến âm: C đọc là /s/, G đọc là /dʒ/!");
+        } else if (w.matches(".*g[eiy].*")) {
+            dto.setMaQuyTacLienKet("soft_g");
+            dto.setTenQuyTacLienKet("Quy tắc G Mềm ➔ /dʒ/");
+            dto.setQuyTacMatChu("Chữ G đứng trước e, i, y thường biến âm thành G mềm /dʒ/ (như gem, giraffe, registration)!");
+        } else if (w.matches(".*c[eiy].*")) {
+            dto.setMaQuyTacLienKet("soft_c");
+            dto.setTenQuyTacLienKet("Quy tắc C Mềm ➔ /s/");
+            dto.setQuyTacMatChu("Chữ C đứng trước e, i, y thường biến âm thành C mềm /s/ (như city, nice, circle)!");
         }
     }
 
@@ -1778,6 +1782,120 @@ public class HuongDanDocServiceImpl implements HuongDanDocService {
                 "w_or",
                 "Quy tắc [w + or] ➔ /ɜːr/ (như work, word)"
         ));
+
+        TU_DIEN_BOI_CHUAN.put("comfortable", new HuongDanDocDTO(
+                "comfortable", "/ˈkʌmftərbəl/", "thoải mái, tiện nghi",
+                List.of("com", "for", "ta", "ble"),
+                List.of("ˈkʌm", "fər", "tə", "bəl"),
+                List.of("KĂM", "phơ", "tờ", "bồ"),
+                List.of("come", "fer", "tuh", "bull"),
+                0,
+                "KĂM - phơ - tờ - bồ",
+                "Trọng âm rơi vào âm 1 (KĂM): KĂM - phơ - tờ - bồ.",
+                "Mở miệng tự nhiên với âm /kʌm/, sau đó lướt nhẹ qua /fər/ và kết thúc bằng /bəl/.",
+                "🔔 Đuôi [-ble] luôn đọc là /bəl/ (bồ).",
+                "⚠️ Tránh đọc 'côm-pho-tây-bồ'. Từ này phát âm chuẩn là KĂM-phơ-tờ-bồ!",
+                "Mẹo: KĂM (ngậm) + phơ + tờ + bồ ➔ KĂM-phơ-tờ-bồ!",
+                Collections.emptyList(),
+                "Đuôi [phụ âm + le] luôn đọc là /əl/ (như table, apple, comfortable)!",
+                "consonant_le",
+                "Đuôi [phụ âm + le] ➔ /əl/ (như comfortable, table)"
+        ));
+
+        TU_DIEN_BOI_CHUAN.put("refrigerator", new HuongDanDocDTO(
+                "refrigerator", "/rɪˈfrɪdʒəreɪtər/", "tủ lạnh",
+                List.of("re", "fri", "ge", "ra", "tor"),
+                List.of("rɪ", "ˈfrɪdʒ", "ə", "reɪ", "tər"),
+                List.of("re", "PHRÍT-CH", "ờ", "rây", "tờ"),
+                List.of("ree", "fridge", "uh", "ray", "ter"),
+                1,
+                "re - PHRÍT-CH - ờ - rây - tờ",
+                "Trọng âm chính rơi vào âm 2 (PHRÍT-CH): re - PHRÍT-CH - ờ - rây - tờ.",
+                "Âm /dʒ/ ở cuối 'fri' bật nhẹ môi rung thanh quản, trượt sang /ə/ rồi /reɪ/.",
+                "🔔 Đuôi [-or] đọc lướt thành /ər/ (tờ).",
+                "⚠️ Người Việt hay đọc tắt thành 'phờ-rích'. Cần đọc đủ 5 âm tiết nhịp nhàng.",
+                "Mẹo: re + FRIDGE (tủ lạnh) + erator = refrigerator!",
+                Collections.emptyList(),
+                "Chữ G đứng trước e, i biến âm thành G mềm /dʒ/!",
+                "soft_g",
+                "G Mềm (g + e, i, y) ➔ /dʒ/ (như refrigerator, gym)"
+        ));
+
+        TU_DIEN_BOI_CHUAN.put("pronunciation", new HuongDanDocDTO(
+                "pronunciation", "/prəˌnʌnsiˈeɪʃn/", "sự phát âm",
+                List.of("pro", "nun", "ci", "a", "tion"),
+                List.of("prə", "ˌnʌn", "si", "ˈeɪ", "ʃn"),
+                List.of("prờ", "năn", "xi", "ÂY", "sần"),
+                List.of("pruh", "nun", "see", "ay", "shun"),
+                3,
+                "prờ - năn - xi - ÂY - sần",
+                "Trọng âm rơi vào âm 4 (ÂY) liền trước đuôi -tion: prờ - năn - xi - ÂY - sần.",
+                "Âm 2 là /nʌn/ (năn), không phải 'noun' như trong từ 'pronounce'!",
+                "🔔 Đuôi [-tion] luôn đọc là /ʃn/ (sần).",
+                "⚠️ Cực kỳ nhiều người đọc sai thành 'pro-NOUN-ci-a-tion'. Phải là pro-NUN-ci-A-tion!",
+                "Mẹo: Động từ là pro-NOUN-ce nhưng danh từ là pro-NUN-ci-a-tion (NĂN chứ không NÁO)!",
+                Collections.emptyList(),
+                "Đuôi [-tion] luôn đọc là /ʃn/ (sần) và nhấn trọng âm âm liền trước!",
+                "tion_sion",
+                "Quy tắc đuôi [-tion/-sion] ➔ /ʃn/ (như pronunciation, action)"
+        ));
+
+        TU_DIEN_BOI_CHUAN.put("architect", new HuongDanDocDTO(
+                "architect", "/ˈɑːrkɪtekt/", "kiến trúc sư",
+                List.of("ar", "chi", "tect"),
+                List.of("ˈɑːr", "kɪ", "tekt"),
+                List.of("AA", "ki", "téc-t"),
+                List.of("ar", "kih", "teckt"),
+                0,
+                "AA - ki - téc-t",
+                "Trọng âm rơi vào âm 1 (AA): AA - ki - téc-t.",
+                "'ch' trong từ gốc Hy Lạp đọc là /k/ (cờ), không đọc là /tʃ/ (chờ).",
+                "🔔 Đuôi /kt/: ngắt hơi /k/ ở cuống họng và bật nhẹ /t/ ở đầu lưỡi.",
+                "⚠️ Tuyệt đối không đọc là 'a-chi-tếch'. 'ch' ở đây là /k/: AA-ki-téc-t!",
+                "Mẹo: ar + CHI (ki) + TECT = architect!",
+                Collections.emptyList(),
+                "Cụm [ar] đọc thành nguyên âm dài /ɑː/!",
+                "ar",
+                "Quy tắc [ar] ➔ /ɑː/ (như architect, car, park)"
+        ));
+
+        TU_DIEN_BOI_CHUAN.put("schedule", new HuongDanDocDTO(
+                "schedule", "/ˈskedʒuːl/", "lịch trình, thời khóa biểu",
+                List.of("sche", "dule"),
+                List.of("ˈskedʒ", "uːl"),
+                List.of("SKÉT-CH", "u-ờl"),
+                List.of("skedge", "yool"),
+                0,
+                "SKÉT-CH - u-ờl",
+                "Trọng âm rơi vào âm 1 (SKÉT-CH): SKÉT-CH - u-ờl.",
+                "Cụm /sk/ lướt nhanh, 'dule' kết thúc bằng âm /l/ uốn lưỡi nhẹ.",
+                "🔔 Âm /l/ ở cuối hơi cong đầu lưỡi chạm chân răng trên.",
+                "⚠️ Người Mỹ đọc là /'skedʒ.uːl/ (skét-ch-u-ờl), người Anh đọc là /'ʃed.juːl/ (sé-diu-ờl).",
+                "Mẹo: SKETCH (phác thảo) + DULE (lịch) ➔ schedule!",
+                Collections.emptyList(),
+                "Đuôi [phụ âm + le] ➔ /əl/!",
+                "consonant_le",
+                "Đuôi [phụ âm + le] ➔ /əl/ (như schedule, table)"
+        ));
+
+        TU_DIEN_BOI_CHUAN.put("psychology", new HuongDanDocDTO(
+                "psychology", "/saɪˈkɑːlədʒi/", "tâm lý học",
+                List.of("psy", "cho", "lo", "gy"),
+                List.of("saɪ", "ˈkɑː", "lə", "dʒi"),
+                List.of("sai", "CO", "lờ", "dì"),
+                List.of("sigh", "caw", "luh", "jee"),
+                1,
+                "sai - CO - lờ - dì",
+                "Trọng âm rơi vào âm 2 (CO): sai - CO - lờ - dì.",
+                "Chữ 'p' ở đầu là âm câm, bắt đầu ngay bằng /s/. 'ch' đọc là /k/.",
+                "🔔 Đuôi [-gy] có chữ G mềm đọc là /dʒi/ (dì).",
+                "⚠️ Đừng phát âm chữ 'p' ('pờ-sai'). Chữ 'p' hoàn toàn câm!",
+                "Mẹo: P câm ➔ sai + CO + lờ + dì = psychology!",
+                Collections.emptyList(),
+                "G Mềm (g + y) ➔ /dʒ/ (như psychology, gym)!",
+                "soft_g",
+                "G Mềm (g + e, i, y) ➔ /dʒ/ (như psychology, gym)"
+        ));
     }
 
 
@@ -2012,20 +2130,121 @@ public class HuongDanDocServiceImpl implements HuongDanDocService {
         return result;
     }
 
+    private static final Map<String, List<String>> TU_DIEN_TACH_AM_DAC_BIET = Map.ofEntries(
+            Map.entry("registration", List.of("re", "gis", "tra", "tion")),
+            Map.entry("included", List.of("in", "clu", "ded")),
+            Map.entry("include", List.of("in", "clude")),
+            Map.entry("lunch", List.of("lun", "ch")),
+            Map.entry("workshop", List.of("work", "shop")),
+            Map.entry("fee", List.of("fee")),
+            Map.entry("comfortable", List.of("com", "for", "ta", "ble")),
+            Map.entry("pronunciation", List.of("pro", "nun", "ci", "a", "tion")),
+            Map.entry("enthusiastic", List.of("en", "thu", "si", "as", "tic")),
+            Map.entry("extraordinary", List.of("ex", "traor", "di", "nar", "y")),
+            Map.entry("refrigerator", List.of("re", "fri", "ge", "ra", "tor")),
+            Map.entry("architect", List.of("ar", "chi", "tect")),
+            Map.entry("schedule", List.of("sche", "dule")),
+            Map.entry("wednesday", List.of("wednes", "day")),
+            Map.entry("colonel", List.of("colo", "nel")),
+            Map.entry("psychology", List.of("psy", "cho", "lo", "gy")),
+            Map.entry("subtle", List.of("sub", "tle")),
+            Map.entry("doubt", List.of("doubt")),
+            Map.entry("rhythm", List.of("rhy", "thm")),
+            Map.entry("thorough", List.of("thor", "ough")),
+            Map.entry("conscientious", List.of("con", "scien", "tious")),
+            Map.entry("mischievous", List.of("mis", "chie", "vous")),
+            Map.entry("knowledge", List.of("know", "ledge")),
+            Map.entry("receipt", List.of("re", "ceipt")),
+            Map.entry("choir", List.of("cho", "ir")),
+            Map.entry("island", List.of("is", "land")),
+            Map.entry("annual", List.of("an", "nu", "al")),
+            Map.entry("accountability", List.of("ac", "coun", "ta", "bil", "i", "ty")),
+            Map.entry("account", List.of("ac", "count"))
+    );
+
     private List<String> chiaTuTheoSoLuongAmTiet(String word, int count) {
-        List<String> res = new ArrayList<>();
         if (count <= 1 || word.length() <= count) {
-            res.add(word);
-            return res;
+            return List.of(word);
         }
+        String clean = word.toLowerCase().trim();
+        if (TU_DIEN_TACH_AM_DAC_BIET.containsKey(clean)) {
+            List<String> special = TU_DIEN_TACH_AM_DAC_BIET.get(clean);
+            if (special.size() == count || count <= 0) {
+                return special;
+            }
+        }
+
+        // Tách các hậu tố phổ biến trước
+        String[] suffixes = {"tion", "sion", "ment", "ble", "ple", "tle", "dle", "gle", "cle", "ful", "ness", "ture", "ence", "ance"};
+        for (String suf : suffixes) {
+            if (clean.endsWith(suf) && clean.length() > suf.length() + 2) {
+                String prefix = word.substring(0, word.length() - suf.length());
+                List<String> sub = chiaTuTheoSoLuongAmTiet(prefix, count - 1);
+                if (sub.size() == count - 1) {
+                    List<String> res = new ArrayList<>(sub);
+                    res.add(word.substring(word.length() - suf.length()));
+                    return res;
+                }
+            }
+        }
+
         List<String> natural = tachAmTietTiengAnhThucTe(word);
         if (natural.size() == count) {
             return natural;
         }
 
+        // Tách theo nguyên âm (vowel clusters)
+        java.util.regex.Pattern vowelPattern = java.util.regex.Pattern.compile("[aeiouy]+", java.util.regex.Pattern.CASE_INSENSITIVE);
+        java.util.regex.Matcher m = vowelPattern.matcher(word);
+        List<int[]> vowelMatches = new ArrayList<>();
+        while (m.find()) {
+            String v = m.group().toLowerCase();
+            if ((v.equals("ia") || v.equals("io") || v.equals("ua") || v.equals("eo")) && vowelMatches.size() < count - 1) {
+                vowelMatches.add(new int[]{m.start(), m.start() + 1});
+                vowelMatches.add(new int[]{m.start() + 1, m.start() + 2});
+            } else {
+                vowelMatches.add(new int[]{m.start(), m.end()});
+            }
+        }
+
+        if (vowelMatches.size() > count && clean.endsWith("e") && !clean.endsWith("ee") && !clean.endsWith("le")) {
+            vowelMatches.remove(vowelMatches.size() - 1);
+        }
+
+        if (vowelMatches.size() == count) {
+            List<Integer> cuts = new ArrayList<>();
+            cuts.add(0);
+            for (int i = 0; i < count - 1; i++) {
+                int v1End = vowelMatches.get(i)[1];
+                int v2Start = vowelMatches.get(i + 1)[0];
+                int consonantsLen = v2Start - v1End;
+                int cutPos;
+                if (consonantsLen <= 1) {
+                    cutPos = v1End;
+                } else if (consonantsLen == 2) {
+                    String pair = word.substring(v1End, v2Start).toLowerCase();
+                    if (pair.equals("th") || pair.equals("sh") || pair.equals("ch") || pair.equals("ph") || pair.equals("wh") || pair.equals("qu")) {
+                        cutPos = v1End;
+                    } else {
+                        cutPos = v1End + 1;
+                    }
+                } else {
+                    cutPos = v1End + 1;
+                }
+                cuts.add(cutPos);
+            }
+            cuts.add(word.length());
+            List<String> res = new ArrayList<>();
+            for (int i = 0; i < cuts.size() - 1; i++) {
+                res.add(word.substring(cuts.get(i), cuts.get(i + 1)));
+            }
+            return res;
+        }
+
         int len = word.length();
         int step = Math.max(1, len / count);
         int start = 0;
+        List<String> res = new ArrayList<>();
         for (int i = 0; i < count - 1; i++) {
             int end = Math.min(len, start + step);
             res.add(word.substring(start, end));
@@ -2097,7 +2316,7 @@ public class HuongDanDocServiceImpl implements HuongDanDocService {
         // 3. Tách theo quy tắc phụ âm kép giữa 2 nguyên âm (ví dụ: ap-ple, cab-bage, let-tuce, an-nu)
         String doubleConsonant = "(?<=[aeiouy][bcdfghjklmnpqrstvwxz])(?=[bcdfghjklmnpqrstvwxz][aeiouy])";
         String[] parts = word.split(doubleConsonant);
-        if (parts.length > 1 && parts.length <= 4) {
+        if (parts.length > 1) {
             for (String p : parts) if (!p.isBlank()) list.add(p);
             return list;
         }
@@ -2105,7 +2324,7 @@ public class HuongDanDocServiceImpl implements HuongDanDocService {
         // 4. Tách theo nguyên âm - phụ âm
         String vcv = "(?<=[aeiouy])(?=[bcdfghjklmnpqrstvwxz][aeiouy])";
         String[] vcvParts = word.split(vcv);
-        if (vcvParts.length > 1 && vcvParts.length <= 4) {
+        if (vcvParts.length > 1) {
             for (String p : vcvParts) if (!p.isBlank()) list.add(p);
             return list;
         }
