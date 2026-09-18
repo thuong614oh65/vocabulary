@@ -47,7 +47,7 @@
             <ul class="nav nav-pills nav-justified mb-4 gap-2" id="createExamTabs" role="tablist">
                 <li class="nav-item" role="presentation">
                     <button class="nav-link active" id="tab-sample-btn" data-bs-toggle="pill" data-bs-target="#tab-sample" type="button" role="tab">
-                        <span>🌟</span> 18 Đề Mẫu Có Sẵn & AI Tạo
+                        <span>🌟</span> 19 Đề Mẫu Chuẩn & AI Tạo
                     </button>
                 </li>
                 <li class="nav-item" role="presentation">
@@ -65,10 +65,10 @@
             <!-- Tab Content -->
             <div class="tab-content" id="createExamTabContent">
 
-                <!-- TAB 1: 18 ĐỀ MẪU TỪ đề thi.docx & AI TỰ SINH -->
+                <!-- TAB 1: 19 ĐỀ MẪU TỪ đề thi.docx & AI TỰ SINH -->
                 <div class="tab-pane fade show active" id="tab-sample" role="tabpanel">
                     <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
-                        <span class="fw-bold text-slate-700">Bộ 18 đề thi mẫu thực tế (Trích xuất từ tài liệu Tiếng Anh Nâng Cao 2):</span>
+                        <span class="fw-bold text-slate-700">Bộ 19 đề thi mẫu chuẩn TOEIC Speaking (Trích xuất từ tài liệu Tiếng Anh Nâng Cao 2 & Đề thi thực tế):</span>
                         <button class="btn btn-primary btn-sm px-3 rounded-pill fw-bold" id="btnAiAutoGenerate">
                             ✨ AI Tự Tạo Đề Hoàn Toàn Mới
                         </button>
@@ -193,21 +193,67 @@
                 <div class="col-lg-6">
 
                     <!-- Scenario Card -->
-                    <div class="scenario-card">
-                        <div class="d-flex justify-content-between align-items-start mb-2">
+                    <div class="scenario-card mb-3">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
                             <span class="badge bg-primary px-3 py-1 rounded-pill fw-semibold">📞 Tình huống cuộc gọi (Caller Scenario)</span>
-                            <button class="audio-btn" id="btnPlayScenario" title="Nghe giọng đọc người gọi">🔊</button>
+                            <button class="audio-btn" id="btnPlayScenario" title="Nghe giọng đọc người gọi">
+                                🔊 <span>Nghe tình huống</span>
+                            </button>
                         </div>
                         <p class="mb-0 fw-semibold text-slate-800" id="scenarioText">Đang tải tình huống...</p>
                     </div>
 
-                    <!-- Question 1 (15s) -->
-                    <div class="question-box">
-                        <div class="question-header">
-                            <span class="q-badge">Câu 1 (15 giây • ~20-35 từ)</span>
-                            <button class="audio-btn btn-play-q" data-target="q1" title="Nghe câu hỏi 1">🔊</button>
+                    <!-- Thanh điều khiển Chế độ thi & Ẩn/Hiện toàn bộ -->
+                    <div class="exam-control-bar p-2 px-3 mb-3 bg-white rounded-3 border d-flex justify-content-between align-items-center flex-wrap gap-2 shadow-sm">
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="fw-bold text-slate-700 small">Chế độ thi:</span>
+                            <div class="btn-group btn-group-sm" role="group">
+                                <button type="button" class="btn btn-outline-primary active fw-semibold" id="btnModeExam" title="Ẩn chữ câu hỏi, nghe audio như thi thật tại IIG">
+                                    🎧 Thi thật (Ẩn câu hỏi)
+                                </button>
+                                <button type="button" class="btn btn-outline-primary fw-semibold" id="btnModePractice" title="Xem trước toàn bộ chữ câu hỏi">
+                                    📖 Luyện tập (Hiện câu hỏi)
+                                </button>
+                            </div>
                         </div>
-                        <div class="question-text" id="q1Text">Loading question 1...</div>
+                        <div>
+                            <button class="btn btn-sm btn-outline-secondary rounded-pill px-3 fw-semibold" id="btnToggleAllQuestions">
+                                👁️ Hiện tất cả câu hỏi
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Question 1 (15s) -->
+                    <div class="question-box" id="qBox1">
+                        <div class="question-header">
+                            <div class="d-flex align-items-center gap-2">
+                                <span class="q-badge">Câu 1 (15s • ~20-35 từ)</span>
+                                <span class="badge bg-secondary-subtle text-secondary border px-2 py-1 rounded-pill small q-state-badge" id="q1StateBadge">🔒 Đang ẩn</span>
+                            </div>
+                            <div class="d-flex align-items-center gap-2">
+                                <button class="btn btn-sm btn-outline-primary rounded-pill px-3 fw-semibold btn-toggle-q" data-target="1" id="btnToggleQ1">
+                                    👁️ Xem câu hỏi
+                                </button>
+                                <button class="audio-btn btn-play-q" data-target="q1" id="btnPlayQ1" title="Nghe người gọi đọc câu hỏi 1">
+                                    🔊 <span>Nghe câu hỏi</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Khối thông báo câu hỏi đang ẩn (Mặc định hiện) -->
+                        <div class="question-hidden-banner" id="q1HiddenBanner">
+                            <div class="d-flex align-items-center gap-2 text-muted small py-2 px-3 bg-light rounded-3 border">
+                                <span class="fs-5">🔒</span>
+                                <div>
+                                    <strong class="text-slate-800">Câu hỏi 1 đang ẩn theo chuẩn thi TOEIC thật.</strong>
+                                    <div class="text-muted">Bấm <strong class="text-primary">🔊 Nghe câu hỏi</strong> để nghe người gọi hoặc bấm <strong class="text-secondary">👁️ Xem câu hỏi</strong> nếu cần đọc văn bản.</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Khối chữ câu hỏi (Mặc định ẩn) -->
+                        <div class="question-text d-none" id="q1Text">Loading question 1...</div>
+
                         <textarea class="answer-textarea" id="ans1Input" placeholder="Nhập câu trả lời của bạn cho câu 1 bằng tiếng Anh..."></textarea>
                         <div class="live-meter">
                             <span class="text-muted"><span id="wordCount1">0</span> từ • <span id="timeEst1">0</span>s nói ước tính</span>
@@ -216,12 +262,36 @@
                     </div>
 
                     <!-- Question 2 (15s) -->
-                    <div class="question-box">
+                    <div class="question-box" id="qBox2">
                         <div class="question-header">
-                            <span class="q-badge">Câu 2 (15 giây • ~20-35 từ)</span>
-                            <button class="audio-btn btn-play-q" data-target="q2" title="Nghe câu hỏi 2">🔊</button>
+                            <div class="d-flex align-items-center gap-2">
+                                <span class="q-badge">Câu 2 (15s • ~20-35 từ)</span>
+                                <span class="badge bg-secondary-subtle text-secondary border px-2 py-1 rounded-pill small q-state-badge" id="q2StateBadge">🔒 Đang ẩn</span>
+                            </div>
+                            <div class="d-flex align-items-center gap-2">
+                                <button class="btn btn-sm btn-outline-primary rounded-pill px-3 fw-semibold btn-toggle-q" data-target="2" id="btnToggleQ2">
+                                    👁️ Xem câu hỏi
+                                </button>
+                                <button class="audio-btn btn-play-q" data-target="q2" id="btnPlayQ2" title="Nghe người gọi đọc câu hỏi 2">
+                                    🔊 <span>Nghe câu hỏi</span>
+                                </button>
+                            </div>
                         </div>
-                        <div class="question-text" id="q2Text">Loading question 2...</div>
+
+                        <!-- Khối thông báo câu hỏi đang ẩn (Mặc định hiện) -->
+                        <div class="question-hidden-banner" id="q2HiddenBanner">
+                            <div class="d-flex align-items-center gap-2 text-muted small py-2 px-3 bg-light rounded-3 border">
+                                <span class="fs-5">🔒</span>
+                                <div>
+                                    <strong class="text-slate-800">Câu hỏi 2 đang ẩn theo chuẩn thi TOEIC thật.</strong>
+                                    <div class="text-muted">Bấm <strong class="text-primary">🔊 Nghe câu hỏi</strong> để nghe người gọi hoặc bấm <strong class="text-secondary">👁️ Xem câu hỏi</strong> nếu cần đọc văn bản.</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Khối chữ câu hỏi (Mặc định ẩn) -->
+                        <div class="question-text d-none" id="q2Text">Loading question 2...</div>
+
                         <textarea class="answer-textarea" id="ans2Input" placeholder="Nhập câu trả lời của bạn cho câu 2 bằng tiếng Anh (đính chính thông tin)..."></textarea>
                         <div class="live-meter">
                             <span class="text-muted"><span id="wordCount2">0</span> từ • <span id="timeEst2">0</span>s nói ước tính</span>
@@ -230,12 +300,36 @@
                     </div>
 
                     <!-- Question 3 (30s) -->
-                    <div class="question-box">
+                    <div class="question-box" id="qBox3">
                         <div class="question-header">
-                            <span class="q-badge">Câu 3 (30 giây • ~45-75 từ)</span>
-                            <button class="audio-btn btn-play-q" data-target="q3" title="Nghe câu hỏi 3">🔊</button>
+                            <div class="d-flex align-items-center gap-2">
+                                <span class="q-badge">Câu 3 (30s • ~45-75 từ)</span>
+                                <span class="badge bg-secondary-subtle text-secondary border px-2 py-1 rounded-pill small q-state-badge" id="q3StateBadge">🔒 Đang ẩn</span>
+                            </div>
+                            <div class="d-flex align-items-center gap-2">
+                                <button class="btn btn-sm btn-outline-primary rounded-pill px-3 fw-semibold btn-toggle-q" data-target="3" id="btnToggleQ3">
+                                    👁️ Xem câu hỏi
+                                </button>
+                                <button class="audio-btn btn-play-q" data-target="q3" id="btnPlayQ3" title="Nghe người gọi đọc câu hỏi 3">
+                                    🔊 <span>Nghe câu hỏi</span>
+                                </button>
+                            </div>
                         </div>
-                        <div class="question-text" id="q3Text">Loading question 3...</div>
+
+                        <!-- Khối thông báo câu hỏi đang ẩn (Mặc định hiện) -->
+                        <div class="question-hidden-banner" id="q3HiddenBanner">
+                            <div class="d-flex align-items-center gap-2 text-muted small py-2 px-3 bg-light rounded-3 border">
+                                <span class="fs-5">🔒</span>
+                                <div>
+                                    <strong class="text-slate-800">Câu hỏi 3 đang ẩn theo chuẩn thi TOEIC thật.</strong>
+                                    <div class="text-muted">Bấm <strong class="text-primary">🔊 Nghe câu hỏi</strong> để nghe người gọi hoặc bấm <strong class="text-secondary">👁️ Xem câu hỏi</strong> nếu cần đọc văn bản.</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Khối chữ câu hỏi (Mặc định ẩn) -->
+                        <div class="question-text d-none" id="q3Text">Loading question 3...</div>
+
                         <textarea class="answer-textarea" id="ans3Input" placeholder="Nhập câu trả lời tổng hợp đầy đủ cho câu 3 (dùng liên từ First, Second...)..."></textarea>
                         <div class="live-meter">
                             <span class="text-muted"><span id="wordCount3">0</span> từ • <span id="timeEst3">0</span>s nói ước tính</span>

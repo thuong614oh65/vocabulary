@@ -29,12 +29,15 @@ public class LuyenDeController {
     private static final List<Map<String, Object>> DS_DE_MAU = new ArrayList<>();
 
     static {
-        // 3 ĐỀ THI MẪU TRỌNG TÂM (TEXT 1, TEXT 2, TEXT 3 TỪ BÀI HỌC TOEIC SPEAKING Q7-9)
+        // BỘ ĐỀ THI TRỌNG TÂM TỪ BÀI HỌC TOEIC SPEAKING Q7-9
+        themDeMau(19, "[Sample Exam] Danville City Tours", "Tour Tham quan Danville (Đề mẫu chuẩn)", "/images/de-thi/image19.png");
         themDeMau(16, "[Text 1] Drilling Site Tour Schedule", "Lịch trình Tham quan Khu công trường", "/images/de-thi/image16.png");
         themDeMau(17, "[Text 2] International Writers Conference", "Hội nghị Nhà văn Quốc tế", "/images/de-thi/image17.png");
         themDeMau(18, "[Text 3] Southeast Delegation Tour Itinerary", "Lịch trình Đoàn đại biểu Đông Nam", "/images/de-thi/image18.png");
+        themDeMau(15, "Palm Island's New Employee Orientation", "Định hướng Nhân viên Khu nghỉ dưỡng Palm Island", "/images/de-thi/image15.png");
+        themDeMau(13, "High Elevation Rock Festival Tours", "Tour Lễ hội Âm nhạc Rock High Elevation", "/images/de-thi/image13.png");
 
-        // 15 ĐỀ THI MẪU TỪ TÀI LIỆU đề thi.docx
+        // 13 ĐỀ THI MẪU THỰC HÀNH TỪ TÀI LIỆU đề thi.docx
         themDeMau(1, "Annual Human Resources Conference", "Hội nghị Nhân sự Thường niên", "/images/de-thi/image1.png");
         themDeMau(2, "Future of Education and Careers Seminar", "Hội thảo Tương lai Giáo dục & Nghề nghiệp", "/images/de-thi/image2.png");
         themDeMau(3, "Resume: Murray O'Brien", "Sơ yếu lý lịch: Kiến trúc sư Cảnh quan", "/images/de-thi/image3.png");
@@ -47,9 +50,7 @@ public class LuyenDeController {
         themDeMau(10, "New Employee Orientation", "Buổi Định hướng Nhân viên Mới", "/images/de-thi/image10.png");
         themDeMau(11, "Resume: Bruce Geller", "Sơ yếu lý lịch: Quản lý Nhân sự Bruce Geller", "/images/de-thi/image11.png");
         themDeMau(12, "Magnificent Moment Event Planner", "Lịch trình Tổ chức Sự kiện Mandy Cooper", "/images/de-thi/image12.png");
-        themDeMau(13, "High Elevation Rock Festival Tours", "Tour Lễ hội Âm nhạc Rock High Elevation", "/images/de-thi/image13.png");
         themDeMau(14, "Vista City Annual Festival", "Lễ hội Thường niên Thành phố Vista", "/images/de-thi/image14.png");
-        themDeMau(15, "Palm Island's New Employee Orientation", "Định hướng Nhân viên Khu nghỉ dưỡng Palm Island", "/images/de-thi/image15.png");
     }
 
     private static void themDeMau(int id, String tenEn, String tenVi, String anhUrl) {
@@ -193,14 +194,37 @@ public class LuyenDeController {
             return ResponseEntity.status(401).body(Map.of("error", "Chưa đăng nhập"));
         }
 
-        if (id < 1 || id > 18) {
-            return ResponseEntity.badRequest().body(Map.of("error", "Mã đề mẫu không hợp lệ (1-18)"));
+        if (id < 1 || id > 19) {
+            return ResponseEntity.badRequest().body(Map.of("error", "Mã đề mẫu không hợp lệ (1-19)"));
         }
 
         try {
             String imgRelativePath = "/images/de-thi/image" + id + ".png";
 
-            // XỬ LÝ ĐẶC BIỆT CHO 3 ĐỀ BÀI HỌC (TEXT 1, TEXT 2, TEXT 3)
+            // 1. [SAMPLE EXAM] DANVILLE CITY TOURS (SLIDE 5-6 TRONG BÀI GIẢNG PPTX)
+            if (id == 19) {
+                DeThiQ79DTO dto = DeThiQ79DTO.builder()
+                        .tieuDe("[Sample Exam] Danville City Tours")
+                        .loaiNoiDung("IMAGE")
+                        .anhUrl(imgRelativePath)
+                        .tomTatNoiDung("Danville City Tours<br>All tours leave from the front of the Piedmont Hotel. Reservations must be made in advance by calling the Tour Office at 593-555-9694. Cost: $75 (adults), $50 (children under 12, must be accompanied by an adult).<br>• 10:00 - Bus leaves from the main entrance of the hotel<br>• 10:00-11:00 - Bus tour of downtown Danville<br>• 11:00 - Arrive at Danville Museum of History<br>• 11:00-1:00 - Guided museum tour<br>• 1:00-2:00 - Lunch at the museum café<br>• 2:00-3:30 - Walking tour of Danville City Park and Gardens<br>• 3:30-5:00 - Bus tour of Danville waterfront<br>• 5:15 - Arrive back at the Piedmont Hotel<br>• 6:00 - Optional dinner at the hotel* (*Must be reserved and paid for when you book your tour tickets. Add $25 per person to the cost of your tour ticket.)")
+                        .tinhHuong("Hello. I'm interested in taking a tour of Danville, but I'm afraid it might be a bit too expensive. Could you please answer a few questions for me?")
+                        .cauHoi1("Can you tell me how much it costs to take the tour?")
+                        .thoiGianCau1(15)
+                        .goiYCau1("Sure. Let me check the information on the schedule. The tour costs 75 dollars for adults, and for children under 12, the cost is 50 dollars.")
+                        .cauHoi2("I heard that the tour includes dinner as well as lunch. Is that correct?")
+                        .thoiGianCau2(15)
+                        .goiYCau2("Let's see. According to the schedule, there's an optional dinner at the end of the tour. This costs an extra 25 dollars over and above the cost of your tour ticket.")
+                        .cauHoi3("Does the tour take place mostly in the morning, or will we also visit some places after lunch?")
+                        .thoiGianCau3(30)
+                        .goiYCau3("Yes, the tour includes visits to several places after lunch. First, there's a walking tour of Danville City Park and Gardens, which begins at two o'clock. Then after that, at three thirty, the tour goes by bus to the Danville waterfront. Then you'll get back to the hotel by five fifteen.")
+                        .nguonGoc("DE_MAU")
+                        .deMauId(19)
+                        .build();
+                return ResponseEntity.ok(dto);
+            }
+
+            // 2. [TEXT 1] DRILLING SITE TOUR SCHEDULE (SLIDE 10, 15, 33)
             if (id == 16) {
                 DeThiQ79DTO dto = DeThiQ79DTO.builder()
                         .tieuDe("[Text 1] Drilling Site Tour Schedule")
@@ -223,6 +247,7 @@ public class LuyenDeController {
                 return ResponseEntity.ok(dto);
             }
 
+            // 3. [TEXT 2] INTERNATIONAL WRITERS CONFERENCE (SLIDE 11, 17, 35)
             if (id == 17) {
                 DeThiQ79DTO dto = DeThiQ79DTO.builder()
                         .tieuDe("[Text 2] International Writers Conference")
@@ -245,6 +270,7 @@ public class LuyenDeController {
                 return ResponseEntity.ok(dto);
             }
 
+            // 4. [TEXT 3] SOUTHEAST DELEGATION TOUR ITINERARY (SLIDE 12, 19, 37)
             if (id == 18) {
                 DeThiQ79DTO dto = DeThiQ79DTO.builder()
                         .tieuDe("[Text 3] Southeast Delegation Tour Itinerary")
@@ -263,6 +289,52 @@ public class LuyenDeController {
                         .goiYCau3("Certainly. First, they arrive at New York La Guardia Airport at 7:00 a.m. and are picked up by Secretary Sullivan. Then, they arrive at Hotel Compton at 8:15 a.m. for check-in with one hour of free time. Next, they leave for Government Center at 9:15 a.m., arriving at 9:45 a.m. Finally, they have a meet and greet at 10:00 a.m. in the Webber Room before their first presentation at 10:30 a.m.")
                         .nguonGoc("DE_MAU")
                         .deMauId(18)
+                        .build();
+                return ResponseEntity.ok(dto);
+            }
+
+            // 5. [SLIDE 38] PALM ISLAND'S NEW EMPLOYEE ORIENTATION
+            if (id == 15) {
+                DeThiQ79DTO dto = DeThiQ79DTO.builder()
+                        .tieuDe("Palm Island's New Employee Orientation")
+                        .loaiNoiDung("IMAGE")
+                        .anhUrl(imgRelativePath)
+                        .tomTatNoiDung("Palm Island's New Employee Orientation - Monday, November 16th<br>• 08:30~09:30 A.M.: Introduction and morning tea<br>• 09:30~10:30 A.M.: Employee benefits, Erin Morris<br>• 10:30~11:00 A.M.: Demonstration: Resort security procedures (Postponed)<br>• 11:00 A.M.~Noon: Resort tour, Cameron Simmons<br>• Noon~01:00 P.M.: Lunch at resort's restaurant<br>• 01:00~02:00 P.M.: Demonstration: Welcoming new guests, Guest check-in and check-out<br>• 02:00~03:30 P.M.: Workshop on scheduling special events")
+                        .tinhHuong("Hello, I'm a new employee starting at Palm Island next Monday. I'd like to ask a few questions about the orientation schedule.")
+                        .cauHoi1("What time does the new employee orientation begin, and what is scheduled at that time?")
+                        .thoiGianCau1(15)
+                        .goiYCau1("The new employee orientation begins at 8:30 a.m., and an introduction and morning tea are scheduled at that time.")
+                        .cauHoi2("Who will give the sessions on employee benefits and the resort tour?")
+                        .thoiGianCau2(15)
+                        .goiYCau2("Erin Morris will give the session on employee benefits from 9:30 to 10:30 a.m., and Cameron Simmons will lead the resort tour from 11:00 a.m. to noon.")
+                        .cauHoi3("I'm interested in the demonstration of resort security procedures. Could you tell me when it is scheduled?")
+                        .thoiGianCau3(30)
+                        .goiYCau3("Actually, the demonstration of resort security procedures has been postponed, so it won't be held. However, there are demonstrations on welcoming new guests and check-in and check-out scheduled from 1:00 to 2:00 p.m.")
+                        .nguonGoc("DE_MAU")
+                        .deMauId(15)
+                        .build();
+                return ResponseEntity.ok(dto);
+            }
+
+            // 6. [SLIDE 39] HIGH ELEVATION ROCK FESTIVAL TOURS
+            if (id == 13) {
+                DeThiQ79DTO dto = DeThiQ79DTO.builder()
+                        .tieuDe("High Elevation Rock Festival Tours")
+                        .loaiNoiDung("IMAGE")
+                        .anhUrl(imgRelativePath)
+                        .tomTatNoiDung("High Elevation Rock Festival Tours - Date: March 24th - April 14th<br>• Saturday, March 24th: New York City Tower Dent Hall - Sold out<br>• Saturday, March 31st: Boston Nordic Hall - $22<br>• Friday, April 6th: Richmond Marine Park - Sold out<br>• Saturday, April 14th: New York City Zeppelin Hall - $27<br>Ticket Purchase: online or at the gate. Purchase ticket online and get a $5 extra discount.")
+                        .tinhHuong("Hi, I'm calling for some information about the High Elevation Rock Festival Tours. Could you answer a few questions for me?")
+                        .cauHoi1("When and where will the High Elevation Rock Festival Tour take place in Boston?")
+                        .thoiGianCau1(15)
+                        .goiYCau1("The tour in Boston will take place on Saturday, March 31st at Boston Nordic Hall.")
+                        .cauHoi2("I'd like to attend the tour in New York City. Could you tell me which dates are available and how much the tickets cost?")
+                        .thoiGianCau2(15)
+                        .goiYCau2("There are two dates in New York City. The first tour on Saturday, March 24th at Tower Dent Hall is sold out. However, the tour on Saturday, April 14th at Zeppelin Hall is available for $27.")
+                        .cauHoi3("I'm planning to buy a ticket for the Boston tour. How much does it cost, and is there any way I can get a discount?")
+                        .thoiGianCau3(30)
+                        .goiYCau3("The ticket for the Boston tour costs $22. However, if you purchase your ticket online, you can get a $5 extra discount, so it will cost only $17.")
+                        .nguonGoc("DE_MAU")
+                        .deMauId(13)
                         .build();
                 return ResponseEntity.ok(dto);
             }

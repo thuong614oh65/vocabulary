@@ -5,6 +5,7 @@
 let currentExamData = null;
 let prepTimerInterval = null;
 let prepSecondsLeft = 45;
+let questionVisibility = { 1: false, 2: false, 3: false }; // Mặc định tất cả câu hỏi đều ẨN
 
 document.addEventListener('DOMContentLoaded', () => {
     initTabEvents();
@@ -13,6 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initSampleTestButtons();
     initLiveMeters();
     initAudioButtons();
+    initHiddenQuestionControls();
     initSubmitButton();
 });
 
@@ -294,6 +296,13 @@ function loadExamIntoPractice(data) {
     updateLiveMeter(2, '');
     updateLiveMeter(3, '');
 
+    // MẶC ĐỊNH CHUẨN THI THẬT: ẨN CÂU HỎI (Học viên nghe audio hoặc bấm Xem câu hỏi)
+    setAllQuestionsVisibility(false);
+    const btnModeExam = document.getElementById('btnModeExam');
+    const btnModePractice = document.getElementById('btnModePractice');
+    if (btnModeExam) btnModeExam.classList.add('active');
+    if (btnModePractice) btnModePractice.classList.remove('active');
+
     // Reset và bắt đầu đếm 45s đọc đề
     resetPrepTimer();
 
@@ -404,12 +413,15 @@ function updateLiveMeter(idx, text) {
 // -------------------------------------------------------------
 // 7. PHÁT ÂM THANH CÂU HỎI & TÌNH HUỐNG (TTS WEB SPEECH)
 // -------------------------------------------------------------
+let currentPlayingBtn = null;
+let currentAudioObj = null;
+
 function initAudioButtons() {
     const btnPlayScenario = document.getElementById('btnPlayScenario');
     if (btnPlayScenario) {
         btnPlayScenario.addEventListener('click', () => {
             if (currentExamData && currentExamData.tinhHuong) {
-                speakText(currentExamData.tinhHuong);
+                speakText(currentExamData.tinhHuong, btnPlayScenario);
             }
         });
     }
@@ -418,17 +430,49 @@ function initAudioButtons() {
         btn.addEventListener('click', () => {
             const target = btn.getAttribute('data-target');
             if (currentExamData) {
-                if (target === 'q1' && currentExamData.cauHoi1) speakText(currentExamData.cauHoi1);
-                if (target === 'q2' && currentExamData.cauHoi2) speakText(currentExamData.cauHoi2);
-                if (target === 'q3' && currentExamData.cauHoi3) speakText(currentExamData.cauHoi3);
+                if (target === 'q1' && currentExamData.cauHoi1) speakText(currentExamData.cauHoi1, btn);
+                if (target === 'q2' && currentExamData.cauHoi2) speakText(currentExamData.cauHoi2, btn);
+                if (target === 'q3' && currentExamData.cauHoi3) speakText(currentExamData.cauHoi3, btn);
             }
         });
     });
 }
 
-let currentAudioObj = null;
+function speakText(text, btnElement) {
+    if (!text) return;
 
-function speakText(text) {
+    // Reset nút đang phát âm thanh trước đó nếu có
+    if (currentPlayingBtn && currentPlayingBtn !== btnElement) {
+        currentPlayingBtn.classList.remove('playing');
+        const orig = currentPlayingBtn.getAttribute('data-original-html');
+        if (orig) currentPlayingBtn.innerHTML = orig;
+        currentPlayingBtn = null;
+    }
+
+    let originalHtml = '';
+    if (btnElement) {
+        currentPlayingBtn = btnElement;
+        originalHtml = btnElement.getAttribute('data-original-html') || btnElement.innerHTML;
+        btnElement.setAttribute('data-original-html', originalHtml);
+        btnElement.classList.add('playing');
+        btnElement.innerHTML = '🔊 <span>Đang đọc...</span>';
+    }
+
+    const resetBtn = () => {
+        if (btnElement) {
+            btnElement.classList.remove('playing');
+            btnElement.innerHTML = originalHtml;
+        }
+        if (currentPlayingBtn === btnElement) {
+            currentPlayingBtn = null;
+        }
+    };
+
+    // Dừng giọng đọc fallback nếu đang chạy
+    if (window.speechSynthesis) {
+        window.speechSynthesis.cancel();
+    }
+
     if (currentAudioObj) {
         currentAudioObj.pause();
         if (currentAudioObj.src && currentAudioObj.src.startsWith("blob:")) {
@@ -436,24 +480,128 @@ function speakText(text) {
         }
         currentAudioObj = null;
     }
-    
-    // Dừng giọng đọc fallback nếu đang chạy
-    if (window.speechSynthesis) {
-        window.speechSynthesis.cancel();
-    }
+
+    const cleanText = text.replace(/\(.*?\)/g, '').trim();
 
     if (window.phatAmThanh) {
-        const cleanText = text.replace(/\(.*?\)/g, '').trim();
-        window.phatAmThanh(cleanText, { rate: "+0%" });
+        window.phatAmThanh(cleanText, {
+            rate: "+0%",
+            onEnd: resetBtn,
+            onError: resetBtn
+        }).then(resetBtn).catch(resetBtn);
         return;
     }
 
-    const cleanText = text.replace(/\(.*?\)/g, '').trim();
     const url = "/audio/phat?text=" + encodeURIComponent(cleanText) + "&rate=+0%";
     currentAudioObj = new Audio(url);
+    currentAudioObj.onended = resetBtn;
+    currentAudioObj.onerror = resetBtn;
     currentAudioObj.play().catch(err => {
         console.warn("Lỗi phát âm thanh:", err);
+        resetBtn();
     });
+}
+
+// -------------------------------------------------------------
+// 7B. ĐIỀU KHIỂN ẨN / HIỆN CÂU HỎI (CHUẨN THI THẬT TOEIC)
+// -------------------------------------------------------------
+function initHiddenQuestionControls() {
+    // 1. Nút xem / ẩn từng câu hỏi
+    document.querySelectorAll('.btn-toggle-q').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const idx = parseInt(btn.getAttribute('data-target'), 10);
+            toggleQuestion(idx);
+        });
+    });
+
+    // 2. Nút hiện / ẩn tất cả câu hỏi
+    const btnToggleAll = document.getElementById('btnToggleAllQuestions');
+    if (btnToggleAll) {
+        btnToggleAll.addEventListener('click', () => {
+            toggleAllQuestions();
+        });
+    }
+
+    // 3. Nút chuyển đổi chế độ thi thật vs luyện tập
+    const btnModeExam = document.getElementById('btnModeExam');
+    const btnModePractice = document.getElementById('btnModePractice');
+
+    if (btnModeExam) {
+        btnModeExam.addEventListener('click', () => {
+            btnModeExam.classList.add('active');
+            if (btnModePractice) btnModePractice.classList.remove('active');
+            setAllQuestionsVisibility(false);
+        });
+    }
+
+    if (btnModePractice) {
+        btnModePractice.addEventListener('click', () => {
+            btnModePractice.classList.add('active');
+            if (btnModeExam) btnModeExam.classList.remove('active');
+            setAllQuestionsVisibility(true);
+        });
+    }
+}
+
+function toggleQuestion(idx, forceState) {
+    const newState = (forceState !== undefined) ? forceState : !questionVisibility[idx];
+    questionVisibility[idx] = newState;
+
+    const banner = document.getElementById(`q${idx}HiddenBanner`);
+    const qText = document.getElementById(`q${idx}Text`);
+    const badge = document.getElementById(`q${idx}StateBadge`);
+    const btn = document.getElementById(`btnToggleQ${idx}`);
+
+    if (newState) {
+        // Trạng thái: HIỆN CÂU HỎI
+        if (banner) banner.classList.add('d-none');
+        if (qText) qText.classList.remove('d-none');
+        if (badge) {
+            badge.textContent = '👁️ Đang hiện';
+            badge.className = 'badge bg-success-subtle text-success border px-2 py-1 rounded-pill small q-state-badge';
+        }
+        if (btn) {
+            btn.innerHTML = '🙈 Ẩn câu hỏi';
+            btn.className = 'btn btn-sm btn-outline-secondary rounded-pill px-3 fw-semibold btn-toggle-q';
+        }
+    } else {
+        // Trạng thái: ẨN CÂU HỎI
+        if (banner) banner.classList.remove('d-none');
+        if (qText) qText.classList.add('d-none');
+        if (badge) {
+            badge.textContent = '🔒 Đang ẩn';
+            badge.className = 'badge bg-secondary-subtle text-secondary border px-2 py-1 rounded-pill small q-state-badge';
+        }
+        if (btn) {
+            btn.innerHTML = '👁️ Xem câu hỏi';
+            btn.className = 'btn btn-sm btn-outline-primary rounded-pill px-3 fw-semibold btn-toggle-q';
+        }
+    }
+
+    updateToggleAllButtonText();
+}
+
+function setAllQuestionsVisibility(visible) {
+    [1, 2, 3].forEach(idx => {
+        toggleQuestion(idx, visible);
+    });
+}
+
+function toggleAllQuestions() {
+    // Nếu có ít nhất một câu đang ẩn -> hiện tất cả
+    const anyHidden = Object.values(questionVisibility).some(v => !v);
+    setAllQuestionsVisibility(anyHidden);
+}
+
+function updateToggleAllButtonText() {
+    const btnToggleAll = document.getElementById('btnToggleAllQuestions');
+    if (!btnToggleAll) return;
+    const allVisible = Object.values(questionVisibility).every(v => v);
+    if (allVisible) {
+        btnToggleAll.innerHTML = '🙈 Ẩn tất cả câu hỏi';
+    } else {
+        btnToggleAll.innerHTML = '👁️ Hiện tất cả câu hỏi';
+    }
 }
 
 // -------------------------------------------------------------
