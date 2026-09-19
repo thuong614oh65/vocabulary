@@ -188,4 +188,28 @@ public class TraHangLoatTest {
             System.out.println("phienAmTiengViet: " + dto.getPhienAmTiengViet());
         }
     }
+
+    @Test
+    void testSoundWhyPhonicsMapping() {
+        com.thuong.vocabulary.service.impl.HuongDanDocServiceImpl service = 
+                new com.thuong.vocabulary.service.impl.HuongDanDocServiceImpl(null);
+
+        // Test từ "schedule"
+        com.thuong.vocabulary.dto.HuongDanDocDTO dtoSchedule = service.layHuongDanDoc("schedule", "/ˈskedʒuːl/", "lịch trình");
+        org.junit.jupiter.api.Assertions.assertNotNull(dtoSchedule.getPhonicsMapping());
+        org.junit.jupiter.api.Assertions.assertFalse(dtoSchedule.getPhonicsMapping().isEmpty());
+
+        System.out.println("=== SOUNDWHY TEST: SCHEDULE ===");
+        for (com.thuong.vocabulary.dto.PhonicsPhonemeDTO p : dtoSchedule.getPhonicsMapping()) {
+            System.out.println("Letter: " + p.getLetters() + " | IPA: /" + p.getIpa() + "/ | Âm đọc: " + p.getAmDoc() + " | Vowel: " + p.isVowel() + " | Silent: " + p.isSilent());
+        }
+
+        // Test từ "use"
+        com.thuong.vocabulary.dto.HuongDanDocDTO dtoUse = service.layHuongDanDoc("use", "/juːz/", "sử dụng");
+        org.junit.jupiter.api.Assertions.assertNotNull(dtoUse.getPhonicsMapping());
+        System.out.println("=== SOUNDWHY TEST: USE ===");
+        for (com.thuong.vocabulary.dto.PhonicsPhonemeDTO p : dtoUse.getPhonicsMapping()) {
+            System.out.println("Letter: " + p.getLetters() + " | IPA: /" + p.getIpa() + "/ | Âm đọc: " + p.getAmDoc() + " | Vowel: " + p.isVowel() + " | Silent: " + p.isSilent());
+        }
+    }
 }

@@ -87,6 +87,9 @@ public class PhienAmServiceImpl implements PhienAmService {
         try {
             DictionaryResponse response = dictionaryService.traTu(tu);
             if (response != null) {
+                if (response.getPhonetic() != null && !response.getPhonetic().isBlank()) {
+                    return response.getPhonetic();
+                }
                 if (response.getPhonetics() != null) {
                     for (Phonetic phonetic : response.getPhonetics()) {
                         if (phonetic.getText() != null && !phonetic.getText().isBlank()) {
@@ -206,6 +209,11 @@ public class PhienAmServiceImpl implements PhienAmService {
                 .replace("ɫ", "l")
                 .replace("'", "ˈ")
                 .replace("g", "ɡ");
+
+        // Di chuyển dấu trọng âm CMU đặt sai (sau phụ âm đầu) ra trước âm tiết
+        // Ví dụ: skˈɛdʒʊl -> ˈskɛdʒʊl, stˈɑːrt -> ˈstɑːrt, prˈezənt -> ˈprezənt
+        clean = clean.replaceAll("^([bcdfghjklmnpqrstvwxyzɡʃʒθðŋ]+)ˈ", "ˈ$1");
+        clean = clean.replaceAll("([ .\\-])([bcdfghjklmnpqrstvwxyzɡʃʒθðŋ]+)ˈ", "$1ˈ$2");
 
         return "/" + clean + "/";
     }

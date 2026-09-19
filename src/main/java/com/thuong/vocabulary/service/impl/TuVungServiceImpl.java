@@ -230,14 +230,28 @@ public class TuVungServiceImpl implements TuVungService {
 
     private String trichXuatPhienAm(DictionaryResponse response) {
         if (response == null) return null;
+        if (response.getPhonetic() != null && !response.getPhonetic().isBlank()) {
+            return chuanHoaIpa(response.getPhonetic());
+        }
         if (response.getPhonetics() != null) {
             for (Phonetic p : response.getPhonetics()) {
                 if (p.getText() != null && !p.getText().isBlank()) {
-                    return p.getText();
+                    return chuanHoaIpa(p.getText());
                 }
             }
         }
         return null;
+    }
+
+    private String chuanHoaIpa(String rawIpa) {
+        if (rawIpa == null || rawIpa.isBlank()) return "";
+        String clean = rawIpa.trim();
+        if (clean.startsWith("/")) clean = clean.substring(1);
+        if (clean.endsWith("/")) clean = clean.substring(0, clean.length() - 1);
+        clean = clean.replace("'", "ˈ").replace("g", "ɡ");
+        clean = clean.replaceAll("^([bcdfghjklmnpqrstvwxyzɡʃʒθðŋ]+)ˈ", "ˈ$1");
+        clean = clean.replaceAll("([ .\\-])([bcdfghjklmnpqrstvwxyzɡʃʒθðŋ]+)ˈ", "$1ˈ$2");
+        return "/" + clean.trim() + "/";
     }
 
     private String trichXuatViDu(DictionaryResponse response) {

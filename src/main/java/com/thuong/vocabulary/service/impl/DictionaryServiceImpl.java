@@ -3,6 +3,8 @@ package com.thuong.vocabulary.service.impl;
 import com.thuong.vocabulary.dto.dictionary.DictionaryResponse;
 import com.thuong.vocabulary.service.DictionaryService;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -42,11 +44,16 @@ public class DictionaryServiceImpl implements DictionaryService {
             String encoded = URLEncoder.encode(tu.trim(), StandardCharsets.UTF_8).replace("+", "%20");
             String url = "https://api.dictionaryapi.dev/api/v2/entries/en/" + encoded;
 
+            HttpHeaders headers = new HttpHeaders();
+            headers.set("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36");
+            headers.set("Accept", "application/json");
+            HttpEntity<Void> entity = new HttpEntity<>(headers);
+
             ResponseEntity<List<DictionaryResponse>> response =
                     restTemplate.exchange(
                             url,
                             HttpMethod.GET,
-                            null,
+                            entity,
                             new ParameterizedTypeReference<List<DictionaryResponse>>() {}
                     );
 

@@ -3,6 +3,7 @@ package com.thuong.vocabulary.service.impl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.thuong.vocabulary.dto.BuocDanhVanDTO;
 import com.thuong.vocabulary.dto.HuongDanDocDTO;
+import com.thuong.vocabulary.dto.PhonicsPhonemeDTO;
 import com.thuong.vocabulary.service.GeminiService;
 import com.thuong.vocabulary.service.HuongDanDocService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +41,9 @@ public class HuongDanDocServiceImpl implements HuongDanDocService {
         // 1. Kiểm tra từ điển chuẩn hóa đã được biên soạn kỹ lưỡng trước (0ms)
         if (TU_DIEN_BOI_CHUAN.containsKey(tuChuanHoa)) {
             HuongDanDocDTO kq = layMauCoSan(tuChuanHoa, phienAmChuan, nghia);
+            if (kq != null) {
+                kq = lamSachKetQua(kq);
+            }
             cache.put(cacheKey, kq);
             return kq;
         }
@@ -192,12 +196,350 @@ public class HuongDanDocServiceImpl implements HuongDanDocService {
             dto.setCacBuocDanhVan(taoCacBuocDanhVan(dto));
         }
 
-        // 7. Bổ sung quy tắc mặt chữ và liên kết sang Sơ đồ quy luật đánh vần
-        if (dto.getMaQuyTacLienKet() == null || dto.getMaQuyTacLienKet().isBlank()) {
-            boSungQuyTacLienKet(dto);
+        // 8. Bổ sung Phonics Mapping theo phong cách SoundWhy.com
+        if (dto.getPhonicsMapping() == null || dto.getPhonicsMapping().isEmpty()) {
+            dto.setPhonicsMapping(taoPhonicsMapping(dto));
         }
 
         return dto;
+    }
+
+    // =========================================================================
+    // TẠO PHONICS MAPPING CHUẨN XÁC THEO PHONG CÁCH SOUNDWHY.COM
+    // =========================================================================
+    private static final Map<String, List<PhonicsPhonemeDTO>> TU_DIEN_PHONICS = new HashMap<>();
+    static {
+        TU_DIEN_PHONICS.put("schedule", List.of(
+                new PhonicsPhonemeDTO("sch", "sk", "x-kơ", false, false),
+                new PhonicsPhonemeDTO("e", "e", "e", false, true),
+                new PhonicsPhonemeDTO("d", "dʒ", "đ / ch", false, false),
+                new PhonicsPhonemeDTO("u", "uː", "u", false, true),
+                new PhonicsPhonemeDTO("l", "l", "lờ", false, false),
+                new PhonicsPhonemeDTO("e", "", "(câm)", true, false)
+        ));
+        TU_DIEN_PHONICS.put("orientation", List.of(
+                new PhonicsPhonemeDTO("o", "ɔː", "o", false, true),
+                new PhonicsPhonemeDTO("r", "r", "r", false, false),
+                new PhonicsPhonemeDTO("i", "i", "i", false, true),
+                new PhonicsPhonemeDTO("en", "ən", "ơn", false, true),
+                new PhonicsPhonemeDTO("t", "t", "t", false, false),
+                new PhonicsPhonemeDTO("a", "eɪ", "tây", false, true),
+                new PhonicsPhonemeDTO("tion", "ʃn", "sần", false, false)
+        ));
+        TU_DIEN_PHONICS.put("attendance", List.of(
+                new PhonicsPhonemeDTO("a", "ə", "ơ", false, true),
+                new PhonicsPhonemeDTO("tt", "t", "t", false, false),
+                new PhonicsPhonemeDTO("en", "en", "en", false, true),
+                new PhonicsPhonemeDTO("d", "d", "đ", false, false),
+                new PhonicsPhonemeDTO("an", "ən", "ơn", false, true),
+                new PhonicsPhonemeDTO("ce", "s", "x", false, false)
+        ));
+        TU_DIEN_PHONICS.put("accountability", List.of(
+                new PhonicsPhonemeDTO("ac", "ə", "ờ", false, true),
+                new PhonicsPhonemeDTO("coun", "kaʊn", "cao-n", false, false),
+                new PhonicsPhonemeDTO("ta", "tə", "tờ", false, false),
+                new PhonicsPhonemeDTO("bil", "bɪl", "bíl", false, false),
+                new PhonicsPhonemeDTO("i", "ɪ", "i", false, true),
+                new PhonicsPhonemeDTO("ty", "ti", "ti", false, false)
+        ));
+        TU_DIEN_PHONICS.put("accountable", List.of(
+                new PhonicsPhonemeDTO("ac", "ə", "ờ", false, true),
+                new PhonicsPhonemeDTO("coun", "kaʊn", "cao-n", false, false),
+                new PhonicsPhonemeDTO("ta", "tə", "tờ", false, false),
+                new PhonicsPhonemeDTO("b", "b", "b", false, false),
+                new PhonicsPhonemeDTO("le", "əl", "ồ", false, false)
+        ));
+        TU_DIEN_PHONICS.put("account", List.of(
+                new PhonicsPhonemeDTO("ac", "ə", "ờ", false, true),
+                new PhonicsPhonemeDTO("coun", "kaʊn", "cao-n", false, false),
+                new PhonicsPhonemeDTO("t", "t", "t", false, false)
+        ));
+        TU_DIEN_PHONICS.put("workshop", List.of(
+                new PhonicsPhonemeDTO("w", "w", "qu", false, false),
+                new PhonicsPhonemeDTO("or", "ɜːr", "ơ-r", false, true),
+                new PhonicsPhonemeDTO("k", "k", "k", false, false),
+                new PhonicsPhonemeDTO("sh", "ʃ", "s", false, false),
+                new PhonicsPhonemeDTO("o", "ɑː", "o", false, true),
+                new PhonicsPhonemeDTO("p", "p", "p", false, false)
+        ));
+        TU_DIEN_PHONICS.put("registration", List.of(
+                new PhonicsPhonemeDTO("re", "re", "re", false, false),
+                new PhonicsPhonemeDTO("gis", "dʒɪs", "dít", false, false),
+                new PhonicsPhonemeDTO("tra", "treɪ", "trây", false, false),
+                new PhonicsPhonemeDTO("tion", "ʃn", "sần", false, false)
+        ));
+        TU_DIEN_PHONICS.put("included", List.of(
+                new PhonicsPhonemeDTO("in", "ɪn", "in", false, true),
+                new PhonicsPhonemeDTO("clu", "kluː", "cluu", false, false),
+                new PhonicsPhonemeDTO("ded", "dɪd", "địt", false, false)
+        ));
+        TU_DIEN_PHONICS.put("include", List.of(
+                new PhonicsPhonemeDTO("in", "ɪn", "in", false, true),
+                new PhonicsPhonemeDTO("cl", "kl", "cl", false, false),
+                new PhonicsPhonemeDTO("u", "uː", "uu", false, true),
+                new PhonicsPhonemeDTO("d", "d", "đ", false, false),
+                new PhonicsPhonemeDTO("e", "", "(câm)", true, false)
+        ));
+        TU_DIEN_PHONICS.put("lunch", List.of(
+                new PhonicsPhonemeDTO("l", "l", "l", false, false),
+                new PhonicsPhonemeDTO("u", "ʌ", "ă", false, true),
+                new PhonicsPhonemeDTO("n", "n", "n", false, false),
+                new PhonicsPhonemeDTO("ch", "tʃ", "ch", false, false)
+        ));
+        TU_DIEN_PHONICS.put("fee", List.of(
+                new PhonicsPhonemeDTO("f", "f", "f", false, false),
+                new PhonicsPhonemeDTO("ee", "iː", "ii", false, true)
+        ));
+        TU_DIEN_PHONICS.put("knowledge", List.of(
+                new PhonicsPhonemeDTO("k", "", "(câm)", true, false),
+                new PhonicsPhonemeDTO("now", "nɑː", "no", false, true),
+                new PhonicsPhonemeDTO("l", "l", "l", false, false),
+                new PhonicsPhonemeDTO("e", "ɪ", "i", false, true),
+                new PhonicsPhonemeDTO("dge", "dʒ", "ch", false, false)
+        ));
+        TU_DIEN_PHONICS.put("island", List.of(
+                new PhonicsPhonemeDTO("i", "aɪ", "ai", false, true),
+                new PhonicsPhonemeDTO("s", "", "(câm)", true, false),
+                new PhonicsPhonemeDTO("l", "l", "l", false, false),
+                new PhonicsPhonemeDTO("and", "ənd", "ơn-đ", false, true)
+        ));
+        TU_DIEN_PHONICS.put("comfortable", List.of(
+                new PhonicsPhonemeDTO("com", "kʌm", "căm", false, true),
+                new PhonicsPhonemeDTO("for", "fər", "phờ", false, true),
+                new PhonicsPhonemeDTO("ta", "tə", "tờ", false, false),
+                new PhonicsPhonemeDTO("b", "b", "b", false, false),
+                new PhonicsPhonemeDTO("le", "əl", "ồ", false, false)
+        ));
+    }
+
+    private List<PhonicsPhonemeDTO> taoPhonicsMapping(HuongDanDocDTO dto) {
+        if (dto == null || dto.getTu() == null || dto.getTu().isBlank()) {
+            return Collections.emptyList();
+        }
+
+        String word = dto.getTu().toLowerCase().trim();
+        if (TU_DIEN_PHONICS.containsKey(word)) {
+            return new ArrayList<>(TU_DIEN_PHONICS.get(word));
+        }
+
+        return phanTichPhonicsTuDong(word, dto.getPhienAm());
+    }
+
+    private List<PhonicsPhonemeDTO> phanTichPhonicsTuDong(String word, String ipaRaw) {
+        List<PhonicsPhonemeDTO> list = new ArrayList<>();
+        if (word == null || word.isBlank()) return list;
+
+        String w = word.toLowerCase().trim();
+        int len = w.length();
+        int idx = 0;
+
+        while (idx < len) {
+            // 1. Kiểm tra chữ câm đầu từ: kn, wr, ps, gn
+            if (idx == 0 && len >= 2) {
+                if (w.startsWith("kn")) {
+                    list.add(new PhonicsPhonemeDTO("k", "", "(câm)", true, false));
+                    idx++;
+                    continue;
+                }
+                if (w.startsWith("wr")) {
+                    list.add(new PhonicsPhonemeDTO("w", "", "(câm)", true, false));
+                    idx++;
+                    continue;
+                }
+                if (w.startsWith("ps")) {
+                    list.add(new PhonicsPhonemeDTO("p", "", "(câm)", true, false));
+                    idx++;
+                    continue;
+                }
+                if (w.startsWith("gn")) {
+                    list.add(new PhonicsPhonemeDTO("g", "", "(câm)", true, false));
+                    idx++;
+                    continue;
+                }
+            }
+
+            // 2. Chữ 'e' câm ở cuối từ (như schedule, time, name, cute, place, voice, note)
+            if (idx == len - 1 && w.charAt(idx) == 'e' && len > 2 && !w.endsWith("ee") && !w.endsWith("ye")) {
+                list.add(new PhonicsPhonemeDTO("e", "", "(câm)", true, false));
+                idx++;
+                continue;
+            }
+
+            // 3. Đuôi mb câm b (climb, lamb, comb, thumb)
+            if (idx == len - 2 && w.substring(idx).equals("mb")) {
+                list.add(new PhonicsPhonemeDTO("m", "m", "mờ", false, false));
+                list.add(new PhonicsPhonemeDTO("b", "", "(câm)", true, false));
+                idx += 2;
+                continue;
+            }
+
+            // 4. Cụm 'igh' -> /aɪ/ + gh câm
+            if (idx + 3 <= len && w.substring(idx, idx + 3).equals("igh")) {
+                list.add(new PhonicsPhonemeDTO("i", "aɪ", "ai", false, true));
+                list.add(new PhonicsPhonemeDTO("gh", "", "(câm)", true, false));
+                idx += 3;
+                continue;
+            }
+
+            // 5. Cụm 4 chữ cái
+            if (idx + 4 <= len) {
+                String sub4 = w.substring(idx, idx + 4);
+                if (sub4.equals("tion")) {
+                    list.add(new PhonicsPhonemeDTO("tion", "ʃn", "sần", false, false));
+                    idx += 4;
+                    continue;
+                } else if (sub4.equals("sion")) {
+                    list.add(new PhonicsPhonemeDTO("sion", "ʒn", "dần", false, false));
+                    idx += 4;
+                    continue;
+                }
+            }
+
+            // 6. Cụm 3 chữ cái
+            if (idx + 3 <= len) {
+                String sub3 = w.substring(idx, idx + 3);
+                if (sub3.equals("sch")) {
+                    list.add(new PhonicsPhonemeDTO("sch", "sk", "x-kơ", false, false));
+                    idx += 3;
+                    continue;
+                } else if (sub3.equals("tch")) {
+                    list.add(new PhonicsPhonemeDTO("tch", "tʃ", "chờ", false, false));
+                    idx += 3;
+                    continue;
+                } else if (sub3.equals("dge")) {
+                    list.add(new PhonicsPhonemeDTO("dge", "dʒ", "chờ (rung)", false, false));
+                    idx += 3;
+                    continue;
+                } else if (sub3.equals("air") || sub3.equals("ear")) {
+                    list.add(new PhonicsPhonemeDTO(sub3, "eər", "e-ơ", false, true));
+                    idx += 3;
+                    continue;
+                } else if (sub3.equals("ure")) {
+                    list.add(new PhonicsPhonemeDTO("ure", "jʊər", "u-ơ", false, true));
+                    idx += 3;
+                    continue;
+                }
+            }
+
+            // 7. Cụm 2 chữ cái
+            if (idx + 2 <= len) {
+                String sub2 = w.substring(idx, idx + 2);
+                if (sub2.equals("sh")) {
+                    list.add(new PhonicsPhonemeDTO("sh", "ʃ", "sờ (nặng)", false, false));
+                    idx += 2;
+                    continue;
+                } else if (sub2.equals("ch")) {
+                    list.add(new PhonicsPhonemeDTO("ch", "tʃ", "chờ", false, false));
+                    idx += 2;
+                    continue;
+                } else if (sub2.equals("th")) {
+                    list.add(new PhonicsPhonemeDTO("th", "θ", "thờ (thổi hơi)", false, false));
+                    idx += 2;
+                    continue;
+                } else if (sub2.equals("ph")) {
+                    list.add(new PhonicsPhonemeDTO("ph", "f", "phờ", false, false));
+                    idx += 2;
+                    continue;
+                } else if (sub2.equals("wh")) {
+                    list.add(new PhonicsPhonemeDTO("wh", "w", "quờ", false, false));
+                    idx += 2;
+                    continue;
+                } else if (sub2.equals("ck")) {
+                    list.add(new PhonicsPhonemeDTO("ck", "k", "cờ", false, false));
+                    idx += 2;
+                    continue;
+                } else if (sub2.equals("ng")) {
+                    list.add(new PhonicsPhonemeDTO("ng", "ŋ", "ngờ", false, false));
+                    idx += 2;
+                    continue;
+                } else if (sub2.equals("qu")) {
+                    list.add(new PhonicsPhonemeDTO("qu", "kw", "quờ", false, false));
+                    idx += 2;
+                    continue;
+                } else if (sub2.equals("ee") || sub2.equals("ea")) {
+                    list.add(new PhonicsPhonemeDTO(sub2, "iː", "ii", false, true));
+                    idx += 2;
+                    continue;
+                } else if (sub2.equals("oo")) {
+                    list.add(new PhonicsPhonemeDTO("oo", "uː", "u", false, true));
+                    idx += 2;
+                    continue;
+                } else if (sub2.equals("ai") || sub2.equals("ay") || sub2.equals("ei") || sub2.equals("ey")) {
+                    list.add(new PhonicsPhonemeDTO(sub2, "eɪ", "ây", false, true));
+                    idx += 2;
+                    continue;
+                } else if (sub2.equals("oa") || sub2.equals("oe")) {
+                    list.add(new PhonicsPhonemeDTO(sub2, "oʊ", "âu / ô", false, true));
+                    idx += 2;
+                    continue;
+                } else if (sub2.equals("oi") || sub2.equals("oy")) {
+                    list.add(new PhonicsPhonemeDTO(sub2, "ɔɪ", "oi", false, true));
+                    idx += 2;
+                    continue;
+                } else if (sub2.equals("ou") || sub2.equals("ow")) {
+                    list.add(new PhonicsPhonemeDTO(sub2, "aʊ", "ao", false, true));
+                    idx += 2;
+                    continue;
+                } else if (sub2.equals("au") || sub2.equals("aw")) {
+                    list.add(new PhonicsPhonemeDTO(sub2, "ɔː", "o", false, true));
+                    idx += 2;
+                    continue;
+                } else if (sub2.equals("ar")) {
+                    list.add(new PhonicsPhonemeDTO("ar", "ɑːr", "a-r", false, true));
+                    idx += 2;
+                    continue;
+                } else if (sub2.equals("er") || sub2.equals("ir") || sub2.equals("ur")) {
+                    list.add(new PhonicsPhonemeDTO(sub2, "ɜːr", "ơ-r", false, true));
+                    idx += 2;
+                    continue;
+                } else if (sub2.equals("or")) {
+                    list.add(new PhonicsPhonemeDTO("or", "ɔːr", "o-r", false, true));
+                    idx += 2;
+                    continue;
+                }
+            }
+
+            // 8. Chữ cái đơn
+            char c = w.charAt(idx);
+            boolean isVowel = (c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u' || (c == 'y' && idx > 0));
+            String let = String.valueOf(c);
+
+            String ipa = let;
+            String amDoc = let;
+
+            switch (c) {
+                case 'a': ipa = "æ"; amDoc = "a"; break;
+                case 'e': ipa = "e"; amDoc = "e"; break;
+                case 'i': ipa = "ɪ"; amDoc = "i"; break;
+                case 'o': ipa = "ɑː"; amDoc = "o"; break;
+                case 'u': ipa = "ʌ"; amDoc = "ă / u"; break;
+                case 'y': ipa = (idx == 0) ? "j" : "i"; amDoc = (idx == 0) ? "dờ" : "i"; break;
+                case 'b': ipa = "b"; amDoc = "bờ"; break;
+                case 'c': ipa = (idx + 1 < len && (w.charAt(idx+1) == 'e' || w.charAt(idx+1) == 'i' || w.charAt(idx+1) == 'y')) ? "s" : "k"; amDoc = (ipa.equals("s")) ? "xì" : "cờ"; break;
+                case 'd': ipa = "d"; amDoc = "đờ"; break;
+                case 'f': ipa = "f"; amDoc = "phờ"; break;
+                case 'g': ipa = "ɡ"; amDoc = "gờ"; break;
+                case 'h': ipa = "h"; amDoc = "hờ"; break;
+                case 'j': ipa = "dʒ"; amDoc = "chờ"; break;
+                case 'k': ipa = "k"; amDoc = "cờ"; break;
+                case 'l': ipa = "l"; amDoc = "lờ"; break;
+                case 'm': ipa = "m"; amDoc = "mờ"; break;
+                case 'n': ipa = "n"; amDoc = "nờ"; break;
+                case 'p': ipa = "p"; amDoc = "pờ"; break;
+                case 'r': ipa = "r"; amDoc = "rờ"; break;
+                case 's': ipa = "s"; amDoc = "sì"; break;
+                case 't': ipa = "t"; amDoc = "tờ"; break;
+                case 'v': ipa = "v"; amDoc = "vờ"; break;
+                case 'w': ipa = "w"; amDoc = "quờ"; break;
+                case 'x': ipa = "ks"; amDoc = "xì"; break;
+                case 'z': ipa = "z"; amDoc = "dờ"; break;
+            }
+
+            list.add(new PhonicsPhonemeDTO(let, ipa, amDoc, false, isVowel));
+            idx++;
+        }
+
+        return list;
     }
 
     // =========================================================================

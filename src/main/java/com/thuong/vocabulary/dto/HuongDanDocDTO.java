@@ -22,6 +22,7 @@ public class HuongDanDocDTO {
     private String quyTacMatChu;                 // Giải thích quy tắc mặt chữ của từ (ví dụ: "[fy] ở cuối từ ➔ 'y' đọc là /aɪ/")
     private String maQuyTacLienKet;              // Mã quy tắc liên kết sang Bảng quy tắc (ví dụ: "fy_end", "consonant_le")
     private String tenQuyTacLienKet;             // Tên quy tắc liên kết hiển thị trên nút
+    private List<PhonicsPhonemeDTO> phonicsMapping; // Ánh xạ từng chữ cái sang âm IPA theo phong cách SoundWhy.com
 
     public HuongDanDocDTO() {
     }
@@ -206,4 +207,13 @@ public class HuongDanDocDTO {
     public void setTenQuyTacLienKet(String tenQuyTacLienKet) {
         this.tenQuyTacLienKet = tenQuyTacLienKet;
     }
+
+    public List<PhonicsPhonemeDTO> getPhonicsMapping() {
+        return phonicsMapping;
+    }
+
+    public void setPhonicsMapping(List<PhonicsPhonemeDTO> phonicsMapping) {
+        this.phonicsMapping = phonicsMapping;
+    }
 }
+

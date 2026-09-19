@@ -1488,4 +1488,360 @@ tr:hover .tu-don-wrap .btn-hd-icon,
     box-shadow: 0 3px 8px rgba(217, 119, 6, 0.3);
 }
 
+/* =========================================================
+   PHONG CÁCH SOUNDWHY.COM (SYLLABLE CARDS & PHONICS PILLS)
+   ========================================================= */
+
+/* Hero header */
+.hd-hero-top-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 6px;
+}
+
+.btn-hd-hero-audio {
+    background: #ecfdf5;
+    border: 1.5px solid #a7f3d0;
+    color: #10b981;
+    font-size: 20px;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 6px rgba(16, 185, 129, 0.15);
+}
+
+.btn-hd-hero-audio:hover {
+    background: #10b981;
+    color: #ffffff;
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+/* SoundWhy Section container */
+.hd-soundwhy-section {
+    background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+    border: 1.5px solid #e2e8f0;
+    border-radius: 20px;
+    padding: 20px;
+    margin: 4px 0 12px 0;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+}
+
+.hd-sw-title-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+}
+
+.hd-sw-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #0f172a;
+}
+
+.hd-sw-badge {
+    background: #10b981;
+    color: #ffffff;
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 9999px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+/* Syllable Cards container */
+.hd-sw-cards-container {
+    display: flex;
+    align-items: stretch;
+    justify-content: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 18px;
+}
+
+/* Từng thẻ âm tiết SoundWhy */
+.hd-sw-card {
+    background: #ffffff;
+    border: 2px solid #cbd5e1;
+    border-radius: 18px;
+    padding: 16px 24px;
+    min-width: 140px;
+    text-align: center;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    user-select: none;
+}
+
+.hd-sw-card:hover {
+    border-color: #10b981;
+    transform: translateY(-4px);
+    box-shadow: 0 10px 22px rgba(16, 185, 129, 0.18);
+}
+
+.hd-sw-card.stressed {
+    border-color: #f59e0b;
+    background: linear-gradient(180deg, #fffdfa 0%, #ffffff 100%);
+    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.12);
+}
+
+.hd-sw-card.stressed:hover {
+    border-color: #d97706;
+    box-shadow: 0 10px 22px rgba(245, 158, 11, 0.25);
+}
+
+.hd-sw-card-stress-badge {
+    position: absolute;
+    top: -11px;
+    right: 12px;
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    color: #ffffff;
+    font-size: 0.68rem;
+    font-weight: 800;
+    padding: 2px 8px;
+    border-radius: 9999px;
+    box-shadow: 0 2px 6px rgba(217, 119, 6, 0.35);
+    letter-spacing: 0.3px;
+}
+
+/* Hiệu ứng nhấp nháy phát âm (Playing) */
+.hd-sw-card.active-playing {
+    border-color: #10b981 !important;
+    transform: scale(1.08) translateY(-4px) !important;
+    box-shadow: 0 0 0 5px rgba(16, 185, 129, 0.25), 0 12px 28px rgba(16, 185, 129, 0.3) !important;
+    animation: swCardGlow 0.8s ease-in-out infinite alternate;
+}
+
+.hd-sw-card.all-glow {
+    border-color: #10b981 !important;
+    box-shadow: 0 0 0 5px rgba(16, 185, 129, 0.35), 0 14px 30px rgba(16, 185, 129, 0.35) !important;
+}
+
+@keyframes swCardGlow {
+    from {
+        box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2), 0 8px 18px rgba(16, 185, 129, 0.2);
+    }
+    to {
+        box-shadow: 0 0 0 7px rgba(16, 185, 129, 0.4), 0 14px 32px rgba(16, 185, 129, 0.4);
+    }
+}
+
+/* Chữ cái trong thẻ âm tiết */
+.hd-sw-card-letters {
+    font-size: 2.2rem;
+    font-weight: 800;
+    line-height: 1.15;
+    margin-bottom: 6px;
+    letter-spacing: 1px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Inter', sans-serif;
+}
+
+.hd-sw-letter.consonant {
+    color: #1e293b;
+}
+
+.hd-sw-letter.vowel {
+    color: #10b981; /* Xanh lá chuẩn SoundWhy */
+    font-weight: 800;
+}
+
+.hd-sw-letter.silent {
+    color: #94a3b8; /* Xám câm chuẩn SoundWhy */
+    opacity: 0.75;
+    text-decoration: underline dotted #cbd5e1;
+    text-underline-offset: 4px;
+}
+
+/* Dòng IPA và Tiếng Việt trong thẻ */
+.hd-sw-card-ipa {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #64748b;
+    font-family: 'Consolas', 'Courier New', monospace;
+    margin-bottom: 4px;
+}
+
+.hd-sw-card-vn {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #0284c7;
+}
+
+/* Khối Phonics Pills */
+.hd-sw-phonics-box {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    padding: 12px 16px;
+    margin-bottom: 18px;
+}
+
+.hd-sw-sublabel {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.hd-sw-pills-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+/* Từng viên Pill */
+.hd-sw-pill {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 14px;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 14px;
+    background: #f8fafc;
+    min-width: 54px;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.hd-sw-pill:hover {
+    background: #ecfdf5;
+    border-color: #10b981;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(16, 185, 129, 0.18);
+}
+
+.hd-sw-pill.vowel {
+    border-color: #a7f3d0;
+    background: #f0fdf4;
+}
+
+.hd-sw-pill.vowel:hover {
+    border-color: #10b981;
+    background: #ecfdf5;
+}
+
+.hd-sw-pill.silent {
+    border-color: #e2e8f0;
+    background: #f1f5f9;
+    opacity: 0.75;
+}
+
+.hd-sw-pill.active-playing {
+    border-color: #10b981 !important;
+    background: #ecfdf5 !important;
+    transform: scale(1.15) !important;
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.3), 0 6px 14px rgba(16, 185, 129, 0.25) !important;
+}
+
+.hd-sw-pill-letter {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #1e293b;
+    line-height: 1.2;
+}
+
+.hd-sw-pill.vowel .hd-sw-pill-letter {
+    color: #10b981;
+}
+
+.hd-sw-pill.silent .hd-sw-pill-letter {
+    color: #94a3b8;
+}
+
+.hd-sw-pill-ipa {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: #ef4444;
+    font-family: monospace;
+    margin-top: 2px;
+}
+
+.hd-sw-pill.silent .hd-sw-pill-ipa {
+    color: #94a3b8;
+    font-size: 0.75rem;
+}
+
+.hd-sw-pill-doc {
+    font-size: 0.72rem;
+    color: #64748b;
+    margin-top: 1px;
+}
+
+/* Nút lớn [ ▶ Play sounds ] phong cách SoundWhy */
+.hd-sw-play-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.btn-sw-play-sounds {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: #ffffff;
+    font-size: 1.05rem;
+    font-weight: 700;
+    padding: 13px 36px;
+    border: none;
+    border-radius: 9999px;
+    cursor: pointer;
+    box-shadow: 0 4px 16px rgba(16, 185, 129, 0.35);
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    letter-spacing: 0.3px;
+}
+
+.btn-sw-play-sounds:hover {
+    background: linear-gradient(135deg, #059669 0%, #047857 100%);
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 6px 22px rgba(16, 185, 129, 0.45);
+}
+
+.btn-sw-play-sounds:active {
+    transform: translateY(0) scale(0.98);
+}
+
+.btn-sw-play-sounds.playing {
+    background: linear-gradient(135deg, #059669 0%, #047857 100%);
+    box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.25), 0 4px 16px rgba(16, 185, 129, 0.35);
+}
+
+.sw-play-icon {
+    font-size: 1rem;
+    display: inline-block;
+}
+
+/* Hiệu ứng rung nhẹ khi click vào chữ câm */
+@keyframes silentShake {
+    0%, 100% { transform: translateX(0); }
+    20%, 60% { transform: translateX(-4px); }
+    40%, 80% { transform: translateX(4px); }
+}
+
+.silent-shake {
+    animation: silentShake 0.4s ease;
+}
+
 
