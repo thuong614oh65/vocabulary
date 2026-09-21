@@ -172,17 +172,8 @@
                             '<div class="hd-syllables-box" id="hdSyllablesBox" style="display: none;">' +
                                 '<div class="hd-syllable-chips" id="hdSyllableChips"></div>' +
                             '</div>' +
-                            '<!-- KHỐI HƯỚNG DẪN ĐỌC GHÉP VẦN THÀNH TỪ -->' +
-                            '<div class="hd-blending-box" id="hdBlendingBox">' +
-                                '<div class="hd-blending-header">' +
-                                    '<span class="hd-blending-icon">🤝</span>' +
-                                    '<div class="hd-blending-title">Ghép các âm tiết lại thành từ:</div>' +
-                                '</div>' +
-                                '<div class="hd-blending-formula" id="hdBlendingFormula"></div>' +
-                                '<button type="button" class="btn-hd-blending-speak" id="btnBlendingSpeak" onclick="phatTatCaAmThanhSoundWhy(this)" title="Nghe đọc từng âm tiết có ngắt quãng, rồi ghép lại thành từ hoàn chỉnh">' +
-                                    '▶ Nghe đọc ngắt quãng từng âm ➔ Ghép cả từ' +
-                                '</button>' +
-                            '</div>' +
+                            '<!-- CÁC QUY TẮC SƠ ĐỒ ĐÁNH VẦN LIÊN QUAN -->' +
+                            '<div id="hdMindmapLinks" class="hd-mindmap-links" style="display: none;"></div>' +
                             '<div class="hd-speech-box">' +
                                 '<button type="button" id="btnMicPractice" class="btn-mic-practice" onclick="batDauLuyenDoc()">🎙️ Bấm để thử phát âm</button>' +
                                 '<div id="hdSpeechResult" class="hd-speech-result"></div>' +
@@ -596,51 +587,12 @@
     ];
 
     // =========================================================
-    // 5B. RENDER HƯỚNG DẪN ĐỌC GHÉP VẦN THÀNH TỪ (BLENDING)
+    // 5B. RENDER CÁC QUY TẮC SƠ ĐỒ ĐÁNH VẦN LIÊN QUAN
     // =========================================================
     function renderBlendingBox(data) {
-        const box = document.getElementById("hdBlendingBox");
-        const formulaEl = document.getElementById("hdBlendingFormula");
-        if (!box || !formulaEl) return;
-
-        const amTiet = data.amTiet || [data.tu];
-        const amTietBoi = data.amTietBoi || [];
-        const amNhan = typeof data.amNhanIndex === "number" ? data.amNhanIndex : -1;
-
-        box.style.display = "flex";
-        formulaEl.innerHTML = "";
-
-        if (amTiet.length <= 1) {
-            const fullBoi = data.phienAmTiengViet || (amTietBoi[0] || data.tu);
-            formulaEl.innerHTML = '<span class="blending-result">' + data.tu + ' <em>(' + fullBoi + ')</em></span>';
-        } else {
-            const parts = [];
-            for (let i = 0; i < amTiet.length; i++) {
-                const en = amTiet[i].replace(/\s*\([^)]*\)/g, "").trim();
-                const boi = amTietBoi[i] || "";
-                const isStressed = (i === amNhan);
-                parts.push(
-                    '<span class="blending-item' + (isStressed ? ' stressed' : '') + '">' +
-                        en + (boi ? ' <em>(' + boi + ')</em>' : '') +
-                    '</span>'
-                );
-            }
-
-            const fullBoi = data.phienAmTiengViet || amTietBoi.join(" - ");
-            formulaEl.innerHTML = 
-                parts.join(' <span style="color:#94a3b8; font-weight:700;">+</span> ') +
-                ' <span class="blending-arrow">➔</span> ' +
-                '<span class="blending-result">' + data.tu + ' <em>(' + fullBoi + ')</em></span>';
-        }
-
         // Render các nút chuyển sang Sơ đồ đánh vần luyện âm
         let mmlContainer = document.getElementById("hdMindmapLinks");
-        if (!mmlContainer) {
-            mmlContainer = document.createElement("div");
-            mmlContainer.id = "hdMindmapLinks";
-            mmlContainer.className = "hd-mindmap-links";
-            box.appendChild(mmlContainer);
-        }
+        if (!mmlContainer) return;
         mmlContainer.innerHTML = "";
 
         // 1. Quét tìm TẤT CẢ các quy tắc trong từ khớp với Bảng Sơ đồ đánh vần
@@ -670,6 +622,7 @@
 
         // Nếu có quy tắc khớp với bảng Sơ đồ đánh vần: hiển thị các nút chuyển sang học quy tắc
         if (matchedRules.length > 0) {
+            mmlContainer.style.display = "flex";
             const ruleTitle = document.createElement("div");
             ruleTitle.className = "hd-mml-title rule-title";
             ruleTitle.innerHTML = '<span>🌟</span> Quy tắc đánh vần trong Sơ đồ (bấm vào âm/quy tắc chưa biết đọc để sang luyện, xong quay lại học tiếp):';
@@ -692,6 +645,8 @@
             });
 
             mmlContainer.appendChild(ruleList);
+        } else {
+            mmlContainer.style.display = "none";
         }
     }
 

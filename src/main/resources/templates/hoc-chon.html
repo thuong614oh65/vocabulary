@@ -22,7 +22,7 @@
 
     <link
             rel="stylesheet"
-            th:href="@{/css/huong-dan-doc.css(v=11)}">
+            th:href="@{/css/huong-dan-doc.css(v=12)}">
 
 </head>
 
@@ -246,17 +246,8 @@
                     <div class="hd-syllable-chips" id="hdSyllableChips"></div>
                 </div>
 
-                <!-- Khối hướng dẫn đọc ghép vần thành từ -->
-                <div class="hd-blending-box" id="hdBlendingBox">
-                    <div class="hd-blending-header">
-                        <span class="hd-blending-icon">🤝</span>
-                        <div class="hd-blending-title">Ghép các âm tiết lại thành từ:</div>
-                    </div>
-                    <div class="hd-blending-formula" id="hdBlendingFormula"></div>
-                    <button type="button" class="btn-hd-blending-speak" id="btnBlendingSpeak" onclick="phatTatCaAmThanhSoundWhy(this)" title="Nghe đọc từng âm tiết có ngắt quãng, rồi ghép lại thành từ hoàn chỉnh">
-                        ▶ Nghe đọc ngắt quãng từng âm ➔ Ghép cả từ
-                    </button>
-                </div>
+                <!-- Các quy tắc Sơ đồ đánh vần liên quan -->
+                <div id="hdMindmapLinks" class="hd-mindmap-links" style="display: none;"></div>
 
                 <!-- Luyện phát âm qua Micro -->
                 <div class="hd-speech-box">
@@ -298,7 +289,7 @@
     </div>
 </div>
 
-<script th:src="@{/js/huong-dan-doc.js(v=17)}"></script>
+<script th:src="@{/js/huong-dan-doc.js(v=18)}"></script>
 
 </body>
 

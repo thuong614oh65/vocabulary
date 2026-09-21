@@ -1420,9 +1420,14 @@ tr:hover .tu-don-wrap .btn-hd-icon,
     display: flex;
     flex-direction: column;
     gap: 8px;
-    margin-top: 4px;
-    padding-top: 10px;
-    border-top: 1px dashed #bbf7d0;
+    background: #f0fdf4;
+    border: 1.5px solid #86efac;
+    border-radius: 12px;
+    padding: 12px 16px;
+}
+
+.hd-mindmap-links:empty {
+    display: none !important;
 }
 
 .hd-mml-title {
