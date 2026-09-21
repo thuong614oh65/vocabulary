@@ -205,50 +205,17 @@
 
             <!-- Nội dung chính -->
             <div id="hdContentBox" style="display: none; flex-direction: column; gap: 16px;">
-                <!-- Thẻ từ chính -->
+                <!-- Thẻ từ chính (Ảnh 3) -->
                 <div class="hd-word-hero">
                     <div class="hd-hero-top-row">
                         <button type="button" class="btn-hd-hero-audio" onclick="phatAudioHuongDan(1.0, this)" title="Nghe phát âm chuẩn cả từ">🔊</button>
                         <span class="hd-word" id="hdTuChinh">hello</span>
                         <span class="hd-phonetic-ipa" id="hdPhienAmIpa">/həˈloʊ/</span>
                     </div>
-                    <div class="hd-visual-strip" id="hdVisualStrip" title="Bấm vào để nghe phát âm chuẩn cả từ" style="display: none;">
-                        <span class="hd-vs-word" id="hdVsWord">hello</span>
-                        <span class="hd-vs-dash">–</span>
-                        <span class="hd-vs-respell" id="hdVsRespell">hê-lô</span>
-                        <span class="hd-vs-dash">–</span>
-                        <span class="hd-vs-meaning" id="hdVsMeaning">xin chào</span>
-                        <span class="hd-vs-audio-icon">🔊</span>
-                    </div>
-                    <div>
-                        <span class="hd-vietnamese-respell" id="hdPhienAmTiengViet" style="display: none;">🇻🇳 Hê - lô</span>
-                    </div>
                     <div class="hd-meaning" id="hdNghia">(xin chào)</div>
                 </div>
 
-                <!-- KHỐI TÁCH ÂM SOUNDWHY (SYLLABLE CARDS & PHONICS PILLS) -->
-                <div class="hd-soundwhy-section" id="hdSoundWhySection">
-                    <div class="hd-sw-title-bar">
-                        <span class="hd-sw-title">🎧 Phân rã ngữ âm chuẩn SoundWhy</span>
-                        <span class="hd-sw-badge">Phonics & Blending</span>
-                    </div>
-                    <div class="hd-sw-cards-container" id="hdSwCardsContainer"></div>
-                    <div class="hd-sw-phonics-box" id="hdSwPhonicsBox">
-                        <div class="hd-sw-sublabel">Phân tích từng chữ cái & âm vị:</div>
-                        <div class="hd-sw-pills-row" id="hdSwPillsRow"></div>
-                    </div>
-                    <div class="hd-sw-play-center">
-                        <button type="button" class="btn-sw-play-sounds" id="btnSwPlaySounds" onclick="phatTatCaAmThanhSoundWhy(this)" title="Nghe tuần tự từng âm có đèn sáng rồi ghép cả từ">
-                            <span class="sw-play-icon">▶</span> Play sounds
-                        </button>
-                    </div>
-                </div>
-
-                <div class="hd-syllables-box" id="hdSyllablesBox" style="display: none;">
-                    <div class="hd-syllable-chips" id="hdSyllableChips"></div>
-                </div>
-
-                <!-- Thanh nút nghe phát âm đa tốc độ -->
+                <!-- Thanh nút nghe phát âm đa tốc độ (Đổi đoạn ảnh 4 lên trên sau ảnh 3) -->
                 <div class="hd-audio-bar">
                     <button type="button" class="btn-hd-audio btn-primary-audio" onclick="phatAudioHuongDan(1.0, this)" title="Nghe với tốc độ người bản xứ bình thường">
                         🔊 Chuẩn (1.0x)
@@ -259,6 +226,24 @@
                     <button type="button" class="btn-hd-audio" onclick="phatTatCaAmThanhSoundWhy(this)" title="Đọc từng âm tiết rồi đọc cả từ">
                         🎶 Tách âm tiết
                     </button>
+                </div>
+
+                <!-- KHỐI TÁCH ÂM SOUNDWHY (SYLLABLE CARDS) -->
+                <div class="hd-soundwhy-section" id="hdSoundWhySection">
+                    <div class="hd-sw-title-bar">
+                        <span class="hd-sw-title">🎧 Phân rã ngữ âm chuẩn SoundWhy</span>
+                        <span class="hd-sw-badge">Phonics & Blending</span>
+                    </div>
+                    <div class="hd-sw-cards-container" id="hdSwCardsContainer"></div>
+                    <div class="hd-sw-play-center">
+                        <button type="button" class="btn-sw-play-sounds" id="btnSwPlaySounds" onclick="phatTatCaAmThanhSoundWhy(this)" title="Nghe tuần tự từng âm có đèn sáng rồi ghép cả từ">
+                            <span class="sw-play-icon">▶</span> Play sounds
+                        </button>
+                    </div>
+                </div>
+
+                <div class="hd-syllables-box" id="hdSyllablesBox" style="display: none;">
+                    <div class="hd-syllable-chips" id="hdSyllableChips"></div>
                 </div>
 
                 <!-- Khối hướng dẫn đọc ghép vần thành từ -->
@@ -313,7 +298,7 @@
     </div>
 </div>
 
-<script th:src="@{/js/huong-dan-doc.js(v=16)}"></script>
+<script th:src="@{/js/huong-dan-doc.js(v=17)}"></script>
 
 </body>
 

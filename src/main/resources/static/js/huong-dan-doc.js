@@ -148,28 +148,21 @@
                                     '<span class="hd-word" id="hdTuChinh">...</span>' +
                                     '<span class="hd-phonetic-ipa" id="hdPhienAmIpa"></span>' +
                                 '</div>' +
-                                '<div class="hd-visual-strip" id="hdVisualStrip" title="Bấm vào để nghe phát âm chuẩn cả từ" style="display: none;">' +
-                                    '<span class="hd-vs-word" id="hdVsWord"></span>' +
-                                    '<span class="hd-vs-dash">–</span>' +
-                                    '<span class="hd-vs-respell" id="hdVsRespell"></span>' +
-                                    '<span class="hd-vs-dash">–</span>' +
-                                    '<span class="hd-vs-meaning" id="hdVsMeaning"></span>' +
-                                    '<span class="hd-vs-audio-icon">🔊</span>' +
-                                '</div>' +
-                                '<div><span class="hd-vietnamese-respell" id="hdPhienAmTiengViet" style="display: none;"></span></div>' +
                                 '<div class="hd-meaning" id="hdNghia"></div>' +
                             '</div>' +
-                            '<!-- KHỐI TÁCH ÂM SOUNDWHY (SYLLABLE CARDS & PHONICS PILLS) -->' +
+                            '<!-- THANH NÚT NGHE PHÁT ÂM (Đổi lên ngay sau ảnh 3) -->' +
+                            '<div class="hd-audio-bar">' +
+                                '<button type="button" class="btn-hd-audio btn-primary-audio" onclick="phatAudioHuongDan(1.0, this)" title="Nghe với tốc độ người bản xứ bình thường">🔊 Chuẩn (1.0x)</button>' +
+                                '<button type="button" class="btn-hd-audio" onclick="phatAudioHuongDan(0.6, this)" title="Nghe chậm rõ từng âm như Google Dịch">🐢 Chậm (0.6x)</button>' +
+                                '<button type="button" class="btn-hd-audio" onclick="phatTatCaAmThanhSoundWhy(this)" title="Đọc từng âm tiết rồi đọc cả từ">🎶 Tách âm tiết</button>' +
+                            '</div>' +
+                            '<!-- KHỐI TÁCH ÂM SOUNDWHY (SYLLABLE CARDS) -->' +
                             '<div class="hd-soundwhy-section" id="hdSoundWhySection">' +
                                 '<div class="hd-sw-title-bar">' +
                                     '<span class="hd-sw-title">🎧 Phân rã ngữ âm chuẩn SoundWhy</span>' +
                                     '<span class="hd-sw-badge">Phonics & Blending</span>' +
                                 '</div>' +
                                 '<div class="hd-sw-cards-container" id="hdSwCardsContainer"></div>' +
-                                '<div class="hd-sw-phonics-box" id="hdSwPhonicsBox">' +
-                                    '<div class="hd-sw-sublabel">Phân tích từng chữ cái & âm vị:</div>' +
-                                    '<div class="hd-sw-pills-row" id="hdSwPillsRow"></div>' +
-                                '</div>' +
                                 '<div class="hd-sw-play-center">' +
                                     '<button type="button" class="btn-sw-play-sounds" id="btnSwPlaySounds" onclick="phatTatCaAmThanhSoundWhy(this)" title="Nghe tuần tự từng âm có đèn sáng rồi ghép cả từ">' +
                                         '<span class="sw-play-icon">▶</span> Play sounds' +
@@ -178,11 +171,6 @@
                             '</div>' +
                             '<div class="hd-syllables-box" id="hdSyllablesBox" style="display: none;">' +
                                 '<div class="hd-syllable-chips" id="hdSyllableChips"></div>' +
-                            '</div>' +
-                            '<div class="hd-audio-bar">' +
-                                '<button type="button" class="btn-hd-audio btn-primary-audio" onclick="phatAudioHuongDan(1.0, this)" title="Nghe với tốc độ người bản xứ bình thường">🔊 Chuẩn (1.0x)</button>' +
-                                '<button type="button" class="btn-hd-audio" onclick="phatAudioHuongDan(0.6, this)" title="Nghe chậm rõ từng âm như Google Dịch">🐢 Chậm (0.6x)</button>' +
-                                '<button type="button" class="btn-hd-audio" onclick="phatTatCaAmThanhSoundWhy(this)" title="Đọc từng âm tiết rồi đọc cả từ">🎶 Tách âm tiết</button>' +
                             '</div>' +
                             '<!-- KHỐI HƯỚNG DẪN ĐỌC GHÉP VẦN THÀNH TỪ -->' +
                             '<div class="hd-blending-box" id="hdBlendingBox">' +
@@ -359,17 +347,9 @@
 
     // =========================================================
     // ĐỊNH DẠNG ÂM BỒI TIẾNG VIỆT & HIGHLIGHT ÂM ĐUÔI THEO ẢNH MẪU
-    // =========================================================
     function dinhDangAmBoiHtml(str) {
         if (!str) return "";
-        let s = String(str);
-        // Nhận diện và bọc huy hiệu âm đuôi trực quan: -x, -z, -th, -đ, -ch, -dzh, -t, -k, -s
-        s = s.replace(/-\s*(x|z|th|đ|ch|dzh|t|k|s)(?=[^a-zA-Z\d\u00C0-\u1EF9]|$)/gi, function(match, ending) {
-            const lower = ending.toLowerCase();
-            let cls = "ending-" + (lower === "đ" ? "d" : lower);
-            return '<span class="hd-ending-tag ' + cls + '">-' + ending + '</span>';
-        });
-        return s;
+        return String(str);
     }
 
     // =========================================================
@@ -438,8 +418,7 @@
                 card.innerHTML =
                     (isStressed ? '<span class="hd-sw-card-stress-badge">⭐ Trọng âm</span>' : '') +
                     '<div class="hd-sw-card-letters">' + lettersHtml + '</div>' +
-                    (ipaText ? '<div class="hd-sw-card-ipa">' + ipaText + '</div>' : '') +
-                    (boiText ? '<div class="hd-sw-card-vn">' + boiHtml + '</div>' : '');
+                    (ipaText ? '<div class="hd-sw-card-ipa">' + ipaText + '</div>' : '');
 
                 card.addEventListener("click", function () {
                     dungAudioHuongDan();
@@ -451,41 +430,6 @@
                 });
 
                 swContainer.appendChild(card);
-            });
-        }
-
-        // 2. Render các hạt âm vị Phonics mapping
-        const pillsRow = document.getElementById("hdSwPillsRow");
-        if (pillsRow) {
-            pillsRow.innerHTML = "";
-            const pMapping = data.phonicsMapping || [];
-            pMapping.forEach(function (pm) {
-                const pill = document.createElement("div");
-                let cls = pm.silent ? "silent" : (pm.vowel ? "vowel" : "consonant");
-                pill.className = "hd-sw-pill " + cls;
-                pill.title = pm.silent ? "Chữ câm (không phát âm)" : ("Bấm để nghe âm: " + pm.letters);
-
-                let ipaText = pm.silent ? "(câm)" : (pm.ipa ? "/" + pm.ipa.replace(/[/|\\[\\]]/g, "") + "/" : "");
-                pill.innerHTML =
-                    '<div class="hd-sw-pill-letter">' + pm.letters + '</div>' +
-                    '<div class="hd-sw-pill-ipa">' + ipaText + '</div>' +
-                    (pm.amDoc ? '<div class="hd-sw-pill-doc">' + pm.amDoc + '</div>' : '');
-
-                pill.addEventListener("click", function () {
-                    if (pm.silent) {
-                        pill.classList.add("silent-shake");
-                        setTimeout(function () { pill.classList.remove("silent-shake"); }, 400);
-                    } else {
-                        dungAudioHuongDan();
-                        document.querySelectorAll(".hd-sw-pill").forEach(function (p) { p.classList.remove("active-playing"); });
-                        pill.classList.add("active-playing");
-                        docAmTiet(pm.letters, pm.letters, function () {
-                            pill.classList.remove("active-playing");
-                        });
-                    }
-                });
-
-                pillsRow.appendChild(pill);
             });
         }
     }
@@ -516,20 +460,10 @@
 
         // Card trực quan chuẩn theo ảnh mẫu (Word – Âm bồi – Nghĩa 🔊)
         if (elVsStrip) {
-            elVsStrip.style.display = "inline-flex";
-            if (elVsWord) elVsWord.textContent = data.tu || "";
-            if (elVsRespell) elVsRespell.innerHTML = formattedVnHtml;
-            if (elVsMeaning) elVsMeaning.textContent = nghiaClean || (data.tu || "");
-            elVsStrip.onclick = function () {
-                phatAudioHuongDan(1.0);
-            };
-            // Ẩn 2 dòng phụ trùng lặp để modal gọn gàng, thẻ âm tiết luôn hiển thị trọn vẹn
-            if (elVn && elVn.parentElement) elVn.parentElement.style.display = "none";
-            if (elNghia) elNghia.style.display = "none";
-        } else {
-            if (elVn && elVn.parentElement) elVn.parentElement.style.display = "block";
-            if (elNghia) elNghia.style.display = "block";
+            elVsStrip.style.display = "none";
         }
+        if (elVn && elVn.parentElement) elVn.parentElement.style.display = "none";
+        if (elNghia) elNghia.style.display = "block";
 
         // Render khối SoundWhy (Syllable Cards & Phonics Pills)
         renderSoundWhy(data);
@@ -558,7 +492,6 @@
                 chip.innerHTML = 
                     '<span class="syllable-stress-tag">⭐ Trọng âm</span>' +
                     '<span class="syllable-en">' + syllable + '</span>' +
-                    (boiText ? '<span class="syllable-vn">' + boiHtml + '</span>' : '') +
                     (ipaText ? '<span class="syllable-ipa">' + ipaText + '</span>' : '');
 
                 chip.addEventListener("click", function () {
