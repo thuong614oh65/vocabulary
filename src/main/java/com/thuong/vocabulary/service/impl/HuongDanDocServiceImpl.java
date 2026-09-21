@@ -217,6 +217,62 @@ public class HuongDanDocServiceImpl implements HuongDanDocService {
                 new PhonicsPhonemeDTO("l", "l", "lờ", false, false),
                 new PhonicsPhonemeDTO("e", "", "(câm)", true, false)
         ));
+        TU_DIEN_PHONICS.put("reschedule", List.of(
+                new PhonicsPhonemeDTO("r", "r", "rờ", false, false),
+                new PhonicsPhonemeDTO("e", "iː", "i", false, true),
+                new PhonicsPhonemeDTO("sch", "sk", "x-kơ", false, false),
+                new PhonicsPhonemeDTO("e", "e", "e", false, true),
+                new PhonicsPhonemeDTO("d", "d", "đờ", false, false),
+                new PhonicsPhonemeDTO("u", "uː", "u", false, true),
+                new PhonicsPhonemeDTO("l", "l", "lờ", false, false),
+                new PhonicsPhonemeDTO("e", "", "(câm)", true, false)
+        ));
+        TU_DIEN_PHONICS.put("rescheduled", List.of(
+                new PhonicsPhonemeDTO("r", "r", "rờ", false, false),
+                new PhonicsPhonemeDTO("e", "iː", "i", false, true),
+                new PhonicsPhonemeDTO("sch", "sk", "x-kơ", false, false),
+                new PhonicsPhonemeDTO("e", "e", "e", false, true),
+                new PhonicsPhonemeDTO("d", "d", "đờ", false, false),
+                new PhonicsPhonemeDTO("u", "uː", "u", false, true),
+                new PhonicsPhonemeDTO("l", "l", "lờ", false, false),
+                new PhonicsPhonemeDTO("e", "", "(câm)", true, false),
+                new PhonicsPhonemeDTO("d", "d", "đ", false, false)
+        ));
+        TU_DIEN_PHONICS.put("postpone", List.of(
+                new PhonicsPhonemeDTO("p", "p", "pờ", false, false),
+                new PhonicsPhonemeDTO("o", "oʊ", "âu / ô", false, true),
+                new PhonicsPhonemeDTO("s", "s", "xì", false, false),
+                new PhonicsPhonemeDTO("t", "t", "tờ", false, false),
+                new PhonicsPhonemeDTO("p", "p", "pờ", false, false),
+                new PhonicsPhonemeDTO("o", "oʊ", "âu / ô", false, true),
+                new PhonicsPhonemeDTO("n", "n", "nờ", false, false),
+                new PhonicsPhonemeDTO("e", "", "(câm)", true, false)
+        ));
+        TU_DIEN_PHONICS.put("postponed", List.of(
+                new PhonicsPhonemeDTO("p", "p", "pờ", false, false),
+                new PhonicsPhonemeDTO("o", "oʊ", "âu / ô", false, true),
+                new PhonicsPhonemeDTO("s", "s", "xì", false, false),
+                new PhonicsPhonemeDTO("t", "t", "tờ", false, false),
+                new PhonicsPhonemeDTO("p", "p", "pờ", false, false),
+                new PhonicsPhonemeDTO("o", "oʊ", "âu / ô", false, true),
+                new PhonicsPhonemeDTO("n", "n", "nờ", false, false),
+                new PhonicsPhonemeDTO("e", "", "(câm)", true, false),
+                new PhonicsPhonemeDTO("d", "d", "đ", false, false)
+        ));
+        TU_DIEN_PHONICS.put("cancel", List.of(
+                new PhonicsPhonemeDTO("c", "k", "cờ", false, false),
+                new PhonicsPhonemeDTO("a", "æ", "e / a", false, true),
+                new PhonicsPhonemeDTO("n", "n", "nờ", false, false),
+                new PhonicsPhonemeDTO("c", "s", "xì", false, false),
+                new PhonicsPhonemeDTO("e", "ə", "ờ", false, true),
+                new PhonicsPhonemeDTO("l", "l", "lờ", false, false)
+        ));
+        TU_DIEN_PHONICS.put("delay", List.of(
+                new PhonicsPhonemeDTO("d", "d", "đờ", false, false),
+                new PhonicsPhonemeDTO("e", "ɪ", "i", false, true),
+                new PhonicsPhonemeDTO("l", "l", "lờ", false, false),
+                new PhonicsPhonemeDTO("ay", "eɪ", "ây", false, true)
+        ));
         TU_DIEN_PHONICS.put("orientation", List.of(
                 new PhonicsPhonemeDTO("o", "ɔː", "o", false, true),
                 new PhonicsPhonemeDTO("r", "r", "r", false, false),
@@ -2238,6 +2294,294 @@ public class HuongDanDocServiceImpl implements HuongDanDocService {
                 "soft_g",
                 "G Mềm (g + e, i, y) ➔ /dʒ/ (như psychology, gym)"
         ));
+
+        // ============================================================
+        // TỪ VỰNG TOEIC SPEAKING Q7-9 CHUẨN XÁC 100%
+        // ============================================================
+        TU_DIEN_BOI_CHUAN.put("postpone", new HuongDanDocDTO(
+                "postpone", "/poʊstˈpoʊn/", "hoãn lại, trì hoãn",
+                List.of("post", "pone"),
+                List.of("poʊst", "poʊn"),
+                List.of("pô-xt", "PÔN"),
+                List.of("post", "pown"),
+                1,
+                "pô-xt - PÔN",
+                "Trọng âm rơi vào âm 2 (PÔN): pô-xt - PÔN. Đọc to, cao và ngân dài âm 'pone'.",
+                "Âm /oʊ/ ngân dài như 'ô'. Bật nhẹ âm /st/ ở cuối âm 1 ('pô-xt'), sau đó ngân dài âm /oʊn/ ở âm 2 ('PÔN').",
+                "🔔 Âm đuôi /n/: khép lưỡi lên vòm họng ngắt âm gọn gàng.",
+                "⚠️ Người Việt hay đọc sai thành 'pốt-pâu-nì' hoặc nuốt mất âm /st/. Hãy đọc đúng: pô-xt - PÔN!",
+                "Mẹo Google: Nghe giống 'powst · pown'! Tiền tố post- (hoãn) + pone (đặt lại) ➔ postpone!"
+        ));
+
+        TU_DIEN_BOI_CHUAN.put("postponed", new HuongDanDocDTO(
+                "postponed", "/poʊstˈpoʊnd/", "đã hoãn lại",
+                List.of("post", "poned"),
+                List.of("poʊst", "poʊnd"),
+                List.of("pô-xt", "PÔND"),
+                List.of("post", "pound"),
+                1,
+                "pô-xt - PÔND",
+                "Trọng âm rơi vào âm 2 (PÔND): pô-xt - PÔND.",
+                "Âm đuôi /d/ sau /n/: chặn nhẹ đầu lưỡi, rung nhẹ dây thanh quản.",
+                "🔔 Âm đuôi /nd/: lưỡi lên vòm họng cho /n/ rồi bật nhẹ /d/ dứt khoát.",
+                "⚠️ Đừng phát âm thành 'pốt-pao-nịt'. Đọc đúng: pô-xt - PÔND!",
+                "Mẹo: post·poned = post (pô-xt) + poned (PÔND). Dạng quá khứ của postpone!"
+        ));
+
+        TU_DIEN_BOI_CHUAN.put("reschedule", new HuongDanDocDTO(
+                "reschedule", "/riːˈskɛdʒuːl/", "sắp xếp lại lịch",
+                List.of("re", "sched", "ule"),
+                List.of("ˌriː", "ˈsked", "ʒuːl"),
+                List.of("ri", "S-KÉD", "giun"),
+                List.of("ree", "sked", "jool"),
+                1,
+                "ri - S-KÉD - giun",
+                "Trọng âm rơi vào âm 2 (S-KÉD): ri - S-KÉD - giun. Đọc to, cao và ngân rõ âm 'sched'.",
+                "Âm 1: 're' đọc /ˌriː/ (ri). Âm 2: 'sched' đọc /ˈsked/ (s-kéd). Âm 3: 'ule' đọc /ʒuːl/ (giun - ngắt nhẹ).",
+                "🔔 Âm đuôi /l/: đầu lưỡi chạm nướu trên, âm thoát ra hai bên hông lưỡi.",
+                "⚠️ Đừng đọc nhầm 're-xe-đu-le'. Đọc đúng 3 phần: ri - S-KÉD - giun!",
+                "Mẹo nhớ: re (lại) + SCHED (s-kéd) + ule (giun) ➔ reschedule!"
+        ));
+
+        TU_DIEN_BOI_CHUAN.put("rescheduled", new HuongDanDocDTO(
+                "rescheduled", "/riːˈskɛdʒuːld/", "đã sắp xếp lại lịch",
+                List.of("re", "sched", "uled"),
+                List.of("ˌriː", "ˈsked", "ʒuːld"),
+                List.of("ri", "S-KÉD", "giun-đ"),
+                List.of("ree", "sked", "joold"),
+                1,
+                "ri - S-KÉD - giun-đ",
+                "Trọng âm rơi vào âm 2 (S-KÉD): ri - S-KÉD - giun-đ.",
+                "Dạng quá khứ của reschedule. Âm đuôi /d/ sau /l/: bật nhẹ dứt khoát.",
+                "🔔 Âm đuôi /ld/: lưỡi chạm nướu cho /l/, bật nhẹ /d/.",
+                "⚠️ Đừng quên đọc âm đuôi /d/: ri - S-KÉD - giun-đ!",
+                "Mẹo: rescheduled = ri + S-KÉD + giun-đ (rearranged schedule)!"
+        ));
+
+        TU_DIEN_BOI_CHUAN.put("cancel", new HuongDanDocDTO(
+                "cancel", "/ˈkænsəl/", "hủy bỏ",
+                List.of("can", "cel"),
+                List.of("ˈkæn", "səl"),
+                List.of("KEN", "xồ"),
+                List.of("can", "sul"),
+                0,
+                "KEN - xồ",
+                "Trọng âm rơi vào âm 1 (KEN): KEN - xồ.",
+                "Nguyên âm /æ/ mở rộng miệng ngang như 'a' trong 'cat'. Âm 2 /səl/ đọc nhẹ như 'xồ'.",
+                "🔔 Âm đuôi /l/: đầu lưỡi chạm nướu trên, lướt nhẹ.",
+                "⚠️ Đừng đọc 'Ken-xen'. Âm 2 đọc lướt nhẹ 'xồ' (schwa + l).",
+                "Mẹo: KEN (mạnh) + xồ (nhẹ) ➔ cancel!"
+        ));
+
+        TU_DIEN_BOI_CHUAN.put("cancelled", new HuongDanDocDTO(
+                "cancelled", "/ˈkænsəld/", "đã hủy bỏ",
+                List.of("can", "celled"),
+                List.of("ˈkæn", "səld"),
+                List.of("KEN", "xồd"),
+                List.of("can", "suld"),
+                0,
+                "KEN - xồd",
+                "Trọng âm rơi vào âm 1 (KEN): KEN - xồd.",
+                "Dạng quá khứ của cancel. Âm đuôi /d/ bật nhẹ sau /l/.",
+                "🔔 Chú ý 'll' vẫn chỉ đọc một âm /l/.",
+                "⚠️ Đọc đúng: KEN - xồd (không phải 'Ken-xen-t')!",
+                "Mẹo: cancelled = KEN (to, rõ) + xồd (nhẹ, bật đuôi d)!"
+        ));
+
+        TU_DIEN_BOI_CHUAN.put("delay", new HuongDanDocDTO(
+                "delay", "/dɪˈleɪ/", "trì hoãn, chậm trễ",
+                List.of("de", "lay"),
+                List.of("dɪ", "ˈleɪ"),
+                List.of("đì", "LÂY"),
+                List.of("dih", "lay"),
+                1,
+                "đì - LÂY",
+                "Trọng âm rơi vào âm 2 (LÂY): đì - LÂY.",
+                "Âm /eɪ/ ngân dài như 'ây'. Đọc to, rõ và ngân dài âm 'lay'.",
+                "🔔 Âm 'ay' đọc là /eɪ/ (ây), không đọc 'e' hay 'a' đơn.",
+                "⚠️ Đừng đọc 'đì-le'. Đọc đúng: đì - LÂY!",
+                "Mẹo: delay = đì + LÂY (trì hoãn, ngân dài âm cuối)!"
+        ));
+
+        TU_DIEN_BOI_CHUAN.put("delayed", new HuongDanDocDTO(
+                "delayed", "/dɪˈleɪd/", "đã bị trì hoãn",
+                List.of("de", "layed"),
+                List.of("dɪ", "ˈleɪd"),
+                List.of("đì", "LÂYD"),
+                List.of("dih", "layd"),
+                1,
+                "đì - LÂYD",
+                "Trọng âm rơi vào âm 2 (LÂYD): đì - LÂYD.",
+                "Bổ thêm âm đuôi /d/ dứt khoát sau âm /eɪ/.",
+                "🔔 Âm đuôi /d/: chặn nhẹ đầu lưỡi, rung thanh quản.",
+                "⚠️ Đừng đọc thành 'đì-lết'. Đọc đúng: đì - LÂYD!",
+                "Mẹo: delayed = đì + LÂYD (quá khứ của delay)!"
+        ));
+
+        TU_DIEN_BOI_CHUAN.put("presentation", new HuongDanDocDTO(
+                "presentation", "/ˌprɛzənˈteɪʃən/", "bài thuyết trình",
+                List.of("pre", "sen", "ta", "tion"),
+                List.of("ˌprɛz", "ən", "ˈteɪ", "ʃən"),
+                List.of("pre", "zần", "TÂY", "sần"),
+                List.of("prez", "un", "tay", "shun"),
+                2,
+                "pre - zần - TÂY - sần",
+                "Trọng âm chính rơi vào âm 3 (TÂY): pre - zần - TÂY - sần.",
+                "'s' giữa hai nguyên âm đọc là /z/ (zần). Đuôi [-tion] đọc là /ʃən/ (sần).",
+                "🔔 Âm đuôi /n/ trong [-tion]: khép lưỡi vào vòm gọn gàng.",
+                "⚠️ Đừng đọc 'pre-zen-tây-ti-on'. Đuôi -tion là /ʃən/ (sần)!",
+                "Mẹo: pre + zen (z!) + TÂY + tion (sần) ➔ presentation!"
+        ));
+
+        TU_DIEN_BOI_CHUAN.put("available", new HuongDanDocDTO(
+                "available", "/əˈveɪləbəl/", "có sẵn, khả dụng",
+                List.of("a", "vail", "a", "ble"),
+                List.of("ə", "ˈveɪl", "ə", "bəl"),
+                List.of("ờ", "VÂY-L", "ờ", "bồ"),
+                List.of("uh", "vale", "uh", "bull"),
+                1,
+                "ờ - VÂY-L - ờ - bồ",
+                "Trọng âm rơi vào âm 2 (VÂY-L): ờ - VÂY-L - ờ - bồ.",
+                "'vail' đọc là /veɪl/ (VÂY-L). Âm 1 và 3 là schwa /ə/ đọc rất nhẹ 'ờ'.",
+                "🔔 Âm đuôi [-ble] đọc là /bəl/ (bồ), 'e' câm.",
+                "⚠️ Đừng đọc 'a-vây-la-bồl'. Âm 3 'a' chỉ là schwa nhẹ 'ờ'!",
+                "Mẹo: ờ + VÂY-L + ờ + bồ ➔ available (có sẵn)!"
+        ));
+
+        TU_DIEN_BOI_CHUAN.put("demonstration", new HuongDanDocDTO(
+                "demonstration", "/ˌdɛmənˈstreɪʃən/", "buổi trình diễn, minh họa",
+                List.of("dem", "on", "stra", "tion"),
+                List.of("ˌdɛm", "ən", "ˈstreɪ", "ʃən"),
+                List.of("đem", "ần", "STRÂY", "sần"),
+                List.of("dem", "un", "stray", "shun"),
+                2,
+                "đem - ần - STRÂY - sần",
+                "Trọng âm chính rơi vào âm 3 (STRÂY): đem - ần - STRÂY - sần.",
+                "Âm /str/ phát âm liền mạch. Đuôi [-tion] đọc là /ʃən/ (sần).",
+                "🔔 Âm đuôi /n/ trong [-tion]: khép lưỡi vào vòm gọn gàng.",
+                "⚠️ Đừng đọc 'đê-mon-strây-ti-on'. Đuôi -tion là /ʃən/ (sần)!",
+                "Mẹo: dem + ần + STRÂY + sần ➔ demonstration!"
+        ));
+
+        TU_DIEN_BOI_CHUAN.put("orientation", new HuongDanDocDTO(
+                "orientation", "/ˌɔːriənˈteɪʃən/", "buổi định hướng, giới thiệu",
+                List.of("o", "ri", "en", "ta", "tion"),
+                List.of("ˌɔːr", "i", "ən", "ˈteɪ", "ʃən"),
+                List.of("o", "ri", "ần", "TÂY", "sần"),
+                List.of("or", "ee", "un", "tay", "shun"),
+                3,
+                "o - ri - ần - TÂY - sần",
+                "Trọng âm chính rơi vào âm 4 (TÂY): o - ri - ần - TÂY - sần.",
+                "'or' đọc là /ɔːr/ (o-r). Đuôi [-tion] đọc là /ʃən/ (sần).",
+                "🔔 Âm đuôi /n/ trong [-tion]: khép lưỡi vào vòm gọn gàng.",
+                "⚠️ Đừng đọc 'o-ri-en-tây-ti-on'. Đuôi -tion là /ʃən/ (sần)!",
+                "Mẹo: o + ri + ần + TÂY + sần ➔ orientation (buổi định hướng)!"
+        ));
+
+        TU_DIEN_BOI_CHUAN.put("instructor", new HuongDanDocDTO(
+                "instructor", "/ɪnˈstrʌktər/", "người hướng dẫn, giảng viên",
+                List.of("in", "struc", "tor"),
+                List.of("ɪn", "ˈstrʌk", "tər"),
+                List.of("in", "XTRAK", "tờ"),
+                List.of("in", "struck", "ter"),
+                1,
+                "in - XTRAK - tờ",
+                "Trọng âm rơi vào âm 2 (XTRAK): in - XTRAK - tờ.",
+                "Phụ âm kép /str/ đọc liền mạch. Đuôi [-tor] đọc là /tər/ (tờ).",
+                "🔔 Âm đuôi /r/ trong [-tor]: lưỡi cong nhẹ, không chạm vào đâu.",
+                "⚠️ Đừng đọc 'in-trắc-tor'. Phải đọc /str/ liền: XTRAK!",
+                "Mẹo: in + XTRAK (nhấn mạnh) + tờ ➔ instructor!"
+        ));
+
+        TU_DIEN_BOI_CHUAN.put("procedure", new HuongDanDocDTO(
+                "procedure", "/prəˈsiːdʒər/", "thủ tục, quy trình",
+                List.of("pro", "ce", "dure"),
+                List.of("prə", "ˈsiː", "dʒər"),
+                List.of("prờ", "SII", "chờ"),
+                List.of("pruh", "see", "jer"),
+                1,
+                "prờ - SII - chờ",
+                "Trọng âm rơi vào âm 2 (SII): prờ - SII - chờ.",
+                "'c' trước 'e' đọc là /s/ (xì). 'ure' đọc là /dʒər/ (chờ).",
+                "🔔 Âm đuôi /r/ trong [-ure]: lưỡi cong nhẹ không chạm vào đâu.",
+                "⚠️ Đừng đọc 'prô-xi-đua'. Đọc đúng: prờ - SII - chờ!",
+                "Mẹo: prờ + SII + chờ ➔ procedure (thủ tục)!"
+        ));
+
+        TU_DIEN_BOI_CHUAN.put("procedures", new HuongDanDocDTO(
+                "procedures", "/prəˈsiːdʒərz/", "các thủ tục, quy trình",
+                List.of("pro", "ce", "dures"),
+                List.of("prə", "ˈsiː", "dʒərz"),
+                List.of("prờ", "SII", "chờz"),
+                List.of("pruh", "see", "jerz"),
+                1,
+                "prờ - SII - chờz",
+                "Trọng âm rơi vào âm 2 (SII): prờ - SII - chờz.",
+                "Số nhiều của procedure, thêm âm /z/ ở cuối. 'ures' đọc là /dʒərz/ (chờz).",
+                "🔔 Âm đuôi /z/ sau /r/: xì nhẹ có rung thanh quản.",
+                "⚠️ Đừng quên đọc âm /z/ ở đuôi!",
+                "Mẹo: prờ + SII + chờz ➔ procedures!"
+        ));
+
+        TU_DIEN_BOI_CHUAN.put("session", new HuongDanDocDTO(
+                "session", "/ˈsɛʃən/", "buổi học, phiên họp",
+                List.of("ses", "sion"),
+                List.of("ˈsɛʃ", "ən"),
+                List.of("XÉT-S", "sần"),
+                List.of("sesh", "un"),
+                0,
+                "XÉT-S - sần",
+                "Trọng âm rơi vào âm 1 (XÉT-S): XÉT-S - sần.",
+                "'ss' + 'ion' tạo âm /ʃ/ (s). Đuôi [-sion] đọc là /ʃən/ (sần).",
+                "🔔 Âm đuôi /n/ trong [-sion]: khép lưỡi vào vòm gọn gàng.",
+                "⚠️ Đừng đọc 'ses-si-on'. Đuôi -sion là /ʃən/ (sần)!",
+                "Mẹo: XÉT-S (mạnh) + sần (nhẹ) ➔ session!"
+        ));
+
+        TU_DIEN_BOI_CHUAN.put("seminar", new HuongDanDocDTO(
+                "seminar", "/ˈsɛmɪnɑːr/", "hội thảo chuyên đề",
+                List.of("sem", "i", "nar"),
+                List.of("ˈsɛm", "ɪ", "nɑːr"),
+                List.of("XEM", "i", "naa"),
+                List.of("sem", "ih", "nar"),
+                0,
+                "XEM - i - naa",
+                "Trọng âm rơi vào âm 1 (XEM): XEM - i - naa.",
+                "'ar' ở cuối đọc là /ɑːr/ (naa-r). Âm 2 'i' đọc nhẹ /ɪ/.",
+                "🔔 Âm đuôi /r/ trong [-ar]: lưỡi cong nhẹ, không chạm vào đâu.",
+                "⚠️ Đừng đọc 'se-mi-na'. Đọc đúng: XEM - i - naa!",
+                "Mẹo: XEM (mạnh) + i + naa ➔ seminar!"
+        ));
+
+        TU_DIEN_BOI_CHUAN.put("conference", new HuongDanDocDTO(
+                "conference", "/ˈkɒnfərəns/", "hội nghị",
+                List.of("con", "fer", "ence"),
+                List.of("ˈkɒn", "fər", "əns"),
+                List.of("KON", "phờ", "ần-s"),
+                List.of("cahn", "fur", "unce"),
+                0,
+                "KON - phờ - ần-s",
+                "Trọng âm rơi vào âm 1 (KON): KON - phờ - ần-s.",
+                "'con' đọc /kɒn/ (KON, không phải 'cơn'). Đuôi [-ence] đọc là /əns/ (ần-s).",
+                "🔔 Âm đuôi /s/ trong [-ence]: xì nhẹ qua kẽ răng.",
+                "⚠️ Đừng đọc 'con-phờ-ần-xờ'. Đuôi -ence là /əns/ gọn gàng!",
+                "Mẹo: KON + phờ + ần-s ➔ conference (hội nghị)!"
+        ));
+
+        TU_DIEN_BOI_CHUAN.put("discount", new HuongDanDocDTO(
+                "discount", "/ˈdɪskaʊnt/", "chiết khấu, giảm giá",
+                List.of("dis", "count"),
+                List.of("ˈdɪs", "kaʊnt"),
+                List.of("ĐÍT-S", "cao-nt"),
+                List.of("diss", "count"),
+                0,
+                "ĐÍT-S - cao-nt",
+                "Trọng âm rơi vào âm 1 (ĐÍT-S): ĐÍT-S - cao-nt.",
+                "'dis' đọc /dɪs/ (ĐÍT-S). 'coun' đọc /kaʊn/ (cao-n). Đừng nhầm âm /ou/ với /ʌ/.",
+                "🔔 Âm đuôi /nt/: lưỡi lên vòm cho /n/, bật nhẹ /t/.",
+                "⚠️ Đừng đọc 'đít-cờn-t'. Âm 'ou' trong 'count' = /aʊ/ (cao)!",
+                "Mẹo: ĐÍT-S + cao-nt ➔ discount (giảm giá)!"
+        ));
     }
 
 
@@ -2423,47 +2767,52 @@ public class HuongDanDocServiceImpl implements HuongDanDocService {
             return result;
         }
 
-        // Nếu IPA có chứa dấu chấm phân tách âm tiết (ví dụ Cambridge / Oxford: /ˈæn.ju.əl/, /ˈkʌm.fɚ.t̬ə.bəl/)
-        if (ipa.contains(".")) {
+        // 1. Phân tách âm tiết tiếng Anh: ưu tiên từ điển chuẩn hóa, tiếp đến theo dấu chấm IPA, sau đó dùng thuật toán
+        String cleanWord = word.toLowerCase().trim();
+        List<String> syllables;
+        if (TU_DIEN_TACH_AM_DAC_BIET.containsKey(cleanWord)) {
+            syllables = new ArrayList<>(TU_DIEN_TACH_AM_DAC_BIET.get(cleanWord));
+        } else if (ipa.contains(".")) {
             String[] ipaParts = ipa.split("\\.");
-            int count = ipaParts.length;
-            List<String> enParts = chiaTuTheoSoLuongAmTiet(word, count);
-
-            for (int i = 0; i < count; i++) {
-                String ipaSyl = ipaParts[i].replaceAll("[ˈˌ']", "").trim();
-                boolean stressed = ipaParts[i].contains("ˈ") || ipaParts[i].contains("'") || (i == 0 && !ipa.contains("ˈ"));
-                String enSyl = (i < enParts.size()) ? enParts.get(i) : ipaSyl;
-                String boi = chuyenIpaSangBoiTiengViet(ipaSyl, enSyl);
-                String tts = taoTuDocChoSpeech(ipaSyl, enSyl);
-                result.add(new PhoneticSyllable(enSyl, ipaSyl, boi, tts, stressed));
-            }
-            return result;
+            syllables = chiaTuTheoSoLuongAmTiet(word, ipaParts.length);
+        } else {
+            syllables = tachAmTietTiengAnhThucTe(word);
         }
 
-        // Thuật toán tách âm tiết tiếng Anh thực tế
-        List<String> syllables = tachAmTietTiengAnhThucTe(word);
-
-        if (syllables.size() <= 1) {
-            String syl = syllables.isEmpty() ? word : syllables.get(0);
-            String ipaSyl = !ipaClean.isEmpty() ? ipaClean.replaceAll("[ˈˌ'/|\\[\\]]", "").trim() : syl;
-            String boi = chuyenIpaSangBoiTiengViet(ipaSyl, syl);
-            String tts = taoTuDocChoSpeech(ipaSyl, syl);
-            result.add(new PhoneticSyllable(syl, ipaSyl, boi, tts, true));
-            return result;
+        if (syllables.isEmpty()) {
+            syllables = List.of(word);
         }
 
+        // 2. Tách chuỗi IPA thành từng phân đoạn tương ứng với các âm tiết
+        List<String> ipaSlices;
+        if (ipa.contains(".")) {
+            ipaSlices = Arrays.asList(ipa.split("\\."));
+        } else {
+            ipaSlices = tachIpaThanhCacAmTiet(ipa, syllables.size());
+        }
+
+        // 3. Xác định trọng âm
         int stressedIndex = 0;
         if (ipa.contains("ˈ") || ipa.contains("'")) {
-            int stressPos = Math.max(ipa.indexOf("ˈ"), ipa.indexOf("'"));
-            if (stressPos > 2 && syllables.size() > 1) {
-                stressedIndex = Math.min(1, syllables.size() - 1);
+            for (int i = 0; i < ipaSlices.size(); i++) {
+                if (ipaSlices.get(i).contains("ˈ") || ipaSlices.get(i).contains("'")) {
+                    stressedIndex = i;
+                    break;
+                }
             }
         }
 
         for (int i = 0; i < syllables.size(); i++) {
             String syl = syllables.get(i);
             boolean stressed = (i == stressedIndex);
-            String ipaSyl = (i == 0 && syllables.size() == 1 && !ipaClean.isEmpty()) ? ipaClean : syl;
+            String rawIpaSyl = (i < ipaSlices.size()) ? ipaSlices.get(i) : "";
+            String ipaSyl = rawIpaSyl.replaceAll("[ˈˌ'/|\\[\\]]", "").trim();
+            if (ipaSyl.isEmpty() && !ipaClean.isEmpty() && syllables.size() == 1) {
+                ipaSyl = ipaClean;
+            }
+            if (ipaSyl.isEmpty()) {
+                ipaSyl = syl;
+            }
             String boi = chuyenIpaSangBoiTiengViet(ipaSyl, syl);
             String tts = taoTuDocChoSpeech(ipaSyl, syl);
             result.add(new PhoneticSyllable(syl, ipaSyl, boi, tts, stressed));
@@ -2472,7 +2821,85 @@ public class HuongDanDocServiceImpl implements HuongDanDocService {
         return result;
     }
 
-    private static final Map<String, List<String>> TU_DIEN_TACH_AM_DAC_BIET = Map.ofEntries(
+    private List<String> tachIpaThanhCacAmTiet(String ipaRaw, int targetCount) {
+        if (targetCount <= 1 || ipaRaw == null || ipaRaw.isBlank()) {
+            return List.of(ipaRaw != null ? ipaRaw : "");
+        }
+
+        String ipa = chuanHoaIpaDauVao(ipaRaw).replaceAll("[/|\\[\\]]", "").trim();
+        if (ipa.contains(".")) {
+            return Arrays.asList(ipa.split("\\."));
+        }
+
+        // 1. Tách theo dấu trọng âm ˈ hoặc ˌ nếu số phần khớp với targetCount
+        String[] stressParts = ipa.split("(?=[ˈˌ'])");
+        if (stressParts.length == targetCount) {
+            List<String> list = new ArrayList<>();
+            for (String p : stressParts) {
+                if (!p.isBlank()) list.add(p);
+            }
+            if (list.size() == targetCount) return list;
+        }
+
+        // 2. Tìm tất cả các nguyên âm IPA (vowel nuclei)
+        java.util.regex.Pattern ipaVowelPattern = java.util.regex.Pattern.compile(
+                "(iː|uː|ɑː|ɔː|ɜː|eɪ|aɪ|ɔɪ|aʊ|oʊ|əʊ|ou|ei|ai|au|oi|ɪə|eə|ʊə|ɚ|ɝ|i|ɪ|e|ɛ|æ|ɑ|ɒ|ɔ|ʊ|u|ʌ|ɜ|ə)"
+        );
+        java.util.regex.Matcher m = ipaVowelPattern.matcher(ipa);
+        List<int[]> vowelPositions = new ArrayList<>();
+        while (m.find()) {
+            vowelPositions.add(new int[]{m.start(), m.end()});
+        }
+
+        if (vowelPositions.size() == targetCount) {
+            List<Integer> cutPoints = new ArrayList<>();
+            cutPoints.add(0);
+            for (int i = 0; i < targetCount - 1; i++) {
+                int v1End = vowelPositions.get(i)[1];
+                int v2Start = vowelPositions.get(i + 1)[0];
+                String between = ipa.substring(v1End, v2Start);
+                int cut;
+                if (between.contains("ˈ")) {
+                    cut = v1End + between.indexOf("ˈ");
+                } else if (between.contains("ˌ")) {
+                    cut = v1End + between.indexOf("ˌ");
+                } else if (between.contains("'")) {
+                    cut = v1End + between.indexOf("'");
+                } else {
+                    int cLen = between.length();
+                    if (cLen <= 1) {
+                        cut = v1End;
+                    } else {
+                        cut = v1End + (cLen / 2);
+                    }
+                }
+                cutPoints.add(cut);
+            }
+            cutPoints.add(ipa.length());
+
+            List<String> result = new ArrayList<>();
+            for (int i = 0; i < cutPoints.size() - 1; i++) {
+                result.add(ipa.substring(cutPoints.get(i), cutPoints.get(i + 1)));
+            }
+            return result;
+        }
+
+        int len = ipa.length();
+        int step = Math.max(1, len / targetCount);
+        int start = 0;
+        List<String> res = new ArrayList<>();
+        for (int i = 0; i < targetCount - 1; i++) {
+            int end = Math.min(len, start + step);
+            res.add(ipa.substring(start, end));
+            start = end;
+        }
+        if (start < len) {
+            res.add(ipa.substring(start));
+        }
+        return res;
+    }
+
+    private static final Map<String, List<String>> TU_DIEN_TACH_AM_DAC_BIET = new HashMap<>(Map.ofEntries(
             Map.entry("registration", List.of("re", "gis", "tra", "tion")),
             Map.entry("included", List.of("in", "clu", "ded")),
             Map.entry("include", List.of("in", "clude")),
@@ -2501,8 +2928,29 @@ public class HuongDanDocServiceImpl implements HuongDanDocService {
             Map.entry("island", List.of("is", "land")),
             Map.entry("annual", List.of("an", "nu", "al")),
             Map.entry("accountability", List.of("ac", "coun", "ta", "bil", "i", "ty")),
-            Map.entry("account", List.of("ac", "count"))
-    );
+            Map.entry("account", List.of("ac", "count")),
+            // TOEIC Speaking Q7-9 words
+            Map.entry("postpone", List.of("post", "pone")),
+            Map.entry("postponed", List.of("post", "poned")),
+            Map.entry("reschedule", List.of("re", "sched", "ule")),
+            Map.entry("rescheduled", List.of("re", "sched", "uled")),
+            Map.entry("cancel", List.of("can", "cel")),
+            Map.entry("cancelled", List.of("can", "celled")),
+            Map.entry("canceled", List.of("can", "celed")),
+            Map.entry("delay", List.of("de", "lay")),
+            Map.entry("delayed", List.of("de", "layed")),
+            Map.entry("presentation", List.of("pre", "sen", "ta", "tion")),
+            Map.entry("available", List.of("a", "vail", "a", "ble")),
+            Map.entry("demonstration", List.of("dem", "on", "stra", "tion")),
+            Map.entry("orientation", List.of("o", "ri", "en", "ta", "tion")),
+            Map.entry("instructor", List.of("in", "struc", "tor")),
+            Map.entry("procedure", List.of("pro", "ce", "dure")),
+            Map.entry("procedures", List.of("pro", "ce", "dures")),
+            Map.entry("session", List.of("ses", "sion")),
+            Map.entry("seminar", List.of("sem", "i", "nar")),
+            Map.entry("conference", List.of("con", "fer", "ence")),
+            Map.entry("discount", List.of("dis", "count"))
+    ));
 
     private List<String> chiaTuTheoSoLuongAmTiet(String word, int count) {
         if (count <= 1 || word.length() <= count) {
@@ -2600,8 +3048,28 @@ public class HuongDanDocServiceImpl implements HuongDanDocService {
 
     private List<String> tachAmTietTiengAnhThucTe(String word) {
         List<String> list = new ArrayList<>();
-        if (word.length() <= 3) {
+        if (word == null || word.isBlank()) return list;
+        String clean = word.toLowerCase().trim();
+
+        // 0. Ưu tiên từ điển chuẩn hóa đặc biệt
+        if (TU_DIEN_TACH_AM_DAC_BIET.containsKey(clean)) {
+            return new ArrayList<>(TU_DIEN_TACH_AM_DAC_BIET.get(clean));
+        }
+
+        if (clean.length() <= 3) {
             list.add(word);
+            return list;
+        }
+
+        // 0.1 Tiền tố thông dụng
+        if (clean.startsWith("post") && clean.length() > 5) {
+            list.add(word.substring(0, 4));
+            list.addAll(tachAmTietTiengAnhThucTe(word.substring(4)));
+            return list;
+        }
+        if (clean.startsWith("re") && clean.length() > 4 && !clean.startsWith("red") && !clean.startsWith("rea") && !clean.startsWith("rest")) {
+            list.add(word.substring(0, 2));
+            list.addAll(tachAmTietTiengAnhThucTe(word.substring(2)));
             return list;
         }
 
@@ -2656,15 +3124,15 @@ public class HuongDanDocServiceImpl implements HuongDanDocService {
         }
 
         // 3. Tách theo quy tắc phụ âm kép giữa 2 nguyên âm (ví dụ: ap-ple, cab-bage, let-tuce, an-nu)
-        String doubleConsonant = "(?<=[aeiouy][bcdfghjklmnpqrstvwxz])(?=[bcdfghjklmnpqrstvwxz][aeiouy])";
+        String doubleConsonant = "(?<=[aeiouy][bcdfghjklmnpqrstvwxz])(?=[bcdfghjklmnpqrstvwxz][aeiouy](?!$|s$|d$))";
         String[] parts = word.split(doubleConsonant);
         if (parts.length > 1) {
             for (String p : parts) if (!p.isBlank()) list.add(p);
             return list;
         }
 
-        // 4. Tách theo nguyên âm - phụ âm
-        String vcv = "(?<=[aeiouy])(?=[bcdfghjklmnpqrstvwxz][aeiouy])";
+        // 4. Tách theo nguyên âm - phụ âm (bảo vệ nguyên âm câm silent-e ở cuối từ)
+        String vcv = "(?<=[aeiouy])(?=[bcdfghjklmnpqrstvwxz][aeiouy](?!$|s$|d$))";
         String[] vcvParts = word.split(vcv);
         if (vcvParts.length > 1) {
             for (String p : vcvParts) if (!p.isBlank()) list.add(p);
@@ -2747,6 +3215,17 @@ public class HuongDanDocServiceImpl implements HuongDanDocService {
         if (s.contains("meɪ") || en.equals("ma") || en.equals("may")) return "Mây";
         if (s.contains("pɔːr") || en.equals("por")) return "Po";
         if (s.contains("spɪr") || en.equals("pe")) return "Spí";
+        if (s.contains("oʊst") || en.equals("post")) return "pô-xt";
+        if (s.contains("oʊnd") || en.equals("poned")) return "pôn-đ";
+        if (s.contains("oʊn") || en.equals("pone")) return "pôn";
+        if (s.contains("sked") || s.contains("skɛd") || en.equals("sched")) return "s-kéd";
+        if (s.contains("ʒuːl") || s.contains("dʒuːl") || en.equals("ule")) return "giun";
+        if (s.contains("kæn") || en.equals("can")) return "ken";
+        if (s.contains("səl") || en.equals("cel")) return "xồ";
+        if (s.contains("leɪ") || en.equals("lay")) return "lây";
+        if (s.contains("teɪ") || en.equals("ta")) return "tây";
+        if (s.contains("veɪl") || en.equals("vail")) return "vây-l";
+        if (s.contains("strʌk") || en.equals("struc")) return "xtrak";
 
         String res = chuyenAmTietSangBoi(enSyl);
         String resLower = res.toLowerCase();
@@ -2849,6 +3328,18 @@ public class HuongDanDocServiceImpl implements HuongDanDocService {
         String p = ipa != null ? ipa.toLowerCase().trim() : "";
 
         // 1. Các âm tiết / vần đặc biệt thông dụng
+        if (s.equals("sched")) return "sked";
+        if (s.equals("ule")) return "jool";
+        if (s.equals("re") && (p.contains("riː") || p.contains("ri") || p.contains("rɪ"))) return "ree";
+        if (s.equals("post")) return "post";
+        if (s.equals("pone")) return "pown";
+        if (s.equals("poned")) return "pound";
+        if (s.equals("can")) return "can";
+        if (s.equals("cel") || s.equals("celed") || s.equals("celled")) return "sul";
+        if (s.equals("lay") || s.equals("layed")) return "lay";
+        if (s.equals("vail")) return "vale";
+        if (s.equals("dem")) return "dem";
+        if (s.equals("struc")) return "struck";
         if (s.equals("al")) return "ull";
         if (s.equals("el")) return "ell";
         if (s.equals("il")) return "ill";
