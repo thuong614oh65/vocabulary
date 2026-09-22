@@ -186,14 +186,39 @@ body {
     margin-top: 24px;
 }
 
+/* Hai cột cuộn độc lập */
+.practice-container .row {
+    align-items: stretch;
+}
+
+.practice-col-left,
+.practice-col-right {
+    height: calc(100vh - 120px);
+    overflow-y: auto;
+    overflow-x: hidden;
+    scroll-behavior: smooth;
+    /* Ẩn thanh cuộn mặc định (giữ cuộn được) nhưng gọn hơn */
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 transparent;
+    padding-right: 6px;
+}
+
+.practice-col-left::-webkit-scrollbar,
+.practice-col-right::-webkit-scrollbar {
+    width: 5px;
+}
+.practice-col-left::-webkit-scrollbar-thumb,
+.practice-col-right::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 999px;
+}
+
 .info-sheet-card {
     background: #ffffff;
     border-radius: 16px;
     padding: 20px;
     box-shadow: var(--card-shadow);
     border: 1px solid #e2e8f0;
-    position: sticky;
-    top: 90px;
 }
 
 .info-sheet-img {
