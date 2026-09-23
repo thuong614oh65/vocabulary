@@ -17,13 +17,19 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.nio.file.Files;
+import com.thuong.vocabulary.service.LuyenDePresetData;
+
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Controller
 public class LuyenDeController {
 
     private final GeminiService geminiService;
     private final ObjectMapper objectMapper;
+
+    // Cache động lưu các đề đã phân tích (nếu có đề ngoài danh sách preset)
+    private static final Map<Integer, DeThiQ79DTO> DYNAMIC_CACHE = new ConcurrentHashMap<>();
 
     // Danh sách 15 đề mẫu có sẵn từ tài liệu đề thi.docx
     private static final List<Map<String, Object>> DS_DE_MAU = new ArrayList<>();
@@ -199,146 +205,19 @@ public class LuyenDeController {
         }
 
         try {
+            // 1. Phản hồi TỨC THÌ (0.001s) từ bộ dữ liệu chuẩn đã cấu hình sẵn cho tất cả 19 đề thi
+            DeThiQ79DTO presetDto = LuyenDePresetData.getDeMau(id);
+            if (presetDto != null) {
+                return ResponseEntity.ok(presetDto);
+            }
+
+            // 2. Kiểm tra bộ nhớ cache động
+            if (DYNAMIC_CACHE.containsKey(id)) {
+                return ResponseEntity.ok(DYNAMIC_CACHE.get(id));
+            }
+
+            // 3. Fallback chỉ chạy nếu có đề ngoài danh sách 1-19
             String imgRelativePath = "/images/de-thi/image" + id + ".png";
-
-            // 1. [SAMPLE EXAM] DANVILLE CITY TOURS (SLIDE 5-6 TRONG BÀI GIẢNG PPTX)
-            if (id == 19) {
-                DeThiQ79DTO dto = DeThiQ79DTO.builder()
-                        .tieuDe("[Sample Exam] Danville City Tours")
-                        .loaiNoiDung("IMAGE")
-                        .anhUrl(imgRelativePath)
-                        .tomTatNoiDung("Danville City Tours<br>All tours leave from the front of the Piedmont Hotel. Reservations must be made in advance by calling the Tour Office at 593-555-9694. Cost: $75 (adults), $50 (children under 12, must be accompanied by an adult).<br>• 10:00 - Bus leaves from the main entrance of the hotel<br>• 10:00-11:00 - Bus tour of downtown Danville<br>• 11:00 - Arrive at Danville Museum of History<br>• 11:00-1:00 - Guided museum tour<br>• 1:00-2:00 - Lunch at the museum café<br>• 2:00-3:30 - Walking tour of Danville City Park and Gardens<br>• 3:30-5:00 - Bus tour of Danville waterfront<br>• 5:15 - Arrive back at the Piedmont Hotel<br>• 6:00 - Optional dinner at the hotel* (*Must be reserved and paid for when you book your tour tickets. Add $25 per person to the cost of your tour ticket.)")
-                        .tinhHuong("Hello. I'm interested in taking a tour of Danville, but I'm afraid it might be a bit too expensive. Could you please answer a few questions for me?")
-                        .cauHoi1("Can you tell me how much it costs to take the tour?")
-                        .thoiGianCau1(15)
-                        .goiYCau1("Sure. Let me check the information on the schedule. The tour costs 75 dollars for adults, and for children under 12, the cost is 50 dollars.")
-                        .cauHoi2("I heard that the tour includes dinner as well as lunch. Is that correct?")
-                        .thoiGianCau2(15)
-                        .goiYCau2("Let's see. According to the schedule, there's an optional dinner at the end of the tour. This costs an extra 25 dollars over and above the cost of your tour ticket.")
-                        .cauHoi3("Does the tour take place mostly in the morning, or will we also visit some places after lunch?")
-                        .thoiGianCau3(30)
-                        .goiYCau3("Yes, the tour includes visits to several places after lunch. First, there's a walking tour of Danville City Park and Gardens, which begins at two o'clock. Then after that, at three thirty, the tour goes by bus to the Danville waterfront. Then you'll get back to the hotel by five fifteen.")
-                        .nguonGoc("DE_MAU")
-                        .deMauId(19)
-                        .build();
-                return ResponseEntity.ok(dto);
-            }
-
-            // 2. [TEXT 1] DRILLING SITE TOUR SCHEDULE (SLIDE 10, 15, 33)
-            if (id == 16) {
-                DeThiQ79DTO dto = DeThiQ79DTO.builder()
-                        .tieuDe("[Text 1] Drilling Site Tour Schedule")
-                        .loaiNoiDung("IMAGE")
-                        .anhUrl(imgRelativePath)
-                        .tomTatNoiDung("Drilling Site Tour Schedule: Daily at 11:00 a.m. No tours on weekends. Safety equipment required for all participants! 10:45 a.m. Meet at tunnel entrance; 11:00-12:00 Walking tour of finished tunnel with guide; 12:00-1:00 Lunch in underground break room; 1:00-1:30 Talk about drill site safety; 1:30-2:30 Open viewing of drill area (guide available); 3:00 Return to base camp.")
-                        .tinhHuong("Hello, this is Mark. I'm calling to ask for some details about the drilling site tour scheduled for tomorrow. Could you please answer a few questions for me?")
-                        .cauHoi1("What time do we need to meet for the tour?")
-                        .thoiGianCau1(15)
-                        .goiYCau1("You need to meet at 10:45 a.m. at the tunnel entrance before the tour begins at 11:00 a.m.")
-                        .cauHoi2("I heard that tours are also available on weekends. Is that correct?")
-                        .thoiGianCau2(15)
-                        .goiYCau2("No, I'm sorry, but that's not correct. There are no tours on weekends; tours are only conducted daily from Monday through Friday.")
-                        .cauHoi3("Could you please tell me how long the tour lasts and what we will see during the tour?")
-                        .thoiGianCau3(30)
-                        .goiYCau3("Certainly. The tour lasts about 4 hours, from 10:45 a.m. until 3:00 p.m. First, from 11:00 to 12:00, you will take a walking tour of the finished part of the tunnel with a guide. Then, after lunch, from 1:30 to 2:30, you will have an open viewing of the drill area with a guide available before returning to base camp at 3:00 p.m.")
-                        .nguonGoc("DE_MAU")
-                        .deMauId(16)
-                        .build();
-                return ResponseEntity.ok(dto);
-            }
-
-            // 3. [TEXT 2] INTERNATIONAL WRITERS CONFERENCE (SLIDE 11, 17, 35)
-            if (id == 17) {
-                DeThiQ79DTO dto = DeThiQ79DTO.builder()
-                        .tieuDe("[Text 2] International Writers Conference")
-                        .loaiNoiDung("IMAGE")
-                        .anhUrl(imgRelativePath)
-                        .tomTatNoiDung("International Writers Conference - Tuesday, March 15, 10:00 a.m. to 6:00 p.m. at Carver Hall, Thorpe Center, West University Campus. Guest Speakers: Jenny Hill (President, Freelance Writers League, 10:00 a.m., Room 17), Marlon Thomson (Publishing Manager, Horton Publishing, 1:00 p.m., Room 21), Angela Moeller (CEO, Editorial Advisory Group, 3:00 p.m., Room 12). Publisher exhibits: 10:00 a.m. to 6:00 p.m., Carver Reception Hall. Open forum: 4:00 p.m. to 6:00 p.m., Room 2. Registration Cost: $26 per person by March 13.")
-                        .tinhHuong("Hi, I'm planning to attend the International Writers Conference on March 15th, and I have a couple of questions about the schedule.")
-                        .cauHoi1("Can you please tell me who Angela Moeller is and where she will be speaking?")
-                        .thoiGianCau1(15)
-                        .goiYCau1("Angela Moeller is the CEO of the Editorial Advisory Group, and she will be speaking at 3:00 p.m. in Room 12.")
-                        .cauHoi2("What can you do at the publisher exhibits?")
-                        .thoiGianCau2(15)
-                        .goiYCau2("At the publisher exhibits, you can browse through booths offering valuable information on how to get published, learn what's new in the field, and find out where to send your work.")
-                        .cauHoi3("Could you tell me about all the guest speakers and when they will be speaking?")
-                        .thoiGianCau3(30)
-                        .goiYCau3("Sure, there are three guest speakers scheduled. First, Jenny Hill, President of Freelance Writers League, will speak at 10:00 a.m. in Room 17. Second, Marlon Thomson, Publishing Manager at Horton Publishing, will speak at 1:00 p.m. in Room 21. Finally, Angela Moeller, CEO of Editorial Advisory Group, will speak at 3:00 p.m. in Room 12.")
-                        .nguonGoc("DE_MAU")
-                        .deMauId(17)
-                        .build();
-                return ResponseEntity.ok(dto);
-            }
-
-            // 4. [TEXT 3] SOUTHEAST DELEGATION TOUR ITINERARY (SLIDE 12, 19, 37)
-            if (id == 18) {
-                DeThiQ79DTO dto = DeThiQ79DTO.builder()
-                        .tieuDe("[Text 3] Southeast Delegation Tour Itinerary")
-                        .loaiNoiDung("IMAGE")
-                        .anhUrl(imgRelativePath)
-                        .tomTatNoiDung("Itinerary for Southeast Delegation: 7:00 a.m. Arrive at New York La Guardia Airport on Flight 681, pick-up by Secretary Sullivan; 8:15 a.m. Hotel Compton check-in, 1 hour free; 9:15 a.m. Leave for Government Center, arrive 9:45 a.m.; 10:00 a.m. Meet and greet, Webber Room; 10:30 a.m. Presentation: Global Environmental Issues; 11:30 a.m. Taxi to North Surfside restaurant; 12:00 p.m. Lunch with CEO, HCG Inc.; 1:45 p.m. Taxi to Government Center; 2:30 p.m. Presentation: Solar Energy; 4:00 p.m. Depart for airport with Secretary Sullivan; 7:00 p.m. Flight 682 for Los Angeles.")
-                        .tinhHuong("Hello, this is Mr. Gibson. I'm checking on the Southeast delegation's schedule in New York today, and I have a few questions.")
-                        .cauHoi1("This is Mr. Gibson. Who's taking the Southeast delegation to the airport, and what time is the flight?")
-                        .thoiGianCau1(15)
-                        .goiYCau1("Secretary Sullivan is taking the delegation to the airport at 4:00 p.m., and their flight departs at 7:00 p.m. on Flight 682 for Los Angeles.")
-                        .cauHoi2("What is the delegation doing between presentations?")
-                        .thoiGianCau2(15)
-                        .goiYCau2("Between presentations, from 11:30 a.m. to 1:45 p.m., the delegation will take a taxi to North Surfside restaurant to have lunch with the CEO of HCG Inc., and then return by taxi to Government Center.")
-                        .cauHoi3("Could you please tell me the complete schedule of the delegation for the morning from arrival until their first presentation?")
-                        .thoiGianCau3(30)
-                        .goiYCau3("Certainly. First, they arrive at New York La Guardia Airport at 7:00 a.m. and are picked up by Secretary Sullivan. Then, they arrive at Hotel Compton at 8:15 a.m. for check-in with one hour of free time. Next, they leave for Government Center at 9:15 a.m., arriving at 9:45 a.m. Finally, they have a meet and greet at 10:00 a.m. in the Webber Room before their first presentation at 10:30 a.m.")
-                        .nguonGoc("DE_MAU")
-                        .deMauId(18)
-                        .build();
-                return ResponseEntity.ok(dto);
-            }
-
-            // 5. [SLIDE 38] PALM ISLAND'S NEW EMPLOYEE ORIENTATION
-            if (id == 15) {
-                DeThiQ79DTO dto = DeThiQ79DTO.builder()
-                        .tieuDe("Palm Island's New Employee Orientation")
-                        .loaiNoiDung("IMAGE")
-                        .anhUrl(imgRelativePath)
-                        .tomTatNoiDung("Palm Island's New Employee Orientation - Monday, November 16th<br>• 08:30~09:30 A.M.: Introduction and morning tea<br>• 09:30~10:30 A.M.: Employee benefits, Erin Morris<br>• 10:30~11:00 A.M.: Demonstration: Resort security procedures (Postponed)<br>• 11:00 A.M.~Noon: Resort tour, Cameron Simmons<br>• Noon~01:00 P.M.: Lunch at resort's restaurant<br>• 01:00~02:00 P.M.: Demonstration: Welcoming new guests, Guest check-in and check-out<br>• 02:00~03:30 P.M.: Workshop on scheduling special events")
-                        .tinhHuong("Hello, I'm a new employee starting at Palm Island next Monday. I'd like to ask a few questions about the orientation schedule.")
-                        .cauHoi1("What time does the new employee orientation begin, and what is scheduled at that time?")
-                        .thoiGianCau1(15)
-                        .goiYCau1("The new employee orientation begins at 8:30 a.m., and an introduction and morning tea are scheduled at that time.")
-                        .cauHoi2("Who will give the sessions on employee benefits and the resort tour?")
-                        .thoiGianCau2(15)
-                        .goiYCau2("Erin Morris will give the session on employee benefits from 9:30 to 10:30 a.m., and Cameron Simmons will lead the resort tour from 11:00 a.m. to noon.")
-                        .cauHoi3("I'm interested in the demonstration of resort security procedures. Could you tell me when it is scheduled?")
-                        .thoiGianCau3(30)
-                        .goiYCau3("Actually, the demonstration of resort security procedures has been postponed, so it won't be held. However, there are demonstrations on welcoming new guests and check-in and check-out scheduled from 1:00 to 2:00 p.m.")
-                        .nguonGoc("DE_MAU")
-                        .deMauId(15)
-                        .build();
-                return ResponseEntity.ok(dto);
-            }
-
-            // 6. [SLIDE 39] HIGH ELEVATION ROCK FESTIVAL TOURS
-            if (id == 13) {
-                DeThiQ79DTO dto = DeThiQ79DTO.builder()
-                        .tieuDe("High Elevation Rock Festival Tours")
-                        .loaiNoiDung("IMAGE")
-                        .anhUrl(imgRelativePath)
-                        .tomTatNoiDung("High Elevation Rock Festival Tours - Date: March 24th - April 14th<br>• Saturday, March 24th: New York City Tower Dent Hall - Sold out<br>• Saturday, March 31st: Boston Nordic Hall - $22<br>• Friday, April 6th: Richmond Marine Park - Sold out<br>• Saturday, April 14th: New York City Zeppelin Hall - $27<br>Ticket Purchase: online or at the gate. Purchase ticket online and get a $5 extra discount.")
-                        .tinhHuong("Hi, I'm calling for some information about the High Elevation Rock Festival Tours. Could you answer a few questions for me?")
-                        .cauHoi1("When and where will the High Elevation Rock Festival Tour take place in Boston?")
-                        .thoiGianCau1(15)
-                        .goiYCau1("The tour in Boston will take place on Saturday, March 31st at Boston Nordic Hall.")
-                        .cauHoi2("I'd like to attend the tour in New York City. Could you tell me which dates are available and how much the tickets cost?")
-                        .thoiGianCau2(15)
-                        .goiYCau2("There are two dates in New York City. The first tour on Saturday, March 24th at Tower Dent Hall is sold out. However, the tour on Saturday, April 14th at Zeppelin Hall is available for $27.")
-                        .cauHoi3("I'm planning to buy a ticket for the Boston tour. How much does it cost, and is there any way I can get a discount?")
-                        .thoiGianCau3(30)
-                        .goiYCau3("The ticket for the Boston tour costs $22. However, if you purchase your ticket online, you can get a $5 extra discount, so it will cost only $17.")
-                        .nguonGoc("DE_MAU")
-                        .deMauId(13)
-                        .build();
-                return ResponseEntity.ok(dto);
-            }
-
             String staticImgPath = "src/main/resources/static/images/de-thi/image" + id + ".png";
             File f = new File(staticImgPath);
             if (!f.exists()) {
@@ -360,6 +239,7 @@ public class LuyenDeController {
             dto.setThoiGianCau2(15);
             dto.setThoiGianCau3(30);
 
+            DYNAMIC_CACHE.put(id, dto);
             return ResponseEntity.ok(dto);
         } catch (Exception e) {
             e.printStackTrace();

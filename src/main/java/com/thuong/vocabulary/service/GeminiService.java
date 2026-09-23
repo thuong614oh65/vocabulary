@@ -25,6 +25,9 @@ public class GeminiService {
     private static final String MODEL_FLASH_LITE = "gemini-3.5-flash-lite";
     private static final String MODEL_FLASH = "gemini-3.6-flash";
 
+    // Cache kết quả chấm điểm TOEIC Speaking Q7-9 để phản hồi tức thì khi học viên chấm lại
+    private final Map<String, String> cacheChamDiemQ79 = new java.util.concurrent.ConcurrentHashMap<>();
+
     public GeminiService(@Value("${gemini.api-keys:${gemini.api-key:}}") String configApiKeys) {
         Set<String> uniqueKeys = new LinkedHashSet<>();
 
@@ -938,14 +941,22 @@ public class GeminiService {
                 }
                 """.formatted(tieuDe, thongTin, tinhHuong, q1, a1, q2, a2, q3, a3);
 
+        String cacheKey = (tieuDe != null ? tieuDe : "") + "||" + a1 + "||" + a2 + "||" + a3;
+        if (cacheChamDiemQ79.containsKey(cacheKey)) {
+            return cacheChamDiemQ79.get(cacheKey);
+        }
+
         try {
-            String res = goiGeminiAnToan(prompt, new String[]{MODEL_FLASH, MODEL_FLASH_LITE});
+            // Ưu tiên MODEL_FLASH_LITE để phản hồi siêu tốc (1-2s), tự động fallback sang MODEL_FLASH nếu cần
+            String res = goiGeminiAnToan(prompt, new String[]{MODEL_FLASH_LITE, MODEL_FLASH});
             if (res != null) {
                 res = res.trim();
                 if (res.startsWith("```json")) res = res.substring(7);
                 else if (res.startsWith("```")) res = res.substring(3);
                 if (res.endsWith("```")) res = res.substring(0, res.length() - 3);
-                return res.trim();
+                String finalRes = res.trim();
+                cacheChamDiemQ79.put(cacheKey, finalRes);
+                return finalRes;
             }
         } catch (Exception e) {
             System.err.println("[GeminiService] chamDiemDeQ79 error: " + e.getMessage());

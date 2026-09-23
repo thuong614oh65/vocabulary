@@ -224,7 +224,7 @@ function initSampleTestButtons() {
 }
 
 function loadSampleTest(id) {
-    showLoading(`Đang tải Đề thi mẫu #${id}...`, 'Gemini AI đang phân tích dữ liệu bảng và tạo câu hỏi...');
+    showLoading(`Đang mở Đề thi mẫu #${id}...`, 'Đang thiết lập phòng luyện thi TOEIC Speaking...');
     fetch(`/api/luyen-de/de-mau/${id}`)
         .then(res => res.json())
         .then(data => {
@@ -634,7 +634,7 @@ function initSubmitButton() {
             cauTraLoi3: a3
         };
 
-        showLoading('Gemini AI đang chấm điểm bài thi...', 'Đánh giá độ chính xác thông tin, tính toán thời gian nói thực tế và kiểm tra ngữ pháp...');
+        showLoading('⚡ Gemini Flash AI đang chấm điểm...', 'Đang đối chiếu trích dẫn, sửa câu và tính điểm chuẩn TOEIC...');
 
         fetch('/api/luyen-de/cham-diem', {
             method: 'POST',

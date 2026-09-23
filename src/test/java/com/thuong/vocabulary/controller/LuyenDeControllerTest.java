@@ -90,6 +90,18 @@ class LuyenDeControllerTest {
     }
 
     @Test
+    void testAnnaValesFlowerShopPreset_Id4() {
+        ResponseEntity<?> res = controller.layDeMau(4, session);
+        assertEquals(200, res.getStatusCode().value());
+        DeThiQ79DTO dto = (DeThiQ79DTO) res.getBody();
+
+        assertEquals("Anna Vales' Flower Shop Delivery", dto.getTieuDe());
+        assertEquals("Could you tell me when the flowers will be delivered and where they should be brought to?", dto.getCauHoi1());
+        assertEquals("I believe the delivery charge has already been paid in advance. Is that right?", dto.getCauHoi2());
+        assertEquals("Could you please give me the complete details of all the flowers included in this order?", dto.getCauHoi3());
+    }
+
+    @Test
     void testUnauthorized() {
         MockHttpSession unauthSession = new MockHttpSession();
         ResponseEntity<?> res = controller.layDeMau(19, unauthSession);
