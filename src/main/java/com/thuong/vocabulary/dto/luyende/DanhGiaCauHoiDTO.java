@@ -21,7 +21,12 @@ public class DanhGiaCauHoiDTO {
     private int diem; // Thang 0 - 3 (TOEIC standard)
     private String trangThai; // "DUNG", "GAN_DUNG", "THIEU_Y", "SAI"
 
-    private String danhGiaThongTin; // Đủ / Thiấu / Thừa thông tin
+    private String trichDanDeBai;   // Đoạn văn / dòng thông tin trích dẫn y nguyên từ đề bài dùng để trả lời câu này
+    private String huongDanChemTu;  // Hướng dẫn cách chêm từ (chủ ngữ, giới từ, liên từ...) từ thông tin thô để tạo câu hoàn chỉnh
+    private String suaCauNguoiDung; // Câu trả lời của học viên sau khi được AI sửa lỗi và hoàn thiện
+    private String giaiThichSuaCau; // Giải thích chi tiết các điểm đã sửa từ câu của học viên
+
+    private String danhGiaThongTin; // Đủ / Thiếu / Thừa thông tin
     private String danhGiaThoiGian; // Đánh giá độ dài & thời gian nói
     private String nhanXetChiTiet;  // Nhận xét ngữ pháp, giới từ, tính tự nhiên
     private String cauTraLoiMau;    // Câu trả lời chuẩn bản xứ để học viên nói

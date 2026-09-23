@@ -478,11 +478,72 @@ body {
     border: 1px solid #e2e8f0;
 }
 
+.result-prompt-card {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 20px 24px;
+    box-shadow: var(--card-shadow);
+    border: 1px solid #e2e8f0;
+}
+
+/* Khối Trích Dẫn Đề Bài Ở Từng Câu */
+.prompt-citation-box {
+    background: #f0f9ff;
+    border: 1.5px solid #bae6fd;
+    border-left: 5px solid #0284c7;
+    border-radius: 12px;
+    padding: 16px 18px;
+    margin-bottom: 16px;
+}
+
+.prompt-citation-text {
+    background: #ffffff;
+    border: 1px solid #e0f2fe;
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 14.5px;
+    color: #0f172a;
+    font-weight: 600;
+    line-height: 1.5;
+}
+
+.prompt-insert-guide {
+    font-size: 13.5px;
+    color: #0369a1;
+    margin-top: 8px;
+    line-height: 1.5;
+}
+
+/* Khối Sửa & Hoàn Thiện Câu Của Học Viên */
+.user-correction-box {
+    background: #fffbeb;
+    border: 1.5px solid #fde68a;
+    border-left: 5px solid #f59e0b;
+    border-radius: 12px;
+    padding: 16px 18px;
+    margin-bottom: 16px;
+}
+
+.user-correction-text {
+    font-size: 15px;
+    font-weight: 700;
+    color: #78350f;
+    line-height: 1.5;
+}
+
+.user-correction-explain {
+    font-size: 13.5px;
+    color: #92400e;
+    margin-top: 6px;
+    line-height: 1.5;
+}
+
 .model-answer-box {
     background: #f0fdf4;
-    border: 1px solid #bbf7d0;
+    border: 1.5px solid #bbf7d0;
+    border-left: 5px solid #10b981;
     border-radius: 12px;
-    padding: 16px;
+    padding: 16px 18px;
     margin-top: 14px;
 }
 

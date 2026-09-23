@@ -664,19 +664,70 @@ function renderEvaluationResults(res) {
     document.getElementById('practiceArena').style.display = 'none';
     const resultSec = document.getElementById('resultSection');
     resultSec.style.display = 'block';
+    document.body.classList.remove('in-practice-mode');
 
     // Tổng điểm & Xếp loại
     document.getElementById('totalScoreNum').textContent = res.tongDiem != null ? res.tongDiem : '-';
     document.getElementById('xepLoaiBadge').textContent = (res.xepLoai || 'Hoàn thành').toUpperCase();
     document.getElementById('nhanXetTongQuanText').textContent = res.nhanXetTongQuan || 'Bạn đã hoàn thành bài thi TOEIC Speaking Q7-9.';
 
+    // 1. Hiển thị lại toàn bộ đoạn văn / bảng thông tin đề tài để học viên đối chiếu
+    if (currentExamData) {
+        const titleEl = document.getElementById('resultPromptTitle');
+        if (titleEl) titleEl.textContent = currentExamData.tieuDe || 'Mẫu thông tin & Đề bài gốc';
+        
+        const scenarioWrapper = document.getElementById('resultPromptScenarioWrapper');
+        const scenarioEl = document.getElementById('resultPromptScenario');
+        if (scenarioWrapper && scenarioEl) {
+            if (currentExamData.tinhHuong) {
+                scenarioEl.textContent = currentExamData.tinhHuong;
+                scenarioWrapper.classList.remove('d-none');
+            } else {
+                scenarioWrapper.classList.add('d-none');
+            }
+        }
+
+        const imgWrapper = document.getElementById('resultPromptImgWrapper');
+        const imgEl = document.getElementById('resultPromptImg');
+        if (imgWrapper && imgEl) {
+            if (currentExamData.loaiNoiDung === 'IMAGE' && currentExamData.anhUrl) {
+                imgEl.src = currentExamData.anhUrl;
+                imgWrapper.classList.remove('d-none');
+            } else {
+                imgWrapper.classList.add('d-none');
+            }
+        }
+
+        const promptTextEl = document.getElementById('resultPromptText');
+        if (promptTextEl) {
+            const rawText = currentExamData.vanBanThongTin || currentExamData.tomTatNoiDung || '';
+            promptTextEl.innerHTML = rawText ? rawText : '<em>Không có văn bản bảng.</em>';
+        }
+
+        const btnTogglePrompt = document.getElementById('btnToggleResultPrompt');
+        const promptBody = document.getElementById('resultPromptBody');
+        if (btnTogglePrompt && promptBody) {
+            btnTogglePrompt.onclick = () => {
+                const isHidden = promptBody.classList.contains('d-none');
+                if (isHidden) {
+                    promptBody.classList.remove('d-none');
+                    btnTogglePrompt.innerHTML = '👁️ Thu gọn đề bài';
+                } else {
+                    promptBody.classList.add('d-none');
+                    btnTogglePrompt.innerHTML = '👁️ Mở xem đề bài';
+                }
+            };
+        }
+    }
+
+    // 2. Chi tiết từng câu hỏi
     const container = document.getElementById('questionResultsContainer');
     container.innerHTML = '';
 
     const questions = [
-        { qText: currentExamData.cauHoi1, ans: document.getElementById('ans1Input').value.trim(), time: 15 },
-        { qText: currentExamData.cauHoi2, ans: document.getElementById('ans2Input').value.trim(), time: 15 },
-        { qText: currentExamData.cauHoi3, ans: document.getElementById('ans3Input').value.trim(), time: 30 }
+        { qText: currentExamData ? currentExamData.cauHoi1 : 'Câu 1', ans: document.getElementById('ans1Input') ? document.getElementById('ans1Input').value.trim() : '', time: 15 },
+        { qText: currentExamData ? currentExamData.cauHoi2 : 'Câu 2', ans: document.getElementById('ans2Input') ? document.getElementById('ans2Input').value.trim() : '', time: 15 },
+        { qText: currentExamData ? currentExamData.cauHoi3 : 'Câu 3', ans: document.getElementById('ans3Input') ? document.getElementById('ans3Input').value.trim() : '', time: 30 }
     ];
 
     if (res.danhSachCauHoi && res.danhSachCauHoi.length > 0) {
@@ -697,19 +748,62 @@ function renderEvaluationResults(res) {
                     </div>
                 </div>
 
+                <!-- 1. Câu hỏi -->
                 <div class="p-3 bg-light rounded-3 mb-3 border">
                     <div class="fw-bold text-slate-700 mb-1">❓ Câu hỏi:</div>
                     <div class="text-slate-800 fw-semibold">${qInfo.qText}</div>
                 </div>
 
+                <!-- 2. Đoạn văn trích dẫn từ đề bài (Dữ liệu gốc y như đề) -->
+                ${item.trichDanDeBai ? `
+                <div class="prompt-citation-box">
+                    <div class="d-flex align-items-center justify-content-between mb-2 flex-wrap gap-2">
+                        <div class="fw-bold text-sky-900 small d-flex align-items-center gap-1">
+                            <span>📌</span> <span>Đoạn văn trích dẫn từ đề bài (Viết y như đề để dễ so sánh):</span>
+                        </div>
+                        <span class="badge bg-primary-subtle text-primary border px-2 py-1 rounded-pill small">Dữ liệu gốc từ đề</span>
+                    </div>
+                    <div class="prompt-citation-text font-monospace">
+                        ${item.trichDanDeBai.replace(/\n/g, '<br>')}
+                    </div>
+                    ${item.huongDanChemTu ? `
+                    <div class="prompt-insert-guide">
+                        <strong>💡 Cách chêm từ hoàn thành câu:</strong> ${item.huongDanChemTu}
+                    </div>
+                    ` : ''}
+                </div>
+                ` : ''}
+
+                <!-- 3. Câu trả lời ban đầu của bạn -->
                 <div class="p-3 rounded-3 mb-3 border ${qInfo.ans ? 'bg-white' : 'bg-light'}">
-                    <div class="fw-bold text-slate-700 mb-1">✍️ Câu trả lời của bạn:</div>
-                    <div class="text-slate-800">${qInfo.ans ? qInfo.ans : '<em class="text-muted">Không trả lời</em>'}</div>
+                    <div class="fw-bold text-slate-700 mb-1">✍️ Câu trả lời ban đầu của bạn:</div>
+                    <div class="text-slate-800">${qInfo.ans ? qInfo.ans : '<em class="text-muted">Chưa nhập câu trả lời</em>'}</div>
                     <div class="mt-2 small text-muted">
                         📊 Dung lượng: <strong>${item.soTu || 0} từ</strong> • ⏱️ Thời gian nói ước tính: <strong>~${item.thoiGianNoiUocTinh || 0}s</strong>
                     </div>
                 </div>
 
+                <!-- 4. Chấm sửa & Hoàn thiện câu trả lời của bạn -->
+                ${item.suaCauNguoiDung ? `
+                <div class="user-correction-box">
+                    <div class="d-flex align-items-center justify-content-between mb-2 flex-wrap gap-2">
+                        <div class="fw-bold text-amber-900 small d-flex align-items-center gap-1">
+                            <span>🛠️</span> <span>Sửa & Hoàn thiện từ câu của bạn (Để nói tự nhiên và đúng ngữ pháp):</span>
+                        </div>
+                        <span class="badge bg-warning-subtle text-warning-emphasis border px-2 py-1 rounded-pill small">Chấm sửa câu của bạn</span>
+                    </div>
+                    <div class="user-correction-text">
+                        ${item.suaCauNguoiDung}
+                    </div>
+                    ${item.giaiThichSuaCau ? `
+                    <div class="user-correction-explain">
+                        <strong>🔍 Điểm cần hoàn thiện:</strong> ${item.giaiThichSuaCau}
+                    </div>
+                    ` : ''}
+                </div>
+                ` : ''}
+
+                <!-- 5. Đánh giá thông tin & Thời gian nói -->
                 <div class="row g-3 mb-3">
                     <div class="col-md-6">
                         <div class="p-3 bg-light rounded-3 h-100 border">
@@ -725,6 +819,7 @@ function renderEvaluationResults(res) {
                     </div>
                 </div>
 
+                <!-- 6. Nhận xét chi tiết -->
                 ${item.nhanXetChiTiet ? `
                     <div class="p-3 bg-light rounded-3 mb-3 border">
                         <div class="fw-bold text-slate-700 mb-1">🔍 Nhận xét chi tiết (Ngữ pháp / Giới từ / Giọng điệu):</div>
@@ -732,15 +827,15 @@ function renderEvaluationResults(res) {
                     </div>
                 ` : ''}
 
-                <!-- Model Spoken Answer -->
+                <!-- 7. Model Spoken Answer (Câu trả lời mẫu chuẩn bản xứ) -->
                 <div class="model-answer-box">
-                    <div class="d-flex justify-content-between align-items-center mb-2">
+                    <div class="d-flex justify-content-between align-items-center mb-2 flex-wrap gap-2">
                         <span class="fw-bold text-success">🌟 Câu trả lời mẫu chuẩn bản xứ (Đạt điểm tối đa):</span>
                         <button class="btn btn-sm btn-outline-success rounded-pill px-3" onclick="speakText('${(item.cauTraLoiMau || '').replace(/'/g, "\\'")}')">
                             🔊 Nghe đọc mẫu
                         </button>
                     </div>
-                    <div class="fw-semibold text-slate-900 mb-1">${item.cauTraLoiMau || ''}</div>
+                    <div class="fw-semibold text-slate-900 mb-1 fs-6">${item.cauTraLoiMau || ''}</div>
                     ${item.dichTiengVietMau ? `<div class="small text-muted fst-italic">Dịch nghĩa: ${item.dichTiengVietMau}</div>` : ''}
                 </div>
             `;

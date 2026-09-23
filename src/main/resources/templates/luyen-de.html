@@ -9,7 +9,7 @@
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <!-- CSS riêng -->
-    <link rel="stylesheet" th:href="@{/css/luyen-de.css(v=2)}">
+    <link rel="stylesheet" th:href="@{/css/luyen-de.css(v=3)}">
 </head>
 <body>
 
@@ -371,6 +371,33 @@
                 </div>
             </div>
 
+            <!-- Khối xem lại đề bài & Bảng thông tin đề tài -->
+            <div class="result-prompt-card mb-4" id="resultPromptCard">
+                <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="fs-4">📋</span>
+                        <div>
+                            <h4 class="h6 fw-bold mb-0 text-slate-800" id="resultPromptTitle">Mẫu thông tin & Đề bài gốc</h4>
+                            <span class="text-muted small">Đối chiếu toàn bộ dữ liệu đề bài với các câu hỏi bên dưới</span>
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-sm btn-outline-primary rounded-pill px-3 fw-semibold" id="btnToggleResultPrompt">
+                        👁️ Thu gọn đề bài
+                    </button>
+                </div>
+                <div id="resultPromptBody" class="mt-3">
+                    <div id="resultPromptImgWrapper" class="text-center mb-3 d-none">
+                        <img id="resultPromptImg" src="" alt="Đề thi gốc" class="img-fluid rounded-3 border shadow-sm" style="max-height: 380px;">
+                    </div>
+                    <div class="p-3 bg-light-subtle border rounded-3 mb-3" id="resultPromptScenarioWrapper">
+                        <div class="fw-bold text-primary small mb-1">📞 Tình huống cuộc gọi (Caller Scenario):</div>
+                        <div class="text-slate-800 fw-semibold" id="resultPromptScenario"></div>
+                    </div>
+                    <div class="p-3 bg-light rounded-3 border" id="resultPromptText" style="white-space: pre-wrap; font-size: 14.5px; color: #334155; border-left: 4px solid #4f46e5 !important; line-height: 1.6;">
+                    </div>
+                </div>
+            </div>
+
             <!-- Chi tiết từng câu -->
             <div id="questionResultsContainer">
                 <!-- Sẽ được render tự động bằng JS -->
@@ -397,6 +424,6 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
     <!-- JS riêng -->
     <script th:src="@{/js/global-audio.js(v=1)}"></script>
-    <script th:src="@{/js/luyen-de.js(v=2)}"></script>
+    <script th:src="@{/js/luyen-de.js(v=3)}"></script>
 </body>
 </html>

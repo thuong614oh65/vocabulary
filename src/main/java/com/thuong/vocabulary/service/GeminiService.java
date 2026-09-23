@@ -868,6 +868,12 @@ public class GeminiService {
                 3. GRAMMAR & SPOKEN DISCOURSE MARKERS:
                    - Correct prepositions (at, on, in, from... to...).
                    - Polite spoken openers (Sure, let me check...; Actually...; First of all...).
+                4. EXACT PROMPT CITATION & INSERTION GUIDE (Trích dẫn y nguyên đề bài & Hướng dẫn chêm từ):
+                   - "trichDanDeBai": Extract EXACTLY the specific raw text/line from the Information Sheet that directly answers this question (keep exact original wording/format as in the prompt).
+                   - "huongDanChemTu": Explain clearly in Vietnamese what words or phrases (subject, verb, prepositions, connectors) need to be inserted ("chêm vào") around the raw prompt text to turn it into a natural, complete spoken sentence.
+                5. STUDENT ANSWER CORRECTION & POLISHING (Chấm sửa và hoàn thiện câu của học viên):
+                   - "suaCauNguoiDung": Directly take the candidate's answer and correct any grammatical errors, missing words, wrong prepositions, or awkward phrasing, turning it into a complete, correct sentence based on their own words. If the candidate left it blank or wrote nothing, write: "Bạn chưa nhập câu trả lời, hãy tham khảo câu mẫu bên dưới."
+                   - "giaiThichSuaCau": Briefly explain in Vietnamese what was fixed from the candidate's original sentence (e.g. added missing subject/verb, fixed tense, corrected preposition...). If left blank, write: "Học viên chưa trả lời."
 
                 SCORING: Each question 0-3 points (TOEIC standard). Total Score: 0-9.
 
@@ -884,11 +890,15 @@ public class GeminiService {
                       "thoiGianNoiUocTinh": 13,
                       "diem": 3,
                       "trangThai": "DUNG",
+                      "trichDanDeBai": "9:00 a.m. - 9:40 a.m. | Lecture: Recruiting Online | Roza Jones",
+                      "huongDanChemTu": "Từ thông tin '9:00 a.m. - 9:40 a.m. | Lecture: Recruiting Online | Roza Jones', chêm thêm cụm mở đầu 'The first session is a...', giới từ 'from... to...', và người phụ trách 'and it will be led by...'",
+                      "suaCauNguoiDung": "The first session is a lecture on Recruiting Online, and it will be led by Roza Jones from 9:00 a.m. to 9:40 a.m.",
+                      "giaiThichSuaCau": "Đã thêm chủ ngữ 'The first session', bổ sung cụm động từ bị động 'will be led by' và giới từ chỉ thời gian 'from... to...'.",
                       "danhGiaThongTin": "Đủ thông tin và chính xác 100%%",
                       "danhGiaThoiGian": "~13 giây - Vừa vặn tốc độ nói cho 15s",
                       "nhanXetChiTiet": "Nhận xét ngữ pháp giới từ bằng tiếng Việt",
-                      "cauTraLoiMau": "Sure, the conference will begin at 9:00 a.m. at Wayne Arena.",
-                      "dichTiengVietMau": "Chắc chắn rồi, hội nghị sẽ bắt đầu lúc 9 giờ sáng tại Wayne Arena."
+                      "cauTraLoiMau": "Sure, the first lecture on Recruiting Online will be held from 9:00 a.m. to 9:40 a.m. by Roza Jones.",
+                      "dichTiengVietMau": "Chắc chắn rồi, bài giảng đầu tiên về Tuyển dụng trực tuyến sẽ diễn ra từ 9:00 đến 9:40 sáng do Roza Jones phụ trách."
                     },
                     {
                       "soThuTu": 2,
@@ -897,11 +907,15 @@ public class GeminiService {
                       "thoiGianNoiUocTinh": 12,
                       "diem": 3,
                       "trangThai": "DUNG",
+                      "trichDanDeBai": "10:30 a.m. - 11:30 a.m. | Workshop: Machine Learning for Beginners (Postponed to 2:00 p.m.)",
+                      "huongDanChemTu": "Đề cập đến việc sự kiện bị hoãn, chêm từ đính chính 'Actually, that is not correct...' và nêu thời gian mới 'it has been postponed to...'",
+                      "suaCauNguoiDung": "Actually, the workshop has been postponed to 2:00 p.m., not held at the original time.",
+                      "giaiThichSuaCau": "Đã bổ sung cấu trúc đính chính 'Actually...' và dùng thì hiện tại hoàn thành 'has been postponed to'.",
                       "danhGiaThongTin": "Đính chính thông tin chính xác",
                       "danhGiaThoiGian": "~12 giây - Vừa vặn tốc độ nói",
                       "nhanXetChiTiet": "Nhận xét",
-                      "cauTraLoiMau": "Actually, that's not correct because it has been postponed.",
-                      "dichTiengVietMau": "Thực ra, thông tin đó chưa đúng vì buổi đó đã bị hoãn lại."
+                      "cauTraLoiMau": "Actually, that's not correct because it has been postponed to 2:00 p.m.",
+                      "dichTiengVietMau": "Thực ra, thông tin đó chưa đúng vì buổi đó đã bị hoãn lại đến 2:00 chiều."
                     },
                     {
                       "soThuTu": 3,
@@ -910,6 +924,10 @@ public class GeminiService {
                       "thoiGianNoiUocTinh": 25,
                       "diem": 3,
                       "trangThai": "DUNG",
+                      "trichDanDeBai": "01:00 p.m. - 02:30 p.m. | Panel Discussion: Cyber Security Strategies\\n02:30 p.m. - 04:00 p.m. | Product Showcase",
+                      "huongDanChemTu": "Mở đầu 'Certainly, there are two sessions...', chêm liên từ 'First, from... there is a...' và 'Second, between... there will be a...'",
+                      "suaCauNguoiDung": "Certainly, there are two afternoon sessions. First, there is a panel discussion from 1:00 to 2:30. Second, the product showcase will start at 2:30.",
+                      "giaiThichSuaCau": "Đã thêm câu giới thiệu tổng quan và các liên từ thứ tự 'First', 'Second' giúp bài nói mạch lạc.",
                       "danhGiaThongTin": "Liệt kê đầy đủ các mục và chính xác",
                       "danhGiaThoiGian": "~25 giây - Cực kỳ lý tưởng cho 30s",
                       "nhanXetChiTiet": "Nhận xét",
