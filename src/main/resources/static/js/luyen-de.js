@@ -759,16 +759,25 @@ function renderEvaluationResults(res) {
                 <div class="prompt-citation-box">
                     <div class="d-flex align-items-center justify-content-between mb-2 flex-wrap gap-2">
                         <div class="fw-bold text-sky-900 small d-flex align-items-center gap-1">
-                            <span>📌</span> <span>Đoạn văn trích dẫn từ đề bài (Viết y như đề để dễ so sánh):</span>
+                            <span>📌</span> <span>Dữ liệu gốc trong đề bài (Cần dùng để trả lời câu này):</span>
                         </div>
-                        <span class="badge bg-primary-subtle text-primary border px-2 py-1 rounded-pill small">Dữ liệu gốc từ đề</span>
+                        <span class="badge bg-primary text-white border px-2 py-1 rounded-pill small">Dữ liệu đề bài</span>
                     </div>
-                    <div class="prompt-citation-text font-monospace">
+                    <div class="prompt-citation-text font-monospace mb-2" style="background: #ffffff; border: 1.5px dashed #0284c7; padding: 10px 14px; border-radius: 8px;">
                         ${item.trichDanDeBai.replace(/\n/g, '<br>')}
                     </div>
                     ${item.huongDanChemTu ? `
-                    <div class="prompt-insert-guide">
-                        <strong>💡 Cách chêm từ hoàn thành câu:</strong> ${item.huongDanChemTu}
+                    <div class="p-3 rounded-3 bg-white border border-sky-200 mt-2">
+                        <div class="small fw-bold text-sky-900 mb-1">💡 Chêm từ vào dữ liệu đề để ghép thành câu hoàn chỉnh:</div>
+                        <div class="text-slate-800" style="font-size: 14.5px; line-height: 1.6;">
+                            ${formatInsertionGuide(item.huongDanChemTu)}
+                        </div>
+                        <div class="small text-muted mt-2 pt-1 border-top d-flex align-items-center gap-2" style="font-size: 12px;">
+                            <span>Chú thích:</span>
+                            <span class="chem-tu-tag">Từ chêm thêm</span>
+                            <span>+</span>
+                            <span class="fw-bold text-slate-800">Dữ liệu gốc từ đề</span>
+                        </div>
                     </div>
                     ` : ''}
                 </div>
@@ -844,6 +853,12 @@ function renderEvaluationResults(res) {
     }
 
     resultSec.scrollIntoView({ behavior: 'smooth' });
+}
+
+function formatInsertionGuide(text) {
+    if (!text) return '';
+    // Làm nổi bật các cụm từ chêm thêm nằm trong ngoặc vuông [từ chêm vào]
+    return text.replace(/\[(.*?)\]/g, '<span class="chem-tu-tag">$1</span>');
 }
 
 // -------------------------------------------------------------

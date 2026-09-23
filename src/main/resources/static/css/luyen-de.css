@@ -514,6 +514,18 @@ body {
     line-height: 1.5;
 }
 
+.chem-tu-tag {
+    background: #e0f2fe;
+    color: #0369a1;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 6px;
+    border: 1px solid #7dd3fc;
+    display: inline-block;
+    margin: 1px 2px;
+    font-size: 13.5px;
+}
+
 /* Khối Sửa & Hoàn Thiện Câu Của Học Viên */
 .user-correction-box {
     background: #fffbeb;
