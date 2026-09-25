@@ -482,6 +482,72 @@ function docTu(tu) {
 
 
 // =========================================================
+// CHỌN TẤT CẢ / BỎ CHỌN TẤT CẢ / CHỌN THEO BỘ TRONG BẢNG CHỌN TỪNG TỪ
+// =========================================================
+
+function capNhatDemTuDaChon() {
+    const checkboxes = document.querySelectorAll('#bangTatCa input.chk-tu-item[type="checkbox"]');
+    const checkedBoxes = document.querySelectorAll('#bangTatCa input.chk-tu-item[type="checkbox"]:checked');
+    const badgeCount = document.getElementById("soLuongTuDaChon");
+    const chkHeader = document.getElementById("chkChonTatCaHeader");
+
+    if (badgeCount) {
+        badgeCount.textContent = checkedBoxes.length;
+    }
+
+    if (chkHeader && checkboxes.length > 0) {
+        chkHeader.checked = checkedBoxes.length === checkboxes.length;
+        chkHeader.indeterminate = checkedBoxes.length > 0 && checkedBoxes.length < checkboxes.length;
+    }
+
+    // Cập nhật trạng thái nút "Chọn cả bộ" của từng bộ
+    document.querySelectorAll('#bangTatCa .btn-chon-ca-bo').forEach(function (btn) {
+        const td = btn.closest('td');
+        const tr = btn.closest('tr');
+        const boId = tr ? tr.getAttribute('data-bo-id') : null;
+        if (!boId) return;
+        const boCheckboxes = document.querySelectorAll('#bangTatCa input.chk-tu-item[data-bo-id="' + boId + '"]');
+        const boChecked = document.querySelectorAll('#bangTatCa input.chk-tu-item[data-bo-id="' + boId + '"]:checked');
+        if (boCheckboxes.length > 0 && boChecked.length === boCheckboxes.length) {
+            btn.innerHTML = '✅ Bỏ chọn bộ';
+        } else {
+            btn.innerHTML = '☑️ Chọn cả bộ';
+        }
+    });
+}
+
+function chonTatCaTu(isCheck) {
+    const checkboxes = document.querySelectorAll('#bangTatCa input.chk-tu-item[type="checkbox"]');
+    checkboxes.forEach(function (chk) {
+        chk.checked = !!isCheck;
+    });
+    capNhatDemTuDaChon();
+}
+
+function chonTatCaTheoBo(boId, btnEl) {
+    const boCheckboxes = document.querySelectorAll('#bangTatCa input.chk-tu-item[data-bo-id="' + boId + '"]');
+    if (!boCheckboxes || boCheckboxes.length === 0) return;
+
+    let allChecked = true;
+    boCheckboxes.forEach(function (chk) {
+        if (!chk.checked) allChecked = false;
+    });
+
+    const targetState = !allChecked;
+    boCheckboxes.forEach(function (chk) {
+        chk.checked = targetState;
+    });
+
+    capNhatDemTuDaChon();
+}
+
+window.capNhatDemTuDaChon = capNhatDemTuDaChon;
+window.chonTatCaTu = chonTatCaTu;
+window.chonTatCaTheoBo = chonTatCaTheoBo;
+
+capNhatDemTuDaChon();
+
+// =========================================================
 // ĐƯA HÀM RA GLOBAL
 // =========================================================
 
