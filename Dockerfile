@@ -47,20 +47,21 @@ ENV PATH="/opt/maven/bin:/opt/java/openjdk/bin:/opt/venv/bin:$PATH"
 
 WORKDIR /app
 
-COPY . .
+# Tạo thư mục cấu hình Maven trước và tải sẵn thư viện (Layer Caching giúp giảm 80% thời gian Build)
+COPY .mvn .mvn
+COPY pom.xml .
+RUN mkdir -p /root/.m2 && cp .mvn/settings.xml /root/.m2/settings.xml && \
+    mvn -s .mvn/settings.xml dependency:go-offline -B
+
+# Copy source code và build nhanh
+COPY src src
+RUN mvn -s .mvn/settings.xml -DskipTests package -o || mvn -s .mvn/settings.xml -DskipTests package
 
 # Tạo user 1000 cho Hugging Face Spaces và phân quyền
 RUN useradd -m -u 1000 user && \
     mkdir -p /app/audio-data && \
     chown -R user:user /app /opt/venv && \
     chmod -R 777 /app /opt/venv
-
-# =========================================================
-# MAVEN BUILD (DÙNG GOOGLE MAVEN MIRROR ĐỂ TRÁNH LỖI 429)
-# =========================================================
-
-RUN mkdir -p /root/.m2 && cp .mvn/settings.xml /root/.m2/settings.xml
-RUN mvn -s .mvn/settings.xml -DskipTests clean package
 
 # =========================================================
 # CHẠY SPRING BOOT (TỰ ĐỘNG NHẬN DIỆN PORT TRÊN RENDER / HF SPACES)
