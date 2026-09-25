@@ -69,7 +69,7 @@ RUN useradd -m -u 1000 user && \
 # =========================================================
 
 USER user
-EXPOSE 10000 8080 7860
+EXPOSE 7860 10000 8080
 
-CMD ["sh", "-c", "java -XX:+UseSerialGC -Xss512k -XX:MaxMetaspaceSize=128m -Xms128m -Xmx320m -Dserver.port=${PORT:-10000} -Dserver.address=0.0.0.0 -jar target/*.jar"]
+CMD ["sh", "-c", "java -XX:+UseSerialGC -Xss512k -XX:MaxMetaspaceSize=128m -Xms128m -Xmx320m -Dserver.port=${PORT:-7860} -Dserver.address=0.0.0.0 -jar target/*.jar"]
 
