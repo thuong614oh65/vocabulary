@@ -65,43 +65,46 @@
         </div>
 
         <!-- =====================================================
-             FORM TRA HÀNG LOẠT
+             FORM TRA TỪ MỚI (1 NÚT DUY NHẤT)
              ===================================================== -->
-        <form th:action="@{/tra-hang-loat}"
-              method="post"
-              th:object="${themTuDTO}">
-
-            <label class="form-label fw-bold mb-2">
-                Danh sách từ vựng (Mỗi dòng một từ):
-            </label>
+        <form id="formTraTu" onsubmit="event.preventDefault(); thucHienTraTuMoi();">
+            <div class="mb-2">
+                <label class="form-label fw-bold text-dark mb-0 fs-6">📝 Nội dung văn bản hoặc danh sách từ tiếng Anh:</label>
+                <div class="text-muted small mt-1">Hệ thống sẽ tự động nhận diện thông minh, lọc bỏ tên riêng và các từ vựng đã có trong tài khoản của bạn.</div>
+            </div>
 
             <textarea
                     id="noiDung"
                     class="form-control"
                     rows="10"
-                    th:field="*{noiDung}"
-                    placeholder="hello&#10;apple&#10;computer&#10;(Hoặc thêm ảnh/file ở trên để hệ thống tự điền)"></textarea>
+                    placeholder="Dán hoặc viết đoạn văn hoặc danh sách từ tiếng Anh vào đây (ví dụ: một bài báo, đoạn hội thoại, hay danh sách từ 1 từ/dòng)..."></textarea>
 
-            <div class="mt-4 d-flex gap-2 flex-wrap">
+            <div id="inlineLoadingBox" class="p-3 my-3 bg-white rounded-3 border shadow-sm text-center" style="display: none;">
+                <div class="spinner-border text-primary me-2" role="status" style="width: 1.8rem; height: 1.8rem;"></div>
+                <span class="fw-semibold text-secondary" id="inlineLoadingText">Đang phân tích kỹ lưỡng và tra từ mới từ văn bản...</span>
+            </div>
+
+            <div class="mt-4 d-flex gap-2 flex-wrap align-items-center">
                 <button
-                        type="submit"
-                        id="btnTraHangLoat"
-                        class="btn btn-primary px-4 fw-bold">
-                    🔍 Tra hàng loạt
+                        type="button"
+                        id="btnTraTuMoi"
+                        class="btn btn-primary px-4 py-2 fw-bold shadow-sm d-flex align-items-center gap-2"
+                        onclick="thucHienTraTuMoi()">
+                    <span>🔍 Tra từ mới</span>
                 </button>
 
                 <a href="/"
-                   class="btn btn-secondary">
+                   class="btn btn-secondary px-3 py-2">
                     🏠 Trang chủ
                 </a>
 
                 <a href="/tra-tu"
-                   class="btn btn-outline-primary">
+                   class="btn btn-outline-primary px-3 py-2">
                     🔍 Tra từ &amp; Dịch
                 </a>
 
                 <a href="/quan-ly-tu"
-                   class="btn btn-outline-success">
+                   class="btn btn-outline-success px-3 py-2">
                     📋 Quản lí từ
                 </a>
             </div>
@@ -109,6 +112,8 @@
         </form>
 
     </div>
+
+    <div id="khuVucKetQua"></div>
 
     <!-- =====================================================
          FORM LƯU BỘ TỪ (KẾT QUẢ TRA TỪ)
